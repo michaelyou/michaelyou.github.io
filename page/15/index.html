@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/page/15/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-Python编程中常用的基础知识总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/11/Python编程中常用的基础知识总结/" class="article-date">
+  <time datetime="2015-02-11T02:34:19.000Z" itemprop="datePublished">2015-02-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/11/Python编程中常用的基础知识总结/">Python编程中常用的基础知识总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Python编程中常用的12种基础知识总结：遍历目录方法，列表按列排序、去重，字典排序，字典、列表、字符串互转，时间对象操作，命令行参数解析(getopt)，print 格式化输出，进制转换，Python调用系统命令或者脚本，Python 读写文件。</p>
+<p>##遍历目录方法<br>在某些时候，我们需要遍历某个目录找出特定的文件列表，可以通过os.walk方法来遍历，非常方便</p>
+<pre><code>import os
+fileList = []
+rootdir = &quot;/data&quot;
+for root, subFolders, files in os.walk(rootdir):
+    if &apos;.svn&apos; in subFolders: 
+        subFolders.remove(&apos;.svn&apos;)  # 排除特定目录
+    for file in files:
+        if file.find(&quot;.t2t&quot;) != -1:# 查找特定扩展名的文件
+            file_dir_path = os.path.join(root,file)
+            fileList.append(file_dir_path)  
+
+print fileList
+</code></pre><p>##列表按列排序(list sort)<br>如果列表的每个元素都是一个元组(tuple),我们要根据元组的某列来排序的话，可参考如下方法</p>
+<p>下面例子我们是根据元组的第2列和第3列数据来排序的,而且是倒序(reverse=True)</p>
+<pre><code>&gt;&gt;&gt; a = [(&apos;2011-03-17&apos;, &apos;2.26&apos;, 6429600, &apos;0.0&apos;), (&apos;2011-03-16&apos;, &apos;2.26&apos;, 12036900, &apos;-3.0&apos;),
+ (&apos;2011-03-15&apos;, &apos;2.33&apos;, 15615500,&apos;-19.1&apos;)]
+&gt;&gt;&gt; print a[0][0]
+2011-03-17
+&gt;&gt;&gt; b = sorted(a, key=lambda result: result[1],reverse=True)
+&gt;&gt;&gt; print b
+[(&apos;2011-03-15&apos;, &apos;2.33&apos;, 15615500, &apos;-19.1&apos;), (&apos;2011-03-17&apos;, &apos;2.26&apos;, 6429600, &apos;0.0&apos;),
+(&apos;2011-03-16&apos;, &apos;2.26&apos;, 12036900, &apos;-3.0&apos;)]
+&gt;&gt;&gt; c = sorted(a, key=lambda result: result[2],reverse=True)
+&gt;&gt;&gt; print c
+[(&apos;2011-03-15&apos;, &apos;2.33&apos;, 15615500, &apos;-19.1&apos;), (&apos;2011-03-16&apos;, &apos;2.26&apos;, 12036900, &apos;-3.0&apos;),
+(&apos;2011-03-17&apos;, &apos;2.26&apos;, 6429600, &apos;0.0&apos;)]
+</code></pre><p>##列表去重(list uniq)<br>有时候需要将list中重复的元素删除，就要使用如下方法</p>
+<pre><code>&gt;&gt;&gt; lst= [(1,&apos;sss&apos;),(2,&apos;fsdf&apos;),(1,&apos;sss&apos;),(3,&apos;fd&apos;)]
+&gt;&gt;&gt; set(lst)
+set([(2, &apos;fsdf&apos;), (3, &apos;fd&apos;), (1, &apos;sss&apos;)])
+&gt;&gt;&gt;
+&gt;&gt;&gt; lst = [1, 1, 3, 4, 4, 5, 6, 7, 6]
+&gt;&gt;&gt; set(lst)
+set([1, 3, 4, 5, 6, 7])
+</code></pre><p>##字典排序(dict sort)<br>一般来说，我们都是根据字典的key来进行排序，但是我们如果想根据字典的value值来排序，就使用如下方法</p>
+<pre><code>&gt;&gt;&gt; from operator import itemgetter
+&gt;&gt;&gt; aa = {&quot;a&quot;:&quot;1&quot;,&quot;sss&quot;:&quot;2&quot;,&quot;ffdf&quot;:&apos;5&apos;,&quot;ffff2&quot;:&apos;3&apos;}
+&gt;&gt;&gt; sort_aa = sorted(aa.items(),key=itemgetter(1))
+&gt;&gt;&gt; sort_aa
+[(&apos;a&apos;, &apos;1&apos;), (&apos;sss&apos;, &apos;2&apos;), (&apos;ffff2&apos;, &apos;3&apos;), (&apos;ffdf&apos;, &apos;5&apos;)]
+或者：
+&gt;&gt;&gt; sort_aa = sorted(aa.items(), key=lambda result: result[1])
+</code></pre><p>##字典,列表,字符串互转<br>以下是生成数据库连接字符串,从字典转换到字符串</p>
+<pre><code>&gt;&gt;&gt; params = {&quot;server&quot;:&quot;mpilgrim&quot;, &quot;database&quot;:&quot;master&quot;, &quot;uid&quot;:&quot;sa&quot;, &quot;pwd&quot;:&quot;secret&quot;}
+&gt;&gt;&gt; [&quot;%s=%s&quot; % (k, v) for k, v in params.items()]
+[&apos;server=mpilgrim&apos;, &apos;uid=sa&apos;, &apos;database=master&apos;, &apos;pwd=secret&apos;]
+&gt;&gt;&gt; &quot;;&quot;.join([&quot;%s=%s&quot; % (k, v) for k, v in params.items()])
+&apos;server=mpilgrim;uid=sa;database=master;pwd=secret&apos;
+</code></pre><p>下面的例子 是将字符串转化为字典</p>
+<pre><code>&gt;&gt;&gt; a = &apos;server=mpilgrim;uid=sa;database=master;pwd=secret&apos;
+&gt;&gt;&gt; aa = {}
+&gt;&gt;&gt; for i in a.split(&apos;;&apos;):aa[i.split(&apos;=&apos;,1)[0]] = i.split(&apos;=&apos;,1)[1]  #split(&apos;=&apos;,1)表示按&apos;=&apos;分割1次
+...
+&gt;&gt;&gt; aa
+{&apos;pwd&apos;: &apos;secret&apos;, &apos;database&apos;: &apos;master&apos;, &apos;uid&apos;: &apos;sa&apos;, &apos;server&apos;: &apos;mpilgrim&apos;}
+</code></pre><p>##时间对象操作<br>    将时间对象转换成字符串</p>
+<pre><code>&gt;&gt;&gt; import datetime
+&gt;&gt;&gt; datetime.datetime.now().strftime(&quot;%Y-%m-%d %H:%M&quot;)
+  &apos;2011-01-20 14:05&apos;
+
+时间大小比较
+&gt;&gt;&gt; import time
+&gt;&gt;&gt; t1 = time.strptime(&apos;2011-01-20 14:05&apos;,&quot;%Y-%m-%d %H:%M&quot;)
+&gt;&gt;&gt; t2 = time.strptime(&apos;2011-01-20 16:05&apos;,&quot;%Y-%m-%d %H:%M&quot;)
+&gt;&gt;&gt; t1 &gt; t2
+  False
+&gt;&gt;&gt; t1 &lt; t2
+  True
+
+时间差值计算,计算8小时前的时间
+&gt;&gt;&gt; datetime.datetime.now().strftime(&quot;%Y-%m-%d %H:%M&quot;)
+  &apos;2011-01-20 15:02&apos;
+&gt;&gt;&gt; (datetime.datetime.now() - datetime.timedelta(hours=8)).strftime(&quot;%Y-%m-%d %H:%M&quot;)
+  &apos;2011-01-20 07:03&apos;
+
+将字符串转换成时间对象
+&gt;&gt;&gt; endtime=datetime.datetime.strptime(&apos;20100701&apos;,&quot;%Y%m%d&quot;)
+&gt;&gt;&gt; type(endtime)
+  &lt;type &apos;datetime.datetime&apos;&gt;
+&gt;&gt;&gt; print endtime
+  2010-07-01 00:00:00
+
+将从 1970-01-01 00:00:00 UTC 到现在的秒数，格式化输出   
+
+&gt;&gt;&gt; import time
+&gt;&gt;&gt; a = 1302153828
+&gt;&gt;&gt; time.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;,time.localtime(a))
+  &apos;2011-04-07 13:23:48&apos;
+</code></pre><p>##命令行参数解析(getopt)<br>通常在编写一些日运维脚本时，需要根据不同的条件，输入不同的命令行选项来实现不同的功能 在Python中提供了getopt模块很好的实现了命令行参数的解析,下面距离说明。请看如下程序:</p>
+<pre><code>#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import sys,os,getopt
+def usage():
+print &apos;&apos;&apos;&apos;&apos;
+Usage: analyse_stock.py [options...]
+Options:
+-e : Exchange Name
+-c : User-Defined Category Name
+-f : Read stock info from file and save to db
+-d : delete from db by stock code
+-n : stock name
+-s : stock code
+-h : this help info
+test.py -s haha -n &quot;HA Ha&quot;
+&apos;&apos;&apos;
+
+try:
+opts, args = getopt.getopt(sys.argv[1:],&apos;he:c:f:d:n:s:&apos;)
+except getopt.GetoptError:
+usage()
+sys.exit()
+if len(opts) == 0:
+usage()
+sys.exit()  
+
+for opt, arg in opts:
+if opt in (&apos;-h&apos;, &apos;--help&apos;):
+  usage()
+  sys.exit()
+elif opt == &apos;-d&apos;:
+  print &quot;del stock %s&quot; % arg
+elif opt == &apos;-f&apos;:
+  print &quot;read file %s&quot; % arg
+elif opt == &apos;-c&apos;:
+  print &quot;user-defined %s &quot; % arg
+elif opt == &apos;-e&apos;:
+  print &quot;Exchange Name %s&quot; % arg
+elif opt == &apos;-s&apos;:
+  print &quot;Stock code %s&quot; % arg
+elif opt == &apos;-n&apos;:
+  print &quot;Stock name %s&quot; % arg  
+
+sys.exit()
+</code></pre><p>##print 格式化输出</p>
+<pre><code>截取字符串输出,下面例子将只输出字符串的前3个字母
+&gt;&gt;&gt; str=&quot;abcdefg&quot;
+&gt;&gt;&gt; print &quot;%.3s&quot; % str
+  abc
+按固定宽度输出，不足使用空格补全,下面例子输出宽度为10
+&gt;&gt;&gt; str=&quot;abcdefg&quot;
+&gt;&gt;&gt; print &quot;%10s&quot; % str
+     abcdefg
+截取字符串，按照固定宽度输出
+&gt;&gt;&gt; str=&quot;abcdefg&quot;
+&gt;&gt;&gt; print &quot;%10.3s&quot; % str
+         abc
+浮点类型数据位数保留
+&gt;&gt;&gt; import fpformat
+&gt;&gt;&gt; a= 0.0030000000005
+&gt;&gt;&gt; b=fpformat.fix(a,6)
+&gt;&gt;&gt; print b
+  0.003000
+对浮点数四舍五入,主要使用到round函数
+&gt;&gt;&gt; from decimal import *
+&gt;&gt;&gt; a =&quot;2.26&quot;
+&gt;&gt;&gt; b =&quot;2.29&quot;
+&gt;&gt;&gt; c = Decimal(a) - Decimal(b)
+&gt;&gt;&gt; print c
+  -0.03
+&gt;&gt;&gt; c / Decimal(a) * 100
+  Decimal(&apos;-1.327433628318584070796460177&apos;)
+&gt;&gt;&gt; Decimal(str(round(c / Decimal(a) * 100, 2)))
+  Decimal(&apos;-1.33&apos;)
+</code></pre><h2 id="进制转换"><a href="#进制转换" class="headerlink" title="进制转换"></a>进制转换</h2><p>有些时候需要作不同进制转换，可以参考下面的例子(%x 十六进制,%d 十进制,%o 八进制)</p>
+<pre><code>&gt;&gt;&gt; num = 10
+&gt;&gt;&gt; print &quot;Hex = %x,Dec = %d,Oct = %o&quot; %(num,num,num)
+  Hex = a,Dec = 10,Oct = 12
+</code></pre><h2 id="Python调用系统命令或者脚本"><a href="#Python调用系统命令或者脚本" class="headerlink" title="Python调用系统命令或者脚本"></a>Python调用系统命令或者脚本</h2><pre><code>使用 os.system() 调用系统命令 , 程序中无法获得到输出和返回值
+&gt;&gt;&gt; import os
+&gt;&gt;&gt; os.system(&apos;ls -l /proc/cpuinfo&apos;)
+&gt;&gt;&gt; os.system(&quot;ls -l /proc/cpuinfo&quot;)
+  -r--r--r-- 1 root root 0  3月 29 16:53 /proc/cpuinfo
+  0
+
+使用 os.popen() 调用系统命令, 程序中可以获得命令输出，但是不能得到执行的返回值
+&gt;&gt;&gt; out = os.popen(&quot;ls -l /proc/cpuinfo&quot;)
+&gt;&gt;&gt; print out.read()
+  -r--r--r-- 1 root root 0  3月 29 16:59 /proc/cpuinfo  
+
+使用 commands.getstatusoutput() 调用系统命令, 程序中可以获得命令输出和执行的返回值
+&gt;&gt;&gt; import commands
+&gt;&gt;&gt; commands.getstatusoutput(&apos;ls /bin/ls&apos;)
+  (0, &apos;/bin/ls&apos;)
+</code></pre><p>##Python 读写文件</p>
+<pre><code>一次性读入文件到列表，速度较快，适用文件比较小的情况下
+track_file = &quot;track_stock.conf&quot;
+fd = open(track_file)
+content_list = fd.readlines()
+fd.close()
+for line in content_list:
+    print line  
+
+逐行读入，速度较慢,适用没有足够内存读取整个文件(文件太大)
+fd = open(file_path)
+fd.seek(0)
+title = fd.readline()
+keyword = fd.readline()
+uuid = fd.readline()
+fd.close()  
+
+写文件 write 与 writelines 的区别   
+
+Fd.write(str) : 把str写到文件中，write()并不会在str后加上一个换行符
+Fd.writelines(content) : 把content的内容全部写到文件中,原样写入，不会在每行后面加上任何东西
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/11/Python编程中常用的基础知识总结/" data-id="cj64uppwz001mlraenkyhhpbc" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-cookie" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/10/cookie/" class="article-date">
+  <time datetime="2015-02-10T10:33:54.000Z" itemprop="datePublished">2015-02-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/http/">http</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/10/cookie/">cookie</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>转载自<a href="http://www.cnblogs.com/TankXiao/archive/2013/04/15/2848906.html" target="_blank" rel="external">这里</a></p>
+<p>##网站自动登录<br>我们以”博客园自动登陆“的例子，来说明cookie是如何传递的。</p>
+<p>大家知道博客园是可以自动登陆的。 如下图，这个是什么原理呢?</p>
+<p><img src="/img/cookie1.png" alt=""></p>
+<p>假如我已经在登陆页面输入了用户名，密码，选择了保存密码，登陆。</p>
+<p>（这时候，其实在你的机器上保存好了登陆的cookie, 不信你可以按照上节介绍方法去你的电脑上找下博客园的cookie）  </p>
+<p>当我下次访问博客园流程如下。</p>
+<ol>
+<li><p>用户打开IE浏览器，在地址栏上输入www.cnblogs.com.</p>
+</li>
+<li><p>IE首先会在硬盘中查找关于cnblogs.com的cookie. 然后把cookie放到HTTP Request中，再把Request发给Web服务器。</p>
+</li>
+<li><p>Web服务器返回博客园首页（你会看到你已经登陆了）。</p>
+</li>
+</ol>
+<p><img src="/img/自动登录.png" alt=""></p>
+<p>##截获Cookie，冒充别人身份<br>通过上面这个例子，可以看到cookie是很重要的，识别是否是登陆用户，就是通过cookie。  假如截获了别人的cookie是否可以冒充他人的身份登陆呢？  当然可以， 这就是一种黑客技术叫Cookie欺骗。</p>
+<p>利用Cookie 欺骗， 不需要知道用户名密码。就可以直接登录，使用别人的账户做坏事。</p>
+<p>我知道有两种方法可以截获他人的cookie，</p>
+<ol>
+<li><p>通过XSS脚步攻击， 获取他人的cookie. 具体原理可以看 <a href="http://www.cnblogs.com/TankXiao/archive/2012/03/21/2337194.html" target="_blank" rel="external">Web安全性测试之XSS</a></p>
+</li>
+<li><p>想办法获取别人电脑上保存的cookie文件（这个比较难）</p>
+</li>
+</ol>
+<p>##Cookie 泄露隐私<br>2013年央视的315晚会上， 曝光了很多不法公司利用Cookie跟踪并采集用户的个人信息，并转卖给网络广告商，形成了一条窃取用户信息的灰色产业链。从而实现广告准确投放。严重干扰了用户的正常网络应用，侵害了个人的隐私和利益。</p>
+<p>我经常就在门户网站上发现广告位上显示的是我在电商网站上流量过的商品。  这就是我的cookie被泄露了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/10/cookie/" data-id="cj64uppyn0035lraecx9z1eqp" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/http/">http</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-在浏览器输入url回车，和直接按F5刷新有什么区别" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/10/在浏览器输入url回车，和直接按F5刷新有什么区别/" class="article-date">
+  <time datetime="2015-02-10T08:12:03.000Z" itemprop="datePublished">2015-02-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/http/">http</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/10/在浏览器输入url回车，和直接按F5刷新有什么区别/">在浏览器输入url回车，和直接按F5刷新有什么区别</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>按F5刷新浏览器和在地址栏里输入网址然后回车。 这两个行为是不一样的。</p>
+<p>按F5刷新浏览器， 浏览器会去Web服务器验证缓存。</p>
+<p>如果是在地址栏输入网址然后回车，浏览器会”直接使用有效的缓存”, 而不会发http request 去服务器验证缓存，这种情况叫做缓存命中，如下图</p>
+<p><img src="/img/缓存命中.png" alt=""></p>
+<p>实例： 比较第一次访问博客园主页和第二次博客园主页</p>
+<ol>
+<li><p>启动Fiddler, 用firefox打开博客园主页， 发现有50多个session。</p>
+</li>
+<li><p>按CTRL+X将Fiddler中的所有session删除。 关闭firefox,重新打开一个firefox，打开博客园主页。   发现只有30多个session.</p>
+</li>
+</ol>
+<p>分析；  少了的session是因为firefox直接用了缓存，而没有发http request。</p>
+<p><img src="/img/第一次访问.png" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/10/在浏览器输入url回车，和直接按F5刷新有什么区别/" data-id="cj64upq4m00b5lraea8qj1bfs" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/http/">http</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-http判断缓存是否有效，为什么有了last-modified还需要etag" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/10/http判断缓存是否有效，为什么有了last-modified还需要etag/" class="article-date">
+  <time datetime="2015-02-10T07:49:54.000Z" itemprop="datePublished">2015-02-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/http/">http</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/10/http判断缓存是否有效，为什么有了last-modified还需要etag/">http判断缓存是否有效，为什么有了last-modified还需要etag</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>If-Modified-Since：<br>作用： 把浏览器端缓存页面的最后修改时间发送到服务器去，服务器会把这个时间与服务器上实际文件的最后修改时间进行对比。如果时间一致，那么返回304，客户端就直接使用本地缓存文件。如果时间不一致，就会返回200和新的文件内容。客户端接到之后，会丢弃旧文件，把新文件缓存起来，并显示在浏览器中.</p>
+<p>ETag：<br>是实体标签（Entity Tag）的缩写， 根据实体内容生成的一段hash字符串（类似于MD5或者SHA1之后的结果），可以标识资源的状态。 当资源发送改变时，ETag也随之发生变化。</p>
+<p>ETag是Web服务端产生的，然后发给浏览器客户端。浏览器客户端是不用关心Etag是如何产生的。</p>
+<p>问题是，我们知道last-modified可以用来判断浏览器的本地缓存是否有效，那为什么还要使用ETag呢？ 主要是为了解决Last-Modified 无法解决的一些问题。</p>
+<ol>
+<li><p>某些服务器不能精确得到文件的最后修改时间， 这样就无法通过最后修改时间来判断文件是否更新了。</p>
+</li>
+<li><p>某些文件的修改非常频繁，在秒以下的时间内进行修改. Last-Modified只能精确到秒。</p>
+</li>
+<li><p>一些文件的最后修改时间改变了，但是内容并未改变。 我们不希望客户端认为这个文件修改了。</p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/10/http判断缓存是否有效，为什么有了last-modified还需要etag/" data-id="cj64upq0s005elraeub8q34yd" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/http/">http</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-为什么http协议是无连接的" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/10/为什么http协议是无连接的/" class="article-date">
+  <time datetime="2015-02-10T06:13:31.000Z" itemprop="datePublished">2015-02-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/http/">http</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/10/为什么http协议是无连接的/">为什么http协议是无连接的</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>HTTP 协议本身是无连接的，虽然它使用了面向连接的 TCP 向上提供的服务。</p>
+<p> TCP的面向连接是传输层的，而HTTP的无连接则是应用层的 。HTTP协议产生于互联网，因此服务器需要处理同时面向全世界数十万、上百万客户端的网页访问，但每个客户端（即浏览器）与服务器之间交换数据的间歇性较大（即传输具有突发性、瞬时性），并且网页浏览的联想性、发散性导致两次传送的数据关联性很低，如果按照上面的方式，则需要在服务器端开的进程和句柄数目都是不可接受的，大部分通道实际上会很空闲、无端占用资源。因此HTTP的设计者有意利用这种特点将协议设计为请求时建连接、请求完释放连接，以尽快将资源释放出来服务其他客户端。HTTP1.1现在设计为长连接，就是在一个连接内可以发生多个请求，避免了多次建立断开连接造成的消耗。</p>
+<p>UDP尽管不象TCP那样占用资源，但它不保证数据的完整性、有序性，想像如果服务器返回的HTML错序了或者丢失一部分你将看到什么效果；并且UDP没有流量控制，而互联网的传输质量又不是很好，服务器随便仍出一大堆UDP包可能导致网络风暴，这是相当危险的。</p>
+<p>归根结底，TCP的面向连接是传输层的，而HTTP的无连接则是应用层的。</p>
+<hr>
+<p><strong>无状态</strong>是指协议对于事务处理没有记忆能力，服务器不知道客户端是什么状态。从另一方面讲，打开一个服务器上的网页和你之前打开这个服务器上的网页之间没有任何联系</p>
+<p>HTTP是一个无状态的面向连接的协议，无状态不代表HTTP不能保持TCP连接，更不能代表HTTP使用的是UDP协议（无连接）</p>
+<p>从HTTP/1.1起，默认都开启了Keep-Alive，保持连接特性，简单地说，当一个网页打开完成后，客户端和服务器之间用于传输HTTP数据的TCP连接不会关闭，如果客户端再次访问这个服务器上的网页，会继续使用这一条已经建立的连接</p>
+<p> Keep-Alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/10/为什么http协议是无连接的/" data-id="cj64upq3a009glraewggs7nh0" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/http/">http</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-正则表达式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/10/正则表达式/" class="article-date">
+  <time datetime="2015-02-10T01:44:22.000Z" itemprop="datePublished">2015-02-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/10/正则表达式/">正则表达式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文转载自<a href="http://www.cnblogs.com/huxi/archive/2010/07/04/1771073.html" target="_blank" rel="external">这里</a><br>，参考<a href="http://www.jb51.net/tools/zhengze.html" target="_blank" rel="external">这篇文章</a>补充了一些内容</p>
+<p>##基础</p>
+<p>###正则表达式到底是什么东西？<br>在编写处理字符串的程序或网页时，经常会有查找符合某些复杂规则的字符串的需要。<strong>正则表达式</strong>就是用于描述这些规则的工具。换句话说，正则表达式就是记录文本规则的代码。</p>
+<p>很可能你使用过linux下的<strong>通配符(wildcard)</strong>，也就是<code>*</code>和<code>?</code>。如果你想查找某个目录下的所有的txt文档的话，你会搜索<code>*.txt</code>。在这里，<code>*</code>会被解释成任意的字符串。和通配符类似，正则表达式也是用来进行文本匹配的工具，只不过比起通配符，它能更精确地描述你的需求——当然，代价就是更复杂——比如你可以编写一个正则表达式，用来查找<em>所有以0开头，后面跟着2-3个数字，然后是一个连字号<code>&quot;-&quot;</code>，最后是7或8位数字的字符串</em>(像<em>010-12345678</em>或<em>0376-7654321</em>)。</p>
+<blockquote>
+<p>字符是计算机软件处理文字时最基本的单位，可能是字母，数字，标点符号，空格，换行符，汉字等等。字符串是0个或更多个字符的序列。文本也就是文字，字符串。说某个字符串匹配某个正则表达式，通常是指这个字符串里有一部分（或几部分分别）能满足表达式给出的条件。</p>
+</blockquote>
+<p>正则表达式并不是Python的一部分。正则表达式是用于处理字符串的强大工具，拥有自己独特的语法以及一个独立的处理引擎，效率上可能不如str自带的方法，但功能十分强大。得益于这一点，在提供了正则表达式的语言里，正则表达式的语法都是一样的，区别只在于不同的编程语言实现支持的语法数量不同；但不用担心，不被支持的语法通常是不常用的部分。如果已经在其他语言里使用过正则表达式，只需要简单看一看就可以上手了。</p>
+<p>下图展示了使用正则表达式进行匹配的流程：</p>
+<p><img src="/img/re_simple.png" alt=""></p>
+<p>正则表达式的大致匹配过程是：依次拿出表达式和文本中的字符比较，如果每一个字符都能匹配，则匹配成功；一旦有匹配不成功的字符则匹配失败。如果表达式中有量词或边界，这个过程会稍微有一些不同，但也是很好理解的，看下图中的示例以及自己多使用几次就能明白。</p>
+<p>下图列出了Python支持的正则表达式元字符和语法：</p>
+<p><img src="/img/pyre.png" alt=""></p>
+<p>###数量词的贪婪模式与非贪婪模式<br>正则表达式通常用于在文本中查找匹配的字符串。Python里数量词默认是贪婪的（在少数语言里也可能是默认非贪婪），总是尝试匹配尽可能多的字符；非贪婪的则相反，总是尝试匹配尽可能少的字符。例如：正则表达式<code>&quot;ab*&quot;</code>如果用于查找<code>&quot;abbbc&quot;</code>，将找到<code>&quot;abbb&quot;</code>。而如果使用非贪婪的数量词<code>&quot;ab*?&quot;</code>，将找到<code>&quot;a&quot;</code>。</p>
+<p>###反斜杠的困扰<br>与大多数编程语言相同，正则表达式里使用<code>&quot;\&quot;</code>作为转义字符，这就可能造成反斜杠困扰。假如你需要匹配文本中的字符<code>&quot;\\&quot;</code>，那么使用编程语言表示的正则表达式里将需要4个反斜杠<code>&quot;\\\\&quot;</code>：前两个和后两个分别用于在编程语言里转义成反斜杠，转换成两个反斜杠后再在正则表达式里转义成一个反斜杠。Python里的原生字符串很好地解决了这个问题，这个例子中的正则表达式可以使用r”\“表示。同样，匹配一个数字的”\d”可以写成r”\d”。有了原生字符串，你再也不用担心是不是漏写了反斜杠，写出来的表达式也更直观。</p>
+<p>###匹配模式<br>正则表达式提供了一些可用的匹配模式，比如忽略大小写、多行匹配等，这部分内容将在Pattern类的工厂方法<code>re.compile(pattern[, flags])</code>中一起介绍。</p>
+<p>##re模块</p>
+<p>###开始使用re<br>Python通过re模块提供对正则表达式的支持。使用re的一般步骤是先将正则表达式的字符串形式编译为Pattern实例，然后使用Pattern实例处理文本并获得匹配结果（一个Match实例），最后使用Match实例获得信息，进行其他的操作。</p>
+<pre><code># encoding: UTF-8
+import re
+
+# 将正则表达式编译成Pattern对象
+pattern = re.compile(r&apos;hello&apos;)
+
+# 使用Pattern匹配文本，获得匹配结果，无法匹配时将返回None
+match = pattern.match(&apos;hello world!&apos;)
+
+if match:
+    # 使用Match获得分组信息
+    print match.group()
+
+### 输出 ###
+# hello
+</code></pre><p><strong>re.compile(strPattern[, flag]):</strong></p>
+<p>这个方法是Pattern类的工厂方法，用于将字符串形式的正则表达式编译为Pattern对象。 第二个参数<code>flag</code>是匹配模式，取值可以使用按位或运算符’|’表示同时生效，比如re.I | re.M。另外，你也可以在regex字符串中指定模式，比如<code>re.compile(&#39;pattern&#39;, re.I | re.M)</code>与<code>re.compile(&#39;(?im)pattern&#39;)</code>是等价的。</p>
+<p>可选值有：</p>
+<ul>
+<li>I(re.IGNORECASE): 忽略大小写（括号内是完整写法，下同）</li>
+<li>M(MULTILINE): 多行模式，改变’^’和’$’的行为（参见上图）</li>
+<li>S(DOTALL): 点任意匹配模式，改变’.’的行为</li>
+<li>L(LOCALE): 使预定字符类 \w \W \b \B \s \S 取决于当前区域设定</li>
+<li>U(UNICODE): 使预定字符类 \w \W \b \B \s \S \d \D 取决于unicode定义的字符属性</li>
+<li><p>X(VERBOSE): 详细模式。这个模式下正则表达式可以是多行，忽略空白字符，并可以加入注释。以下两个正则表达式是等价的：</p>
+<pre><code>a = re.compile(r&quot;&quot;&quot;\d +  # the integral part
+                   \.    # the decimal point
+                   \d *  # some fractional digits&quot;&quot;&quot;, re.X)
+b = re.compile(r&quot;\d+\.\d*&quot;)
+</code></pre></li>
+</ul>
+<p>re提供了众多模块方法用于完成正则表达式的功能。这些方法可以使用Pattern实例的相应方法替代，唯一的好处是少写一行re.compile()代码，但同时也无法复用编译后的Pattern对象。这些方法将在Pattern类的实例方法部分一起介绍。如上面这个例子可以简写为：</p>
+<pre><code>m = re.match(r&apos;hello&apos;, &apos;hello world!&apos;)
+print m.group()
+</code></pre><p>re模块还提供了一个方法escape(string)，用于将string中的正则表达式元字符如*/+/?等之前加上转义符再返回，在需要大量匹配元字符时有那么一点用。</p>
+<h3 id="Match"><a href="#Match" class="headerlink" title="Match"></a>Match</h3><p>Match对象是一次匹配的结果，包含了很多关于此次匹配的信息，可以使用Match提供的可读属性或方法来获取这些信息。</p>
+<p>属性：</p>
+<ul>
+<li>string: 匹配时使用的文本。</li>
+<li>re: 匹配时使用的Pattern对象。</li>
+<li>pos: 文本中正则表达式开始搜索的索引。值与Pattern.match()和Pattern.seach()方法的同名参数相同。</li>
+<li>endpos: 文本中正则表达式结束搜索的索引。值与Pattern.match()和Pattern.seach()方法的同名参数相同。</li>
+<li>lastindex: 最后一个被捕获的分组在文本中的索引。如果没有被捕获的分组，将为None。</li>
+<li>lastgroup: 最后一个被捕获的分组的别名。如果这个分组没有别名或者没有被捕获的分组，将为None。</li>
+</ul>
+<p>方法：</p>
+<ul>
+<li>group([group1, …]): </li>
+</ul>
+<p>获得一个或多个分组截获的字符串；指定多个参数时将以元组形式返回。group1可以使用编号也可以使用别名；编号0代表整个匹配的子串；不填写参数时，返回group(0)；没有截获字符串的组返回None；截获了多次的组返回最后一次截获的子串。</p>
+<ul>
+<li>groups([default]): </li>
+</ul>
+<p>以元组形式返回全部分组截获的字符串。相当于调用group(1,2,…last)。default表示没有截获字符串的组以这个值替代，默认为None。</p>
+<ul>
+<li>groupdict([default]): </li>
+</ul>
+<p>返回以有别名的组的别名为键、以该组截获的子串为值的字典，没有别名的组不包含在内。default含义同上。</p>
+<ul>
+<li>start([group]): </li>
+</ul>
+<p>返回指定的组截获的子串在string中的起始索引（子串第一个字符的索引）。group默认值为0。</p>
+<ul>
+<li>end([group]): </li>
+</ul>
+<p>返回指定的组截获的子串在string中的结束索引（子串最后一个字符的索引+1）。group默认值为0。</p>
+<ul>
+<li>span([group]): </li>
+</ul>
+<p>返回(start(group), end(group))。</p>
+<ul>
+<li>expand(template): </li>
+</ul>
+<p>将匹配到的分组代入template中然后返回。template中可以使用\id或\g<id>、\g<name>引用分组，但不能使用编号0。\id与\g<id>是等价的；但\10将被认为是第10个分组，如果你想表达\1之后是字符’0’，只能使用\g<1>0。</1></id></name></id></p>
+<pre><code>import re
+m = re.match(r&apos;(\w+) (\w+)(?P&lt;sign&gt;.*)&apos;, &apos;hello world!&apos;)
+
+print &quot;m.string:&quot;, m.string
+print &quot;m.re:&quot;, m.re
+print &quot;m.pos:&quot;, m.pos
+print &quot;m.endpos:&quot;, m.endpos
+print &quot;m.lastindex:&quot;, m.lastindex
+print &quot;m.lastgroup:&quot;, m.lastgroup
+
+print &quot;m.group(1,2):&quot;, m.group(1, 2)
+print &quot;m.groups():&quot;, m.groups()
+print &quot;m.groupdict():&quot;, m.groupdict()
+print &quot;m.start(2):&quot;, m.start(2)
+print &quot;m.end(2):&quot;, m.end(2)
+print &quot;m.span(2):&quot;, m.span(2)
+print r&quot;m.expand(r&apos;\2 \1\3&apos;):&quot;, m.expand(r&apos;\2 \1\3&apos;)
+
+### output ###
+# m.string: hello world!
+# m.re: &lt;_sre.SRE_Pattern object at 0x016E1A38&gt;
+# m.pos: 0
+# m.endpos: 12
+# m.lastindex: 3
+# m.lastgroup: sign
+# m.group(1,2): (&apos;hello&apos;, &apos;world&apos;)
+# m.groups(): (&apos;hello&apos;, &apos;world&apos;, &apos;!&apos;)
+# m.groupdict(): {&apos;sign&apos;: &apos;!&apos;}
+# m.start(2): 6
+# m.end(2): 11
+# m.span(2): (6, 11)
+# m.expand(r&apos;\2 \1\3&apos;): world hello!
+</code></pre><p>###Pattern<br>Pattern对象是一个编译好的正则表达式，通过Pattern提供的一系列方法可以对文本进行匹配查找。</p>
+<p>Pattern不能直接实例化，必须使用re.compile()进行构造。</p>
+<p>Pattern提供了几个可读属性用于获取表达式的相关信息：</p>
+<ul>
+<li>pattern: 编译时用的表达式字符串。</li>
+<li>flags: 编译时用的匹配模式。数字形式。</li>
+<li>groups: 表达式中分组的数量。</li>
+<li><p>groupindex: 以表达式中有别名的组的别名为键、以该组对应的编号为值的字典，没有别名的组不包含在内。</p>
+<pre><code>import re
+p = re.compile(r&apos;(\w+) (\w+)(?P&lt;sign&gt;.*)&apos;, re.DOTALL)
+
+print &quot;p.pattern:&quot;, p.pattern
+print &quot;p.flags:&quot;, p.flags
+print &quot;p.groups:&quot;, p.groups
+print &quot;p.groupindex:&quot;, p.groupindex
+
+### output ###
+# p.pattern: (\w+) (\w+)(?P&lt;sign&gt;.*)
+# p.flags: 16
+# p.groups: 3
+# p.groupindex: {&apos;sign&apos;: 3}
+</code></pre></li>
+</ul>
+<p>实例方法[ | re模块方法]：</p>
+<ul>
+<li>match(string[, pos[, endpos]]) | re.match(pattern, string[, flags]): </li>
+</ul>
+<p>这个方法将从string的pos下标处起尝试匹配pattern；如果pattern结束时仍可匹配，则返回一个Match对象；如果匹配过程中pattern无法匹配，或者匹配未结束就已到达endpos，则返回None。</p>
+<p>pos和endpos的默认值分别为0和len(string)；re.match()无法指定这两个参数，参数flags用于编译pattern时指定匹配模式。 </p>
+<p>注意：这个方法并不是完全匹配。当pattern结束时若string还有剩余字符，仍然视为成功。想要完全匹配，可以在表达式末尾加上边界匹配符’$’。 </p>
+<p>示例参见2.1小节。</p>
+<ul>
+<li>search(string[, pos[, endpos]]) | re.search(pattern, string[, flags]): </li>
+</ul>
+<p>这个方法用于查找字符串中可以匹配成功的子串。从string的pos下标处起尝试匹配pattern，如果pattern结束时仍可匹配，则返回一个Match对象；若无法匹配，则将pos加1后重新尝试匹配；直到pos=endpos时仍无法匹配则返回None。 </p>
+<p>pos和endpos的默认值分别为0和len(string))；re.search()无法指定这两个参数，参数flags用于编译pattern时指定匹配模式。 </p>
+<pre><code># encoding: UTF-8 
+import re 
+
+# 将正则表达式编译成Pattern对象 
+pattern = re.compile(r&apos;world&apos;) 
+
+# 使用search()查找匹配的子串，不存在能匹配的子串时将返回None 
+# 这个例子中使用match()无法成功匹配 
+match = pattern.search(&apos;hello world!&apos;) 
+
+if match: 
+    # 使用Match获得分组信息 
+    print match.group() 
+
+### 输出 ### 
+# world
+</code></pre><ul>
+<li>split(string[, maxsplit]) | re.split(pattern, string[, maxsplit]): </li>
+</ul>
+<p>按照能够匹配的子串将string分割后返回列表。maxsplit用于指定最大分割次数，不指定将全部分割。 </p>
+<pre><code>import re
+
+p = re.compile(r&apos;\d+&apos;)
+print p.split(&apos;one1two2three3four4&apos;)
+
+### output ###
+# [&apos;one&apos;, &apos;two&apos;, &apos;three&apos;, &apos;four&apos;, &apos;&apos;]
+</code></pre><ul>
+<li>findall(string[, pos[, endpos]]) | re.findall(pattern, string[, flags]): </li>
+</ul>
+<p>搜索string，以列表形式返回全部能匹配的子串。 </p>
+<pre><code>import re
+
+p = re.compile(r&apos;\d+&apos;)
+print p.findall(&apos;one1two2three3four4&apos;)
+
+### output ###
+# [&apos;1&apos;, &apos;2&apos;, &apos;3&apos;, &apos;4&apos;]
+</code></pre><ul>
+<li>finditer(string[, pos[, endpos]]) | re.finditer(pattern, string[, flags]): </li>
+</ul>
+<p>搜索string，返回一个顺序访问每一个匹配结果（Match对象）的迭代器。 </p>
+<pre><code>import re
+
+p = re.compile(r&apos;\d+&apos;)
+for m in p.finditer(&apos;one1two2three3four4&apos;):
+    print m.group(),
+
+### output ###
+# 1 2 3 4
+</code></pre><ul>
+<li>sub(repl, string[, count]) | re.sub(pattern, repl, string[, count]): </li>
+</ul>
+<p>使用repl替换string中每一个匹配的子串后返回替换后的字符串。</p>
+<p>当repl是一个字符串时，可以使用\id或\g<id>、\g<name>引用分组，但不能使用编号0。 </name></id></p>
+<p>当repl是一个方法时，这个方法应当只接受一个参数（Match对象），并返回一个字符串用于替换（返回的字符串中不能再引用分组）。<br>count用于指定最多替换次数，不指定时全部替换。 </p>
+<pre><code>import re
+
+p = re.compile(r&apos;(\w+) (\w+)&apos;)
+s = &apos;i say, hello world!&apos;
+
+print p.sub(r&apos;\2 \1&apos;, s)
+
+def func(m):
+    return m.group(1).title() + &apos; &apos; + m.group(2).title()
+
+print p.sub(func, s)
+
+### output ###
+# say i, world hello!
+# I Say, Hello World!
+</code></pre><ul>
+<li>subn(repl, string[, count]) |re.sub(pattern, repl, string[, count]): </li>
+</ul>
+<p>返回 (sub(repl, string[, count]), 替换次数)。 </p>
+<pre><code>import re
+
+p = re.compile(r&apos;(\w+) (\w+)&apos;)
+s = &apos;i say, hello world!&apos;
+
+print p.subn(r&apos;\2 \1&apos;, s)
+
+def func(m):
+    return m.group(1).title() + &apos; &apos; + m.group(2).title()
+
+print p.subn(func, s)
+
+### output ###
+# (&apos;say i, world hello!&apos;, 2)
+# (&apos;I Say, Hello World!&apos;, 2)
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/10/正则表达式/" data-id="cj64upq5500c8lrae6jp4tzm4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/正则/">正则</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-TCP和UDP的工作过程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/05/TCP和UDP的工作过程/" class="article-date">
+  <time datetime="2015-02-05T08:41:11.000Z" itemprop="datePublished">2015-02-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/TCP-IP/">TCP/IP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/05/TCP和UDP的工作过程/">TCP和UDP的工作过程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##TCP和UDP的工作过程<br>UDP的工作过程是简单的，仅仅将用户数据封装到一个IP数据报中发送到目的地而已，而不关注其他方面。</p>
+<p>TCP却是一个极其复杂的协议，以下只是冰山一角</p>
+<p>###建立连接的三次握手</p>
+<ul>
+<li>主动方发送（SYN J），进入SYN_SENT状态</li>
+<li>被动方收到（SYN J），并往回发送（SYN K, ACK J+1），进入SYN_RCVD状态</li>
+<li>主动方收到（SYN K, ACK J+1），并往回发送（ACK K+1），进入ESTABLISHED状态</li>
+<li>被动方收到（ACK K+1），也进入ESTABLISHED状态<br>以上过程如下图所示：</li>
+</ul>
+<p><img src="/img/establish.png" alt="establish"></p>
+<p>注意到在TCP三次握手的过程中，服务器有这么一条：</p>
+<blockquote>
+<p>被动方收到（SYN J），并往回发送（SYN K, ACK J+1），进入SYN_RCVD状态</p>
+</blockquote>
+<p>服务器进入<code>SYN_RCVD</code>状态（此时连接称为半开连接）后，应当期待再收到一个ACK。 如果超时未收到客户端的<code>ACK</code>，服务器将重发<code>（SYN K, ACK J+1）</code>。 于是，就有一种叫做<code>SYN Flooding</code>的攻击方式。 攻击者向服务器高速发送<code>（SYN J）</code>（而且可以将SYN分节中的IP地址设为随机数）， 并且在随后收到服务器回复的<code>（SYN K, ACK J+1）</code>之后不再继续回复， 这使得服务器上存在很多的半开连接，这些半开连接一般情况下会持续63秒 （在Linux下，默认重试次数为5次，重试的间隔时间从1s开始每次都翻倍，5次的重试时间间隔为1s, 2s, 4s, 8s, 16s，第5次发出后还要等32s才知道第5次也超时了，所以，总共需要 1s + 2s + 4s+ 8s+ 16s + 32s = 63s，TCP才会把断开这个连接）。 它的危害有两方面，一方面自然是占用了服务器的资源；另一方面是填充了半开连接的队列，使得合法的SYN分节无法排队。</p>
+<p>根据SYN Flooding的攻击原理，它的防范主要有以下措施：</p>
+<ol>
+<li>过滤掉最大嫌疑攻击的IP或IP段</li>
+<li>将tcp_synack_retries设为0，表示回应第二个握手包（SYN K, ACK J+1）给客户端后，如果收不到ACK，不进行重试，加快回收“半开连接”。</li>
+<li>将tcp_max_syn_backlog参数根据内存情况适当调大，该参数一般指的是维护的半开连接的队列的长度（不同OS不一样）。</li>
+<li>设置tcp_abort_on_overflow选项，处理不过来就直接拒绝掉。</li>
+</ol>
+<p>###断开连接的四次握手</p>
+<ol>
+<li>主动方发送<code>（FIN M）</code>，进入<code>FIN_WAIT_1</code>状态</li>
+<li>被动方收到<code>（FIN M）</code>，并往回发送<code>（ACK M+1）</code>，进入<code>CLOSE_WAIT</code>状态</li>
+<li>主动方收到<code>（ACK M+1）</code>，进入<code>FIN_WAIT_2</code>状态</li>
+<li>被动方发送<code>（FIN N）</code>，进入<code>LAST_ACK</code>状态</li>
+<li>主动方收到<code>（FIN N）</code>，并往回发送<code>（ACK N+1）</code>，进入<code>TIME_WAIT</code>状态</li>
+<li>被动方收到<code>（ACK N+1）</code>，进入<code>CLOSED</code>状态</li>
+<li>主动方在<code>TIME_WAIT</code>状态中超时后，进入<code>CLOSED</code>状态</li>
+</ol>
+<p>以上过程如下图所示：</p>
+<p><img src="/img/close.png" alt="close"></p>
+<p>其实就是2次，只不过TCP是全双工的，所以，发送方和接收方都需要FIN和ACK。 只不过，有一方是被动的，所以看上去就成了所谓的4次挥握手。</p>
+<p>注意到最后有这么一条涉及到TIME_WAIT的状态</p>
+<blockquote>
+<p>主动方在TIME_WAIT状态中超时后，进入CLOSED状态</p>
+</blockquote>
+<p>需要经过一个<code>TIME_WAIT</code>超时的状态而不是直接进入<code>CLOSED</code>的原因有两个，一是确保有足够的时间让对端收到<code>ACK</code>，二是允许老的分节在网络中慢慢的消逝。</p>
+<p>然而，如果系统中存在着大量的短链接，那么大量的<code>TIME_WAIT</code>状态就会成为系统的累赘。网上一些资料提到的<code>tcp_tw_reuse</code>和<code>tcp_tw_recycle</code>选项来解决这个问题，但是最好还是别乱用，好像<code>coolshell</code>中有提到过，可能会出很多诡异的问题。还可以调整<code>tcp_max_tw_buckets</code>，当并发的<code>TIME_WAIT</code>过多时，会直接把多的给destory掉，然后在日志里打一个警告。引用一句“其实，<code>TIME_WAIT</code>表示的是你主动断连接，所以，这就是所谓的<code>&quot;no zuo， no die&quot;</code>。</p>
+<p>##TCP连接在“非正常”情况下的工作状况</p>
+<p>###服务器进程终止</p>
+<p>首先，服务器进程终止（收到<code>SIGKILL</code>信号）。作为进程中止处理的工作之一，该进程所有打开着的描述符将被关闭，这会导致向对端（客户端）发送（<code>FIN N</code>），而客户端则回复（<code>ACK N+1</code>），这就是TCP断开连接的前半部分。</p>
+<p>然后，此时客户端收到（<code>FIN N</code>）并不意味着连接断开（虽然在这个例子中，确实断开了），只是意味着服务器不再向客户端发送数据了，客户端还可以继续向服务器发送数据。如果此时客户端还继续向服务器发送数据，服务器TCP将发现之前的打开该套接字的进程已终止，于是回应一个<code>RST</code>。客户端在收到这个<code>RST</code>之前的read操作将会返回EOF，在收到这个<code>RST</code>后的read操作会返回<code>ECONNRESET</code>错误，在收到这个<code>RST</code>后的write操作会使当前进程收到<code>SIGPIPE</code>信号。</p>
+<p>以上过程如下图所示：</p>
+<p><img src="/img/server_kill.png" alt="server_kill"></p>
+<p>###服务器主机崩溃</p>
+<p>服务器主机崩溃的意思是，没有任何预兆，来不及在网络上发送任何消息，主机就无法工作了。这种情况等价于直接切断网络，或者通俗的说，可以直接拔掉网线来模拟这一情况。</p>
+<p>这时，如果客户端向服务器发送数据，后调用read操作，TCP会一直等待服务器的ACK确认消息，并且不断的超时重传（按照Berkeley的实现，重传12次，共需9分钟），直到到达重传次数，返回<code>ETIMEOUT</code>错误。如果是由中间的路由器判定服务器主机不可达，响应“destination unreasonable”的ICMP消息，将返回<code>EHOSTUNREACH</code>和<code>ENETUNREACH</code>错误。</p>
+<p>###服务器主机崩溃后重启</p>
+<p>重启之后的服务器已经丢失了之前的TCP信息，所以即使收到了客户端发来的TCP数据，也会回复<code>RST</code>，往后的情况和“服务器主机崩溃”中提到的类似。</p>
+<p>###服务器主机关机</p>
+<p>Unix系统关机时，init进程通常会给其他进程发送<code>SIGTERM</code>信号，然后等待10s左右给仍在运行的进程发送<code>SIGKILL</code>信号。所以如果进程不捕获<code>SIGTERM</code>信号，则将由<code>SIGKILL</code>信号终止，和“服务器进程终止”中提到的类似。</p>
+<p>##参考链接<br><a href="http://coolshell.cn/articles/11564.html" target="_blank" rel="external">TCP 的那些事儿（上）</a></p>
+<p><a href="http://coolshell.cn/articles/11609.html" target="_blank" rel="external">TCP 的那些事儿（下）</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/05/TCP和UDP的工作过程/" data-id="cj64uppxx0029lraebz1g8wor" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/">c</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/socket/">socket</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-另一个Lambda表达式教程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/05/另一个Lambda表达式教程/" class="article-date">
+  <time datetime="2015-02-05T07:21:06.000Z" itemprop="datePublished">2015-02-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/05/另一个Lambda表达式教程/">另一个Lambda表达式教程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>转载自<a href="http://python.jobbole.com/80954/" target="_blank" rel="external">这里</a>，原文在<a href="http://www.blog.pythonlibrary.org/2010/07/19/the-python-lambda/" target="_blank" rel="external">这里</a></p>
+<p>有很多Python的<a href="http://docs.python.org/tutorial/controlflow.html#lambda-forms" target="_blank" rel="external">lambda</a>教程[1]。最近我偶然发现一个，真挺有用的。是Mike Driscoll在<a href="http://www.blog.pythonlibrary.org/" target="_blank" rel="external">Mouse VS Python</a> 博客上的<a href="http://www.blog.pythonlibrary.org/2010/07/19/the-python-lambda/" target="_blank" rel="external">关于lambda的讨论</a>) 。</p>
+<p>当我刚开始学习Python，最容易困惑的概念之一，是lambda语句。我敢肯定，<br>其他新的程序员也对它很困惑…</p>
+<p>Mike的讨论非常好：清晰，直接，且含有实用的示例。它帮助我终于领会了lambda，并导致我写的另一篇lambda教程。</p>
+<p>一个用来构造函数的工具 基本上，Python的lambda是用于构造函数（或更精确地说，函数对象）的工具。这意味着，Python有两个构造函数的工具：def和lambda。</p>
+<p>下面是一个例子。您可以以正常的方式用def构造一个函数，就像这样：</p>
+<pre><code>def square_root(x): return math.sqrt(x)
+</code></pre><p>或者你可以用lambda</p>
+<pre><code>square_root = lambda x: math.sqrt(x)
+</code></pre><p>下面是lambda的其他的一些有趣的例子：</p>
+<pre><code>sum = lambda x, y:   x + y   #  def sum(x,y): return x + y
+out = lambda   *x:   sys.stdout.write(&quot; &quot;.join(map(str,x)))
+lambda event, name=button8.getLabel(): self.onButton(event, name)
+</code></pre><p>lambda的好处在哪里？ 已经困扰我有很长一段时间的一个问题是：lambda的好处在哪里？为什么我们需要lambda？</p>
+<p>答案是： 我们并不需要lambda，我们不用它一样可以做所有的事情。但是… 在特定的情况下，很是方便 - 它让编写代码更容易一些，而且编写的代码更整洁。</p>
+<p>什么样的情况？ 好，其中一个情况是，我们需要一个简单的一次性功能：将被只使用一次函数。</p>
+<p>通常，写函数有两个目的：(a)以减少代码重复（b）模块化代码。</p>
+<ul>
+<li>如果你的应用程序在不同的地方包含重复的代码块，那么你就可以把代码拷贝到一个函数，给函数名，然后 – 使用该函数名 - 在代码中的不同位置调用它。</li>
+<li>如果你有一个代码块执行一个明确的操作 - 但真的是冗长、粗糙、破坏程序的可读性，那么你可以把那么长的粗糙的所有代码变成一个函数。</li>
+</ul>
+<p>但是，假设你需要创建一个函数，将只被使用一次 - 只从应用程序中的一个地方调用。好吧，首先，你不需要给函数的名称。它可以是“匿名的”。而且你可以把它定义在你想使用它的地方。这就是lambda是非常有用的时候。</p>
+<p>但是，但是，但是…你会说。</p>
+<ul>
+<li><p>首先是，为什么你想要一个只调用一次函数？排除原因（a）。</p>
+</li>
+<li><p>一个lambda的函数体只能包含单个表达式。这意味着，lambda表达式必须很短。排除了原因（b）。</p>
+</li>
+</ul>
+<p>创造一个短的匿名函数可能的原因是什么？</p>
+<p>那么，考虑一下代码片段，使用lambda来定义一个Tkinter的GUI界面按钮的行为。 （这个例子是来自Mike的教程。）</p>
+<pre><code>frame = tk.Frame(parent)
+frame.pack()
+
+btn22 = tk.Button(frame, 
+        text=&quot;22&quot;, command=lambda: self.printNum(22))
+btn22.pack(side=tk.LEFT)
+
+btn44 = tk.Button(frame, 
+        text=&quot;44&quot;, command=lambda: self.printNum(44))
+btn44.pack(side=tk.LEFT)
+</code></pre><p>这里要记住的一点是，tk.Button需要一个函数对象作为参数传递给该函数的参数。该函数对象将是它（按钮）点击按钮时调用的函数。基本上，该函数指定了点击该按钮时，GUI会做什么。</p>
+<p>因此，我们必须通过函数参数传递一个函数对象到一个按钮。并注意 – 因为不同的按钮做不同的事情 - 我们需要为每个按钮对象提供不同的函数对象。每个函数将只使用一次。 所以，尽管我们可以这样写</p>
+<pre><code>def __init__(self, parent):
+    &quot;&quot;&quot;Constructor&quot;&quot;&quot;
+    frame = tk.Frame(parent)
+    frame.pack()
+
+    btn22 = tk.Button(frame, 
+        text=&quot;22&quot;, command=self.buttonCmd22)
+    btn22.pack(side=tk.LEFT)
+
+    btn44 = tk.Button(frame, 
+        text=&quot;44&quot;, command=self.buttonCmd44)
+    btn44.pack(side=tk.LEFT)
+
+def buttonCmd22(self):
+    self.printNum(22)
+
+def buttonCmd44(self):
+    self.printNum(44)
+</code></pre><p>这样写更容易（且更清楚）</p>
+<pre><code>def __init__(self, parent):
+    &quot;&quot;&quot;Constructor&quot;&quot;&quot;
+    frame = tk.Frame(parent)
+    frame.pack()
+
+    btn22 = tk.Button(frame, 
+        text=&quot;22&quot;, command=lambda: self.printNum(22))
+    btn22.pack(side=tk.LEFT)
+
+    btn44 = tk.Button(frame, 
+        text=&quot;44&quot;, command=lambda: self.printNum(44))
+    btn44.pack(side=tk.LEFT)
+</code></pre><p>当一个GUI程序有这样的代码，该按钮对象需要“call back”到被提供给作为其命令的函数对象。 因此，我们可以说，lambda的最常见的用途之一是在GUI框架，如Tkinter和wxPython中写“回调（callback）”，。</p>
+<p>这一切似乎很简单。所以… 为什么lambda如此难以理解？ 我能想到四个原因:</p>
+<p>首先Lambda难以理解，因为：一个lambda只能用一个表达式：什么是表达式？</p>
+<p>很多人想知道这个问题的答案。如果你在Google上搜索了一下，你会看到很多的帖子，“在Python中，表达式和语句之间的区别是什么？”</p>
+<p>一个很好的答案是，表达式返回（或计算结果为）值，而语句则没有。不幸的是，在Python中表达式也可以是一个语句，这种情况很容易造成糊涂。 – 赋值语句就像 A = B = 0，Python支持链式赋值。 （Python不是C）</p>
+<p>很多情况下在当人们问这个问题时，他们真正想知道的是：什么样的情况下可以放入lambda，什么情况下不可以？ 而对于这个问题，我觉得遵循一些简单的规则就足够了。</p>
+<ul>
+<li>如果它不返回一个值，它不是一个表达式，不能放入一个lambda。</li>
+<li>如果你能想象它在赋值语句中放在等号的右边，那它是一个表达式，可以放进一个lambda。</li>
+</ul>
+<p>利用这些规则意味着：</p>
+<ol>
+<li>赋值语句不能在lambda中使用。在Python中，赋值语句不返回任何东西，甚至没有None（null）。</li>
+<li>如数学运算，字符串操作，列表解析等都是一个lambda。</li>
+<li>函数调用是表达式。可以在lambda中放置函数调用，并将参数传递给该函数。这样就在一个新的匿名函数中封装了原函数调用（参数其他内容）。</li>
+<li>在Python3，print成了一个函数，所以在Python3+，print（…）可以在lambda中使用。</li>
+<li>即使函数是返回None，就像在Python3print函数，可以在一个lambda中使用。</li>
+<li><p>[条件表达式]，它是在Python2.5中引入，是表达式（而不是仅仅是一个语法不同的if / else语句）。它们返回一个值，并且可以在一个lambda使用。</p>
+<pre><code>lambda: a if some_condition() else b
+lambda x: ‘big’ if x &gt; 100 else ‘small’
+</code></pre></li>
+</ol>
+<p>难以理解的第二个原因是：一个lambda只有一个表达式：为什么？为什么只有一个？为什么不能多表达式？为什么不能是语句？</p>
+<p>对于一些开发人员来说，这个问题的意思是为什么Python的lambda语法如此怪异？对于其他人，尤其是那些有Lisp的背景的，这个问题是指为什么Python的lambda这么残废？为什么不像Lisp的lambda那么强大？</p>
+<p>答案是很复杂，它涉及Python语法的“pythonicity”。lambda是一个相对较晚加入Python的。它加入的时候，Python语法已经固定下来了。在这种情况下，语法的lambda必须用“Pythonic”的方式硬塞进一个已经建立好的Python语法中。导致可以在lambda表达式上来完成一些事情有一定的局限性。</p>
+<p>坦率地说，我仍然认为lambda语法看起来有点怪异。尽管那样，但是Guido解释了为什么lambda的语法是不会改变的。 Python不会成为Lisp。</p>
+<p>难以理解的第三个原因是：：lambda通常被描述为一种工具，用于创建函数，但lambda语句中不含有返回语句。</p>
+<p>在某种意义上，return语句隐含在lambda中。lambda规范必须包含只有一个表达式，表达式必须返回一个值，由lambda创建一个匿名函数隐式地返回表达式的返回值。这非常有意义。</p>
+<p>还是 - 我想缺乏一个明确的return语句使得很难理解lambda，或者至少很难迅速理解。</p>
+<p>难以理解的第四个原因是在lambda教程中通常会用作为创建匿名函数来引入lambda，其实最常见的lambda用途是用于创建匿名过程。</p>
+<p>在编程的上古时期，我们就将子程序区分为两种不同的形式：过程和函数。过程是用来做事情的，并没有返回任何东西。函数是用于计算和返回值。函数和过程之间的差异已经成为一些编程语言的一部分了。在Pascal，例如，程序和函数是不同的关键字。</p>
+<p>在大多数现代语言中，语言的语法中不再区分过程和函数。 例如Python的函数，可以像过程，函数，或两者兼而有之。（不是完全理想的）结果是一个Python函数总是被称为“函数”，即使它是本质上充当过程。</p>
+<p>虽然过程和函数之间的区别已经基本消失的语言结构中，当思考有关程序如何工作的时候我们仍然时常用它。例如，当我读一个程序的源代码，并看到一些函数F，我揣摩F是做什么的。我经常可以把它归类到一个过程或函数 - 我会对自己说“F的目的是做这个的”，或“F的目的是计算和返回等这个和这个的”。</p>
+<p>所以现在我想我们可以明白为什么lambda的许多解释是难以理解。 First of all, the Python language itself masks the distinction between a function and a procedure. 首先，Python语言本身模糊了函数和过程的区别。</p>
+<p>第二，大多数教程介绍把lambda作为创建匿名函数的工具来介绍，其主要目的是要计算并返回结果。在大多数教程看到（这个包含）的第一个例子展示了如何编写一个lambda来返回值，x的平方根。</p>
+<p>但是，这不是lambda最常用的方式，不是当他们在Google上搜索“python lambda教程”的时候要找的。对于lambda最常见的用途是创建匿名的过程，在GUI回调中使用。在这些用例中，我们不关心什么lambda返回什么，我们关心它做了什么。</p>
+<p>这就解释了为什么典型的Python程序员难以理解大多数的lambda说明。因为他尝试学习如何编写一些GUI框架的代码：Tkinter，wxPython。运行这些lambda，想理解他们。Google“python lambda教程”。他发现那些以例子开始的教程是完全不适合他。</p>
+<p>所以，如果你是这样的程序员 - 本教程是给你写的。我希望它能帮助到你。对不起，我们在本教程的结尾看到了这点，而不是开头。我们希望有一天，有人会写一个lambda教程，而不是以这种方式开头</p>
+<ul>
+<li>lambda是一个用来构造匿名函数的工具</li>
+</ul>
+<p>而以这样的句子开始：</p>
+<ul>
+<li>lambda是一个用来构造回调的工具</li>
+</ul>
+<p>所以你需要有它。另一个lambda教程。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/05/另一个Lambda表达式教程/" data-id="cj64upq4h00avlraeccvxi3rk" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-十个我希望早点知道的python方法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/05/十个我希望早点知道的python方法/" class="article-date">
+  <time datetime="2015-02-05T06:38:37.000Z" itemprop="datePublished">2015-02-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/05/十个我希望早点知道的python方法/">十个我希望早点知道的python方法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文在<a href="http://nbviewer.ipython.org/github/Prooffreader/Misc_ipynb/blob/master/top_10_python_idioms.ipynb" target="_blank" rel="external">这里</a></p>
+<p>##在Python 2中使用Python 3式的输出<br>Python 2与Python 3不兼容，这让我不知道该选择哪个版本的Python。最终我选择了Python 2，因为当时许多我需要用的库都与Python 3不兼容。</p>
+<p>但实际上，日常使用中最大的版本差异是输出（print）和除法行为。现在我在Python 2的代码中都用import from future来导入Python 3的输出和除法。现在我用到的几乎所有库都支持Python 3，因此会很快迁移到Python 3中。</p>
+<pre><code>mynumber = 5
+
+print &quot;Python 2:&quot;
+print &quot;The number is %d&quot; % (mynumber)
+print mynumber / 2,
+print mynumber // 2
+
+from __future__ import print_function
+from __future__ import division
+
+print(&apos;nPython 3:&apos;)
+print(&quot;The number is {}&quot;.format(mynumber))
+print(mynumber / 2, end=&apos; &apos;)
+print(mynumber // 2)
+
+输出：
+Python 2:
+The number is 5
+2 2
+
+Python 3:
+The number is 5
+2.5 2
+</code></pre><p>##enumerate(list)<br>很明显，迭代列表时，应该同时迭代其中的元素及其索引，但在很长一段时间内，我都尴尬的使用计数变量或切片。</p>
+<pre><code>mylist = [&quot;It&apos;s&quot;, &apos;only&apos;, &apos;a&apos;, &apos;model&apos;]
+
+for index, item in enumerate(mylist):
+    print(index, item)
+
+输出：
+0 It&apos;s
+1 only
+2 a
+3 model
+</code></pre><p>##链式比较操作符<br>由于我以前使用的是静态语言（在这些语言中该用法有二义性），从来没有将两个比较操作符放在一个表达式中。在许多语言中，4 &gt; 3 &gt; 2会返回False，因为4 &gt; 3的结果是布尔值，而True &gt; 2将得出False。</p>
+<pre><code>mynumber = 3
+
+if 4 &gt; mynumber &gt; 2:
+    print(&quot;Chained comparison operators work! n&quot; * 3)
+
+输出：
+Chained comparison operators work!
+Chained comparison operators work!
+Chained comparison operators work!
+</code></pre><p>##collections.Counter<br>Python的集合库看上去是最好的。在计算需要集合中元素的个数时，StackOverflow找到的答案是创建有序字典，但我坚持使用一个代码片段来创建字典，计算结果中元素出现的频率。直到有一天，我发现可以用collections.deque。</p>
+<pre><code>from collections import Counter
+from random import randrange
+import pprint
+
+mycounter = Counter()
+
+for i in range(100):
+    random_number = randrange(10)
+    mycounter[random_number] += 1
+
+for i in range(10):
+    print(i, mycounter[i])
+
+输出：
+0 10
+1 10
+2 13
+3 6
+4 6
+5 11
+6 10
+7 14
+8 12
+9 8
+</code></pre><p>##字典推导</p>
+<p>Python开发者的一个重要标志就是理解列表推导，但最终我发现字典推导也很有用，特别是在交换字典的键和值的时候。</p>
+<pre><code>my_phrase = [&quot;No&quot;, &quot;one&quot;, &quot;expects&quot;, &quot;the&quot;, &quot;Spanish&quot;, &quot;Inquisition&quot;]
+my_dict = {key: value for value, key in enumerate(my_phrase)}
+print(my_dict)
+reversed_dict = {value: key for key, value in my_dict.items()}
+print(reversed_dict)
+
+输出：
+{&apos;Inquisition&apos;: 5, &apos;No&apos;: 0, &apos;expects&apos;: 2, &apos;one&apos;: 1, &apos;Spanish&apos;: 4, &apos;the&apos;: 3}
+{0: &apos;No&apos;, 1: &apos;one&apos;, 2: &apos;expects&apos;, 3: &apos;the&apos;, 4: &apos;Spanish&apos;, 5: &apos;Inquisition&apos;}
+</code></pre><p>##用subprocess执行shell命令</p>
+<pre><code>import subprocess
+output = subprocess.check_output(&apos;dir&apos;, shell=True)
+print(output)
+</code></pre><p>注意，用os库完成这个特定命令比用subprocess更好。我只想有一个大家都熟悉的命令。同时，一般来说，在subprocess中使用shell=True参数是非常糟糕的主意，在这里使用这个参数仅仅是为了能在一个IPython notebook单元中放置命令的输出。不要自己使用这个参数！下面是用os模块执行shell命令</p>
+<pre><code>import os
+os.system(&apos;dir&apos;)
+</code></pre><p>注意，这里的<code>dir</code>命令会立刻在shell中输出，不能够保存到文件(变量)中，如果想要保存到变量中，可以使用popen：</p>
+<pre><code>import os
+output = os.popen(&apos;dir&apos;)
+print output.read()
+</code></pre><p>##字典的.get()和.iteritems()方法<br>字典的get()方法可以设置默认值，当用get()查找的键不存在时，返回方法中的默认值参数是很有用的。与列表中的enumerate()相同，可以用键值元组迭代字典中的元素。<br>    my_dict = {‘name’: ‘Lancelot’, ‘quest’: ‘Holy Grail’, ‘favourite_color’: ‘blue’}</p>
+<pre><code>print(my_dict.get(&apos;airspeed velocity of an unladen swallow&apos;, &apos;African or European?n&apos;))
+
+for key, value in my_dict.iteritems():
+    print(key, value, sep=&quot;: &quot;)
+
+输出：
+African or European?
+
+quest: Holy Grail
+name: Lancelot
+favourite_color: blue
+</code></pre><p>如果要用for迭代输出字典，就要用到字典的<code>iteritems()</code>方法，这个方法在python3.x中已经废除了，取代的是<code>items()</code>方法，<code>items()</code>方法在python2.x中也存在</p>
+<p>##用于交换元素的元组解包<br>在VB中，每当需要交换两个变量时，都要用要一个愚蠢的临时变量：c = a; a = b; b = c</p>
+<pre><code>a = &apos;Spam&apos;
+b = &apos;Eggs&apos;
+
+print(a, b)
+
+a, b = b, a
+print(a, b)
+
+输出：
+Spam Eggs
+Eggs Spam
+</code></pre><p>##内省工具Introspection tools<br>我知道dir()方法，我本以为help()方法和IPython中的?魔法命令是一样的，但help()的功能更强大。</p>
+<pre><code>my_dict = {&apos;That&apos;: &apos;an ex-parrot!&apos;}
+
+help(my_dict)
+
+输出：
+Help on dict object:
+
+class dict(object)
+ | dict() -&gt; new empty dictionary
+ | dict(mapping) -&gt; new dictionary initialized from a mapping object&apos;s
+ | (key, value) pairs
+ | dict(iterable) -&gt; new dictionary initialized as if via:
+ | d = {}
+ | for k, v in iterable:
+ | d[k] = v
+ | dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
+ | in the keyword argument list. For example: dict(one=1, two=2)
+ |
+ | Methods defined here:
+ |
+ | __cmp__(...)
+ | x.__cmp__(y) &lt;==&gt; cmp(x,y)
+ |
+ | __contains__(...)
+ | D.__contains__(k) -&gt; True if D has a key k, else False
+ |
+ | __delitem__(...)
+ | x.__delitem__(y) &lt;==&gt; del x[y]
+ |
+ | __eq__(...)
+ | x.__eq__(y) &lt;==&gt; x==y
+ |
+
+[TRUNCATED FOR SPACE]
+
+ | 
+ | update(...)
+ | D.update([E, ]**F) -&gt; None. Update D from dict/iterable E and F.
+ | If E present and has a .keys() method, does: for k in E: D[k] = E[k]
+ | If E present and lacks .keys() method, does: for (k, v) in E: D[k] = v
+ | In either case, this is followed by: for k in F: D[k] = F[k]
+ |
+ | values(...)
+ | D.values() -&gt; list of D&apos;s values
+ |
+ | viewitems(...)
+ | D.viewitems() -&gt; a set-like object providing a view on D&apos;s items
+ |
+ | viewkeys(...)
+ | D.viewkeys() -&gt; a set-like object providing a view on D&apos;s keys
+ |
+ | viewvalues(...)
+ | D.viewvalues() -&gt; an object providing a view on D&apos;s values
+ |
+ | ----------------------------------------------------------------------
+ | Data and other attributes defined here:
+ |
+ | __hash__ = None
+ |
+ | __new__ =
+ | T.__new__(S, ...) -&gt; a new object with type S, a subtype of T
+</code></pre><p>##PEP-8兼容的字符串连接<br>PEP8是Python编码样式指南。撇开其他的不看，PEP8要求每行不能超过80个字符，超过的部分要换行并缩进。</p>
+<p>可以通过反斜杠、带逗号“,”的圆括号“()”、或者额外的加号“+”来完成换行。但对于多行字符串，这些解决方案都不够优雅。Python有个多行字符串记号，即三个引号，但这样无法换行后保持缩进。</p>
+<p>还有一个方法，那就是不带逗号的圆括号。我不知道为什么这种方式能工作，但能用就行。</p>
+<pre><code>my_long_text = (&quot;We are no longer the knights who say Ni! &quot;
+                &quot;We are now the knights who say ekki-ekki-&quot;
+                &quot;ekki-p&apos;tang-zoom-boing-z&apos;nourrwringmm!&quot;)
+print(my_long_text)
+
+输出：
+We are no longer the knights who say Ni! We are now the knights who say ekki-ekki-ekki-p&apos;tang-zoom-boing-z&apos;nourrwringmm!
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/05/十个我希望早点知道的python方法/" data-id="cj64upq4d00aslrael1fd6dki" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-scrapy的一些知识点" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/04/scrapy的一些知识点/" class="article-date">
+  <time datetime="2015-02-04T03:23:27.000Z" itemprop="datePublished">2015-02-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/scrapy/">scrapy</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/04/scrapy的一些知识点/">scrapy的一些知识点</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li><p>###运行spider，将爬取到的信息用JSON形式存到scraped_data.json文件中</p>
+<pre><code>scrapy crawl my_spider -o scraped_data.json
+</code></pre></li>
+<li><p>###在scrapy shell里面打印返回的html</p>
+<pre><code>response.body
+</code></pre></li>
+<li><p>###创建一个Spider，我们必须继承<code>scrapy.Spider</code>类(或者别的爬虫类)，并且定义以下3个属性</p>
+<ul>
+<li>name：用于区别Spider。 该名字必须是唯一的，您不可以为不同的Spider设定相同的名字。</li>
+<li>start_urls：包含了Spider在启动时进行爬取的url列表。 因此，第一个被获取到的页面将是其中之一(每个url都会被爬取)。 <code>后续的URL则从初始的URL获取到的数据中提取</code>。</li>
+<li>parse() 是spider的一个方法。 被调用时，<code>每个初始URL完成下载后生成的 Response 对象将会作为唯一的参数传递给该函数</code>。 该方法负责解析返回的数据(response data)，提取数据(生成item)以及生成需要进一步处理的URL的 Request 对象。parse只是初始url的回调函数，可以定义别的回调函数来处理后序的链接。</li>
+</ul>
+</li>
+<li><p>###scrapy shell</p>
+<pre><code>scrapy shell &quot;http://www.dmoz.org/Computers/Programming/Languages/Python/Books/&quot;
+</code></pre><blockquote>
+<p>当您在终端运行Scrapy时，请一定记得给url地址加上<code>引号</code>，否则包含参数的url(例如 &amp; 字符)会导致Scrapy运行失败。</p>
+</blockquote>
+</li>
+<li><p>###Item 对象是自定义的python字典。 您可以使用标准的字典语法来获取到其每个字段的值。(字段即是我们之前用Field赋值的属性):</p>
+<pre><code>&gt;&gt;&gt; item = DmozItem()
+&gt;&gt;&gt; item[&apos;title&apos;] = &apos;Example title&apos;
+&gt;&gt;&gt; item[&apos;title&apos;]
+&apos;Example title&apos;
+</code></pre></li>
+<li><p>###<code>scrapy.cfg</code> 存放的目录被认为是 项目的根目录 。该文件中包含python模块名的字段定义了项目的设置</p>
+</li>
+<li><h3 id="Link-Extractors-是用于从网页-scrapy-http-Response-中抽取会被follow的链接的对象。"><a href="#Link-Extractors-是用于从网页-scrapy-http-Response-中抽取会被follow的链接的对象。" class="headerlink" title="Link Extractors 是用于从网页(scrapy.http.Response )中抽取会被follow的链接的对象。"></a>Link Extractors 是用于从网页(scrapy.http.Response )中抽取会被follow的链接的对象。</h3><pre><code>scrapy.contrib.linkextractors import LinkExtractor
+</code></pre></li>
+<li><p>###log服务<br>Scrapy提供了log功能。您可以通过 scrapy.log 模块使用。当前底层实现使用了 Twisted logging ，不过可能在之后会有所变化。</p>
+</li>
+<li><p>###使用FormRequest.from_response()方法模拟用户登录<br>通常网站通过 <input type="hidden"> 实现对某些表单字段（如数据或是登录界面中的认证令牌等）的预填充。 使用Scrapy抓取网页时，如果想要预填充或重写像用户名、用户密码这些表单字段， 可以使用 FormRequest.from_response() 方法实现。下面是使用这种方法的爬虫例子:</p>
+<pre><code>import scrapy
+
+class LoginSpider(scrapy.Spider):
+    name = &apos;example.com&apos;
+    start_urls = [&apos;http://www.example.com/users/login.php&apos;]
+
+    def start_requests(self):
+        return scrapy.FormRequest.from_response(
+            &quot;url&quot;,
+            formdata={&apos;username&apos;: &apos;john&apos;, &apos;password&apos;: &apos;secret&apos;},
+            callback=self.after_login
+        )
+
+    def after_login(self, response):
+        # check login succeed before going on
+        if &quot;authentication failed&quot; in response.body:
+            self.log(&quot;Login failed&quot;, level=log.ERROR)
+            return
+
+        # continue scraping with authenticated session...
+</code></pre></li>
+<li><p>###Scrapy是以广度优先还是深度优先进行爬取的呢<br>默认情况下，Scrapy使用 LIFO 队列来存储等待的请求。简单的说，就是 深度优先顺序 。深度优先对大多数情况下是更方便的。如果您想以 广度优先顺序 进行爬取，你可以设置以下的设定:</p>
+<pre><code>DEPTH_PRIORITY = 1
+SCHEDULER_DISK_QUEUE = &apos;scrapy.squeue.PickleFifoDiskQueue&apos;
+SCHEDULER_MEMORY_QUEUE = &apos;scrapy.squeue.FifoMemoryQueue&apos;
+</code></pre></li>
+<li><p>###避免被禁止(ban)<br>有些网站实现了特定的机制，以一定规则来避免被爬虫爬取。 与这些规则打交道并不容易，需要技巧，有时候也需要些特别的基础。 如果有疑问请考虑联系 商业支持 。</p>
+<p>  下面是些处理这些站点的建议(tips):</p>
+<ul>
+<li>使用user agent池，轮流选择之一来作为user agent。池中包含常见的浏览器的user agent(google一下一大堆)</li>
+<li>禁止cookies(参考 COOKIES_ENABLED)，有些站点会使用cookies来发现爬虫的轨迹。</li>
+<li>设置下载延迟(2或更高)。参考 DOWNLOAD_DELAY 设置。</li>
+<li>如果可行，使用 <a href="http://www.googleguide.com/cached_pages.html" target="_blank" rel="external">Google cache</a> 来爬取数据，而不是直接访问站点。</li>
+<li>使用IP池。例如免费的 <a href="https://www.torproject.org/" target="_blank" rel="external">Tor</a>项目 或付费服务(<a href="http://proxymesh.com/" target="_blank" rel="external">ProxyMesh</a>)。</li>
+<li>使用高度分布式的下载器(downloader)来绕过禁止(ban)，您就只需要专注分析处理页面。这样的例子有: <a href="http://crawlera.com/" target="_blank" rel="external">Crawlera</a></li>
+</ul>
+</li>
+<li><p>###禁止重试<br>对失败的HTTP请求进行重试会减慢爬取的效率，尤其是当站点响应很慢(甚至失败)时， 访问这样的站点会造成超时并重试多次。这是不必要的，同时也占用了爬虫爬取其他站点的能力。</p>
+<p>  禁止重试:</p>
+<pre><code>RETRY_ENABLED = False
+</code></pre></li>
+<li>###使用相对Xpaths</li>
+</ul>
+<p>如果你使用嵌套的选择器，并使用起始为 <code>/</code> 的XPath，那么该XPath将对文档使用绝对路径，而且对于你调用的 Selector 不是相对路径。</p>
+<p>比如，假设你想提取在 <code>&lt;div&gt;</code>元素中的所有 <code>&lt;p&gt;</code>元素。首先，你将先得到所有的 <code>&lt;div&gt;</code> 元素:</p>
+<pre><code>&gt;&gt;&gt; divs = response.xpath(&apos;//div&apos;)
+</code></pre><p>开始时，你可能会尝试使用下面的错误的方法，<strong>因为它其实是从整篇文档中，而不仅仅是从那些 <code>&lt;div&gt;</code> 元素内部提取所有的 <code>&lt;p&gt;</code>元素</strong>:</p>
+<pre><code>&gt;&gt;&gt; for p in divs.xpath(&apos;//p&apos;):  # this is wrong - gets all &lt;p&gt; from the whole document
+...     print p.extract()
+</code></pre><p>下面是比较合适的处理方法(注意 .//p XPath的点前缀):</p>
+<pre><code>&gt;&gt;&gt; for p in divs.xpath(&apos;.//p&apos;):  # extracts all &lt;p&gt; inside
+...     print p.extract()
+</code></pre><p>另一种常见的情况将是提取所有直系 <code>&lt;p&gt;</code>的结果:</p>
+<pre><code>&gt;&gt;&gt; for p in divs.xpath(&apos;p&apos;):
+...     print p.extract()
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/04/scrapy的一些知识点/" data-id="cj64upq2r0085lraen2a11xui" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scrapy/">scrapy</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/page/14/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/16/">__('next') &raquo;</a>
+  </nav>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

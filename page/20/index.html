@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/page/20/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-free函数解析" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/22/free函数解析/" class="article-date">
+  <time datetime="2015-01-22T13:29:18.000Z" itemprop="datePublished">2015-01-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/c/">c</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/22/free函数解析/">free函数解析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##代码</p>
+<pre><code>#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+#include&lt;string.h&gt;
+void GetMemory(char **p,int num)
+{
+    *p = malloc(num);
+}
+int main()
+{
+    char *str = NULL;   
+    GetMemory(&amp;str, 100);   
+
+    strcpy(str, &quot;hello&quot;);   
+    free(str);
+
+    if (str != NULL)
+    {
+        strcpy(str, &quot;world&quot;);
+    }   
+    printf(&quot;\n str is %s&quot;, str);
+    getchar();
+}
+</code></pre><p>打印出来的结果是：str is world</p>
+<p>##解释<br>本题主要考察了对free的理解，总结一下就是3点</p>
+<ul>
+<li>free只是释放了malloc所申请的内存，并不改变指针的值</li>
+<li>由于指针所指向的内存已经被释放，所以其它代码有机会改写其中的内容，相当于该指针从此指向了自己无法控制的地方，也称为野指针</li>
+<li>为了避免失误，最好在free之后，将指针指向NULL</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/22/free函数解析/" data-id="cj64upq0m0055lraeab2aosx5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/">c</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-操作系统的一些知识" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/22/操作系统的一些知识/" class="article-date">
+  <time datetime="2015-01-22T13:27:23.000Z" itemprop="datePublished">2015-01-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/面试/">面试</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/22/操作系统的一些知识/">操作系统的一些知识</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li>目录在linux文件系统中是以怎样的形式存在的：文件</li>
+<li>通过文件名存取文件时，文件系统内部的操作过程是通过:文件名在目录中查找对应的i节点，通过i节点存取文件数据。</li>
+<li>关于文件block，以下说法是正确的：<ul>
+<li>文件系统中存储的最小单位是块（Block）</li>
+<li>block越大，inode越少，适合存储文件大而少的文件系统</li>
+<li>block块可以用mkfs.ext3 -b来制定块的大小</li>
+<li>每个block最多存放一个文件，而当一个block存放不下的情况下，会占用下一个block</li>
+</ul>
+</li>
+<li>同一进程下的线程可以共享：<code>data section</code>，<code>file fd</code>，不可以共享：<code>stack</code>，<code>register set</code></li>
+<li>线程，进程，多任务：<ul>
+<li>线程是指进程内的一条执行线路，或者说是进程中可执行代码的单独单元，它是操作系统的基本调度单元。</li>
+<li>一个进程至少有一个线程，即主线程，也可以有多个线程协同工作。</li>
+<li>进程从主线程开始执行，进而可以创建一个或多个附加线程来执行该进程内的并发任务，这就是基于线程的多任务。</li>
+<li>线程和进程都可并发执行</li>
+<li>在linux系统中，线程是处理器调度的基本单位</li>
+<li>线程的粒度小于进程，通常多线程比多进程并发性更高</li>
+</ul>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/22/操作系统的一些知识/" data-id="cj64upq5100c2lraetvsugvhm" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/">c</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/操作系统/">操作系统</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-LRU" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/22/LRU/" class="article-date">
+  <time datetime="2015-01-22T11:15:52.000Z" itemprop="datePublished">2015-01-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/算法/">算法</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/22/LRU/">LRU</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##概念分析<br>LRU(Least Recent Used):最近最少使用，就是将最近最少使用的页淘汰掉，替换为新的页。核心思想是：如果一个页最近被访问了，那他之后被访问的概率也高；如果一个页最近没有被访问，那他之后也不会被访问。这道理其实说不通哈，但是LRU算法确实解决页访问的效率问题。</p>
+<p>##原理<br>下面是一个应用LRU算法的例子的流程图</p>
+<p><img src="/img/LRU.png" alt="LRU"></p>
+<p>下面简单讲解一下(需要在这里说明一下,LRU一般采用<code>链表方式</code>实现,便于快速移动数据位置,虽然图中使用似乎是数组方式):</p>
+<ul>
+<li>一开始,缓存池是空的,缓存池中插入数据时不用担心容量不足的事情.因此这个过程就是类似队列的FIFO(但不止这些);</li>
+<li>在第5步将E插入到缓存池中后,缓存池已经满了(当然实际应用中不会让到达缓存池的尺寸,一般到70%左右就要考虑淘汰机制了);</li>
+<li>当第6步将E插入缓存池的时候,发现缓存池已经满了,LRU会将最早加入到缓存池的数据淘汰掉(A,实在不要意思啊);</li>
+<li>第7步,从缓存池中访问C,C被访问,从时间点上是最近最近访问的,将C移动到链表的头部(C侥幸暂时远离被淘汰的边缘);</li>
+<li>第8步,将G插入缓存池中,G处于链表头部,B不幸被淘汰.</li>
+</ul>
+<p>大致的过程就是这样,关于淘汰机制只是后面的三步中会用到,画出前面六步的过程只是说明LRU插入元素的方式.在这个图中,我想大家应该可以明白为什么使用链表,而不使用数组(链表的插入和删除的时间复杂度都是O(1)).</p>
+<p>##优劣分析</p>
+<p>###命中率<br>命中率较高,不过偶发性的情况对LRU的命中影响很大,同时也会引入很多数据污染</p>
+<p>###复杂度<br>实现起来较为简单.</p>
+<p>###存储成本<br>几乎没有空间上浪费.</p>
+<p>###缺陷<br>仅仅从最近使用时间上考虑淘汰算法,没有考虑缓存单元的使用频率,可能会淘汰一些仍有价值的单元.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/22/LRU/" data-id="cj64uppvv0011lraecme1vhu9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-在Python中正确使用Unicode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/21/在Python中正确使用Unicode/" class="article-date">
+  <time datetime="2015-01-21T13:23:49.000Z" itemprop="datePublished">2015-01-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/21/在Python中正确使用Unicode/">在Python中正确使用Unicode</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>正确处理文本，特别是正确处理Unicode。是个老生常谈的问题，有时甚至会难倒经验丰富的开发者。并不是因为这个问题很难，而是因为对软件中的文本，开发者没有正确理解一些关键概念及其表示方法。在StackOverflow上搜索关于 <a href="http://stackoverflow.com/search?q=unicodedecodeerror" target="_blank" rel="external">UnicodeDecodeError</a>相关的问题，可以看到很多人都有这样的误解。这些错误的概念可以追溯到Unicode出现之前。那时许多现今的开发者还没入职，也包括我自己。如果这些错误的概念没有散布开来，其实不是个问题。现在很多人都有这些错误概念，部分原因是因为有些非常流行的语言传播，甚至固化了这些错误概念，使得纠正起来反而变得很困难。</p>
+<p>根据对Unicode的支持情况，编程语言可以划分为4类：</p>
+<ul>
+<li>在Unicode出现或流行之前编写的语言。C和C++就属于这一类。这类语言对unicode的支持参差不齐。或没有内置到语言中，或很难正确的使用。因此开发者常常会用错。</li>
+<li>对Unicode支持稍好一点。这些语言在Unicode广泛流行后才出现的，但语言中对unicode的操作方式是严重错误的。虽然这些语言诞生较晚，但依然含有第一类语言中的所有缺点。以我的经验，其中代表语言就是PHP。尽管还有其他语言也同样糟糕。</li>
+<li>对Unicode支持基本正确，但有少数致命缺点的语言。这一类语言比较“现代”，且能理解Unicode，但依然无法让开发者正确的处理unicode，导致在这些语言中对unicode会出现一些严重不足。让我很沮丧的是，Python 2.x就属于这一类（下文会详细介绍）。</li>
+<li>能正确处理Unicode的语言。这些语言完全支持Unicode，可以用Unicode方便快速的完成任务，且不易出错。Java和.NET平台就属于这一类语言。<br>那么，Unicode到底是什么，我们在Unicode上犯了哪些错误？Joel这篇 <a href="http://www.joelonsoftware.com/articles/Unicode.html" target="_blank" rel="external">The absolute minimum every software developer absolutely, positively must know about unicode</a> 绝对是每个软件开发者必须阅读的文章。为了为简洁起见，以及照顾那些天生耐心不够的朋友，我会在本文中对其进行总结。</li>
+</ul>
+<p>##字符和字节</p>
+<p>基本事实是，若想正确的处理文本，就必须了解字符的抽象概念。不严谨的定义一下，字符表示的是文本中的单个符号。更重要的是，一个字符不是一个字节。我再强调一遍！一个字符不是一个字节！！！而且，一个字符有许多表示方法，不同的表示方法会使用不同的字节数。就像前面我说的那样，字符就是文本中最小的单元。</p>
+<p>Unicode以大家都认可的方式定义了一系列的字符。可以将Unicode理解成一个字符数据库，每个字符都与唯一的数字关联，称为code point。这样，英文大写字母A的codepoint是<font color="red"> <code>U+0041</code></font> 。而欧元符号的codepoint是 <font color="red"><code>U+20A0</code></font> ，其他类似。一个文本字符串就是这样一系列的codepoint，表示字符串中每个字符元素。</p>
+<p>当然，你迟早会需要储存和传输这些理论上的Unicode字符串。如果选择一种其他人可以理解的方式以字节方式进行表示，就可以以大家都理解的方式互相发送文本。这里就需要引入字符编码（encoding）。</p>
+<p>字符编码是在理想的字符和实际的字节表示方法之间的映射。这种映射无需面面俱到，即在某种编码中也许无法表示一些特定的字符。同时也无须为每个字符使用相同的内存空间，譬如某些字符使用单字节编码，而其他字符需要多个字节。</p>
+<p>由于同一个字符的字节表现形式不止一种。这意味着当遇到了一串字节，如果不知道使用的是什么编码，即使知道这些字节表示的是文本，也不知道是什么意思。所能做的就是猜使用的编码。简而言之，字节不是文本。即使忘了文中介绍的所有内容，也要记住这句话。为了读写文本，归根结底就是要知道其中使用的编码方式，不管是从约定、标识信息、或是其他方法得知。</p>
+<p>##Python是如何处理Unicode</p>
+<p>从这里开始介绍Python的Unicode支持。在Python的类型层次中，有3种不同的字符串类型：“unicode”，表示Unicode字符串（文本字符串）、“str”，表示字节字符串（二进制数据）；“basestring”。表示前两种字符串类型的父类。在我看来，Python在这里犯了一个错误，根据前面的定义，这让Python成为第三类语言，而没有成为第四类。</p>
+<p>我用了很长的篇幅苦口婆心的强调字节和字符在本质上是不同的东西，只有通过字符编码才能互相转换。但不幸的是，Python犯了两个互不相关的错误，轻轻松松的就会让你忘掉这些。</p>
+<p>第一个错误的严重性值得商榷：即将一串字节视为字符串。是否应该这样做还有争议。Java和,NET认为这样做是不对的，而其他一些语言却持有相反的态度。无论如何，你可能希望对文本进行某些操作，如正则匹配、字符串替代等。将这些操作应用到字节序列上都是没有意义的。而Python将字节序列作为另一种类型的字符串对待，允许在这两者上执行同样的操作。</p>
+<p>第二个错误的严重性大一些，Python试图在字节串和字符串之间以不为人所察觉的方式进行转化。在不同的转换中，在条件允许的情况下，Python会试图在字节串和unicode字符串直接进行转换。例如将字节串和unicode字节串连接到一起时。根据前面的介绍，不使用encoding就在不同类型之间进行转换是没有意义的。所以Python依赖一个“默认编码”，该编码由 <font color="red"><code>sys.setdefaultencoding()</code></font> 指定。在大多数平台上，默认的是ASCII编码。但对于所有转换，使用这种编码几乎都是错误的。如果不手动指定编码就调用 <font color="red"><code>str()</code></font> 或 <font color="red"><code>unicode()</code></font> ，或是函数以字符串作为参数，但传递的是其他类型的参数时，都会使用这个默认编码。</p>
+<p>走出这个unicode困境的一个解决办法是，调用<font color="red"><code>sys.setdefaultencoding()</code></font> 将默认的编码设置为真正会用到的编码。但这样仅仅是将问题隐藏起来，虽然这样刚开始能解决一些文本处理问题。但缺乏实际可行性，因为许多应用，特别是网络应用，在不同的地方会使用不同的文本编码。</p>
+<p>正确的解决方法是修改代码，以正确的方式处理文本。下面是一些应该做到的指导性意见：</p>
+<ul>
+<li>所有文本字符串都应该是unicode类型，而不是str类型。如果处理的是文本，而变量类型是str，这就是bug了！</li>
+<li>若要将字节串解码成字符串，需要使用正确的解码，即 <font color="red">var.decode(encoding) </font>（如， <font color="red"><code>var.decode(&#39;utf-8&#39;)</code></font> ）。将文本字符串编码成字节，使用var.encode(encoding)。</li>
+<li>永远不要对unicode字符串使用 <font color="red">str()</font> ，也不要在不指定编码的情况下就对字节串使用 <font color="red">unicode()</font> 。</li>
+<li>当应用从外部读取数据时，应将其视为字节串，即str类型的，接着调用 <font color="red"><code>.decode()</code></font> 将其解释成文本。同样，在将文本发送到外部时，总是对文本调用 <font color="red"><code>.encode()</code></font> 。</li>
+<li>如果代码中使用字符串字面值来表示文本，总是应该含有’u’前缀。但实际上，永远不要在代码中定义原始的字符串字面值。不管怎样，我自己是很讨厌这一条，也许其他人也和我一样吧。</li>
+</ul>
+<p>顺便说一句，Python 3修复了这些问题，可以正确的处理unicode和字符串，这样Python就完全位于第四类中了，更多信息参见官方的 更新说明 中关于Unicode的部分。</p>
+<p>希望这些内容能帮到你，如果对unicode到底是什么，如何处理unicode有疑惑的话，现在应该都清楚了。下次遇到 <font color="red"><code>UnicodeEncodeError</code></font> 或 <font color="red"><code>UnicodeDecodeError</code></font> 错误时，就应该完全知道问题出在哪，也知道如何去修复这些问题！</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/21/在Python中正确使用Unicode/" data-id="cj64upq4i00aylrae1owt7p8s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/unicode/">unicode</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-网络基础-一些小面试题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/21/网络基础-一些小面试题/" class="article-date">
+  <time datetime="2015-01-21T13:05:12.000Z" itemprop="datePublished">2015-01-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/面试/">面试</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/21/网络基础-一些小面试题/">网络基础-一些小面试题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li>get和post的区别<ul>
+<li>GET用于信息获取，而且应该是安全的和幂等的，POST表示可能修改变服务器上的资源的请求</li>
+<li>GET方式提交的数据最多只能是1024字节，理论上POST没有限制，可传较大量的数据</li>
+<li>POST提交，把提交的数据放置在是HTTP包的包体中，GET提交的数据会在地址栏中显示出来</li>
+</ul>
+</li>
+<li>一个广域网和一个局域网相连，需要的设备是<code>路由器</code>，<code>网关</code></li>
+<li>在Web开发中，如何实现会话的跟踪<ul>
+<li>隐藏表单域</li>
+<li>保存cookie</li>
+<li>URL复写</li>
+<li>session 机制</li>
+</ul>
+</li>
+<li>cookie和session<ul>
+<li>cookie数据存放在客户的浏览器上，session数据放在服务器上。</li>
+<li>session是针对每一个用户的，变量的值保存在服务器上，用一个sessionID来区分是哪个用户session变量</li>
+<li>保存这个session id的方式可以采用cookie</li>
+</ul>
+</li>
+<li>cookie 属性的一些描述：<ul>
+<li>expires: cookie的过期时间</li>
+<li>domain属性可以使多个web服务器共享cookie</li>
+<li>path属性指定与cookie关联在一起的网页</li>
+<li>secure: 如果secure 这个词被作为Set-Cookie 头的一部分，那么cookie 只能通过安全通道传输</li>
+</ul>
+</li>
+<li>dns域名劫持<ul>
+<li>如果dns把你想要解析的地方，解析为错误的另一个地方，这种现象叫做dns劫持</li>
+<li>如果知道该域名的真实IP地址，则可以直接用此IP代替域名后进行访问</li>
+<li>可以通过更换其它DNS解决域名劫持问题</li>
+</ul>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/21/网络基础-一些小面试题/" data-id="cj64upq8200falraez2qfr3kx" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/http/">http</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/网络基础/">网络基础</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-linux-一些小面试题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/21/linux-一些小面试题/" class="article-date">
+  <time datetime="2015-01-21T13:03:48.000Z" itemprop="datePublished">2015-01-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/面试/">面试</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/21/linux-一些小面试题/">linux-一些小面试题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li>创建.tar.gz的参数时c，解压的参数是x</li>
+<li><p>代码如下</p>
+<pre><code>int main 
+{
+    char *p = &quot;hello world&quot;;
+    return 0;   
+}
+</code></pre><p> p和”hello,world”存储在内存哪个区域？<br> 答：栈，只读存储区；根据C语言中的特性和定义，p是一个局部变量，而C语言中局部变量存在于栈中，”hello wrold”是一个字符串字面常量，因此存储于程序的只读存储区中，p在这里其实只是指向了”hello wrold”在只读存储区中的地址而已。</p>
+</li>
+<li>Linux中，一个端口能够接受tcp链接数量的理论上限是：无上限</li>
+<li>在OSI模型中，HTTP协议工作在第<code>6</code>层：<code>表示层</code>，交换机工作在第<code>2</code>层：<code>数据链路层</code></li>
+<li>查看linux系统运行了多长时间的命令是：uptime</li>
+<li>UNIX系统中进程由三部分组成：进程控制块，正文段和数据段。这意味着一个程序的正文与数据可以是分开的，这种分开的目的是为了<ul>
+<li>可共享内存</li>
+<li>可共享数据</li>
+<li>可重入</li>
+</ul>
+</li>
+<li>批处理操作系统的目的是：提高系统资源利用率</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/21/linux-一些小面试题/" data-id="cj64upq12005qlraej23wj55b" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/">c</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shell/">shell</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-找出N个整数中最大的K个数" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/21/找出N个整数中最大的K个数/" class="article-date">
+  <time datetime="2015-01-21T13:02:50.000Z" itemprop="datePublished">2015-01-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/算法/">算法</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/21/找出N个整数中最大的K个数/">找出N个整数中最大的K个数</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>顺序读取数组中的前K个元素，构建小根堆。</p>
+<p>小根堆的特点是根元素最小，并且一次调整（deleteMin）操作的时间复杂度为log(2,K)。</p>
+<p>接下来从数组中取下一个元素，如果该元素不比堆顶元素大，则丢弃；否则用它替换堆顶元素，然后调整小根堆。<br>当把数组中的元素全部读出来后，小根堆中保留的就是前K大的元素。</p>
+<p>初始建堆操作需要<code>K * log(2, k)</code>–这是最多的操作次数，从数组中读取后<code>N-K</code>个元素和堆顶元素一一比较，最坏的情况是每次都要替换堆顶元素，都要调整小根堆，复杂度为<code>(N-K) * log(2,K)</code>。总的复杂度为<code>O(N*log(2,K))</code>。</p>
+<p>###找出最小的k个数呢？<br>和最大的k个数的思想是相同的，只是这里建立的是是大根堆   </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/21/找出N个整数中最大的K个数/" data-id="cj64upq4x00bwlraeqifzl5ff" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/">c</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-fork" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/19/fork/" class="article-date">
+  <time datetime="2015-01-19T10:46:02.000Z" itemprop="datePublished">2015-01-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/c/">c</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/19/fork/">fork</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>###这是EMC的一道面试题</p>
+<pre><code>#include&lt;stdio.h&gt;
+#include&lt;unistd.h&gt;
+
+int main()
+{
+    fork() &amp;&amp; fork() || fork();  //这句话共创建几个进程？
+    return 0        
+}
+</code></pre><p>本题有两个知识点：</p>
+<ul>
+<li>对逻辑运算符的理解</li>
+<li>对fork的理解</li>
+</ul>
+<p>如果是<code>A &amp;&amp; B || C</code>这样一个表达式，运行情况是怎样的呢？</p>
+<ul>
+<li>A为0，不再判断B，直接判断C</li>
+<li>A不为0<ul>
+<li>B为0，继续判断C</li>
+<li>B为1，不再判断C</li>
+</ul>
+</li>
+</ul>
+<p>fork调用的奇妙之处在于他被调用一次，会返回两个值</p>
+<ul>
+<li>在父进程中，返回新创建进程的ID</li>
+<li>在子进程中，返回0</li>
+</ul>
+<p>下面来分析<code>fork() &amp;&amp; fork() || fork()</code>创建了几个进程</p>
+<p><img src="/img/fork.png" alt="fork"></p>
+<p>很明显，<code>fork() &amp;&amp; fork() || fork()</code>创建了<code>4</code>个进程</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/19/fork/" data-id="cj64upq0e0050lraez7f9iwr9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/">c</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-c语言const总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/18/c语言const总结/" class="article-date">
+  <time datetime="2015-01-18T14:17:30.000Z" itemprop="datePublished">2015-01-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/c/">c</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/18/c语言const总结/">c语言const总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>###前言：const意味着只读，凡修改了const不允许修改的东西，编译器报错</p>
+<p>##const修饰指针<br>const修饰指针可以分为如下的四种情况：</p>
+<pre><code>int b = 5;
+const int *a = &amp;b;          //情况1
+int const *a = &amp;b;          //情况2
+int* const a = &amp;b;          //情况3
+const int * const a = &amp;b;   //情况4
+</code></pre><p>而这四种情况，总结一下，其实只有两种情况：</p>
+<ul>
+<li>const位于<code>*</code>的左侧，则const是修饰指针所指向的变量，即指针指向为常量</li>
+<li>const位于<code>*</code>的右侧，const就是修饰指针本身，即指针本省是常量</li>
+</ul>
+<p><strong>本质</strong>：const在谁后面谁就不可修改，const在最前面则将其后移一位即可，二者等效</p>
+<p>所以<strong><em>情况1和情况2是相同的</em></strong>，都是指针所指向的内容为常量（const放在变量声明符的位置无关），这种情况下不允许通过指针改变指针指向的内容</p>
+<pre><code>int b = 5;
+const int *a = &amp;b;
+*a = 6;  //编译报错：错误：向只读位置‘*a’赋值
+</code></pre><p>如果想要改变*a的值怎么办呢？有两种方法</p>
+<pre><code>//方法一：改变b的值
+int b = 5；
+const int *a = &amp;b;
+b = 6;
+printf(&quot;%d&quot;, *a); //输出6
+
+
+//方法二：让*a指向别处
+int b = 5, c = 6;
+const int *a = &amp;b;
+a = &amp;c;
+printf(&quot;%d&quot;, *a);//输出6
+</code></pre><p>因为const int <em>a是说指针指向的内容为常量，指针本身并不是常量，所以可以不初始化<br>    const int </em>a; //正确</p>
+<p>情况3为指针本身为常量，这种情况下不能对指针本身的值进行更改，即指针初始化指向哪里，在指针的整个生命中都将指向那个地址，不会改变。但是指针指向的地址的内容不是常量。所以我们应该可以理解，情况3中的指针定义时必须初始化</p>
+<pre><code>int b = 5, c = 6;
+int *const a;  //在下面给a赋值时会出错：错误：向只读变量‘a’赋值
+int *const a = &amp;b;  //初始化
+*a = 6;  //正确，允许修改值
+printf(&quot;a new address is %d&quot;, a++); //编译出错：错误：令只读变量‘a’自增
+</code></pre><p>至于情况4，就是情况1和情况3的合体了，既不允许修改指针的值，也不允许修改指针指向的值</p>
+<p>##const修饰函数<br>如果以<code>指针传递</code>方式的函数返回值加const修饰，那么函数返回值（即指针）的内容不能被修改，该返回值只能被赋给加const修饰的同类型指针</p>
+<p>##同样都可以定义常量，const与#define相比有什么不同？<br>const相对于#define的有点在于：</p>
+<ul>
+<li>const常量有数据类型，而宏常量没有数据类型</li>
+<li>编译器可以对const常量进行类型安全检查，而对后者只进行字符替换，没有安全检查，而且在字符替换过程中可能会产生意想不到的错误（边际效应）</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/18/c语言const总结/" data-id="cj64uppyo0037lraexxmr7bp2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/">c</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-sizeof" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/18/sizeof/" class="article-date">
+  <time datetime="2015-01-18T14:16:44.000Z" itemprop="datePublished">2015-01-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/c/">c</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/18/sizeof/">sizeof</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>###下面是一道笔试题：</p>
+<pre><code>#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+#include&lt;string.h&gt;
+
+struct {
+    short a1;
+    short a2;
+    short a3;
+}A;
+
+struct {
+    long a1;
+    short a2;
+}B;
+
+int main()
+{
+    char *ss1 = &quot;0123456789&quot;;
+    char ss2[] = &quot;0123456789&quot;;
+    char ss3[100] = &quot;0123456789&quot;;
+    int ss4[100];
+    char q1[] = &quot;abc&quot;;
+    char q2[] = &quot;a\n&quot;;
+    char *q3 = &quot;a\n&quot;;
+    char *str1 = (char *)malloc(100);
+    void *str2 = (void *)malloc(100);
+
+    printf(&quot;%d &quot;, sizeof(ss1)); //ss1是指针
+    printf(&quot;%d &quot;, sizeof(ss2)); //ss2是数组，计算到&quot;\0&quot;的位置，因此是(10+1)
+    printf(&quot;%d &quot;, sizeof(ss3)); //在内存中预分配的空间大小，100*1
+    printf(&quot;%d &quot;, sizeof(ss4));
+    printf(&quot;%d &quot;, sizeof(q1));
+    printf(&quot;%d &quot;, sizeof(q2));
+    printf(&quot;%d &quot;, sizeof(q3));
+    printf(&quot;%d &quot;, sizeof(A));
+    printf(&quot;%d &quot;, sizeof(B));
+    printf(&quot;%d &quot;, sizeof(str1));
+printf(&quot;%d &quot;, sizeof(str2));
+
+    return 0;
+}
+</code></pre><p>在64位linux系统上此程序的输出为：</p>
+<pre><code>8 11 100 400 4 3 8 6 16 8 8
+</code></pre><p>在32位机上的输出为：</p>
+<pre><code>4 11 100 400 4 3 4 6 8 4 4 
+</code></pre><p>解释：32位机器上long和int都是4字节，64位机器上，long是8字节，int是4字节</p>
+<p>###sizeof和strlen之间的区别<br>接上面的例子分析：</p>
+<pre><code>strlen(ss3)
+//结果为10，strlen内部实现是用一个循环计算字符串的长度，直到&quot;\0&quot;为止
+strlen(ss4)
+//错误，strlen的参数只能是char *,且必须是以&quot;\0&quot;结尾的
+</code></pre><p>###总结</p>
+<ul>
+<li>sizeof操作符的结果类型时size_t，它在头文件中的typedef为unsigned int类型。该类型保证能容纳实现所建立的最大对象的字节大小</li>
+</ul>
+<p>###再来一题</p>
+<pre><code>int GetSize(int data[]) 
+{   
+    return sizeof(data); 
+}
+
+int _tmain(int argc, _TCHAR* argv[])    
+{   
+    int data1[] = {1, 2, 3, 4, 5};   
+    int size1 = sizeof(data1);        
+
+    int* data2 = data1;  
+    int size2 = sizeof(data2);           
+    int size3 = GetSize(data1);          
+    printf(&quot;%d, %d, %d&quot;, size1, size2, size3);   
+}
+</code></pre><blockquote>
+<p>输出:“20, 4, 4”。data1是一个数组，sizeof(data1)是求数组的大小。这个数组包含5个整数，每个整数占4字节，因此总共是20字节。data2声明为指针，尽管它指向了数组data1的第一个数字，但它的本质仍然是一个指针。在32位系统上，对任意指针求sizeof，得到的结果都是4。<strong><em>在C/C++中，当数组作为函数的参数进行传递时，数组就自动退化为同类型的指针。因此尽管函数GetSize的参数data被声明为数组，但它会退化为指针，size3的结果仍然是4</em></strong>。—《剑指offer》P37</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/18/sizeof/" data-id="cj64upq2v008elraemhx2tdq8" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/">c</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/page/19/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/21/">__('next') &raquo;</a>
+  </nav>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

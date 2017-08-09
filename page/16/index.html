@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/page/16/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-mongodb分布式集群架构" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/03/mongodb分布式集群架构/" class="article-date">
+  <time datetime="2015-02-03T08:47:08.000Z" itemprop="datePublished">2015-02-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/数据库/">数据库</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/03/mongodb分布式集群架构/">mongodb分布式集群架构</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文转载自<a href="mongodb分布式集群架构">这里</a></p>
+<p>##关于mongodb</p>
+<blockquote>
+<p>MongoDB是一个基于分布式文件存储的数据库。由C++语言编写。旨在为WEB应用提供可扩展的高性能数据存储解决方案。 MongoDB是一个介于关系数据库和非关系数据库之间的产品，是非关系数据库当中功能最丰富，最像关系数据库的。他支持的数据结构非常松散，是类似json的bjson格式，因此可以存储比较复杂的数据类型。Mongo最大的特点是他支持的查询语言非常强大，其语法有点类似于面向对象的查询语言，几乎可以实现类似关系数据库单表查询的绝大部分功能，而且还支持对数据建立索引。</p>
+</blockquote>
+<p>##mongodb分布式应用原理<br>&gt;<br>MongoDB集群包括一定数量的mongod（分片存储数据）、mongos（路由处理）、config server（配置节点）、clients（客户端）、arbiter（仲裁节点：为了选举某个分片存储数据节点那台为主节点）。</p>
+<p><img src="161802143.png" alt=""></p>
+<ol>
+<li>shards：一个shard为一组mongod，通常一组为两台，主从或互为主从，这一组mongod中的数据时相同的，具体可见《mongodb分布式之数据复制》。数据分割按有序分割方式，每个分片上的数据为某一范围的数据块，故可支持指定分片的范围查询，这同google的BigTable 类似。数据块有指定的最大容量，一旦某个数据块的容量增长到最大容量时，这个数据块会切分成为两块；当分片的数据过多时，数据块将被迁移到系统的其他分片中。另外，新的分片加入时，数据块也会迁移。</li>
+<li>mongos：可以有多个，相当于一个控制中心，负责路由和协调操作，使得集群像一个整体的系统。mongos可以运行在任何一台服务器上，有些选择放在shards服务器上，也有放在client 服务器上的。mongos启动时需要从config servers上获取基本信息，然后接受client端的请求，路由到shards服务器上，然后整理返回的结果发回给client服务器。</li>
+<li>config server：存储集群的信息，包括分片和块数据信息。主要存储块数据信息，每个config server上都有一份所有块数据信息的拷贝，以保证每台config server上的数据的一致性。</li>
+<li>shard key：为了分割数据集，需要制定分片key的格式，类似于用于索引的key格式，通常由一个或多个字段组成以分发数据，比如：{ name : 1 }{ _id : 1 }{ lastname : 1, firstname : 1 }{ tag : 1, timestamp : -1 }mongoDB的分片为有序存储(1为升序，-1为降序)，shard key相邻的数据通常会存在同一台服务（数据块）上。</li>
+</ol>
+<p>##mongodb分布式部署方式<br>服务器部署可以有多种方式。首先，每台config server、mongos、mongod都可以是单独的服务器，但这样会导致某些服务器的浪费，比如config server。下图为物理机共享的集群部署，不需要额外加机器。</p>
+<p><img src="162121526.png" alt=""></p>
+<p>当然也有其他的方案，比如把mongos部署在所有的mongod（server1-6）上，又或者在每个运用服务器（server7）上部署mongos。这样部署有个好处在于，appserver和mongos之间的通信建立在localhost interface上，减少了通信成本。当然，此乃官方说法，但本人有想法，尽管减少了appserver和mongos之间的通信成本，但mongos与mongod之间的通信成本却增加了，而且把mongos部署在appserver上并不是很利于sa管理，mongoDB应该是一个相对独立的系统，与应用的耦合度应该尽量降到最低，万一应用想要换数据库，也能多少减少些工作量。</p>
+<p>##mongodb分布式的安装</p>
+<ul>
+<li><p>下载</p>
+<pre><code>wget http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.0.4.tgz
+</code></pre></li>
+<li><p>安装</p>
+<pre><code>tar zxvf mongodb-linux-2.0.4.tgz
+cp -fr mongodb-linux-*2.0.4/* /data/mongodb/
+mkdir -p /data/mongodb/data/      #创建数据存储目录                      
+mkdir -p /data/mongodb/log/       #创建日志存储目录
+mkdir -p /data/mongodb/config/    #创建配置存储目录
+mkdir -p /data/mongodb/arbiter/   #创建仲裁节点存储目录
+</code></pre></li>
+<li><p>单机模式以及个参数说明</p>
+<pre><code>mongod --fork --bind_ip 127.0.0.1 --port 11811 --dbpath /data/mongodb/data --directoryperdb --logpath /data/mongodb/log/db1.log --logappend  --nohttpinterface
+netstat -ntlp|grep mongod
+</code></pre></li>
+</ul>
+<p>简单的参数说明：</p>
+<blockquote>
+<ul>
+<li>–logpath 日志文件路径 </li>
+<li>–master 指定为主机器  </li>
+<li>–slave 指定为从机器   </li>
+<li>–source 指定主机器的IP地址</li>
+<li>–pologSize 指定日志文件大小不超过64M.因为resync是非常操作量大且耗时，最好通过设置一个足够大的oplogSize来避免resync(默认的 oplog大小是空闲磁盘大小的5%)。</li>
+<li>–logappend 日志文件末尾添加</li>
+<li>–port 启用端口号</li>
+<li>–fork 在后台运行</li>
+<li>–only 指定只复制哪一个数据库</li>
+<li>–slavedelay 指从复制检测的时间间隔</li>
+<li>–auth 是否需要验证权限登录(用户名和密码)</li>
+<li>–noauth 不需要验证权限登录(用户名和密码)</li>
+</ul>
+</blockquote>
+<p>##集群模式mongos,mongod,configsvr<br>    1.Shard分片–第一组分片  192.168.200.226:<br>    /data/mongodb/bin/mongod –replSet rep1 –fork –port 11813 –maxConns 65535 –dbpath /data/mongodb/data –directoryperdb –logpath /data/mongodb/log/db.log –logappend –nohttpinterface</p>
+<pre><code>#启动rep1分片的一个数据节点
+/data/mongodb/bin/mongos --configdb 192.168.201.226:11812 --port 11811 --fork --chunkSize 256 --logpath /data/mongodb/log/ms.log   
+#启动路由节点，读取201.226上的配置节点的配置文件，（在配置节点启动后启动）
+/data/mongodb/bin/mongod --replSet rep1 --fork --port 11814 --dbpath /data/mongodb/arbiter --directoryperdb --logpath /data/mongodb/log/arbiter.log --logappend --nohttpinterface
+#启动分片的仲裁节点192.168.201.226:    
+/data/mongodb/bin/mongod --replSet rep1 --fork --port 11813 --maxConns 65535 --dbpath /data/mongodb/data --directoryperdb --logpath /data/mongodb/log/db.log --logappend --nohttpinterface
+#启动rep1分片的第二个数据节点
+/data/mongodb/bin/mongos --configdb 192.168.201.226:11812 --port 11811 --fork --chunkSize 256 --logpath /data/mongodb/log/ms.log
+#启动第二个路由节点 （在配置节点启动后启动）
+2.ConfigServer---   #启动config server     192.168.201.226:          
+/data/mongodb/bin/mongod --configsvr --dbpath /data/mongodb/config --port 11812 --fork --logpath /data/mongodb/log/mc.log
+#启动配置节点，注意配置节点应该优先启动，不然路由节点读取不到配置节点信息则会启动失败。
+3.Mongos路由---   #启动mongos，指定config server, chunkSize 256M   192.168.201.226:      
+/data/mongodb/bin/mongos --configdb 192.168.201.226:11812 --port 11811 --fork --chunkSize 256 --logpath /data/mongodb/log/ms.log
+#启动路由节点
+
+#由于机器有限，只配置了一个shard分片，该分片里有2个节点，新增加分片只需对应改replSet 名称即可。
+
+4.配置replSet: 连接任一mongod membersmongo 192.168.201.226:11813 config = {_id: &apos;rep1&apos;, members: [{_id: 0, host: &apos;192.168.200.226:11813&apos;, priority: 2},                     
+#priority 为定义优先级，默认为1，高优先级会被认为是主节点优先启用。{_id: 1, host: &apos;192.168.201.226:11813&apos;},{_id: 2, host: &apos;192.168.200.226:11814&apos;, arbiterOnly: true}]}   rs.initiate(config);   rs.status()
+
+5.连接mongos增加shard 80G   
+   mongo 192.168.201.226:11811/admin   show dbs   use admin   db.runCommand({addshard:&apos;rep1/192.168.201.226:11813,192.168.200.226:11813&apos;,maxsize:81920})   
+   db.runCommand({listshards:1})
+6.连接mongos增加创建test库和c1集合，并测试
+   mongo 192.168.201.226:11811/admin
+   db.runCommand({enablesharding:&apos;test&apos;})
+   printShardingStatus()
+   db.runCommand({shardcollection:&apos;test.auto_increment_id&apos;, key:{_id:1}, unique : true})
+   db.runCommand({shardcollection:&apos;test.c1&apos;, key:{_id:1}, unique : true})
+   for (var i = 1; i &lt;= 100; i++)db.c1.save({id:i,value1:&quot;1234567890&quot;,value2:&quot;1234567890&quot;,value3:&quot;1234567890&quot;,value4:&quot;1234567890&quot;})
+   db.c1.stats()
+   db.createCollection(&quot;cap_coll&quot;, {capped:true, size:100000, max:100});
+   db.mycoll.validate();
+
+7.检查： db.printCollectionStats()
+
+8.管理: mongo 127.0.0.1:11811
+    show dbs
+    use admin
+    show collections
+    db.serverStatus()
+    db.shutdownServer()
+    exit
+9.索引：db.product_data.ensureIndex({data_id: 1}, {unique: true,dropDups: true}); #创建索引
+       db.product_data.dropIndexes();#删除索引 
+</code></pre><blockquote>
+<p>至此，mongodb的分布式架构就架起来了，并且通过测试和log的分析，可看服务是否正常，下面就需要php客户端的支持，和程序的运行，之后加到监控里，就可以在线上部署使用了。                                      </p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/03/mongodb分布式集群架构/" data-id="cj64upq1t006elraeyr721cko" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-python的-classmethod-修饰符" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/03/python的-classmethod-修饰符/" class="article-date">
+  <time datetime="2015-02-03T06:37:00.000Z" itemprop="datePublished">2015-02-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/03/python的-classmethod-修饰符/">python的@classmethod 修饰符</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>通常情况下，如果我们要使用一个类的方法，那我们只能将一个类实体化成一个对象，进而调用对象使用方法。</p>
+<pre><code>class Hello(object):
+    def __init__:
+        ...
+
+    def print_hello(self):
+        print &quot;Hello&quot;
+</code></pre><p> 要用 print_hello() 就得：</p>
+<pre><code>hlo = Hello()
+hlo.print_hello()
+输出：Hello
+</code></pre><p>如果用了 @classmethod 就简单了：</p>
+<pre><code>class Hello(object):
+    def __init__:
+        ...
+
+    @classmethod
+    def print_hello(cls):
+        print &quot;Hello&quot;
+</code></pre><p>要用的话直接：</p>
+<pre><code>Hello.print_hello()
+Hello
+</code></pre><p>注意：@classmethod 仅仅适用于单独的，与类本身的数据结构无关函数，其实用了它的函数，与使用普通函数无异，甚至不能在参数里加入 self，如果要在其中使用类的数据结构，仍然需要将类实例化一次才可以，所以要小心使用。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/03/python的-classmethod-修饰符/" data-id="cj64upq2a007blraetcgu6fid" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-每天一个python小程序-7" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/03/每天一个python小程序-7/" class="article-date">
+  <time datetime="2015-02-03T06:34:54.000Z" itemprop="datePublished">2015-02-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/03/每天一个python小程序-7/">每天一个python小程序(7)--敏感词</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>敏感词文本文件 filtered_words.txt，里面的内容为以下内容，当用户输入敏感词语时，则打印出 Freedom，否则打印出 Human Rights。</p>
+<p>love</p>
+<p>sex</p>
+<p>jiangge</p>
+<p>bitch</p>
+</blockquote>
+<p>代码中有两种从txt文件中获取敏感词的方法，有一种被注释掉了，因为用这种方法获得的list最后会有一个空的字符串，导致下面find的时候一直会匹配成功，感兴趣的同学可以去掉注释试一下（同时需要注释掉注释下面的4行）</p>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
+
+def get_sensitive_word(filepath):
+    f = open(filepath, &apos;r&apos;)
+    #data = f.read()
+    #filt = data.split(&apos;\n&apos;) 这个方法得到的序列中最后有一个空的字符串，导致匹配一直成功
+    words = []
+    for word in f:
+        #strip删除字符序列，这里是删除word中的&apos;\n&apos;
+        words.append(word.strip(&apos;\n&apos;))
+    f.close()
+    return words
+
+def filter_word(words):
+    flag = False
+    text = raw_input(&apos;please input: &apos;)
+    for word in words:
+        if text.find(word) != -1:
+            flag = True
+
+    if flag:
+        print &apos;freedom&apos;
+    else:
+        print &apos;human rights&apos;
+
+if __name__ == &apos;__main__&apos;:
+    filepath = &apos;filtered_words.txt&apos;
+    words = get_sensitive_word(filepath)
+    filter_word(words)
+</code></pre><p>完整项目见<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.11" target="_blank" rel="external">这里</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/03/每天一个python小程序-7/" data-id="cj64upq5e00cvlraec3h7uch8" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-每天一个python小程序-6" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/02/每天一个python小程序-6/" class="article-date">
+  <time datetime="2015-02-02T15:16:22.000Z" itemprop="datePublished">2015-02-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/02/每天一个python小程序-6/">每天一个python小程序(6)--统计代码行数</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>有个目录，里面是你自己写过的程序，统计一下你写过多少行代码。包括空行和注释，但是要分别列出来。</p>
+</blockquote>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
+
+import re
+import os
+
+total = 0
+blank = 0
+comment = 0
+
+#要想使用全局变量，必须要用global来申明
+def count_code_lines(filename):
+    global total
+    global blank
+    global comment
+    f = open(filename)
+    lines = f.readlines()
+    total += len(lines)
+
+    pattern_blank = re.compile(r&apos;^\s*$&apos;)
+    pattern_comment = re.compile(r&apos;^\s*\#+&apos;)
+
+    for line in lines:
+        if pattern_blank.match(line):
+            blank += 1
+        elif pattern_comment.match(line):
+            comment += 1
+
+
+def walk_dir(file_path):
+    global total
+    global blank
+    global comment
+    #os.walk返回值为3元tupple，第一个是起始路径，第二个是起始下的文件夹，第三个是起始路径下的文件
+    for root, dirs, files in os.walk(file_path):
+        for file in files:
+            if file.lower().endswith(&apos;.py&apos;):
+                full_path = os.path.join(root, file)
+                count_code_lines(full_path)
+
+#在main函数里不要用global来申明全局变量
+if __name__ == &apos;__main__&apos;:
+    walk_dir(&apos;../&apos;)
+    print &apos;total line is %d, blank is %d, comment is %d&apos; % (total, blank, comment)
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/02/每天一个python小程序-6/" data-id="cj64upq5c00cslraeuhu9nb3c" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-每天一个python小程序-5" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/02/每天一个python小程序-5/" class="article-date">
+  <time datetime="2015-02-02T15:12:36.000Z" itemprop="datePublished">2015-02-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/02/每天一个python小程序-5/">每天一个python小程序(5)--找出最重要的单词</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>你有一个目录，放了你一个月的日记，都是 txt，为了避免分词的问题，假设内容都是英文，请统计出你认为每篇日记最重要的词。</p>
+</blockquote>
+<pre><code>#!/usr/bin/env python
+#encoding=utf-8
+
+import collections
+import re
+import os
+
+#这些单词在所有文章中都会频繁出现，不能看做最重要的词
+useless_words = (&apos;the&apos;, &apos;a&apos;, &apos;an&apos;, &apos;and&apos;, &apos;by&apos;, &apos;of&apos;, &apos;in&apos;, &apos;on&apos;, &apos;is&apos;, &apos;to&apos;)
+
+&apos;&apos;&apos;
+
+
+def get_important_word(file):
+    f = open(file)
+    word_counter = collections.Counter()
+
+    for line in f:
+        words = re.findall(&apos;\w+&apos;, line.lower())
+        word_counter.update(words)
+
+    f.close()
+    #按次序取出出现次序最多的词，和useless_words中的单词比较，如果在use_less表中，就取次一个高频的单词
+    most_important_word = word_counter.most_common(1)[0][0]
+    count = 2
+    while (most_important_word in useless_words):
+        most_important_word = word_counter.most_common(count)[count-1][0]
+        count += 1
+    num = word_counter.most_common(count)[count-1][1]
+    print &apos;the most important word in %s is %s, it appears %d times&apos; % (file, most_important_word, num)
+
+
+if __name__ == &apos;__main__&apos;:
+    filepath = &apos;diary&apos;
+    for dirpath, dirname, dirfiles in os.walk(filepath):
+        for file in dirfiles:
+            abspath = os.path.join(dirpath, file)
+            if os.path.isfile(abspath):
+                get_important_word(abspath)
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/02/每天一个python小程序-5/" data-id="cj64upq5b00cplraen9lywvot" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-每天一个python小程序-4" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/02/每天一个python小程序-4/" class="article-date">
+  <time datetime="2015-02-02T15:08:42.000Z" itemprop="datePublished">2015-02-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/02/每天一个python小程序-4/">每天一个python小程序(4)--统计单词频数</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>任一个英文的纯文本文件，统计其中每个单词出现的频数。</p>
+</blockquote>
+<p>这一题使用collections模块会非常简单</p>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
+
+import collections
+import re
+
+#增加统计单词总数和最长行
+def count_word(file_name):
+    f = open(file_name)
+
+    word_counter = collections.Counter()
+
+    #文件对象使用迭代器
+    for line in f:
+        words = re.findall(&apos;\w+&apos;, line.lower())
+        word_counter.update(words)
+
+    #迭代器对象只能遍历一次，欲再次遍历需要重现构建迭代器对象
+    f = open(file_name)
+    #计算单词总数 p206
+    word_sum = len([word for line in f for word in line.split()])
+
+
+    #最长行
+    f = open(file_name)
+    longest = max(len(line.split()) for line in f)
+
+    print &quot;the longest line&apos;s length is %d&quot; % longest
+    f.close()
+
+    return word_counter, word_sum
+
+if __name__ == &apos;__main__&apos;:
+    world_counter, word_sum = count_word(&apos;test.txt&apos;)
+    print &apos;there are %d words in this article&apos; % word_sum
+    #most_common打印出现次数最多的单词，这里most_common(3)表示出现次数最多的3个单词
+    for key,count in world_counter.most_common(3):
+        print &apos;%s: %d&apos; % (key, count)
+</code></pre><p>代码在<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.4" target="_blank" rel="external">这里</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/02/每天一个python小程序-4/" data-id="cj64upq5a00cmlraeynsu3bh8" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-每天一个python小程序-3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/02/每天一个python小程序-3/" class="article-date">
+  <time datetime="2015-02-02T15:04:29.000Z" itemprop="datePublished">2015-02-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/02/每天一个python小程序-3/">每天一个python小程序(3)--保存激活码</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>将<a href="http://michaelyou.github.io/2015/02/02/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AApython%E5%B0%8F%E7%A8%8B%E5%BA%8F-2/" target="_blank" rel="external">这一题</a>生成的 200 个激活码（或者优惠券）保存到 mongodb 非关系型数据库中</p>
+</blockquote>
+<p>python连接mongodb需要用到pymongo模块，对数据库操作和单独操作mongodb是一样的</p>
+<pre><code>#usr/bin/python
+#encoding=utf-8
+
+import pymongo
+import uuid
+#连接到mongodb,这里的mongodb在本地运行，默认监听27017端口
+connection = pymongo.Connection(&apos;localhost&apos;, 27017)
+#连接到指定数据库，不存在即创建
+db = connection.python_study
+#指定collection，不存在即创建
+collection = db.uuid
+
+for i in range(200):
+    #向指定的collection中插入数据
+    collection.insert({&quot;id&quot;: i, &quot;value&quot;: uuid.uuid4()})
+</code></pre><p>代码可以在<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.2" target="_blank" rel="external">这里</a>下载</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/02/每天一个python小程序-3/" data-id="cj64upq5800cflraefa43mwdr" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-每天一个python小程序-2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/02/每天一个python小程序-2/" class="article-date">
+  <time datetime="2015-02-02T14:58:51.000Z" itemprop="datePublished">2015-02-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/02/每天一个python小程序-2/">每天一个python小程序(2)--生成激活码</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>作为 Apple Store App 独立开发者，你要搞限时促销，为你的应用生成激活码（或者优惠券），使用 Python 如何生成 200 个激活码（或者优惠券）？</p>
+</blockquote>
+<p>本题主要是熟悉python的uuid模块，uuid生成有4个算法，这里采用的是uuid4</p>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
+import uuid
+
+def generate_activation_code(count):
+    code_list = []
+    for i in xrange(count):
+        code = str(uuid.uuid4()).replace(&apos;-&apos;,&apos;&apos;).upper()
+        #uuid4的算法有一定的重复概率，所以下面作了判断
+        if not code in code_list:
+            code_list.append(code)
+
+    return code_list
+
+if __name__ == &apos;__main__&apos;:
+    code_list = generate_activation_code(200)
+    for code in code_list:
+        print code
+</code></pre><p>代码可以在<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.1" target="_blank" rel="external">这里</a>下载</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/02/每天一个python小程序-2/" data-id="cj64upq5900cilraexxjygyat" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-每天一个python小程序-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/02/每天一个python小程序-1/" class="article-date">
+  <time datetime="2015-02-02T14:38:43.000Z" itemprop="datePublished">2015-02-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/02/每天一个python小程序-1/">每天一个python小程序(1)-修改QQ头像</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>将你的 QQ 头像（或者微博头像）右上角加上红色的数字，类似于微信未读信息数量那种提示效果。 类似于图中效果</p>
+</blockquote>
+<p><img src="/img/question1.png" alt="头像"></p>
+<p>本题用到的知识点主要是python的PIL模块，PIL是python中最常用的图像处理库</p>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
+
+from PIL import Image, ImageDraw, ImageFont
+
+def write_num_on_img(filePath, num):
+    img = Image.open(filePath)
+    #img.size返回一个元组(width, height)
+    size = img.size
+    draw = ImageDraw.Draw(img)
+    #colour设置数字的颜色，这里是红色
+    colour = (255, 0, 0)
+    ttfont = ImageFont.truetype(&apos;ahronbd.ttf&apos;, 50)
+    #关键函数，参数包括，文字的位置，内容，颜色，字体
+    draw.text((size[0]-30, 0), str(num), fill=colour, font=ttfont)
+    #显示一幅已载入的图像
+    img.show()
+    img.save(&apos;changed.jpg&apos;)
+
+if __name__ == &apos;__main__&apos;:
+    write_num_on_img(&quot;test.jpg&quot;, 4)
+</code></pre><p>代码可以在<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.0" target="_blank" rel="external">这里</a>下载</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/02/每天一个python小程序-1/" data-id="cj64upq5700cclraeigleqocu" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-纯代码学习twisted" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/01/纯代码学习twisted/" class="article-date">
+  <time datetime="2015-02-01T10:06:50.000Z" itemprop="datePublished">2015-02-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/twisted/">twisted</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/01/纯代码学习twisted/">纯代码学习twisted</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##响应connectionMade事件 </p>
+<pre><code>#encoding=utf-8
+#!/usr/bin/python
+&quot;&quot;&quot;
+在Protocol中响应connectionMade事件
+运行此服务器程序。
+测试程序使用telnet localhost 8007
+&quot;&quot;&quot;
+from twisted.internet.protocol import Protocol,Factory
+from twisted.internet import reactor
+
+class QOTD(Protocol):
+    def connectionMade(self):
+        # 向客户端发送一行数据
+        self.transport.write(&quot;welcome to jcodeer.cublog.cn\r\n&quot;)
+        self.transport.loseConnection()
+
+f = Factory()
+f.protocol = QOTD
+reactor.listenTCP(8007,f)
+reactor.run()
+ 输出：
+ Trying 0.0.0.0...
+ Connected to 0.
+ Escape character is &apos;^]&apos;.
+ welcome to jcodeer.cublog.cn
+ Connection closed by foreign host.
+</code></pre><p>##响应lineReceived事件 </p>
+<pre><code>#encoding=utf-8
+#!/usr/bin/python
+&quot;&quot;&quot;
+使用LineReceiver接收以行为单位客户端发送过来的数据。
+LineReceiver继承自Protocol.protocol.
+sendLine向客户端发送一行数据
+&quot;&quot;&quot;
+from twisted.protocols.basic import LineReceiver
+from twisted.internet.protocol import Protocol,Factory
+from twisted.internet import reactor
+
+class Answer(LineReceiver):
+    answers = {&quot;How are you?&quot;:&quot;Fine&quot;,None:&quot;I don&apos;t know what you mean&quot;}
+    def lineReceived(self,line):
+        if self.answers.has_key(line):
+            self.sendLine(self.answers[line])
+        else:
+            self.sendLine(self.answers[None])
+
+f = Factory()
+f.protocol = Answer
+reactor.listenTCP(8007,f)
+reactor.run()
+输出：
+Trying 0.0.0.0...
+Connected to 0.
+Escape character is &apos;^]&apos;.
+How are you?
+Fine
+how are you
+I don&apos;t know what you mean
+good
+I don&apos;t know what you mean
+</code></pre><p>##在Factory中添加配置 </p>
+<pre><code>#encoding=utf-8
+#!/usr/bin/python
+&quot;&quot;&quot;
+Protocol使用Factory中的配置
+&quot;&quot;&quot;
+from twisted.internet.protocol import Protocol
+from twisted.internet.protocol import Factory
+from twisted.internet import reactor
+
+# 定义Protocol
+class Qotd(Protocol):
+    def connectionMade(self):
+        self.transport.write(self.factory.quote + &quot;\r\n&quot;)
+        self.transport.loseConnection()
+# 定义Factory
+class QotdFactory(Factory):
+    protocol = Qotd
+    def __init__(self,quote = None):
+        self.quote = quote or &quot;An apple a day keeps the doctor away&quot;
+
+reactor.listenTCP(8007,QotdFactory(&quot;jcodeer.cublog.cn&quot;))
+reactor.run()
+输出：
+Trying 0.0.0.0...
+Connected to 0.
+Escape character is &apos;^]&apos;.
+jcodeer.cublog.cn
+Connection closed by foreign host.
+</code></pre><p>##创建时间戳服务器</p>
+<pre><code>#encoding=utf-8
+#!/usr/bin/python
+&quot;&quot;&quot;
+日志服务器
+只打印当前的时间戳
+startFactory： 打开日志文件
+stopFactory: 关闭日志文件
+lineReceived： 向日志中添加内容
+&quot;&quot;&quot;
+from twisted.internet.protocol import Protocol
+from twisted.internet.protocol import Factory
+from twisted.internet import reactor
+from twisted.protocols.basic import LineReceiver
+
+class LoggingProtocol(LineReceiver):
+    def lineReceived(self,line):
+        from time import gmtime,strftime 
+        self.factory.fp.write(strftime(&quot;%d%m%Y%S%M%H&quot;,gmtime())+ &quot;\n&quot;)
+
+class LogfileFactory(Factory):
+    protocol = LoggingProtocol
+    def __init__(self,filename):
+        self.file = filename
+    def startFactory(self):
+        self.fp = open(self.file,&quot;a&quot;)
+    def stopFactory(self):
+        self.fp.close()
+
+reactor.listenTCP(8007,LogfileFactory(&quot;log.txt&quot;))
+reactor.run()
+</code></pre><p>##响应dataReceived事件</p>
+<pre><code>#encoding=utf-8
+#!/usr/bin/python
+&quot;&quot;&quot;
+接收来自客户端的数据，并打印到标准输出设备
+测试程序
+telnet localhost 8007
+连接后，客户端的输入的全部数据显示到服务器的标准输出上。
+&quot;&quot;&quot;
+from twisted.internet.protocol import Protocol
+from twisted.internet.protocol import Factory
+from twisted.internet import reactor
+from sys import stdout
+
+class Echo(Protocol):
+    def dataReceived(self,data):
+        stdout.write(data)
+
+f = Factory()
+f.protocol = Echo
+reactor.listenTCP(8007,f)
+reactor.run()
+</code></pre><p>##客户端程序发送消息 </p>
+<pre><code>#encoding=utf-8
+#!/usr/bin/python
+&quot;&quot;&quot;
+客户端程序
+1.连接上服务器后，打印欢迎信息
+2.第1秒后发送一条消息
+3.第2秒后发送断开连接命令。
+&quot;&quot;&quot;
+from twisted.internet.protocol import Protocol
+from twisted.internet.protocol import Factory
+from twisted.internet import reactor
+from twisted.internet.protocol import ClientCreator
+class MessageSend(Protocol):
+    def connectionMade(self):
+        # 连接上服务器后，打印出欢迎信息
+        self.transport.write(&quot;Hello Server,I am the client\n&quot;)
+    def sendMessage(self,msg):
+        # 发送一条消息
+        self.transport.write(&quot;MESSAGE:%s\n&quot; % msg)
+
+def gotProtocol(p):
+    p.sendMessage(&quot;Hello server&quot;)
+    # 添加两个延迟函数，分别在1秒之后，两秒之后运行。
+    reactor.callLater(1,p.sendMessage,&quot;This is send in a second&quot;)
+    reactor.callLater(2,p.transport.loseConnection)
+
+
+c = ClientCreator(reactor,MessageSend)
+c.connectTCP(&quot;localhost&quot;,8007).addCallback(gotProtocol)
+reactor.run()
+</code></pre><p>##客户端几个时间响应 </p>
+<pre><code>#encoding=utf-8
+#!/usr/bin/python
+&quot;&quot;&quot;
+客户端的几个事件响应
+startConnecting 正在连接服务器
+buildProtocol 已连接上服务器，创建Protocol
+clientConnectionLost 与主机失去连接
+clientConnectionFailed　与主机连接失败
+&quot;&quot;&quot;
+from twisted.internet.protocol import Protocol
+from twisted.internet.protocol import ClientFactory
+from twisted.internet import reactor
+from sys import stdout
+
+class Echo(Protocol):
+    def dataReceived(self,data):
+        stdout.write(data)
+
+class EchoClientFactory(ClientFactory):
+    def startedConnecting(self,connector):
+        print(&quot;Start to connect&quot;)
+    def buildProtocol(self,addr):
+        print(&quot;build protocol&quot;)
+        return Echo()
+    def clientConnectionLost(self,connector,reason):
+        print(&quot;client connection lost&quot; + str(reason))
+    def clientConnectionFailed(self,connector,reason):
+        print(&quot;client connection failed&quot; + str(reason))
+
+reactor.connectTCP(&quot;localhost&quot;,8007,EchoClientFactory())
+reactor.run()
+</code></pre><p>##自动连接服务器 </p>
+<pre><code># -*- coding:cp936 -*-
+#!/usr/bin/env python
+&quot;&quot;&quot;
+客户端的几个事件响应
+startConnecting 正在连接服务器
+buildProtocol 已连接上服务器，创建Protocol
+clientConnectionLost 与主机失去连接
+clientConnectionFailed　与主机连接失败
+添加自动连接功能，当连接主机失败后；再次进行连接
+当与主机连接失败后，再次进行连接；
+&quot;&quot;&quot;
+from twisted.internet.protocol import Protocol
+from twisted.internet.protocol import ClientFactory
+from twisted.internet.protocol import ReconnectingClientFactory
+from twisted.internet import reactor
+from sys import stdout
+
+class Echo(Protocol):
+    def dataReceived(self,data):
+        stdout.write(data)
+
+class EchoClientFactory(ClientFactory):
+    def startedConnecting(self,connector):
+        print(&quot;Start to connect&quot;)
+    def buildProtocol(self,addr):
+        print(&quot;build protocol&quot;)
+        return Echo()
+    def clientConnectionLost(self,connector,reason):
+        print(&quot;client connection lost&quot; + str(reason))
+        # 与主机断开连接后，将自动进行连接
+        ReconnectingClientFactory.clientConnectionLost(self,connector,reason)
+    def clientConnectionFailed(self,connector,reason):
+        print(&quot;client connection failed&quot; + str(reason))
+        # 当连接失败后，自动进行连接
+        ReconnectingClientFactory.clientConnectionFailed(self,connector,reason)
+
+reactor.connectTCP(&quot;localhost&quot;,8007,EchoClientFactory())
+reactor.run()
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/01/纯代码学习twisted/" data-id="cj64upq6w00eylraeygb0hcv3" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/page/15/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/17/">__('next') &raquo;</a>
+  </nav>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

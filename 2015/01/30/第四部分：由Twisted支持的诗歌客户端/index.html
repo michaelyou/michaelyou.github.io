@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>第四部分：由Twisted支持的诗歌客户端 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="原文点这里 ##第一个twisted支持的诗歌服务器尽管Twisted大多数情况下用来写服务器代码，为了一开始尽量从简单处着手，我们首先从简单的客户端讲起。 让我们来试试使用Twisted的客户端。源码在twisted-client-1/get-poetry.py。首先像前面一样要开启三个服务器： python blocking-server/slowpoetry.py --port 10000">
+<meta name="keywords" content="python,异步编程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第四部分：由Twisted支持的诗歌客户端">
+<meta property="og:url" content="http://yoursite.com/2015/01/30/第四部分：由Twisted支持的诗歌客户端/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="原文点这里 ##第一个twisted支持的诗歌服务器尽管Twisted大多数情况下用来写服务器代码，为了一开始尽量从简单处着手，我们首先从简单的客户端讲起。 让我们来试试使用Twisted的客户端。源码在twisted-client-1/get-poetry.py。首先像前面一样要开启三个服务器： python blocking-server/slowpoetry.py --port 10000">
+<meta property="og:image" content="http://yoursite.com/img/doRead回调过程.png">
+<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第四部分：由Twisted支持的诗歌客户端">
+<meta name="twitter:description" content="原文点这里 ##第一个twisted支持的诗歌服务器尽管Twisted大多数情况下用来写服务器代码，为了一开始尽量从简单处着手，我们首先从简单的客户端讲起。 让我们来试试使用Twisted的客户端。源码在twisted-client-1/get-poetry.py。首先像前面一样要开启三个服务器： python blocking-server/slowpoetry.py --port 10000">
+<meta name="twitter:image" content="http://yoursite.com/img/doRead回调过程.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-第四部分：由Twisted支持的诗歌客户端" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/30/第四部分：由Twisted支持的诗歌客户端/" class="article-date">
+  <time datetime="2015-01-30T06:28:13.000Z" itemprop="datePublished">2015-01-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/twisted/">twisted</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      第四部分：由Twisted支持的诗歌客户端
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文点<a href="http://krondo.com/?p=1445" target="_blank" rel="external">这里</a></p>
+<p>##第一个twisted支持的诗歌服务器<br>尽管Twisted大多数情况下用来写服务器代码，为了一开始尽量从简单处着手，我们首先从简单的客户端讲起。</p>
+<p>让我们来试试使用Twisted的客户端。源码在<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-1/get-poetry.py" target="_blank" rel="external">twisted-client-1/get-poetry.py</a>。首先像前面一样要开启三个服务器：</p>
+<pre><code>python blocking-server/slowpoetry.py --port 10000 poetry/ecstasy.txt --num-bytes 30
+python blocking-server/slowpoetry.py --port 10001 poetry/fascination.txt
+python blocking-server/slowpoetry.py --port 10002 poetry/science.txt
+</code></pre><p>并且运行客户端：</p>
+<pre><code>python twisted-client-1/get-poetry.py 10000 10001 10002
+</code></pre><p>你会看到在客户端的命令行打印出：</p>
+<blockquote>
+<p>Task 1: got 60 bytes of poetry from 127.0.0.1:10000</p>
+<p>Task 2: got 10 bytes of poetry from 127.0.0.1:10001</p>
+<p>Task 3: got 10 bytes of poetry from 127.0.0.1:10002</p>
+<p>Task 1: got 30 bytes of poetry from 127.0.0.1:10000</p>
+<p>Task 3: got 10 bytes of poetry from 127.0.0.1:10002</p>
+<p>Task 2: got 10 bytes of poetry from 127.0.0.1:10001 </p>
+<p>… </p>
+<p>Task 1: 3003 bytes of poetry</p>
+<p>Task 2: 623 bytes of poetry</p>
+<p>Task 3: 653 bytes of poetry</p>
+<p>Got 3 poems in 0:00:10.134220</p>
+</blockquote>
+<p>和我们的没有使用Twisted的非阻塞模式客户端打印的内容接近。这并不奇怪，因为它们的工作方式是一样的。</p>
+<p>下面，我们来仔细研究一下它的源代码。</p>
+<p>注意：正如我在第一部分说到，我们开始学习使用Twisted时会使用一些低层Twisted的APIs。这样做是为揭去Twisted的抽象层，这样我们就可以从内向外的来学习Tiwsted。但是这就意味着，我们在学习中所使用的APIs在实际应用中可能都不会见到。记住这么一点就行：前面这些代码只是用作练习，而不是写真实软件的例子。</p>
+<p>可以看到，首先创建了一组<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-1/get-poetry.py#L53" target="_blank" rel="external">PoetrySocket</a>的实例。在<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-1/get-poetry.py#L53" target="_blank" rel="external">PoetrySocket</a>初始化时，其创建了一个网络socket作为自己的属性字段来连接服务器，并且选择了非阻塞模式：</p>
+<pre><code>self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+self.sock.connect(address)
+self.sock.setblocking(0)
+</code></pre><p>最终我们虽然会提高到不使用socket的抽象层次上，但这里我们仍然需要使用它。在创建完socket后，PoetrySocket通过方法addReader将自己传递给 reactor：</p>
+<pre><code># tell the Twisted reactor to monitor this socket for reading
+from twisted.internet import reactor
+reactor.addReader(self）
+</code></pre><p>这个方法给Twisted提供了一个文件描述符来监视要发送来的数据。为什么我们不传递给Twisted一个文件描述符或回调函数而是一个对象实例？并且Twisted内部没有任何与这个诗歌服务相关的代码，它怎么知道该如何与我们的对象实例交互？相信我，我已经查看过了，打开<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/interfaces.py" target="_blank" rel="external">twisted.internet.interface`s</a>模块，和我一起来搞清楚是怎么回事。</p>
+<p>##Twisted接口<br>在twisted内部有很多被称作接口的子模块。每个都定义了一组接口类。由于在8.0版本中，Twisted使用zope.interface作为这些类的基类。但我们这里并不来讨论它其中的细节。我们只关心其在Twisted的子类，就是你看到的那些。</p>
+<p>使用接口的核心目的之一就是文档化。作为一个python程序员，你肯定知道Duck Typing。（说实话我还真不懂这种编程，但通过查看资料，其实就是动态编程的思想，根据你的动作来确定你的类型）</p>
+<p>翻阅<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/interfaces.py" target="_blank" rel="external">twisted.internet.interfaces</a>找到方法的<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/interfaces.py#L810" target="_blank" rel="external">addReader</a>定义，它的定义在<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/interfaces.py#L801" target="_blank" rel="external">IReactorFDSet</a>中可以找到：</p>
+<pre><code>def addReader(reader):
+    &quot;&quot;&quot;
+    I add reader to the set of file descriptors to get read events for.
+    @param reader: An L{IReadDescriptor} provider that will be checked for
+                   read events until it is removed from the reactor with
+                   L{removeReader}.
+    @return: C{None}.
+    &quot;&quot;&quot;
+</code></pre><p><code>IReactorFDSet</code>是一个Twisted的reactor实现的接口。因此任何一个Twisted的reactor都会一个 addReader的方法，如同上面描述的一样工作。这个方法声明之所以没有self参数是因为它仅仅关心一个公共接口定义，self参数仅仅是接口实现时的一部分（在调用它时，也没有显式地传入一个self参数）。接口类永远不会被实例化或作为基类来继承实现。</p>
+<p>注意1：技术上讲，IReactorFDSet只会由reactor实现用来监听文件描述符。具我所知，现在所有已实现reactor都会实现这个接口。</p>
+<p>注意2：使用接口并不仅仅是为了文档化。zope.interface允许你显式地来声明一个类实现一个或多个接口，并提供运行时检查这些实现的机制。同样也提供代理这一机制，它可以动态地为一个没有实现某接口的类直接提供该接口。但我们这里就不做深入学习了。</p>
+<p>注意3：你可能已经注意到接口与最近添加到Python中虚基类的相似性了。这里我们并不去分析它们之间的相似性与差异。若你有兴趣，可以读读Ptyhon项目的创始人Glyph写的一篇关于这个话题的文章。</p>
+<p>根据文档的描述可以看出，addReader的reader参数是要实现<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/interfaces.py#L947" target="_blank" rel="external">IreadDescriptor</a>接口的。这也就意味我们的PoetrySocket也必须这样做。</p>
+<p>阅读接口模块我们可以看到下面这段代码：</p>
+<pre><code>class IReadDescriptor(IFileDescriptor):
+    def doRead():
+        &quot;&quot;&quot;
+        Some data is available for reading on your descriptor.
+        &quot;&quot;&quot;
+</code></pre><p>同时你会看到在我们的<code>PoetrySocket</code>类中有一个doRead方法。当其被Twisted的reactor调用时，就会采用异步的方式从socket中读取数据。因此，doRead其实就是一个回调函数，只是没有直接将其传递给reactor，而是传递一个实现此方法的对象实例。这也是Twisted框架中的惯例—不是直接传递实现某个接口的函数而是传递实现它的对象。这样我们通过一个参数就可以传递一组相关的回调函数。而且也可以让回调函数之间通过存储在对象中的数据进行通信。</p>
+<p>那在PoetrySocket中实现其它的回调函数呢？注意到IReadDescriptor是IFileDescriptor的一个子类。这也就意味任何一个实现IReadDescriptor都必须实现IFileDescriptor。若是你仔细阅读代码会看到下面的内容：</p>
+<pre><code>class IFileDescriptor(ILoggingContext):
+    &quot;&quot;&quot;
+    A file descriptor.
+    &quot;&quot;&quot;
+    def fileno():
+        ...
+    def connectionLost(reason):
+        ...
+</code></pre><p>我将文档描述省略掉了，但这些函数的功能从字面上就可以理解：fileno返回我们想监听的文件描述符，connectionLost是当连接关闭时被调用。你也看到了，PoetrySocket实现了这些方法。</p>
+<p>最后，IFileDescriptor继承了ILooggingContext，这里我不想再展现其源码。我想说的是，这就是为什么我们要实现一个logPrefix回调函数。你可以在interface模块中找到答案。</p>
+<p>注意：你也许注意到了，当连接关闭时，在doRead中返回了一个特殊的值。我是如何知道的？说实话，没有它程序是无法正常工作的。我是在分析Twisted源码中发现其它相应的方法采取相同的方法。你也许想好好研究一下：但有时一些文档或书的解释是错误的或不完整的。因此可能当你搞清楚怎么回事时，我们已经完成第五部分了呵呵。</p>
+<p>##更多关于回调的知识<br>我们使用Twisted的异步客户端和前面的没有使用Twisted的异步客户非常的相似。两者都要连接它们自己的socket，并以异步的方式从中读取数据。最大的区别在于：使用Twisted的客户端并没有使用自己的select循环-而使用了Twisted的reactor。<br>doRead回调函数是非常重要的一个回调。Twisted调用它来告诉我们已经有数据在socket接收完毕。我可以通过图7来形象地说明这一过程：</p>
+<p><img src="/img/doRead回调过程.png" alt="图7 doRead回调过程"></p>
+<p>每当回调被激活，就轮到我们的代码将所有能够读的数据读回来然后非阻塞式的停止。正如我们第三部分说的那样，Twisted是不会因为什么异常状况（如没有必要的阻塞）而终止我们的代码。那么我们就故意写个会产生异常状况的客户端看看到底能发生什么事情。可以在<code>twisted-client-1/get-poetry-broken.py</code>中看到源代码。这个客户端与你前面看到的同样有两个异常状况出现：</p>
+<ol>
+<li>这个客户端并不没有选择非阻塞式的socket</li>
+<li>doRead回调方法在socket关闭连接前一直在不停地读socket</li>
+<li><p>现在让我们运行一下这个客户端：</p>
+<pre><code>python twisted-client-1/get-poetry-broken.py 10000 10001 10002
+</code></pre></li>
+</ol>
+<p>我们出得到如同下面一样的输出：</p>
+<blockquote>
+<p>Task 1: got 3003 bytes of poetry from 127.0.0.1:10000</p>
+<p>Task 3: got 653 bytes of poetry from 127.0.0.1:10002</p>
+<p>Task 2: got 623 bytes of poetry from 127.0.0.1:10001</p>
+<p>Task 1: 3003 bytes of poetry</p>
+<p>Task 2: 623 bytes of poetry</p>
+<p>Task 3: 653 bytes of poetry</p>
+<p>Got 3 poems in 0:00:10.132753</p>
+</blockquote>
+<p>可能除了任务的完成顺序不太一致外，和我先阻塞式客户端是一样的。这是因为这个客户端是一个阻塞式的。</p>
+<p>由于使用了阻塞式的连接，就将我们的非阻塞式客户端变成了阻塞式的客户端。这样一来，我们尽管遭受了使用select的复杂但却没有享受到其带来的异步优势。<br>像诸如Twisted这样的事件循环所提供的多任务的能力是需要用户的合作来实现的。Twisted会告诉我们什么时候读或写一个文件描述符，但我们必须要尽可能高效而没有阻塞地完成读写工作。同样我们应该禁止使用其它各类的阻塞函数，如os.system中的函数。除此之外，当我们遇到计算型的任务（长时间占用CPU），最好是将任务切成若干个部分执行以让I/O操作尽可能地执行。</p>
+<p>你也许已经注意到这个客户端所花费的时间少于先前那个阻塞的客户端。这是由于这个在一开始就与所有的服务建立连接，由于服务是一旦连接建立就立即发送数据，而且我们的操作系统会缓存一部分发送过来但尚读不到的数据到缓冲区中（缓冲区大小是有上限的）。因此就明白了为什么前面那个会慢了：它是在完成一个后再建立下一个连接并接收数据。</p>
+<p>但这种小优势仅仅在小数据量的情况下才会得以体现。如果我们下载三首20M个单词的诗，那时OS的缓冲区会在瞬间填满，这样一来我们这个客户端与前面那个阻塞式客户端相比就没有什么优势可言了。</p>
+<p>##结束语<br>我没有过多地解释此部分第一个客户端的内容。你可能注意到了，connectionLost函数会在没有PoetrySocket等待诗歌后关闭reactor。由于我们的程序除了下载诗歌不提供其它服务，所以才会这样做。但它揭示了两个低层reactor的APIs：<code>removeReader</code>和<code>getReaders</code>。</p>
+<p>还有与我们客户端使用的Readers的APIs类同的Writers的APIs，它们采用相同的方式来监视我们要发送数据的文件描述符。可以通过阅读interfaces文件来获取更多的细节。读和写有各自的APIs是因为select函数需要分开这两种事件（读或写可以进行的文件描述符）。当然了，可以等待即能读也能写的文件描述符。</p>
+<p>第五部分，我们将使用Twisted的高层抽象方式实现另外一个客户端，并且学习更多的Twisted的接口与APIs。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/30/第四部分：由Twisted支持的诗歌客户端/" data-id="cj64upq6v00evlraelpeqaled" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/01/30/第五部分：由Twisted支持的诗歌客户端/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          第五部分：由Twisted支持的诗歌客户端 
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/01/30/第三部分：初步认识Twisted/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">第三部分：初步认识Twisted</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

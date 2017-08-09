@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/page/6/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-python-对象的拷贝" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/27/python-对象的拷贝/" class="article-date">
+  <time datetime="2015-04-27T11:12:42.000Z" itemprop="datePublished">2015-04-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/04/27/python-对象的拷贝/">python 对象的拷贝</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##小例子</p>
+<pre><code>&gt;&gt;&gt; a = [1, 2, &apos;a&apos;]
+&gt;&gt;&gt; b = a
+&gt;&gt;&gt; a
+[1, 2, &apos;a&apos;]
+&gt;&gt;&gt; b
+[1, 2, &apos;a&apos;]
+&gt;&gt;&gt; a.append(&apos;b&apos;)
+&gt;&gt;&gt; a
+[1, 2, &apos;a&apos;, &apos;b&apos;]
+&gt;&gt;&gt; b
+[1, 2, &apos;a&apos;, &apos;b&apos;]
+</code></pre><p>可以看出，赋值号“=”是引用，即a 和 b 是指向一个对象。</p>
+<p>如何实现对象的拷贝呢，python 有 copy模块。</p>
+<p>##用法</p>
+<pre><code>import copy
+对象2 = copy.copy(对象1)
+</code></pre><p>##例子</p>
+<pre><code>&gt;&gt;&gt; a = [1, 2, &apos;a&apos;]
+&gt;&gt;&gt; b = copy.copy(a)
+&gt;&gt;&gt; a
+[1, 2, &apos;a&apos;]
+&gt;&gt;&gt; b
+[1, 2, &apos;a&apos;]
+&gt;&gt;&gt; a.append(&apos;b&apos;)
+&gt;&gt;&gt; a
+[1, 2, &apos;a&apos;, &apos;b&apos;]
+&gt;&gt;&gt; b
+[1, 2, &apos;a&apos;]
+</code></pre><p>##问题</p>
+<pre><code>&gt;&gt;&gt; a = [[1, 2], [&apos;a&apos;, &apos;b&apos;]]
+&gt;&gt;&gt; b = copy.copy(a)
+&gt;&gt;&gt; a
+[[1, 2], [&apos;a&apos;, &apos;b&apos;]]
+&gt;&gt;&gt; b
+[[1, 2], [&apos;a&apos;, &apos;b&apos;]]
+&gt;&gt;&gt; a[1].append(&apos;c&apos;)
+&gt;&gt;&gt; a
+[[1, 2], [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;]]
+&gt;&gt;&gt; b
+[[1, 2], [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;]]
+&gt;&gt;&gt; a.append((3,4,5))
+&gt;&gt;&gt; a
+[[1, 2], [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;], (3, 4, 5)]
+&gt;&gt;&gt; b
+[[1, 2], [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;]]
+</code></pre><p> 可以看出：copy 可以实现浅层拷贝，可以通过copy.deepcoppy(）来实现深层拷贝。</p>
+<p>##深拷贝</p>
+<pre><code>&gt;&gt;&gt; a = [[1, 2], [&apos;a&apos;, &apos;b&apos;]]
+&gt;&gt;&gt; b = copy.deepcopy(a)
+&gt;&gt;&gt; a
+[[1, 2], [&apos;a&apos;, &apos;b&apos;]]
+&gt;&gt;&gt; b
+[[1, 2], [&apos;a&apos;, &apos;b&apos;]]
+&gt;&gt;&gt; a[1].append(&apos;hello&apos;)
+&gt;&gt;&gt; a
+[[1, 2], [&apos;a&apos;, &apos;b&apos;, &apos;hello&apos;]]
+&gt;&gt;&gt; b
+[[1, 2], [&apos;a&apos;, &apos;b&apos;]]
+</code></pre><p>##对象三要素</p>
+<p>python中的对象包含三要素:id, type, value</p>
+<ol>
+<li>id 用来标识唯一一个对象</li>
+<li>type标识对象的类型</li>
+<li>value用来设置对象的值。</li>
+</ol>
+<p><code>is</code> 判断是否是一个对象，是使用id来判断的。</p>
+<p><code>==</code> 是判断a对象的值是否是b对象的值，默认调用它的<code>__eq__</code>方法。</p>
+<p>###例子</p>
+<pre><code>&gt;&gt;&gt; a = [1, 2, &apos;a&apos;]
+&gt;&gt;&gt; b = a
+&gt;&gt;&gt; c = copy.copy(a)
+&gt;&gt;&gt; a is b
+True
+&gt;&gt;&gt; a is c
+False
+</code></pre><p><code>&quot;b  = a&quot;</code> 是引用 指向的一个对象，所以<code>a is b</code> 返回 True</p>
+<p><code>&quot;c = copy.copy(a)&quot;</code>  c是a的拷贝，不是指向一个对象，返回False </p>
+<pre><code>&gt;&gt;&gt; a == c
+True
+</code></pre><p>但是他们的值确实是相同的</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/04/27/python-对象的拷贝/" data-id="cj64upq240071lraew78wwlf8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-CGI和WSGI" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/27/CGI和WSGI/" class="article-date">
+  <time datetime="2015-04-27T00:50:26.000Z" itemprop="datePublished">2015-04-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/04/27/CGI和WSGI/">CGI和WSGI</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>我对 CGI 的理解是利用程序的标准输入输出流，完成 HTTP 通信。HTTP 是文本协议，每次请求的文本以标准输入流的形式进入服务器端 CGI 程序，创建进程；然后进程的标准输出流作为响应 。</p>
+<p>WSGI 和 CGI 原理极其相似，但是是完全不同的实现。WSGI 是 Python 专用的协议，也是输入&amp;输出的方式传输文本流，但不是创建进程，而是对一个 WSGI 程序（callable 的对象，可以是函数也可以是实现了 <strong>call</strong> 的对象），将 request 作为参数传入（不再是纯文本，而是经过包装），同样将经过包装的 response 作为响应返回。request/response 的包装由 Python 标准库提供。</p>
+<p>二者都是标准，都有诸多实现。CGI 最为广泛，无论是二进制程序、perl 脚本、python 脚本还是 PHP 都可以以这样的原理提供 HTTP 服务；WSGI 在 Python 界也是公共标准，主流 Web 框架基本都有实现，例如 Bottle 的 bottle.Bottle （Application 对象）就实现了 WSGI 协议（见 <strong>call</strong> 方法）。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/04/27/CGI和WSGI/" data-id="cj64uppuc0003lraehtwiv220" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-django的QuerySets" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/26/django的QuerySets/" class="article-date">
+  <time datetime="2015-04-26T10:53:25.000Z" itemprop="datePublished">2015-04-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Django/">Django</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/04/26/django的QuerySets/">Django的QuerySets</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>对象关系映射 (ORM) 使得与SQL数据库交互更为简单，不过也被认为效率不高，比原始的SQL要慢。<br>要有效的使用ORM，意味着需要多少要明白它是如何查询数据库的。本文我将重点介绍如何有效使用 <a href="https://docs.djangoproject.com/en/dev/topics/db/models/" target="_blank" rel="external">Django ORM</a>系统访问中到大型的数据集。</p>
+<p>##Django的queryset是惰性的</p>
+<p><strong>Django的queryset对应于数据库的若干记录（row）</strong>，通过可选的查询来过滤。例如，下面的代码会得到数据库中名字为‘Dave’的所有的人:<br>?</p>
+<pre><code>person_set = Person.objects.filter(first_name=&quot;Dave&quot;)
+</code></pre><p>上面的代码并没有运行任何的数据库查询。你可以使用person_set，给它加上一些过滤条件，或者将它传给某个函数，这些操作都不会发送给数据库。这是对的，因为数据库查询是显著影响web应用性能的因素之一。<br>要真正从数据库获得数据，你需要遍历queryset:<br>?</p>
+<pre><code>for person in person_set:
+    print(person.last_name)
+</code></pre><p>##Django的queryset是具有cache的</p>
+<p>当你遍历queryset时，所有匹配的记录会从数据库获取，然后转换成Django的model。这被称为<code>执行</code>（evaluation）。这些model会保存在queryset内置的cache中，这样如果你再次遍历这个queryset，你不需要重复运行通用的查询。<br>例如，下面的代码只会执行一次数据库查询：</p>
+<pre><code>pet_set = Pet.objects.filter(species=&quot;Dog&quot;)
+# The query is executed and cached.
+for pet in pet_set:
+    print(pet.first_name)
+# The cache is used for subsequent iteration.
+for pet in pet_set:
+    print(pet.last_name)
+</code></pre><p>##if语句会触发queryset的执行</p>
+<p>queryset的cache最有用的地方是可以有效的测试queryset是否包含数据，只有有数据时才会去遍历：</p>
+<pre><code>restaurant_set = Restaurant.objects.filter(cuisine=&quot;Indian&quot;)
+# `if`语句会触发queryset的执行。
+if restaurant_set:
+    # 遍历时用的是cache中的数据
+    for restaurant in restaurant_set:
+        print(restaurant.name)
+</code></pre><p>##QuerySet的常用API</p>
+<p>###去重<br>distinct方法的作用和SQL的distinct的作用是一样的，这里就不多说了</p>
+<pre><code>Author.objects.distinct()
+</code></pre><p>###序列化为JSON<br>和前端进行交互的时候，序列化成XML的情况还是比较少的，但是序列化成JSON格式的字符串的情况就比较多了，Django的ORM框架提供了values的方法来把实体序列化成json</p>
+<pre><code>Blog.objects.values()
+</code></pre><p>###序列化成数组<br>把对象序列化成数组元素的情况还真的是用的比较少</p>
+<pre><code>Entry.objects.values_list(&apos;id&apos;, &apos;headline&apos;)
+</code></pre><p>###从主表获取外键表的对象<br>在主表的实体上使用filter，然后再通过主表的实体获取外键的时候，Django会把主表的实体一并查询出来。但是有时候我们只希望从主表开始取数，但是只取外键表实体的信息，这个时候就可以用select_related方法了。第一个参数是主表的外键字段名称，第二个字段嘛。。。照抄就是了</p>
+<pre><code>g = Group.objects.select_related(&apos;room&apos;, &apos;subject&apos;)
+</code></pre><p>当然，也会有只希望拿主表信息，不想把外键字段取回来的情况，把参数设置为none就好了</p>
+<pre><code>without_relations = queryset.select_related(None)
+</code></pre><p>###处理从表对象<br>对于外键表来说，我们可以采用select_related的方法来进行处理。但是对于从表属性来说，就要用到另外一种方法了。（toppings是多对多的属性）</p>
+<pre><code>Pizza.objects.all().prefetch_related(&apos;toppings&apos;)
+</code></pre><p>同样的，不获取外键对象的话把参数设置为none就好了</p>
+<pre><code>non_prefetched = qs.prefetch_related(None)
+</code></pre><p>###ORM和SQL的混合：Extra方法<br>先看看Extra方法的一些例子</p>
+<p>####selec参数<br>    Entry.objects.extra(select={‘is_recent’: “pub_date &gt; ‘2006-01-01’”})</p>
+<p>####where参数<br>    Entry.objects.extra(where=[“foo=’a’ OR bar = ‘a’”, “baz = ‘a’”])</p>
+<p>####order_by参数<br>    q = q.extra(order_by = [‘-is_recent’])</p>
+<p>####paramas参数<br>    Entry.objects.extra(where=[‘headline=%s’], params=[‘Lennon’])<br>其实从官方给的例子看起来，Extra方法主要就是用于在ORM生成SQL的过程中内嵌SQL语句。例如希望在select 背后加入一句sql，例如select …,(select a from …)这种情况下的时候，用Extra方法就很好解决了</p>
+<p>###使用Defer和Only来过滤字段<br>select_related和prefetch_related方法分别用来过滤实体的外键属性和多对多属性，对于主表的字段属性过滤可以采用defer方法来少查询一些字段</p>
+<pre><code>Entry.objects.defer(&quot;headline&quot;, &quot;body&quot;)
+</code></pre><p>defer是排除哪些字段，而only是只查询哪些字段</p>
+<pre><code>Person.objects.only(&quot;name&quot;)
+</code></pre><p>###使用select_for_update来简化更新的过程<br>一般更新实体的时候，我们需要先把实体先查询出来，然后做出相应的更新，再做一次save操作</p>
+<pre><code>entity=Entry.objects.filter(...)[0]
+entity.name=xx
+entity.save()
+</code></pre><p>这个过程显得稍微有点繁琐，所以可以采用一种select_for_update来进行一些简化</p>
+<pre><code>entries = Entry.objects.select_for_update().filter(author=request.user)
+</code></pre><p>###使用get_or_create来简化创建对象的过程<br>同样的，有时候我们会需要先查询对象在不在数据库里面存储，假如没有的话就创建，有的话就取出</p>
+<pre><code>obj, created = Person.objects.get_or_create(first_name=&apos;John&apos;, last_name=&apos;Lennon&apos;,
+              defaults={&apos;birthday&apos;: date(1940, 10, 9)})
+</code></pre><p>不过个人觉得这个方法用到的情况很少。。。。</p>
+<p>###批量插入数据<br>    Entry.objects.bulk_create([<br>        Entry(headline=”Django 1.0 Released”),<br>        Entry(headline=”Django 1.1 Announced”),<br>        Entry(headline=”Breaking: Django is awesome”)<br>      ])<br>这玩意真的挺有用，具体的就不细说了</p>
+<p>###使用Count方法来进行统计<br>虽然做统计的话可以先把过滤完的对象查询出来，然后再len(xx)一下，但是这种做法会把数据库里面一堆一堆的暑假都查出来的(￣◇￣;)，所以当需要做count操作的时候还是老老实实的用sql的count语句，在Django里面的话做法如下</p>
+<pre><code>Entry.objects.filter(headline__contains=&apos;Lennon&apos;).count()
+</code></pre><p>###判断数据是否存在:exists<br>    rs=some_queryset.filter(pk=entry.pk).exists()</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/04/26/django的QuerySets/" data-id="cj64uppzv004ilrae5dauh7pj" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-No-handlers-could-be-found-for-logger-keystoneclient-httpclient" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/22/No-handlers-could-be-found-for-logger-keystoneclient-httpclient/" class="article-date">
+  <time datetime="2015-04-22T07:59:05.000Z" itemprop="datePublished">2015-04-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/openstack/">openstack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/04/22/No-handlers-could-be-found-for-logger-keystoneclient-httpclient/">No handlers could be found for logger keystoneclient.httpclient</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>今天研究keystone的admin-url和public-url的问题，就把keystone的endpoint删掉了，再创建endpoint的时候就出现了这个错误，试着敲别的命令，发现也不能正常工作。</p>
+<p>如果你按照官方文档完整装过机的话，应该马上能定位到问题，但是苦逼的我并没有啊，在网上找到都是什么driver和添加环境变量的解决方法，根本没用。实在没办法，我就重装了一遍keystone，最后让我发现了问题所在。</p>
+<p>我们装keystone的时候，在创建service和endpoint之前，是需要导出<code>OS_SERVICE_TOKEN</code>和<code>OS_SERVICE_ENDPOINT</code>这两个环境变量的,这两个环境变量的值其实就临时充当了我们将要创建的service和endpoint，为什么是临时呢，因为export的环境变量在你关闭当前窗口之后就消失了，所以在导出了这两个环境变量之后我们需要立即创建service和endpoint。大家明白了吧，如果你遇到了这个错误，将这辆个环境变量导出就行了</p>
+<pre><code>export OS_SERVICE_TOKEN=ADMIN_TOKEN(和keystone.cfg中的admin_token值相同)
+export OS_SERVICE_ENDPOINT=http://controller:35357/v2.0
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/04/22/No-handlers-could-be-found-for-logger-keystoneclient-httpclient/" data-id="cj64uppws001elraeo716lohp" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-python去字典值的正确方法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/17/python去字典值的正确方法/" class="article-date">
+  <time datetime="2015-04-17T05:29:57.000Z" itemprop="datePublished">2015-04-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/04/17/python去字典值的正确方法/">python取字典值的正确方法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>直接贴代码，代码用的是django的HttpRequest类的META属性，META是一个字典，key是http请求头的一些内容</p>
+<pre><code># BAD!    
+def ua_display_bad(request):
+    ua = request.META[&apos;HTTP_USER_AGENT&apos;]  # Might raise KeyError!
+    return HttpResponse(&quot;Your browser is %s&quot; % ua)
+
+# GOOD (VERSION 1)
+def ua_display_good1(request):
+    try:
+        ua = request.META[&apos;HTTP_USER_AGENT&apos;]
+    except KeyError:
+        ua = &apos;unknown&apos;
+    return HttpResponse(&quot;Your browser is %s&quot; % ua)
+
+# GOOD (VERSION 2)
+def ua_display_good2(request):
+    #key不存在，则用第二个参数赋值
+    ua = request.META.get(&apos;HTTP_USER_AGENT&apos;, &apos;unknown&apos;)
+    return HttpResponse(&quot;Your browser is %s&quot; % ua)
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/04/17/python去字典值的正确方法/" data-id="cj64upq280077lraezocgs2v2" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-django-admin自定义字段标签" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/16/django-admin自定义字段标签/" class="article-date">
+  <time datetime="2015-04-16T13:40:45.000Z" itemprop="datePublished">2015-04-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Django/">Django</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/04/16/django-admin自定义字段标签/">Django--admin自定义字段标签</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在编辑页面中，每个字段的标签都是从模块的字段名称生成的。 规则很简单： 用空格替换下划线；首字母大写。例如：Book模块中publication_date的标签是Publication date。</p>
+<p>然而，字段名称并不总是贴切的。有些情况下，你可能想自定义一个标签。 你只需在模块中指定verbose_name。</p>
+<p>举个例子，说明如何将Author.email的标签改为e-mail，中间有个横线。</p>
+<pre><code>class Author(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=40)
+    email = models.EmailField(blank=True, verbose_name=&apos;e-mail&apos; )
+</code></pre><p>修改后重启服务器，你会在author编辑页面中看到这个新标签。</p>
+<p><strong>请注意，你不必把<code>verbose_name</code>的首字母大写，除非是连续大写（如：”USA state”）。Django会自动适时将首字母大写，并且在其它不需要大写的地方使用<code>verbose_name</code>的精确值。</strong></p>
+<p>最后还需注意的是，为了使语法简洁，你可以把它当作固定位置的参数传递。 这个例子与上面那个的效果相同。</p>
+<pre><code>class Author(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=40)
+    email = models.EmailField(&apos;e-mail&apos;,  blank=True)
+</code></pre><p>但这不适用于ManyToManyField 和ForeignKey字段，因为它们第一个参数必须是模块类。 那种情形，必须显式使用<code>verbose_name</code>这个参数名称。</p>
+<p>–《the Django book 第六章 admin》</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/04/16/django-admin自定义字段标签/" data-id="cj64uppyu003hlraehk9agm8b" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-django-admin设置字段可选" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/16/django-admin设置字段可选/" class="article-date">
+  <time datetime="2015-04-16T13:39:50.000Z" itemprop="datePublished">2015-04-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Django/">Django</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/04/16/django-admin设置字段可选/">Django--admin设置字段可选</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>你或许会发现管理工具有个限制：编辑表单需要你填写每一个字段，然而在有些情况下，你想要某些字段是可选的。 举个例子，我们想要Author模块中的email字段成为可选，即<strong>允许不填</strong>。 在现实世界中，你可能没有为每个作者登记邮箱地址。</p>
+<p>为了指定email字段为可选，你只要编辑Book模块（回想第五章，它在mysite/books/models.py文件里），在email字段上加上blank=True。代码如下：</p>
+<pre><code>class Author(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=40)
+    email = models.EmailField(**blank=True** )
+</code></pre><p>这些代码告诉Django，作者的邮箱地址允许输入一个空值。 所有字段都默认blank=False，这使得它们不允许输入空值。</p>
+<p>这里会发生一些有趣的事情。 直到现在，除了<strong>unicode</strong>()方法，我们的模块充当数据库中表定义的角色，即本质上是用Python的语法来写CREATE TABLE语句。 在添加blank=True过程中，我们已经开始在简单的定义数据表上扩展我们的模块了。 现在，我们的模块类开始成为一个富含Author对象属性和行为的集合了。 email不但展现为一个数据库中的VARCHAR类型的字段，它还是页面中可选的字段，就像在管理工具中看到的那样。</p>
+<p>当你添加blank=True以后，刷新页面<code>Add author edit form (http://127.0.0.1:8000/admin/books/author/add/ )</code>，将会发现Email的标签不再是粗体了。 这意味它不是一个必填字段。 现在你可以添加一个作者而不必输入邮箱地址，即使你为这个字段提交了一个空值，也再不会得到那刺眼的红色信息<code>“This field is required”</code>。</p>
+<p>##设置日期型和数字型字段可选</p>
+<p>虽然<code>blank=True</code>同样适用于日期型和数字型字段，但是这里需要详细讲解一些背景知识。</p>
+<blockquote>
+<p>SQL有指定空值的独特方式，它把空值叫做NULL。NULL可以表示为未知的、非法的、或其它程序指定的含义。</p>
+<p>在SQL中， NULL的值不同于空字符串，就像Python中None不同于空字符串（””）一样。这意味着某个字符型字段（如VARCHAR）的值不可能同时包含NULL和空字符串。</p>
+<p>这会引起不必要的歧义或疑惑。 为什么这条记录有个NULL，而那条记录却有个空字符串？ 它们之间有区别，还是数据输入不一致？ 还有： 我怎样才能得到全部拥有空值的记录，应该按NULL和空字符串查找么？还是仅按字符串查找？</p>
+</blockquote>
+<p>为了消除歧义，Django生成CREATE TABLE语句自动为每个字段显式加上NOT NULL。 这里有个第五章中生成Author模块的例子：</p>
+<pre><code>CREATE TABLE &quot;books_author&quot; (
+    &quot;id&quot; serial NOT NULL PRIMARY KEY,
+    &quot;first_name&quot; varchar(30) NOT NULL,
+    &quot;last_name&quot; varchar(40) NOT NULL,
+    &quot;email&quot; varchar(75) NOT NULL
+)
+</code></pre><p>在大多数情况下，这种默认的行为对你的应用程序来说是最佳的，因为它可以使你不再因数据一致性而头痛。 而且它可以和Django的其它部分工作得很好。如在管理工具中，如果你留空一个字符型字段，它会为此插入一个空字符串（而<code>&#39;&#39;</code>不是<code>NULL</code>）。</p>
+<p><strong>但是</strong>，其它数据类型有例外：日期型、时间型和数字型字段不接受空字符串。 如果你尝试将一个空字符串插入日期型或整数型字段，你可能会得到数据库返回的错误，这取决于那个数据库的类型。 （PostgreSQL比较严禁，会抛出一个异常；MySQL可能会也可能不会接受，这取决于你使用的版本和运气了。）在这种情况下，NULL是唯一指定空值的方法。 在Django模块中，<strong>你可以通过添加null=True来指定一个字段允许为NULL</strong>。</p>
+<p>因此，这说起来有点复杂： <strong>如果你想允许一个日期型（DateField、TimeField、DateTimeField）或数字型（IntegerField、DecimalField、FloatField）字段为空，你需要使用null=True 和 blank=True。</strong></p>
+<p>为了举例说明，让我们把Book模块修改成允许 publication_date为空。修改后的代码如下：</p>
+<pre><code>class Book(models.Model):
+    title = models.CharField(max_length=100)
+    authors = models.ManyToManyField(Author)
+    publisher = models.ForeignKey(Publisher)
+    publication_date = models.DateField(blank=True, null=True )
+</code></pre><p>添加<code>null=True</code>比添加<code>blank=True</code>复杂。因为<code>null=True</code>改变了数据的语义，即改变了<code>CREATE TABLE</code>语句，把<code>publication_date</code>字段上的<code>NOT NULL</code>删除了。 要完成这些改动，我们还需要更新数据库。</p>
+<p>出于某种原因，Django不会尝试自动更新数据库结构。所以你必须执行ALTER TABLE语句将模块的改动更新至数据库。 像先前那样，你可以使用manage.py dbshell进入数据库服务环境。 以下是在这个特殊情况下如何删除NOT NULL:</p>
+<pre><code>ALTER TABLE books_book ALTER COLUMN publication_date DROP NOT NULL;
+</code></pre><p>– 《the Django book 第六章 admin》</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/04/16/django-admin设置字段可选/" data-id="cj64uppz0003olrae6mdoa1n0" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-一些pythonic代码的例子" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/16/一些pythonic代码的例子/" class="article-date">
+  <time datetime="2015-04-16T12:53:22.000Z" itemprop="datePublished">2015-04-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/04/16/一些pythonic代码的例子/">一些pythonic代码的例子</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##百分号的使用：<br>通常我们都是这样格式化字符串的:</p>
+<pre><code>print &apos;hello world programme by %s&apos; % &apos;python&apos;  
+</code></pre><p> 但是如果格式化的字符串中有很多%s,那么程序的可读性就会依靠于%后面 的变量名起得是否好了。</p>
+<p>这个时候有一种用dict来格式化的%，我觉得很有用，尤其是在记log的 时候，作为log的格式，可读性非常高。<br>代码如下：</p>
+<pre><code>#字符串  
+value = {&apos;what&apos;: &apos;hello, world&apos;, &apos;language&apos;: &apos;python&apos;}  
+print &apos;%(what)s, %(language)s&apos; % value  
+#也可以包含int的  
+value = {&apos;name&apos;: &apos;jianpx&apos;, &apos;age&apos;: 23}  
+print &apos;%(name)s &apos;s age is  %(age)i&apos; % value
+</code></pre><h2 id="用两个元素之间有对应关系的list构造一个dict："><a href="#用两个元素之间有对应关系的list构造一个dict：" class="headerlink" title="用两个元素之间有对应关系的list构造一个dict："></a>用两个元素之间有对应关系的list构造一个dict：</h2><p>运用zip可以非常简单的实现：</p>
+<pre><code>names = [&apos;jianpx&apos;, &apos;yue&apos;]  
+ages = [23, 40]  
+m = dict(zip(names,ages))  
+</code></pre><p> zip的使用可以help(zip)或者查看官方文档。</p>
+<p>##交换两个值：<br>在其他语言可能要一个临时变量和三句话：</p>
+<pre><code>temp = a
+a = b
+b = temp
+</code></pre><p>但是在python，一句就ok了，而且不需要临时变量：</p>
+<pre><code>a,b = b,a
+</code></pre><p>右边的b,a 其实可以理解成一个tuple。</p>
+<p>##数量多的字符串相连用join：<br>python字符串效率问题之一就是在连接字符串的时候使用‘+’号，例如 <code>s = &#39;s1&#39; + &#39;s2&#39; + &#39;s3&#39; + ...+&#39;sN&#39;</code>，总共将N个字符串连接起来，但是使用+号的话，python需要申请N-1次内存空间，然后进行字符串拷贝。原因是字符串对象<code>PyStringObject</code>在python当中是<strong>不可变对象</strong>，所以每当需要合并两个字符串的时候，就要重新申请一个新的内存空间（大小为两个字符串长度之和）来给这个合并之后的新字符串，然后进行拷贝。所以用+号效率非常低。建议在连接字符串的时候使用字符串本身的方法<code>join（list）</code>，这个方法能提高效率，原因是它只是申请了一次内存空间，因为它可以遍历list中的元素计算出总共需要申请的内存空间的大小，一次申请完。所以上面的例子可以写成<code>s = &#39;&#39;.join([&#39;s1&#39;,&#39;s2&#39;,....,&#39;sN&#39;])</code></p>
+<p>例子是：</p>
+<pre><code>#以前是这样写的  
+fruits = [&apos;apple&apos;, &apos;banana&apos;]  
+result = &apos;&apos;  
+for f in fruits:  
+    result += f  
+
+#现在可以这样：  
+fruits = [&apos;apple&apos;, &apos;banana&apos;]  
+result = &apos;&apos;.join(fruits)  
+</code></pre><p>##判断一个key是否在一个dict里面：<br>以前很经常犯的一个<strong>mistake</strong>是这样做：</p>
+<pre><code>if key in dict_example:  
+    do something  
+</code></pre><p> 现在要这样写，就不用使用in操作了。</p>
+<pre><code>if dict_example.has_key(key):  
+    do something  
+</code></pre><p>##去掉list中的重复元素：</p>
+<pre><code>old_list = [1,1,1,3,4]  
+new_list = list(set(old_list))  
+</code></pre><p>##判断元素是否在列表中<br>如果对没有重复元素的列表对象，要判断某个元素是否在列表里面的话，当这个列表很大的时候，用set会比list<br>的性能要好，因为对于list，本身允许重复元素存在，所以它不是用hash实现的，但是set不一样，它不允许重复元素，看了python源代码，从set的实现源码setobject.c 中查找key的函数</p>
+<pre><code>static setentry *
+set_lookkey(PySetObject *so, PyObject *key, register long hash)    
+</code></pre><p>的接口可以看出它真的使用hash去实现的。</p>
+<p>所以对于in操作，set的实现是计算这个元素的hash值然后判断，理论上可以达到O(1)</p>
+<p>##读文件操作：<br>    以前是这样写的：</p>
+<pre><code>#默认文件存在，不处理Exception的情况  
+f = open(&apos;filename&apos;, &apos;r&apos;)  
+while 1:  
+    line = f.readline()  
+    if not line:  
+        break  
+    print line  
+
+if f:  
+    f.close()  
+</code></pre><p>用with关键字可以这样简写了，</p>
+<pre><code>from __future__ import with_statement  
+with open(&apos;filename&apos;,&apos;r&apos;) as f:  
+    for line in f:  
+        print line  
+</code></pre><p>具体关于with的可以参考<a href="http://jianpx.iteye.com/blog/505469" target="_blank" rel="external">这篇文章</a></p>
+<p>##输出数组的index和值：<br>以前是要这样写的：</p>
+<pre><code>l = [1,3,4]  
+for i in xrange(len(l)):  
+    print &apos;%d, %d&apos; % (i , l[i])  
+</code></pre><p>现在可以用<strong>enumerate</strong>函数帮助你简写：</p>
+<pre><code>l = [1,3, 4]  
+for index, value in enumerate(l):  
+    print &apos;%d, %d&apos; % (index, value)  
+</code></pre><p>##关于使用map、filter、reduce的例子网上很多，这里不细说了，它们的使用也是pythonic的examples</p>
+<p>##分隔一个字符串，去里面的元素<code>，</code>,但是空白字符串不要：<br>例如， names = ‘jianpx, yy, mm, , kk’</p>
+<pre><code>names = &apos;jianpx, mm, yy, , kk&apos;  
+name_list = names.split(&apos;,&apos;)  
+result = []  
+for name in name_list:  
+    if name:  
+        result.append(name)  
+</code></pre><p>现在是这样写的：</p>
+<pre><code>names = &apos;jianpx, yy, mm, , kk&apos;  
+result = [name for name in names.split(&apos;,&apos;) if name.strip()]  
+</code></pre><p>##模拟c语言中的  a?b:c<br>在python里面可以这样做：</p>
+<pre><code>return_value = True if a == 1 else False  
+</code></pre><p> 从而代替了这样的代码：</p>
+<pre><code>if a == 1:  
+    return_value = True  
+else   
+    return_value = False  
+</code></pre><p>##用Decorator抽离公用代码或者解耦<br>例如要对一个函数做cache，对一个操作限制权限，如果需求随时可能变化，就是说有可能不需要做cache或者不需要做权限的时候，你如果把实现放到这些函数体里面，那么这时你必须把这些代码删除，而且要很小心。但是如果你用Decorator去做的话， 只要删除函数头顶上的@那一行就可以了。Django经常用这种方法做权限控制。<br>熟悉decorator的应该都很容易理解。</p>
+<p>##如何将list的元素倒序并且生成到新的list呢？ </p>
+<p>看到一个用list的slice做到的 :</p>
+<pre><code>a = [1,2,3,4]  
+c = &apos;abcdef&apos;  
+aa= a[::-1]  
+cc = c[::-1]  
+</code></pre><p> 如果不用生成新的list，直接调用a.reverse()就得了。但是字符串类型没有reverse的方法.</p>
+<p>关于list的slice特性， 其实也许很多人平时只是用list[start:end] 这样的， 这个意思是从start开始，每个元素都放到新的list里面， 直到end。但是其实还可以每隔N个元素才取一次的， 这种情况要3个参数:<code>·list[start:end:step]</code>，<code>step</code>就是间隔了。</p>
+<p>##a = [i for i in xrange(5)]   和  a = (i for i in xrange(5)) </p>
+<p>虽然看上去是一样都生成了5个元素，但是<br>前者是一个list对象， 如果遍历的话 <code>for item in a</code> 就会一下子返回全部元素然后再遍历， 而后者是个Generator，<br>用for item in a遍历是每次只是返回一个元素， 这样的好处是省内存（在list很大的情况下）。</p>
+<p>##python的all函数可以简化逻辑表达式有很多”与“的时候的写法<br>比如：</p>
+<pre><code>a, b, c = True, False, True
+if a and b and c:
+    return True
+else:
+    return False
+可以简化成:
+    return all([a, b, c])
+</code></pre><p>由此可以看到all函数的作用是判断当且仅当参数里面都为真的时候返回真， 否则返回假。</p>
+<p>但是这里更深入的话涉及all的判断顺序和传入的参数是list还是iterable对象是不同的。  </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/04/16/一些pythonic代码的例子/" data-id="cj64upq31008wlrae9eg5k7o2" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-django-admin账号" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/16/django-admin账号/" class="article-date">
+  <time datetime="2015-04-16T09:28:55.000Z" itemprop="datePublished">2015-04-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Django/">Django</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/04/16/django-admin账号/">Django--admin账号</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>要使用Django的后台管理界面，需要在Django的INSTALLED_APPS中注册Django提供的一些app。</p>
+<p>当你把’django.contrib.auth’加进INSTALLED_APPS后，运行</p>
+<pre><code>python manage.py syncdb
+</code></pre><p>命令时, 系统会请你创建一个超级用户。 如果你不这么作，你需要运行python manage.py createsuperuser来另外创建一个admin的用户帐号，否则你将不能登入admin (提醒一句: 只有当INSTALLED_APPS包含’django.contrib.auth’时，python manage.py createsuperuser这个命令才可用.)</p>
+<p>注意：</p>
+<p>在Django 1.8中，syncdb这个命令已经可用，所以你将需要手动运行python manage.py createsuperuser 命令</p>
+<p>–《the Django book 2.0》</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/04/16/django-admin账号/" data-id="cj64uppyv003mlraemvrf6fs2" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-django的unicode对象" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/16/django的unicode对象/" class="article-date">
+  <time datetime="2015-04-16T00:00:23.000Z" itemprop="datePublished">2015-04-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Django/">Django</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/04/16/django的unicode对象/">Django的unicode对象</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>你可以认为unicode对象就是一个Python字符串，它可以处理上百万不同类别的字符——从古老版本的Latin字符到非Latin字符，再到曲折的引用和艰涩的符号。</p>
+<p>普通的python字符串是经过编码的，意思就是它们使用了某种编码方式（如ASCII，ISO-8859-1或者UTF-8）来编码。 如果你把奇特的字符（其它任何超出标准128个如0-9和A-Z之类的ASCII字符）保存在一个普通的Python字符串里，你一定要跟踪你的字符串是用什么编码的，否则这些奇特的字符可能会在显示或者打印的时候出现乱码。 当你尝试要将用某种编码保存的数据结合到另外一种编码的数据中，或者你想要把它显示在已经假定了某种编码的程序中的时候，问题就会发生。 我们都已经见到过网页和邮件被???弄得乱七八糟。 ?????? 或者其它出现在奇怪位置的字符：这一般来说就是存在编码问题了。</p>
+<p>但是Unicode对象并没有编码。它们使用Unicode，一个一致的，通用的字符编码集。 当你在Python中处理Unicode对象的时候，你可以直接将它们混合使用和互相匹配而不必去考虑编码细节。</p>
+<p>Django 在其内部的各个方面都使用到了 Unicode 对象。 模型 对象中，检索匹配方面的操作使用的是 Unicode 对象，视图 函数之间的交互使用的是 Unicode 对象，模板的渲染也是用的 Unicode 对象。 通常，我们不必担心编码是否正确，后台会处理的很好。</p>
+<p>注意，我们这里只是对Unicode对象进行非常浅显的概述，若要深入了解你可能需要查阅相关的资料。 这是一个很好的起点：<a href="http://www.joelonsoftware.com/articles/Unicode.html" target="_blank" rel="external">http://www.joelonsoftware.com/articles/Unicode.html</a>。</p>
+<p>–《the django book 2.0 第五章》</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/04/16/django的unicode对象/" data-id="cj64uppzi004elraew8clc3ll" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/page/5/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/7/">__('next') &raquo;</a>
+  </nav>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

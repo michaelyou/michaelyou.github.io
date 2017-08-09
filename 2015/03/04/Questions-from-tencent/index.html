@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Questions from tencent | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="##指针和引用的区别 ###相同点：  都是地址的概念； 指针指向一块内存，它的内容是所指内存的地址； 引用是某块内存的别名。###区别：     指针是一个实体，而引用仅是个别名； 引用使用时无需解引用(*)，指针需要解引用； 引用只能在定义时被初始化一次，之后不可变；指针可变； 引用没有 const，指针有 const； 引用不能为空，指针可以为空； “sizeof 引用”得到的是所指向的变量">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Questions from tencent">
+<meta property="og:url" content="http://yoursite.com/2015/03/04/Questions-from-tencent/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="##指针和引用的区别 ###相同点：  都是地址的概念； 指针指向一块内存，它的内容是所指内存的地址； 引用是某块内存的别名。###区别：     指针是一个实体，而引用仅是个别名； 引用使用时无需解引用(*)，指针需要解引用； 引用只能在定义时被初始化一次，之后不可变；指针可变； 引用没有 const，指针有 const； 引用不能为空，指针可以为空； “sizeof 引用”得到的是所指向的变量">
+<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Questions from tencent">
+<meta name="twitter:description" content="##指针和引用的区别 ###相同点：  都是地址的概念； 指针指向一块内存，它的内容是所指内存的地址； 引用是某块内存的别名。###区别：     指针是一个实体，而引用仅是个别名； 引用使用时无需解引用(*)，指针需要解引用； 引用只能在定义时被初始化一次，之后不可变；指针可变； 引用没有 const，指针有 const； 引用不能为空，指针可以为空； “sizeof 引用”得到的是所指向的变量">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Questions-from-tencent" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/04/Questions-from-tencent/" class="article-date">
+  <time datetime="2015-03-04T13:28:52.000Z" itemprop="datePublished">2015-03-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/面试/">面试</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Questions from tencent
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##指针和引用的区别</p>
+<p>###相同点：</p>
+<ul>
+<li>都是地址的概念；<ul>
+<li>指针指向一块内存，它的内容是所指内存的地址；</li>
+<li>引用是某块内存的别名。<br>###区别：</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>指针是一个实体，而引用仅是个别名；</li>
+<li>引用使用时无需解引用(*)，指针需要解引用；</li>
+<li>引用只能在定义时被初始化一次，之后不可变；指针可变；</li>
+<li>引用没有 const，指针有 const；</li>
+<li>引用不能为空，指针可以为空；</li>
+<li>“sizeof 引用”得到的是所指向的变量(对象)的大小，而“sizeof 指针”得<br>到的是指针本身(所指向的变量或对象的地址)的大小；</li>
+<li>指针和引用的自增(++)运算意义不一样；</li>
+<li>从内存分配上看：程序为指针变量分配内存区域，而引用不需要分配内存区域。</li>
+</ol>
+<p>##static关键字的作用</p>
+<ol>
+<li><p>在函数体，局部的static变量。生存期为程序的整个生命周期；作用域却在函数体内（它在什么地方能被访问（空间））。 一个被声明为静态的变量在这一函数被调用过程中维持其值不变。因为它分配在静态存储区，函数调用结束后并不释放单元，但是在其它的作用域无法访问。当再次调用这个函数时，这个局部的静态变量还存在，而且作用在它的访问空间，因此访问到的是上次调用后的值。</p>
+</li>
+<li><p>在文件模块内（但在函数体外），一个被声明为静态的全局变量可以被模块内所有函数访问，但不能被模块外其它函数访问。它是一个本地的全局变量。限制静态全局变量的作用域。</p>
+</li>
+<li><p>在文件模块内，一个被声明为静态的函数只可被这一模块内的其它函数调用。那就是，这个函数被限制在声明它的模块的本地范围内使用。函数默认情况下是全局函数，可以被任意其它文件模块调用。</p>
+</li>
+</ol>
+<p>##const实现机制，比如：const int i,是怎么做到i只可读的？</p>
+<p><strong>实现机制</strong>：这些在编译期间完成，对于内置类型，如int， 编译器可能使用常数直接替换掉对此变量的引用。而对于结构体不一定。</p>
+<p><strong>看下面的例子：</strong></p>
+<pre><code>const int j=100;    
+int *p=const_cast&lt;int*&gt;(&amp;j);    
+*p=200;    
+cout&lt;&lt;j&lt;&lt;endl;    输出为什么是100呢？
+cout&lt;&lt;*p&lt;&lt;endl; //输出是改过的200
+</code></pre><p>编译器在优化代码时把cout&lt;&lt;j直接优化成cout&lt;&lt;100了，所以虽然p和&amp;j的值一样，但cout&lt;&lt;j不再通过访问j的地址输出。（反汇编时也有看到直接把数字压栈push 100 ）</p>
+<p>这是因为，const型在压栈时，是使用的直接的数，就有点像C的#define a 100</p>
+<p>##volatile的含义<br>变量可能在编译器的控制或监控之外改变，告诉编译器不要优化该变量，如被系统时钟更新的变量。</p>
+<p>volatile 的本意是“易变的”, 因为访问寄存器要比访问内存单元快的多,所以编译器一般都会作减少存取内存的优化，但有可能会读脏数据。当要求使用 volatile声明变量值的时候，系统总是重新从它所在的内存读取数据，即使它前面的指令刚刚从该处读取过数据。精确地说就是，遇到这个关键字声明的变量，编译器对访问该变量的代码就不再进行优化，从而可以提供对特殊地址的稳定访问；如果不使用 volatile，则编译器将对所声明的语句进行优化。（简洁的说就是：volatile关键词影响编译器编译的结果，用 volatile 声明的变量表示该变量随时可能发生变化，与该变量有关的运算，不要进行编译优化，以免出错）</p>
+<p><strong>volatile 的本质：</strong></p>
+<ul>
+<li><p>编译器的优化：在本次线程内, 当读取一个变量时，为提高存取速度，编译器优化时有时会先把变量读取到一个寄存器中；以后，再取变量值时，就直接从寄存器中取值；当变量值在本线程里改变时，会同时把变量的新值 copy 到该寄存器中，以便保持一致。当变量在因别的线程等而改变了值，该寄存器的值不会相应改变，从而造成应用程序读取的值和实际的变量值不一致。当该寄存器在因别的线程等而改变了值，原变量的值不会改变，从而造成应用程序读取的值和实际的变量值不一致。</p>
+</li>
+<li><p>volatile 应该解释为“直接存取原始内存地址”比较合适，“易变的”这种解释简直有点误导人。</p>
+</li>
+</ul>
+<p>##动态链接和静态链接的区别</p>
+<p>动态链接是指在生成可执行文件时不将所有程序用到的函数链接到一个文件，<br>因为有许多函数在操作系统带的dll文件中，当程序运行时直接从操作系统中找。<br>而静态链接就是把所有用到的函数全部链接到exe文件中。</p>
+<p>动态链接是只建立一个引用的接口，而真正的代码和数据存放在另外的可执行模块中，在运行时再装入；而静态链接是把所有的代码和数据都复制到本模块中，运行时就不再需要库了。</p>
+<p>##在C++程序中调用被C编译器编译过的函数，为什么要加extern“C”</p>
+<p>C++语言支持函数重载，c语言不支持函数重载。函数被C++编译后在库中的名称与C语言不同。假设某个函数的原型是<code>void foo(int x, int y)</code>.该函数被c编译器编译后在库中的名字为<code>_foo</code>，而C++编译器则会产生像<code>_foo_int_int</code>之类的名字</p>
+<p>C++提供了C连接交换指定符号<code>extern&quot;C&quot;</code>解决名字匹配问题</p>
+<p>##判断一个数是否是2的n次方</p>
+<pre><code>设数为x
+!(x &amp; (x - 1))
+</code></pre><p>##linux下统计一个文件中有多少个给定字符串<br>    grep -o ‘while’ list.c | wc -l</p>
+<p>##常问的几个linux命令</p>
+<p>###查看cpu信息</p>
+<pre><code>cat /proc/cpuinfo
+cat /proc/meminfo
+</code></pre><p>###查看硬盘信息<br>    df -lh</p>
+<p>###查看网卡信息<br>    dmesg | grep eth</p>
+<p>###更常用的命令(显示系统核心版本号、名称、机器类型等)<br>    uname -a</p>
+<p>##ipcs命令<br>ipcs：检查系统上共享内存的分配</p>
+<p>###用途<br>报告进程间通信设施状态。</p>
+<p>ipcs 命令往标准输出写入一些关于活动进程间通信设施的信息。如果没有指定任何标志，ipcs 命令用简短格式写入一些关于当前活动消息队列、共享内存段、信号量、远程队列和本地队列标题。</p>
+<p>Linux下ipcs指令的用法详解。ipcs是Linux下显示进程间通信设施状态的工具。可以显示消息队列、共享内存和信号量的信息。对于程序员可能更有用些，普通的系统管理员一般用不到此指令。</p>
+<p><strong>ipcrm</strong>：手动解除系统上共享内存的分配</p>
+<p>用途: 删除消息队列、信号集、或者共享内存标识。</p>
+<p>##文件描述符fd<br>fd只是一个整数，在open时产生。起到一个索引的作用，进程通过PCB中的文件描述符表找到该fd所指向的文件指针filp。</p>
+<p>文件描述符的操作(如: open)返回的是一个文件描述符,内核会在每个进程空间中维护一个文件描述符表, 所有打开的文件都将通过此表中的文件描述符来引用; </p>
+<p>而流(如: fopen)返回的是一个FILE结构指针, FILE结构是包含有文件描述符的，FILE结构函数可以看作是对fd直接操作的系统调用的封装, 它的优点是带有I/O缓存<br>每个进程在PCB（Process Control Block）即进程控制块中都保存着一份文件描述符表，文件描述符就是这个表的索引，文件描述表中每个表项都有一个指向已打开文件的指针，现在我们明确一下：已打开的文件在内核中用file结构体表示，文件描述符表中的指针指向file结构体。</p>
+<p>##内存分配</p>
+<p>内存分配方式有三种：</p>
+<ol>
+<li>从静态存储区域分配。内存在程序编译的时候就已经分配好，这块内存在程序的整个运行期间都存在。例如全局变量，static变量。</li>
+<li>在栈上创建。在执行函数时，函数内局部变量的存储单元都可以在栈上创建，函数执行结束时这些存储单元自动被释放。栈内存分配运算内置于处理器的指令集中，效率很高，但是分配的内存容量有限。</li>
+<li>从堆上分配，亦称动态内存分配。程序在运行的时候用malloc或new申请任意多少的内存，程序员自己负责在何时用free或delete释放内存。动态内存的生存期由我们决定，使用非常灵活，但问题也最多。</li>
+</ol>
+<p>##如何定位内存泄露</p>
+<p>内存泄漏是指堆内存的泄漏。堆内存是指程序从堆中分配的、大小任意的（内存块的大小可以在程序运行期决定）、使用完后必须显示释放的内存。应用程序一般使用malloc、realloc、new等函数从堆中分配到一块内存，使用完后，程序必须负责相应的调用free或delete释放该内存块。否则，这块内存就不能被再次使用，我们就说这块内存泄漏了。</p>
+<p>C++程序缺乏相应的手段来检测内存信息，只能使用top指令观察进程的动态内存总额。而且程序退出时，我们无法获知任何内存泄漏信息</p>
+<p>使用Linux命令回收内存，可以使用ps、kill两个命令检测内存使用情况和进行回收。在使用超级用户权限时使用命令“ps”，它会列出所有正在运行的程序名称和对应的进程号（PID）。kill命令的工作原理是向Linux操作系统的内核送出一个系统操作信号和程序的进程号（PID）</p>
+<p>##linux 的内存管理机制是什么？</p>
+<p>Linux 虚拟内存的实现需要 6 种机制的支持：地址映射机制、内存分配回收机制、缓存和刷新机制、请求页机制、交换机制和内存共享机制内存管理程序通过映射机制把用户程序的逻辑地址映射到物理地址。当用户程序运行时，如果发现程序中要用的虚地址没有对应的物理内存，就发出了请求页要求。如果有空闲的内存可供分配，就请求分配内存(于是用到了内存的分配和回收)，并把正在使用的物理页记录在缓存中(使用了缓存机制)。如果没有足够的内存可供分配，那么就调用交换机制；腾出一部分内存。另外，在地址映射中要通过 TLB(翻译后援存储器)来寻找物理页；交换机制中也要用到交换缓存，并且把物理页内容交换到交换文件中，也要修改页表来映射文件地址。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/04/Questions-from-tencent/" data-id="cj64uppwx001jlraewiermdcw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/03/05/unix的errno值/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          unix的errno值
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/03/04/如何实现守护进程/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">如何实现守护进程</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

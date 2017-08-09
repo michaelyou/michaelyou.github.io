@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/page/3/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-jQuery选择器中的空格" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/06/30/jQuery选择器中的空格/" class="article-date">
+  <time datetime="2015-06-30T03:23:25.000Z" itemprop="datePublished">2015-06-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/jQuery/">jQuery</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/06/30/jQuery选择器中的空格/">jQuery选择器中的空格</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#jQuery选择器中的空格<br>来自–《锋利的jQuery》</p>
+<p>选择器中的空格是不容忽视的，多一个空格或少一个空格也许得到的结果会截然不同的。下面来看一个例子。</p>
+<p>HTML代码如下：</p>
+<pre><code>&lt;div class=&quot;test&quot;&gt;
+&lt;div style=&quot;display:none;&quot;&gt;Jquery教程&lt;/div&gt;
+&lt;div style=&quot;display:none;&quot;&gt;Jquery学习&lt;/div&gt;
+&lt;div style=&quot;display:none;&quot;&gt;Jquery插件&lt;/div&gt;
+&lt;div class=&quot;test&quot; style=&quot;display:none;&quot;&gt;PHP学习&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;test&quot; style=&quot;display:none;&quot;&gt;Jquery插件教程&lt;/div&gt;
+&lt;div class=&quot;test&quot; style=&quot;display:none;&quot;&gt;Jquery插件学习&lt;/div&gt;
+</code></pre><p>使用如下jQuery代码获取它们：</p>
+<pre><code>var $test_a = $(&quot;.test :hidden&quot;);//带空格的jQuery选择器
+var $test_b = $(&quot;.test:hidden&quot;);//不带空格的jQuery选择器
+var len_a = $test_a.length;
+var len_b = $test_b.length;
+alert(&quot;带空格的jQuery选择器选出的jQuery元素是：&quot;+len_a+&quot;个&quot;);//输出为4个
+alert(&quot;不带空格的jQuery选择器选出的jQuery元素是：&quot;+len_b+&quot;个&quot;);//输出为3个
+</code></pre><p>之所以会出现不同的结果，这就是后代选择器和过滤选择器的不同了</p>
+<pre><code>var $test_a = $(&quot;.test :hidden&quot;);//带空格的jQuery选择器
+</code></pre><p>上面这段代码是选取class为“test”的元素里面的隐藏元素。（后代选择器）</p>
+<pre><code>var $test_b = $(&quot;.test:hidden&quot;);//不带空格的jQuery选择器
+</code></pre><p>这上面的代码则是选取隐藏的class为“test”的元素</p>
+<p>###<strong>注意</strong>:<br>有的选择器的用法，必须是空格，如果不带空格的话，那就取不到元素，比如：</p>
+<pre><code>$(&quot;select:selected&quot;).length;//不管任何时候，这个选择器都取不到元素，这个length必然是0
+$(&quot;select :selected&quot;);//这样才是正确的
+</code></pre><p>有的选择器的用法，必须不带空格，如果带空格的话，那就取不到元素，比如：</p>
+<pre><code>$(&quot;input :checked&quot;).length;//不管任何时候，这个选择器都取不到元素，这个length必然是0
+$(&quot;input:checked&quot;);//这样才是正确的
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/06/30/jQuery选择器中的空格/" data-id="cj64upq0w005klraeqyen3mex" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jQuery/">jQuery</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-python中定义常量" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/06/13/python中定义常量/" class="article-date">
+  <time datetime="2015-06-13T06:25:03.000Z" itemprop="datePublished">2015-06-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/06/13/python中定义常量/">python中定义常量</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>实际开发中我们经常会碰到需要定义常量的情形，c语言提供了const关键字来实现，但是python本身却没有提供const，要想在python代码中定义常量，需要我们自己来实现。</p>
+<p>下面定义一个const类。要求符合<strong>“命名全部为大写”</strong>和<strong>“值一旦绑定便不可再修改”</strong>这两个条件。<a href="https://github.com/michaelyou/useful-python-code/tree/master/const" target="_blank" rel="external">代码</a></p>
+<pre><code>class const(object):
+    class ConstError(TypeError): 
+        pass
+    class ConstCaseError(ConstError):
+        pass
+
+    def __setattr__(self, name, value):
+        if self.__dict__.has_key(name):
+            raise self.ConstError, &quot;can&apos;t change const.%s&quot; % name
+        if not name.isupper():
+            raise self.ConstCaseError, &quot;const name &apos;%s&apos; is not all uppercase&quot; % name
+
+        self.__dict__[name] = value
+
+import sys
+sys.modules[__name__] = const()
+</code></pre><p>这里通过对常量对应的值进行修改时或者命名不符合规范时抛出异常来满足以上常量的两个条件。</p>
+<p>###NOTE</p>
+<p>使用sys.modules[name]可以获取一个模块对象，并可以通过该对象获取模块的属性，这儿使用了sys.modules向系统字典注入了一个const对象从而实现了在执行import const时实际获取了一个const实例的功能，sys.module在文档中的描述如下：</p>
+<blockquote>
+<p>sys.modules</p>
+<p>This is a dictionary that maps module names to modules which have already been loaded. This can be manipulated to force reloading of modules and other tricks. Note that removing a module from this dictionary is not the same as calling reload() on the corresponding module object.</p>
+</blockquote>
+<p>sys.modules[name] = const()这行代码将系统已经加载的模块列表中的const替换为了const()，即一个const实例</p>
+<p>##使用<br>整个工程需要使用的常量都应该定义在一个文件中。例如你将const.py放在了project.utils目录下，常量被定义在project.apps目录下的project_consts.py文件中，那么应该这么写：</p>
+<pre><code>#project_consts.py
+from project.utils import const
+
+const.NAME = &apos;IBM&apos;
+const.EMAIL = &apos;ibm.com&apos;
+</code></pre><p>在其他文件中需要使用这些常量时，用如下方式调用：</p>
+<pre><code>from project.apps.project_consts import const
+
+print const.NAME
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/06/13/python中定义常量/" data-id="cj64upq250073lraebx9g8xwd" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-再读the-django-book-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/06/12/再读the-django-book-1/" class="article-date">
+  <time datetime="2015-06-11T16:06:56.000Z" itemprop="datePublished">2015-06-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Django/">Django</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/06/12/再读the-django-book-1/">再读《the Django book》</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li><p>登录进数据库服务器看Django创建的数据表，除了手动启动命令行客户端，还可以执行</p>
+<pre><code>python manage.py dbshell
+</code></pre><p>这个命令将依据<code>DATABASE_SERVER</code> 的里设置自动检测使用哪种命令行客户端</p>
+</li>
+<li><p><strong><code>添加模块的字符串表现</code></strong>，这个讲的就是给模型添加<code>__unicode__()</code>方法，<code>__unicode__()</code>方法告诉python如何将对象以unicode的方式显示出来。</p>
+</li>
+</ul>
+<ul>
+<li><p>使用<code>Publisher.objects,all()</code>来选择所有数据时，SQL语句执行的是：</p>
+<pre><code>SELECT id, name, address, city, state_province, country, website 
+FROM books_publisher;
+</code></pre><p>并没有使用 <code>SELECT *</code>，而是<strong>显式列出了所有字段</strong>。 设计的时候就是这样： <code>SELECT *</code> 会更慢，而且最重要的是列出所有字段遵循了Python 界的一个信条： <strong>明言胜于暗示</strong>。</p>
+</li>
+<li><p>你可以在任意一个模型类中使用 <code>Meta</code> 类，来设置一些与特定模型相关的选项。例如设置<code>ordering</code>这个选项。如果你设置了这个选项，那么除非你检索时特意额外地使用了 <code>order_by()</code>，否则，当你使用 Django 的数据库 API 去检索时，这个模型的对象的相关返回值默认地都会按<code>ordering</code>设置的字段排序。</p>
+</li>
+<li><p>你需要一段<code>context</code>来解析模板。 一般情况下，这是一个 <code>django.template.Context</code> 的实例，不过在Django中还可以用一个特殊的子类， <code>django.template.RequestContext</code>，这个用起来稍微有些不同。 <code>RequestContext</code> 默认地在模板<code>context</code>中加入了一些变量，如 <code>HttpRequest</code> 对象或当前登录用户的相关信息。</p>
+</li>
+<li><p>在模板中判断当前是否处在debug模式下，可以启动<code>django.core.context_processors.debug</code>，它返回值中的<code>debug</code>字段就是<code>setting</code>中的<code>debug</code></p>
+</li>
+<li><p>作为合法的标签库，模块需要包含一个名为<code>register</code>的模块级变量。这个变量是<code>template.Library</code>的实例，是所有注册标签和过滤器的数据结构。 所以，请在你的模块的顶部插入如下语句：</p>
+<pre><code>from django import template
+register = template.Library()
+</code></pre></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/06/12/再读the-django-book-1/" data-id="cj64upq4200ahlraedhg1gd8l" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-no-module-named-xxx" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/06/09/no-module-named-xxx/" class="article-date">
+  <time datetime="2015-06-09T01:17:52.000Z" itemprop="datePublished">2015-06-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/06/09/no-module-named-xxx/">no module named xxx</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>python的常见错误，意思非常明确，这个模块找不到了。导致的原因也很确定：</p>
+<ol>
+<li>确实没有安装这个模块</li>
+<li>路径不对</li>
+</ol>
+<p>第一个把模块安装上就完事了，第二个往往是导致这个错误最常见的原因。</p>
+<p>如果你能确定你已经安装了这个模块，那肯定是import的路径有问题。import导入时，搜索的路径是有顺序的，查看当前python导入模块的搜索路径，可以在交互命令行中执行下面的命令：</p>
+<pre><code>In [1]: import sys
+
+In [2]: sys.path
+Out[2]:
+[&apos;&apos;,
+ &apos;/System/Library/Frameworks/Python.framework/Versions/2.7/bin&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python27.zip&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-darwin&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-mac&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-mac/lib-scriptpackages&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-old&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-dynload&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/PIL&apos;,
+ &apos;/Library/Python/2.7/site-packages&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/IPython/extensions&apos;,
+ &apos;/Users/youwangqiu/.ipython&apos;]
+</code></pre><p>可以看到，我使用的python是现在当前路径(<code>&#39; &#39;</code>)下搜索，然后去系统的各个路径下搜索。而这个机制将<strong>导致一个很大的问题</strong>。</p>
+<p>##不要乱给你的<code>.py</code>文件命名<br>你写了一个比较大的应用，多个<code>.py</code>文件，相互之间有<code>import</code>。给这些.py文件取名是件麻烦事，一般都是根据文件的功能来取名的嘛。所以你就将一个进行http请求的文件命名成了<code>requests.py</code>（同时，你的应用需要系统的<code>requests</code>模块）。调试整个应用的时候，你发现，这个<code>requests</code>模块怎么和教程上的不一样啊，怎么该有的函数都没有啊，要你有什么卵用！</p>
+<p><code>requests</code>模块说：怪我喽…</p>
+<p>大哥，你导入的不是系统的<code>requests</code>模块啊，你导入的是你的<code>requests.py</code>啊，当然什么都没有了。</p>
+<p>这里虽然没有报<code>no module named</code>的错误，但是这个错误更难调试，和<code>no module named xxx</code>师出同源，如果你导入的requests模块下的一个函数或类的话，<code>no module named xxx</code>就出现了。</p>
+<p>所以说给文件命名之前先考虑清楚，不要潇洒地随便写，不然你就是自己挖坑自己跳。</p>
+<p>如果你发现自己确实犯了这个错误，并且改了文件名，请千万记住，还要<strong>把当前目录下相应的<code>.pyc</code>删除掉</strong>，不然还是没用，至于为什么，请自行参考任何一本python教程。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/06/09/no-module-named-xxx/" data-id="cj64upq1v006glrae1zebw0p3" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-django-高效更新数据库" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/06/05/django-高效更新数据库/" class="article-date">
+  <time datetime="2015-06-05T09:58:54.000Z" itemprop="datePublished">2015-06-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Django/">Django</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/06/05/django-高效更新数据库/">Django-高效更新数据库</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>模型的<code>save()</code>方法，这个方法会更新一行里的所有列。 而某些情况下，我们只需要更新行里的某几列。</p>
+<p>例如说我们现在想要将<code>Apress Publisher</code>的名称由原来的<code>”Apress”</code>更改为<code>”Apress Publishing”</code>。若使用<code>save()</code>方法，如：</p>
+<pre><code>&gt;&gt;&gt; p = Publisher.objects.get(name=&apos;Apress&apos;)
+&gt;&gt;&gt; p.name = &apos;Apress Publishing&apos;
+&gt;&gt;&gt; p.save()
+</code></pre><p>这等同于如下SQL语句：</p>
+<pre><code>SELECT id, name, address, city, state_province, country, website
+FROM books_publisher
+WHERE name = &apos;Apress&apos;;
+
+UPDATE books_publisher SET
+    name = &apos;Apress Publishing&apos;,
+    address = &apos;2855 Telegraph Ave.&apos;,
+    city = &apos;Berkeley&apos;,
+    state_province = &apos;CA&apos;,
+    country = &apos;U.S.A.&apos;,
+    website = &apos;http://www.apress.com&apos;
+WHERE id = 52;
+（注意在这里我们假设Apress的ID为52）
+</code></pre><p>在这个例子里我们可以看到<strong>Django的save()方法更新了不仅仅是name列的值，还有更新了所有的列</strong>。 若name以外的列有可能会被其他的进程所改动的情况下，只更改name列显然是更加明智的。 更改某一指定的列，我们可以调用结果集（QuerySet）对象的update()方法： 示例如下：</p>
+<pre><code>&gt;&gt;&gt; Publisher.objects.filter(id=52).update(name=&apos;Apress Publishing&apos;)
+</code></pre><p>与之等同的SQL语句变得更高效，并且不会引起竞态条件。</p>
+<pre><code>UPDATE books_publisher
+SET name = &apos;Apress Publishing&apos;
+WHERE id = 52;
+</code></pre><p><code>update()</code>方法对于任何结果集（<code>QuerySet</code>）均有效，这意味着你可以同时更新多条记录。 以下示例演示如何将所有<code>Publisher</code>的<code>country</code>字段值由<code>’U.S.A’</code>更改为<code>’USA’</code>：</p>
+<pre><code>&gt;&gt;&gt; Publisher.objects.all().update(country=&apos;USA&apos;)
+2
+</code></pre><p>update()方法会返回一个整型数值，表示受影响的记录条数。 在上面的例子中，这个值是2。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/06/05/django-高效更新数据库/" data-id="cj64uppzb0044lraeysu11drd" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-丢失私有密钥时连接到虚拟机-2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/06/05/丢失私有密钥时连接到虚拟机-2/" class="article-date">
+  <time datetime="2015-06-05T05:34:45.000Z" itemprop="datePublished">2015-06-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/openstack/">openstack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/06/05/丢失私有密钥时连接到虚拟机-2/">丢失私有密钥时连接到虚拟机(2)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原理和<a href="http://michaelyou.github.io/2015/06/02/%E4%B8%A2%E5%A4%B1%E7%A7%81%E6%9C%89%E5%AF%86%E9%92%A5%E6%97%B6%E8%BF%9E%E6%8E%A5%E5%88%B0%E8%99%9A%E6%8B%9F%E6%9C%BA/" target="_blank" rel="external">丢失私有密钥时连接到虚拟机(1)</a>是一样的，从镜像创建的虚拟机我们也可以将其挂载到别的机器上，只是需要的命令不同。</p>
+<p>##具体步骤</p>
+<ul>
+<li>关闭你的虚拟机</li>
+<li>找到你的虚拟机的<code>id</code>，类似<code>282d0355-a4db-4467-a70b-4783ac2c7ed6</code>这样一串数字</li>
+<li>找到你的虚拟机的宿主机，登录到宿主机上</li>
+<li><p>进入到存放虚拟机文件的目录</p>
+<pre><code>cd /var/lib/nova/instances/{id}
+</code></pre><p>这里的<code>id</code>就是你上面虚拟机的<code>id</code><br>这个目录下的内容是这样的</p>
+<pre><code>.
+├── console.log
+├── disk
+├── disk.info
+├── libvirt.xml
+</code></pre><p>这里的disk文件就是我们要操作的对象</p>
+</li>
+<li><p>在当前目录下创建sysroot目录</p>
+<pre><code>mkdir sysroot
+</code></pre></li>
+<li><p>挂载disk文件到本机</p>
+<pre><code>guestmount -a disk --rw -m /dev/sda1  sysroot
+</code></pre><p><strong>Note</strong>：如果你是ubuntu的系统，guestmount会报错如下：</p>
+<pre><code>libguestfs: error: /usr/bin/supermin-helper exited with error status 1.
+To see full error messages you may need to enable debugging.
+See http://libguestfs.org/guestfs-faq.1.html#debugging-libguestfs
+</code></pre><p>这个时候你可以执行：</p>
+<pre><code>update-guestfs-appliance
+</code></pre></li>
+<li><p>进入sysroot并把它当作当前进程的根文件系统</p>
+<pre><code>cd sysroot; chroot .
+</code></pre></li>
+<li><p>现在就可以修改虚拟机的文件啦！        </p>
+</li>
+<li><p>修改完成后，exit退出chroot的环境</p>
+<pre><code>exit
+cd ..  #回到上一级目录
+umount sysroot
+</code></pre></li>
+<li><p>启动虚拟机即可</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/06/05/丢失私有密钥时连接到虚拟机-2/" data-id="cj64upq37009blraebgw8p1a7" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/openstack/">openstack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ssh/">ssh</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ubuntu/">ubuntu</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-丢失私有密钥时连接到虚拟机" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/06/02/丢失私有密钥时连接到虚拟机/" class="article-date">
+  <time datetime="2015-06-02T07:01:22.000Z" itemprop="datePublished">2015-06-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/openstack/">openstack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/06/02/丢失私有密钥时连接到虚拟机/">丢失私有密钥时连接到虚拟机(1)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>有一些镜像制作的时候，只允许使用ssh登陆。所以一般创建虚拟机时，我们会将自己的公钥通过ec2的meta服务写入虚拟机，而后在本地通过和公钥一起生成的私钥登陆。</p>
+<p>但是，既然是钥匙，就具备了<code>“丢“</code>的属性，如果我们丢失了本地的私钥，那不就不能登陆虚拟机了？其实倒也不至于不能登陆，只是费事一点罢了。</p>
+<p>原理是这样:你需要将本虚拟机的云硬盘(volume)断开，将云硬盘作为数据卷挂载到另一台虚拟机上，然后修改 authorized_keys 文件，将云硬盘挂载回原虚拟机，重启虚拟机即可。</p>
+<p><strong>Note</strong>：本教程适用的虚拟机必须是从云硬盘创建的，从<strong>镜像或者快照</strong>创建的请参考<a href="http://michaelyou.github.io/2015/06/05/%E4%B8%A2%E5%A4%B1%E7%A7%81%E6%9C%89%E5%AF%86%E9%92%A5%E6%97%B6%E8%BF%9E%E6%8E%A5%E5%88%B0%E8%99%9A%E6%8B%9F%E6%9C%BA-2/" target="_blank" rel="external">丢失私有密钥时连接到虚拟机(2)</a></p>
+<p><img src="http://7xj6cl.com1.z0.glb.clouddn.com/launch.png" alt=""></p>
+<p>###具体步骤</p>
+<ul>
+<li>暂停虚拟机，点击左侧导航栏的<strong>云硬盘</strong>，选择本机A的云硬盘，将其从本机断开</li>
+<li>还是在<strong>云硬盘</strong>的目录，将此<strong>云硬盘</strong>挂载到另一台虚拟机B</li>
+</ul>
+<p><img src="http://7xj6cl.com1.z0.glb.clouddn.com/volume.png" alt=""></p>
+<ul>
+<li><p>登陆到虚拟机B，执行<code>lsblk</code>,命令确定volume是否已分区</p>
+<pre><code>ubuntu@key-test1:~$ lsblk
+NAME   MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
+vda    253:0    0  10G  0 disk 
+└─vda1 253:1    0  10G  0 part /
+vdb    253:16   0  10G  0 disk 
+└─vdb1 253:17   0  10G  0 part
+</code></pre><p>截图中已经说明，<code>在设备/dev/vdb上连接到key_test1</code>，所以最后一行的<code>vdb1</code>就是我们挂载过来的云硬盘。</p>
+</li>
+<li><p>创建临时目录以安装volume</p>
+</li>
+</ul>
+<pre><code>ubuntu@key-test1:~$ sudo mkdir /mnt/tempvol
+</code></pre><ul>
+<li><p>使用之前确定的volume名称或设备名称在临时安装点安装volume（或分区）</p>
+<pre><code>ubuntu@key-test1:~$ sudo mount /dev/vdb1 /mnt/tempvol
+</code></pre></li>
+<li><p>这样你进入<code>/mnt/tempvol</code>目录就是进入了挂载的云硬盘，修改<code>authorized_keys</code>文件，删除失效的<code>public_key</code>，添加新的<code>public_key</code></p>
+<pre><code>ubuntu@key-test1:~$ vim /mnt/tempvol/home/ubuntu/.ssh/authorized_keys
+</code></pre></li>
+<li><p>修改完成后，卸载已连接的volume，以将其重新连接至原始实例</p>
+<pre><code>ubuntu@key-test1:~$ sudo umount /mnt/tempvol
+</code></pre></li>
+</ul>
+<p><strong>Note</strong>：卸载时可能会出现设备忙的告警，多试几次即可</p>
+<p>回到<code>openstack</code>的控制面，将云硬盘重新挂载到机器A，启动机器A即可从拥有私钥的那台机器上登陆</p>
+<p>##参考<br><a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html" target="_blank" rel="external">Amazon EC2 Key Pairs</a></p>
+<p><a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html" target="_blank" rel="external">Instance Metadata and User Data</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/06/02/丢失私有密钥时连接到虚拟机/" data-id="cj64upq3b009klraef0c7e4kg" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-翻译-python中的关键字yield" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/06/01/翻译-python中的关键字yield/" class="article-date">
+  <time datetime="2015-06-01T06:09:34.000Z" itemprop="datePublished">2015-06-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/06/01/翻译-python中的关键字yield/">[翻译]python中的关键字yield</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这是<a href="http://stackoverflow.com/questions/231767/what-does-the-yield-keyword-do-in-python/231855#231855" target="_blank" rel="external">stackoverflow上的一个问题</a>，这里翻译的是它得票最多的一个答案</p>
+<p>#问题<br>Python关键字yield的作用是什么？用来干什么的？</p>
+<p>比如，我正在试图理解下面的代码:</p>
+<pre><code>def node._get_child_candidates(self, distance, min_dist, max_dist):
+    if self._leftchild and distance - max_dist &lt; self._median:
+        yield self._leftchild
+    if self._rightchild and distance + max_dist &gt;= self._median:
+        yield self._rightchild  
+</code></pre><p>下面是这个函数的调用：</p>
+<pre><code>result, candidates = list(), [self]
+while candidates:
+    node = candidates.pop()
+    distance = node._get_dist(obj)
+    if distance &lt;= max_dist and distance &gt;= min_dist:
+        result.extend(node._values)
+    candidates.extend(node._get_child_candidates(distance, min_dist, max_dist))
+return result
+</code></pre><p>当调用 <code>_get_child_candidates</code>的时候发生了什么？返回了一个列表？返回了一个元素？被重复调用了么？ 什么时候这个调用结束呢？</p>
+<p>#回答<br>为了理解什么是 yield,你必须理解什么是生成器。在理解生成器之前，我们需要先理解迭代。</p>
+<p>##可迭代对象<br>当你建立了一个列表，你可以逐项地读取这个列表，这叫做一个可迭代对象:</p>
+<pre><code>&gt;&gt;&gt; mylist = [1, 2, 3]
+&gt;&gt;&gt; for i in mylist :
+...    print(i)
+1
+2
+3
+</code></pre><p>mylist 是一个可迭代的对象。当你使用一个列表生成式来建立一个列表的时候，就建立了一个可迭代的对象:</p>
+<pre><code>&gt;&gt;&gt; mylist = [x*x for x in range(3)]
+&gt;&gt;&gt; for i in mylist :
+...    print(i)
+0
+1
+4
+</code></pre><p>所有你可以应用 <code>for .. in ..</code>语法的叫做一个迭代器：列表，字符串，文件对象……这些可迭代对象易于操作，你可以如你所愿的读取其中的元素。但是你把所有的值都存储到了内存中，如果你有大量数据的话这个方式并不是你想要的。</p>
+<p>##生成器<br><strong>生成器是可以迭代的，但是你只可以读取它一次</strong>，因为它并不把所有的值放在内存中，它是<strong>实时地生成数据</strong>:</p>
+<pre><code>&gt;&gt;&gt; mygenerator = (x*x for x in range(3))
+&gt;&gt;&gt; for i in mygenerator :
+...    print(i)
+0
+1
+4
+</code></pre><p>看起来除了把 <code>[]</code> 换成 <code>()</code> 外没什么不同。但是，你不可以再次运行 <code>for i in mygenerator</code> , 因为生成器只能被迭代一次：先计算出0，然后继续计算1，然后计算4，一个接一个。</p>
+<p>##yield关键字<br><code>yield</code> 是一个类似 <code>return</code> 的关键字，只是这个函数返回的是个生成器。</p>
+<pre><code>&gt;&gt;&gt; def createGenerator() :
+...    mylist = range(3)
+...    for i in mylist :
+...        yield i*i
+...
+&gt;&gt;&gt; mygenerator = createGenerator() # create a generator
+&gt;&gt;&gt; print(mygenerator) # mygenerator is an object!
+&lt;generator object createGenerator at 0xb7555c34&gt;
+&gt;&gt;&gt; for i in mygenerator:
+...     print(i)
+0
+1
+4
+</code></pre><p>这个例子没什么用途，但是它让你知道，这个函数会返回一大批你只需要读一次的值.</p>
+<p>为了精通 <code>yield</code> ,你必须要理解：<strong>当你调用这个函数的时候，函数内部的代码并不立马执行</strong>。这个函数只是返回一个生成器对象，这有点蹊跷不是吗。</p>
+<p>那么，函数内的代码什么时候执行呢？当你使用<code>for</code>进行迭代的时候.</p>
+<p>现在到了关键点了！</p>
+<p>第一次迭代中你的函数会执行，从开始到达 <code>yield</code> 关键字，然后返回 <code>yield</code> 后的值作为第一次迭代的返回值. 然后，每次执行这个函数都会继续执行你在函数内部定义的那个循环的下一次，再返回那个值，直到没有可以返回的。</p>
+<p>如果生成器内部没有定义 <code>yield</code> 关键字，那么这个生成器被认为成空的。这种情况可能因为是循环进行没了，或者是没有满足 <code>if/else</code> 条件。</p>
+<p>##解释你的代码</p>
+<p>生成器:</p>
+<pre><code># 在这里定义node对象的方法来返回生成器
+def node._get_child_candidates(self, distance, min_dist, max_dist):
+
+  # 每一次你使用生成器对象都会调用这里的代码:
+
+  # 如果node对象仍然有一个左孩子
+  # 并且距离合理，返回这个左孩子
+  if self._leftchild and distance - max_dist &lt; self._median:
+      yield self._leftchild
+
+  # 如果node对象仍然有一个右孩子
+  # 并且距离合理，返回这个右孩子
+  if self._rightchild and distance + max_dist &gt;= self._median:
+      yield self._rightchild
+
+  # 如果函数运行到了这里，生成器就是空的
+  # 不可能有除了“左孩子”和“右孩子”之外的值
+</code></pre><p>调用者:</p>
+<pre><code># 建立一个空列表和一个元素是当前对象引用的列表
+result, candidates = list(), [self]
+
+# candidates循环 (一开始只拥有一个元素)
+while candidates:
+
+    # 获取最后一个candidate并将其从列表中删除
+    node = candidates.pop()
+
+    # 获取obj和这个candidate之间的距离        
+    distance = node._get_dist(obj)
+
+    # 如果距离ok，追加到result
+    if distance &lt;= max_dist and distance &gt;= min_dist:
+        result.extend(node._values)
+
+    # 将candidate的孩子添加到candidate列表中
+    # 循环会一直进行下去，知道遍历了孩子节点的孩子节点的孩子
+    candidates.extend(node._get_child_candidates(distance, min_dist, max_dist))
+
+return result
+</code></pre><p>这个代码包含了几个小部分：</p>
+<ul>
+<li>我们对一个列表进行迭代，但是迭代中列表还在不断的扩展。它是一个迭代这些嵌套的数据的简洁方式，即使这样有点危险，因为可能导致无限迭代。 <code>candidates.extend(node._get_child_candidates(distance, min_dist, max_dist))</code> 穷尽了生成器的所有值，但 <code>while</code> 不断地在产生新的生成器，它们会产生和上一次不一样的值，既然没有作用到同一个节点上.</li>
+<li><code>extend()</code> 是一个迭代器方法，作用于迭代器，并把参数追加到迭代器的后面。</li>
+</ul>
+<p>通常我们传给它一个列表参数:</p>
+<pre><code>&gt;&gt;&gt; a = [1, 2]
+&gt;&gt;&gt; b = [3, 4]
+&gt;&gt;&gt; a.extend(b)
+&gt;&gt;&gt; print(a)
+[1, 2, 3, 4]
+</code></pre><p>但是在你的代码中的是一个生成器，这样做很好，因为：</p>
+<ol>
+<li>你不必读两次所有的值</li>
+<li>你可以有很多子对象，但不必叫他们都存储在内存里面。</li>
+</ol>
+<p>并且这很奏效，因为Python不关心一个方法的参数是不是个列表。Python只希望它是可以迭代的，所以这个参数可以是列表，元组，字符串，生成器… 这叫做 <code>duck typing</code>,这也是为何Python如此棒的原因之一，但这已经是另外一个故事了…</p>
+<p>你可以在这里停下，或者来看看生成器的一些高级用法:</p>
+<p>##控制生成器的穷尽</p>
+<pre><code>&gt;&gt;&gt; class Bank(): # let&apos;s create a bank, building ATMs
+...    crisis = False
+...    def create_atm(self) :
+...        while not self.crisis :
+...            yield &quot;$100&quot;
+&gt;&gt;&gt; hsbc = Bank() # when everything&apos;s ok the ATM gives you as much as you want
+&gt;&gt;&gt; corner_street_atm = hsbc.create_atm()
+&gt;&gt;&gt; print(corner_street_atm.next())
+$100
+&gt;&gt;&gt; print(corner_street_atm.next())
+$100
+&gt;&gt;&gt; print([corner_street_atm.next() for cash in range(5)])
+[&apos;$100&apos;, &apos;$100&apos;, &apos;$100&apos;, &apos;$100&apos;, &apos;$100&apos;]
+&gt;&gt;&gt; hsbc.crisis = True # crisis is coming, no more money!
+&gt;&gt;&gt; print(corner_street_atm.next())
+&lt;type &apos;exceptions.StopIteration&apos;&gt;
+&gt;&gt;&gt; wall_street_atm = hsbc.create_atm() # it&apos;s even true for new ATMs
+&gt;&gt;&gt; print(wall_street_atm.next())
+&lt;type &apos;exceptions.StopIteration&apos;&gt;
+&gt;&gt;&gt; hsbc.crisis = False # trouble is, even post-crisis the ATM remains empty
+&gt;&gt;&gt; print(corner_street_atm.next())
+&lt;type &apos;exceptions.StopIteration&apos;&gt;
+&gt;&gt;&gt; brand_new_atm = hsbc.create_atm() # build a new one to get back in business
+&gt;&gt;&gt; for cash in brand_new_atm :
+...    print cash
+$100
+$100
+$100
+$100
+$100
+$100
+$100
+$100
+$100
+...
+</code></pre><p>对于控制一些资源的访问来说这很有用。</p>
+<p>##Itertools,你最好的朋友<br>itertools包含了很多特殊的迭代方法。是不是曾想过复制一个迭代器?串联两个迭代器？把嵌套的列表分组？不用创造一个新的列表的 zip/map?</p>
+<p>只要 <code>import itertools</code></p>
+<p>需要个例子？让我们看看比赛中4匹马可能到达终点的先后顺序的可能情况:</p>
+<pre><code>&gt;&gt;&gt; horses = [1, 2, 3, 4]
+&gt;&gt;&gt; races = itertools.permutations(horses)
+&gt;&gt;&gt; print(races)
+&lt;itertools.permutations object at 0xb754f1dc&gt;
+&gt;&gt;&gt; print(list(itertools.permutations(horses)))
+[(1, 2, 3, 4),
+ (1, 2, 4, 3),
+ (1, 3, 2, 4),
+ (1, 3, 4, 2),
+ (1, 4, 2, 3),
+ (1, 4, 3, 2),
+ (2, 1, 3, 4),
+ (2, 1, 4, 3),
+ (2, 3, 1, 4),
+ (2, 3, 4, 1),
+ (2, 4, 1, 3),
+ (2, 4, 3, 1),
+ (3, 1, 2, 4),
+ (3, 1, 4, 2),
+ (3, 2, 1, 4),
+ (3, 2, 4, 1),
+ (3, 4, 1, 2),
+ (3, 4, 2, 1),
+ (4, 1, 2, 3),
+ (4, 1, 3, 2),
+ (4, 2, 1, 3),
+ (4, 2, 3, 1),
+ (4, 3, 1, 2),
+ (4, 3, 2, 1)]
+</code></pre><p>##迭代器的内部机理<br>迭代是一个实现可迭代对象(实现的是 <code>__iter__()</code> 方法)和迭代器(实现的是 <code>__next__()</code>方法)的过程。可迭代对象是你可以从其获取到一个迭代器的任一对象。迭代器是那些允许你迭代可迭代对象的对象。</p>
+<p>更多见这个文章 <a href="http://effbot.org/zone/python-for-statement.htm" target="_blank" rel="external">for循环是怎么工作的</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/06/01/翻译-python中的关键字yield/" data-id="cj64upq9800folraevqfn9vco" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-解决-mac删除系统自带python后一些软件崩溃" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/05/26/解决-mac删除系统自带python后一些软件崩溃/" class="article-date">
+  <time datetime="2015-05-26T05:14:56.000Z" itemprop="datePublished">2015-05-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/mac/">mac</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/05/26/解决-mac删除系统自带python后一些软件崩溃/">[解决]mac删除系统自带python后一些软件崩溃</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><code>mac 10.10.3</code>自带的python版本是<code>2.6</code>，而<code>2.0</code>版本现在已经不再更新，最终版是<code>2.7.9</code>。很多同学都会给mac装上最新版本来代替系统自带版本。有一些教程还好，会让你保存<code>2.6</code>。有一些就糟糕了，它会让你直接用<code>2.7</code>(或者<code>3.4</code>)来覆盖<code>2.6</code>。这样在终端中是没有问题的，但是有一些应用程序，比如<code>iPhoto</code>和<code>sublime</code>，它们依赖于系统的<code>2.6</code>，一旦找不到<code>2.6</code>的版本，打开软件就会崩溃。其实问题是很简单的，网上有一些答案，这里讲一下我的解决方法。</p>
+<p>首先，你需要找到你的新版的python的安装路径<br>系统默认的是在</p>
+<pre><code>/System/Library/Frameworks/Python.framework/Versions/2.7
+</code></pre><p>如果你是用homebrew安装的python，那么应该在</p>
+<pre><code>/usr/local/Cellar/python/2.7.9/Frameworks/Python.framework/Versions/2.7/
+</code></pre><p>我们不需要再安装2.6的版本，只需要创建一个软链接即可：</p>
+<pre><code>sudo ln -s /usr/local/Cellar/python/2.7.9/Frameworks/Python.framework/Versions/2.7/ /System/Library/Frameworks/Python.framework/Versions/2.6
+</code></pre><p>第一个路径即是你的python的安装路径</p>
+<p>PS1：<br>如果你打开软件显示<code>*** import error</code>，那是说明你的这个版本没有安装这个模块，<code>pip</code>安装即可。</p>
+<p>PS2：<br>如果需要使用新版的python，还是建议大家使用<a href="https://github.com/yyuu/pyenv" target="_blank" rel="external">pyenv</a>，既能安装多个版本又不会搞乱系统，非常NB。</p>
+<p>##参考资料</p>
+<p><a href="https://apple.stackexchange.com/questions/114195/iphoto-and-python-2-6/140941#140941?newreg=cb8af983a6f248868b5043d1ec14d418" target="_blank" rel="external">Ask Different –Iphoto and Python2.6</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/05/26/解决-mac删除系统自带python后一些软件崩溃/" data-id="cj64upq9k00fulraezih3o0ns" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mac/">mac</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-使用traceback追踪异常" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/05/25/使用traceback追踪异常/" class="article-date">
+  <time datetime="2015-05-25T13:34:20.000Z" itemprop="datePublished">2015-05-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/05/25/使用traceback追踪异常/">使用traceback追踪异常</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>调试代码的时候，简单的try—except语句只能告诉我们哪里出了错，但是错误的根源可能在多个函数之前，所以我们有必要知道出现错误时的堆栈情况。python提供了traceback模块来帮助我们打印堆栈。</p>
+<p>一般来说程序都是将信息写入log，所以这里以写入log为例</p>
+<pre><code>import class
+import logging
+
+if __name__==&quot;__main__&quot;:
+    logging.basicConfig(filename=&apos;trace.log&apos;)
+    try:
+        excep_class.except_fun(excep_args)
+    except:
+        s=traceback.format_exc()
+        logging.error(s)
+</code></pre><p>这样就可以打印出程序发生异常时，堆栈的信息。</p>
+<pre><code>---Traceback (most recent call last):
+  File &quot;/usr/lib/python2.7/dist-packages/keystoneclient/middleware/auth_token.py&quot;, line 578, in __call__
+    token_info = self._validate_user_token(user_token, env)
+  File &quot;/usr/lib/python2.7/dist-packages/keystoneclient/middleware/auth_token.py&quot;, line 838, in _validate_user_token
+    raise InvalidUserToken(&apos;Token authorization failed&apos;)
+InvalidUserToken: Token authorization failed
+</code></pre><p>这里是一段出错信息，可以明显地看出，最上面的是最早调用的函数，上面的函数调用下面的函数，最后一个是最终出错的地方。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/05/25/使用traceback追踪异常/" data-id="cj64upq3p00ablraesaem1fgp" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/4/">__('next') &raquo;</a>
+  </nav>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

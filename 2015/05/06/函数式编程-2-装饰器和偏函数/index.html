@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>函数式编程(2)--装饰器和偏函数 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="##编写无参数decorator Python的 decorator 本质上就是一个高阶函数，它接收一个函数作为参数，然后，返回一个新函数。 使用 decorator 用Python提供的 @ 语法，这样可以避免手动编写 f = decorate(f) 这样的代码。 考察一个@log的定义： def log(f):     def fn(x):         print &amp;apos;call &amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="函数式编程(2)--装饰器和偏函数">
+<meta property="og:url" content="http://yoursite.com/2015/05/06/函数式编程-2-装饰器和偏函数/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="##编写无参数decorator Python的 decorator 本质上就是一个高阶函数，它接收一个函数作为参数，然后，返回一个新函数。 使用 decorator 用Python提供的 @ 语法，这样可以避免手动编写 f = decorate(f) 这样的代码。 考察一个@log的定义： def log(f):     def fn(x):         print &amp;apos;call &amp;">
+<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="函数式编程(2)--装饰器和偏函数">
+<meta name="twitter:description" content="##编写无参数decorator Python的 decorator 本质上就是一个高阶函数，它接收一个函数作为参数，然后，返回一个新函数。 使用 decorator 用Python提供的 @ 语法，这样可以避免手动编写 f = decorate(f) 这样的代码。 考察一个@log的定义： def log(f):     def fn(x):         print &amp;apos;call &amp;">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-函数式编程-2-装饰器和偏函数" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/05/06/函数式编程-2-装饰器和偏函数/" class="article-date">
+  <time datetime="2015-05-06T06:31:47.000Z" itemprop="datePublished">2015-05-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      函数式编程(2)--装饰器和偏函数
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##编写无参数decorator</p>
+<p>Python的 <code>decorator</code> 本质上就是一个高阶函数，它接收一个函数作为参数，然后，返回一个新函数。</p>
+<p>使用 decorator 用Python提供的 <code>@</code> 语法，这样可以避免手动编写 <code>f = decorate(f)</code> 这样的代码。</p>
+<p>考察一个@log的定义：</p>
+<pre><code>def log(f):
+    def fn(x):
+        print &apos;call &apos; + f.__name__ + &apos;()...&apos;
+        return f(x)
+    return fn
+</code></pre><p>对于阶乘函数，@log工作得很好：</p>
+<pre><code>@log
+def factorial(n):
+    return reduce(lambda x,y: x*y, range(1, n+1))
+print factorial(10)
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>call factorial()...
+3628800
+</code></pre><p>但是，对于参数不是一个的函数，调用将报错：</p>
+<pre><code>@log
+def add(x, y):
+    return x + y
+print add(1, 2)
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>Traceback (most recent call last):
+  File &quot;test.py&quot;, line 15, in &lt;module&gt;
+    print add(1,2)
+TypeError: fn() takes exactly 1 argument (2 given)
+</code></pre><p>因为 <code>add()</code> 函数需要传入两个参数，但是 <code>@log</code> 写死了只含一个参数的返回函数。<br>要让 <code>@log</code> 自适应任何参数定义的函数，可以利用Python的 <em>args 和 *</em>kw，保证任意个数的参数总是能正常调用：</p>
+<pre><code>def log(f):
+    def fn(*args, **kw):
+        print &apos;call &apos; + f.__name__ + &apos;()...&apos;
+        return f(*args, **kw)
+    return fn
+</code></pre><p>现在，对于任意函数，<code>@log</code> 都能正常工作。</p>
+<p><strong>栗子</strong>：请编写一个@performance，它可以打印出函数调用的时间。</p>
+<p>计算函数调用的时间可以记录调用前后的当前时间戳，然后计算两个时间戳的差。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>import time
+def performance(f):
+    def fn(*args, **kw):
+        t1 = time.time()
+        r = f(*args, **kw)
+        t2 = time.time()
+        print &apos;call %s() in %fs&apos; % (f.__name__, (t2 - t1))
+        return r
+    return fn
+
+@performance
+def factorial(n):
+    return reduce(lambda x,y: x*y, range(1, n+1))
+print factorial(10)
+</code></pre><p>##编写带参数decorator</p>
+<p>考察上一节的 <code>@log</code>装饰器：</p>
+<pre><code>def log(f):
+    def fn(x):
+        print &apos;call &apos; + f.__name__ + &apos;()...&apos;
+        return f(x)
+    return fn
+</code></pre><p>发现对于被装饰的函数，log打印的语句是不能变的（除了函数名）。</p>
+<p>如果有的函数非常重要，希望打印出’[INFO] call xxx()…’，有的函数不太重要，希望打印出’[DEBUG] call xxx()…’，这时，log函数本身就需要传入’INFO’或’DEBUG’这样的参数，类似这样：</p>
+<pre><code>@log(&apos;DEBUG&apos;)
+def my_func():
+    pass
+</code></pre><p>把上面的定义翻译成高阶函数的调用，就是：</p>
+<pre><code>my_func = log(&apos;DEBUG&apos;)(my_func)
+</code></pre><p>上面的语句看上去还是比较绕，再展开一下：</p>
+<pre><code>log_decorator = log(&apos;DEBUG&apos;)
+my_func = log_decorator(my_func)
+</code></pre><p>上面的语句又相当于：</p>
+<pre><code>log_decorator = log(&apos;DEBUG&apos;)
+@log_decorator
+def my_func():
+    pass
+</code></pre><p>所以，带参数的log函数首先返回一个decorator函数，再让这个decorator函数接收my_func并返回新函数：</p>
+<pre><code>def log(prefix):
+    def log_decorator(f):
+        def wrapper(*args, **kw):
+            print &apos;[%s] %s()...&apos; % (prefix, f.__name__)
+            return f(*args, **kw)
+        return wrapper
+    return log_decorator
+
+@log(&apos;DEBUG&apos;)
+def test():
+    pass
+print test()
+</code></pre><p><strong>执行结果：</strong></p>
+<pre><code>[DEBUG] test()...
+None
+</code></pre><p>对于这种3层嵌套的decorator定义，你可以先把它拆开：</p>
+<pre><code># 标准decorator:
+def log_decorator(f):
+    def wrapper(*args, **kw):
+        print &apos;[%s] %s()...&apos; % (prefix, f.__name__)
+        return f(*args, **kw)
+    return wrapper
+return log_decorator
+
+# 返回decorator:
+def log(prefix):
+    return log_decorator(f)
+</code></pre><p>拆开以后会发现，调用会失败，因为在3层嵌套的<code>decorator</code>定义中，最内层的<code>wrapper</code>引用了最外层的参数<code>prefix</code>，所以，把一个闭包拆成普通的函数调用会比较困难。不支持闭包的编程语言要实现同样的功能就需要更多的代码。</p>
+<p><strong>栗子</strong>：上一节的<code>@performance</code>只能打印秒，请给 <code>@performace</code> 增加一个参数，允许传入<code>&#39;s&#39;</code>或<code>&#39;ms&#39;</code>：</p>
+<pre><code>@performance(&apos;ms&apos;)
+def factorial(n):
+    return reduce(lambda x,y: x*y, range(1, n+1))
+</code></pre><p>要实现带参数的@performance，就需要实现：</p>
+<pre><code>my_func = performance(&apos;ms&apos;)(my_func)
+</code></pre><p>需要3层嵌套的decorator来实现。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>import time
+def performance(unit):
+    def perf_decorator(f):
+        def wrapper(*args, **kw):
+            t1 = time.time()
+            r = f(*args, **kw)
+            t2 = time.time()
+            t = (t2 - t1) * 1000 if unit==&apos;ms&apos; else (t2 - t1)
+            print &apos;call %s() in %f %s&apos; % (f.__name__, t, unit)
+            return r
+        return wrapper
+    return perf_decorator
+
+@performance(&apos;ms&apos;)
+def factorial(n):
+    return reduce(lambda x,y: x*y, range(1, n+1))
+print factorial(10)
+</code></pre><p>##完善decorator</p>
+<p><code>@decorator</code>可以动态实现函数功能的增加，但是，经过<code>@decorator</code>“改造”后的函数，和原函数相比，除了功能多一点外，有没有其它不同的地方？</p>
+<p>在没有decorator的情况下，打印函数名：</p>
+<pre><code>def f1(x):
+    pass
+print f1.__name__
+</code></pre><p><strong>输出</strong>： f1<br>有decorator的情况下，再打印函数名：</p>
+<pre><code>def log(f):
+    def wrapper(*args, **kw):
+        print &apos;call...&apos;
+        return f(*args, **kw)
+    return wrapper
+@log
+def f2(x):
+    pass
+print f2.__name__
+</code></pre><p><strong>输出</strong>： wrapper<br>可见，由于<code>decorator</code>返回的新函数函数名已经不是<code>&#39;f2&#39;</code>，而是<code>@log</code>内部定义的<code>&#39;wrapper&#39;</code>。这对于那些依赖函数名的代码就会失效。<code>decorator</code>还改变了函数的<code>__doc__</code>等其它属性。如果要让调用者看不出一个函数经过了<code>@decorator</code>的“改造”，就需要把原函数的一些属性复制到新函数中：</p>
+<pre><code>def log(f):
+    def wrapper(*args, **kw):
+        print &apos;call...&apos;
+        return f(*args, **kw)
+    wrapper.__name__ = f.__name__
+    wrapper.__doc__ = f.__doc__
+    return wrapper
+</code></pre><p>这样写<code>decorator</code>很不方便，因为我们也很难把原函数的所有必要属性都一个一个复制到新函数上，所以Python内置的<code>functools</code>可以用来自动化完成这个“复制”的任务：</p>
+<pre><code>import functools
+def log(f):
+    @functools.wraps(f)
+    def wrapper(*args, **kw):
+        print &apos;call...&apos;
+        return f(*args, **kw)
+    return wrapper
+</code></pre><p>最后需要指出，由于我们把原函数签名改成了<code>(*args, **kw)</code>，因此，无法获得原函数的原始参数信息。即便我们采用固定参数来装饰只有一个参数的函数：</p>
+<pre><code>def log(f):
+    @functools.wraps(f)
+    def wrapper(x):
+        print &apos;call...&apos;
+        return f(x)
+    return wrapper
+</code></pre><p>也可能改变原函数的参数名，因为新函数的参数名始终是 <code>&#39;x&#39;</code>，原函数定义的参数名不一定叫 <code>&#39;x&#39;</code>。</p>
+<p><strong>栗子</strong>：请思考带参数的@decorator，@functools.wraps应该放置在哪：</p>
+<pre><code>def performance(unit):
+    def perf_decorator(f):
+        def wrapper(*args, **kw):
+            ???
+        return wrapper
+    return perf_decorator
+</code></pre><p>注意@functools.wraps应该作用在返回的新函数上。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>import time, functools
+def performance(unit):
+    def perf_decorator(f):
+        @functools.wraps(f)
+        def wrapper(*args, **kw):
+            t1 = time.time()
+            r = f(*args, **kw)
+            t2 = time.time()
+            t = (t2 - t1) * 1000 if unit==&apos;ms&apos; else (t2 - t1)
+            print &apos;call %s() in %f %s&apos; % (f.__name__, t, unit)
+            return r
+        return wrapper
+    return perf_decorator
+
+@performance(&apos;ms&apos;)
+def factorial(n):
+    return reduce(lambda x,y: x*y, range(1, n+1))
+print factorial.__name__
+</code></pre><p>##偏函数</p>
+<p>当一个函数有很多参数时，调用者就需要提供多个参数。如果减少参数个数，就可以简化调用者的负担。</p>
+<p>比如，<code>int()</code>函数可以把字符串转换为整数，当仅传入字符串时，int()函数默认按十进制转换：</p>
+<pre><code>&gt;&gt;&gt; int(&apos;12345&apos;)
+12345
+</code></pre><p>但int()函数还提供额外的<code>base参数</code>，默认值为<code>10</code>。如果传入base参数，就可以做 <code>N</code> 进制的转换：</p>
+<pre><code>&gt;&gt;&gt; int(&apos;12345&apos;, base=8)
+5349
+&gt;&gt;&gt; int(&apos;12345&apos;, 16)
+74565
+</code></pre><p>假设要转换大量的二进制字符串，每次都传入<code>int(x, base=2)</code>非常麻烦，于是，我们想到，可以定义一个<code>int2()</code>的函数，默认把<code>base=2</code>传进去：</p>
+<pre><code>def int2(x, base=2):
+    return int(x, base)
+</code></pre><p>这样，我们转换二进制就非常方便了：</p>
+<pre><code>&gt;&gt;&gt; int2(&apos;1000000&apos;)
+64
+&gt;&gt;&gt; int2(&apos;1010101&apos;)
+85
+</code></pre><p><code>functools.partial</code>就是帮助我们创建一个偏函数的，不需要我们自己定义<code>int2()</code>，可以直接使用下面的代码创建一个新的函数int2：</p>
+<pre><code>&gt;&gt;&gt; import functools
+&gt;&gt;&gt; int2 = functools.partial(int, base=2)
+&gt;&gt;&gt; int2(&apos;1000000&apos;)
+64
+&gt;&gt;&gt; int2(&apos;1010101&apos;)
+85
+</code></pre><p>所以，<code>functools.partial</code>可以把一个参数多的函数变成一个参数少的新函数，少的参数需要在创建时指定默认值，这样，新函数调用的难度就降低了。</p>
+<p><strong>栗子</strong>：在讲解<code>sorted</code>函数时，我们在<code>sorted</code>这个高阶函数中传入自定义排序函数就可以实现忽略大小写排序。请用<code>functools.partial</code>把这个复杂调用变成一个简单的函数：</p>
+<pre><code>sorted_ignore_case(iterable)
+</code></pre><p>要固定<code>sorted()的cmp参数</code>，需要传入一个排序函数作为<code>cmp</code>的默认值。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>import functools
+sorted_ignore_case = functools.partial(sorted, cmp=lambda s1, s2: cmp(s1.upper(), s2.upper()))
+print sorted_ignore_case([&apos;bob&apos;, &apos;about&apos;, &apos;Zoo&apos;, &apos;Credit&apos;])
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/05/06/函数式编程-2-装饰器和偏函数/" data-id="cj64upq4a00anlraetjzszwna" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/05/06/python的logging模块/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          python的logging模块
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/05/06/函数式编程-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">函数式编程(1)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

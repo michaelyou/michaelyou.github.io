@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/page/14/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-SO-REUSEADDR套接字选项" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/03/SO-REUSEADDR套接字选项/" class="article-date">
+  <time datetime="2015-03-03T11:06:08.000Z" itemprop="datePublished">2015-03-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/unix网络编程/">unix网络编程</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/03/SO-REUSEADDR套接字选项/">SO_REUSEADDR套接字选项</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##features<br>SO_REUSEADDR套接字选项能起到以下4个不同的功用。</p>
+<ul>
+<li>SO_REUSEADDR允许启动一个监听服务器并捆绑其众所周知的端口，即使以前建立的将该端口用作他们的本地端口的连接仍存在。这个条件通常是这样碰到的：<ol>
+<li>启动一个监听服务器；</li>
+</ol>
+<ul>
+<li>连接请求到达，派生一个子进程来处理这个客户；</li>
+<li>监听服务器终止，但子进程继续为现有连接上的客户提供服务；</li>
+<li>重启监听服务器。      </li>
+</ul>
+</li>
+</ul>
+<p>　　默认情况下，当监听服务器在步骤4通过调用socket，bind和listen重新启动时，由于他试图捆绑一个现有连接（即正由早先派生的那个子进程处理着的连接）上的端口，从而bind调用会失败。但是如果该服务器在socket和bind两个调用之间设置了SO_REUSEADDR套接字选项，那么将成功。所有TCP服务器都应该指定本套接字选项，以允许服务器在这种情况下被重新启动。</p>
+<ul>
+<li><code>SO_REUSEADDR</code>允许在同一端口上启动同一服务器的多个实例，只要每个实例捆绑一个不同的本地IP地址即可。这对于使用IP别名技术托管多个http服务器的网点来说是很常见的。举例来说，假设本地主机的主ip地址是198.19.10.2，不过他有两个别名：198.69.10.128和198.69.10.129。在其上启动三个http服务器。第一个http服务器以本地通配ip地址<code>INADDR_ANY</code>和本地端口号80（http的众所周知端口）调用bind。第二个http服务器以本地ip地址198.69.10.128和本地端口号80调用bind。这次调用bind将失败，除非在调用前设置了<code>SO_REUSEADDR</code>套接字选项。第三个http服务器以本地ip地址198.69.10.129和本地端口号80调用bind。这次调用bind成功的先决条件同样是预先设置<code>SO_REUSEADDR</code>。假设<code>SO_REUSEADDR</code>均已设置，从而三个服务器都启动了，目的ip地址为198.69.10.128、目的端口号为80的外来tcp请求将被递送给第二个服务器，目的地址为198.69.10.129、目的端口号为80的外来连接请求将被递送给第三个服务器，目的端口号为80的所有其他tcp连接请求都将递送给第一个服务器，这个“默认”服务器处理目的地址为198.69.10.2或该主机已配置的任何其他ip别名的请求。这里通配地址的意思是“没有更好的（即更为明确的）匹配地址”。注意，允许某个给定服务存在多个服务器的情形在服务器设置SO_REUSEADDR套接字选项时是自动处理的（我们建议设置这个选项）</li>
+</ul>
+<p>对于TCP，我们绝对不可能启动捆绑相同IP地址和相同端口号的多个服务器：这是完全重复的捆绑。也就是说，我们不可能在启动绑定198.69.10.2和端口80的服务器之后，再启动同样捆绑198.69.10.2和端口80的另一个服务器，即使我们给第二个服务器设置了<code>SO_REUSEADDR</code>套接字也不管用。</p>
+<ul>
+<li><p>SO_REUSEADDR 允许单个进程捆绑同一端口到多个套接字上，只要每次捆绑指定不同的本地IP地址即可。</p>
+</li>
+<li><p>SO_REUSEADDR允许完全重复的捆绑：当一个IP地址和端口号已绑定到某个套接字上时，如果传输协议支持，同样的IP地址和端口还可以捆绑到另一个套接字上。一般来说本特性仅支持UDP套接字。</p>
+</li>
+</ul>
+<p>##problem</p>
+<blockquote>
+<p>这就引出了另外的一个问题，就是设置这个属性后允许一个套接字上同时有两个应用程序进行监听，那系统究竟会将数据发送给哪一个程序呢？</p>
+</blockquote>
+<p>系统会将数据首先交给监听IP最确定的应用程序。例如应用程序A在调用监听函数时设置的属性是<code>addr.sin_addr.S_addr = INADDR_ANY</code>;而另外的一个应用程序B则监听的地址为<code>addr.sin_addr.S_addr = inet_addr(PChar(sMainIP))</code>，同时这两个应用程序监听的端口都是相同的，这时系统接收到数据后会首先交给B然后再交给A。因此一般为了程序安全我们会禁止这种情况的发生。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/03/SO-REUSEADDR套接字选项/" data-id="cj64uppx3001rlrae8a51y2kf" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-TIME-WAIT状态详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/03/TIME-WAIT状态详解/" class="article-date">
+  <time datetime="2015-03-03T03:26:25.000Z" itemprop="datePublished">2015-03-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/TCP-IP/">TCP/IP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/03/TIME-WAIT状态详解/">TIME_WAIT状态详解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>TCP 的 timewait 状态是什么？谁会有 timewait 状态？timewait 状态存在的作用是什么？如何避免大量的 timewait 状态占用系统资源？</p>
+</blockquote>
+<p> timewait 状态是 TCP 链接的主动关闭方会有的状态，在发出最后一个 ACK 包之后，主动关闭方进入 timewait 状态，以确保 ACK 包到达对端，以及等待网络中之前迷路的数据包完全消失，防止在端口被复用的时候收到迷路包从而出现收包错误。</p>
+<p>timewait 状态会持续 2MSL（max segment lifetime) 的时间，一般会有 1分钟到4分钟事件。这段事件内 端口不可被重分配使用。</p>
+<p><strong>timewait 并不会占用更多系统资源，但是可以通过修改内核参数 /etc/sysctl.conf 来达到 限制timewait 数量的功能。</strong></p>
+<p><img src="/img/time_wait.png" alt="time_wait"></p>
+<p>##TIME_WAIT状态原理</p>
+<p>通信双方建立TCP连接后，主动关闭连接的一方就会进入<code>TIME_WAIT</code>状态。客户端主动关闭连接时，会发送最后一个ack，然后会进入TIME_WAIT状态，再停留2个MSL时间(后有MSL的解释)，进入CLOSED状态。</p>
+<p>上图是以客户端主动关闭连接为例，说明这一过程的。</p>
+<p>##TIME_WAIT状态存在的理由</p>
+<p>TCP/IP协议就是这样设计的，是不可避免的。主要有两个原因:</p>
+<p>###可靠地实现TCP全双工连接的终止</p>
+<p>TCP协议在关闭连接的四次握手过程中，最终的ACK是由主动关闭连接的一端（后面统称A端）发出的，如果这个ACK丢失，对方（后面统称B端）将重发出最终的FIN，因此A端必须维护状态信息（TIME_WAIT）允许它重发最终的ACK。如果A端不维持TIME_WAIT状态，而是处于CLOSED 状态，那么A端将响应RST分节，B端收到后将此分节解释成一个错误（在java中会抛出connection reset的SocketException)。<br>因而，要实现TCP全双工连接的正常终止，必须处理终止过程中四个分节任何一个分节的丢失情况，主动关闭连接的A端必须维持TIME_WAIT状态 。</p>
+<p>###允许老的重复分节在网络中消逝<br>TCP分节可能由于路由器异常而“迷途”，在迷途期间，TCP发送端可能因确认超时而重发这个分节，迷途的分节在路由器修复后也会被送到最终目的地，这个迟到的迷途分节到达时可能会引起问题。在关闭“前一个连接”之后，马上又重新建立起一个相同的IP和端口之间的“新连接”，“前一个连接”的迷途重复分组在“前一个连接”终止后到达，而被“新连接”收到了。为了避免这个情况，TCP协议不允许处于<code>TIME_WAIT</code>状态的连接启动一个新的可用连接，因为<code>TIME_WAIT</code>状态持续2MSL，就可以保证当成功建立一个新TCP连接的时候，来自旧连接重复分组已经在网络中消逝。</p>
+<h2 id="MSL时间"><a href="#MSL时间" class="headerlink" title="MSL时间"></a>MSL时间</h2><p>MSL就是maximum segment lifetime(最大分节生命期），这是一个IP数据包能在互联网上生存的最长时间，超过这个时间IP数据包将在网络中消失 。MSL在RFC 1122上建议是2分钟，而源自berkeley的TCP实现传统上使用30秒。</p>
+<h2 id="TIME-WAIT状态维持时间"><a href="#TIME-WAIT状态维持时间" class="headerlink" title="TIME_WAIT状态维持时间"></a>TIME_WAIT状态维持时间</h2><p>TIME_WAIT状态维持时间是两个MSL时间长度，也就是在1-4分钟。Windows操作系统就是4分钟。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/03/TIME-WAIT状态详解/" data-id="cj64uppy0002dlraeb9r7e4b3" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-write的写停止问题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/03/write的写停止问题/" class="article-date">
+  <time datetime="2015-03-03T02:05:53.000Z" itemprop="datePublished">2015-03-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/unix网络编程/">unix网络编程</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/03/write的写停止问题/">write的写停止问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##例程</p>
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include&lt;unistd.h&gt;
+
+int main()
+{
+    char buf[100];
+    strcpy(buf, &quot;hello\nworld&quot;);
+    write(STDOUT_FILENO, buf, strlen(buf));
+}
+</code></pre><p>输出为</p>
+<pre><code>hello
+world（光标在这里）
+</code></pre><hr>
+<pre><code>int main()
+{
+    char buf[100];
+    strcpy(buf, &quot;hel\0lo\nworld&quot;);
+    write(STDOUT_FILENO, buf, strlen(buf));
+}
+</code></pre><p>输出为</p>
+<pre><code>hel（光标在这里）
+</code></pre><hr>
+<pre><code>int main()
+{
+    char buf[100];
+    strcpy(buf, &quot;hello\nworld&quot;);
+    fputs(buf, stdout);
+}
+</code></pre><p>输出为：</p>
+<pre><code>hello
+world
+</code></pre><hr>
+<pre><code>int main()
+{
+    char buf[100];
+    strcpy(buf, &quot;hel\0lo\nworld&quot;);
+    fputs(buf, stdout);
+}
+</code></pre><p>输出为：</p>
+<pre><code>hel（光标在这里）
+</code></pre><hr>
+<pre><code>int main()
+{
+    char buf[100];
+    strcpy(buf, &quot;hello\nworld&quot;);
+    write(STDOUT_FILENO, buf, strlen(buf));
+}
+</code></pre><p>输出：</p>
+<pre><code>hello
+world(光标在这里)
+</code></pre><p>##总结<br>其余socket的数据传输函数也是如此，只以\0作为字符串的结尾，而不是\n，\n将被认为是字符进行传输，并且后面的字符也会传输，直到遇到\0为止</p>
+<p>如果只要打印某一部分字符，则在此字符串之后一定要加\0，因为\0才被认为是一个字符串的结束符</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/03/write的写停止问题/" data-id="cj64upq330091lraegvlvrbmj" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-TCP和udp的一些特性" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/02/TCP和udp的一些特性/" class="article-date">
+  <time datetime="2015-03-02T07:34:38.000Z" itemprop="datePublished">2015-03-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/TCP-IP/">TCP/IP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/02/TCP和udp的一些特性/">TCP和udp的一些特性</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>转载自<a href="http://armsword.com/2014/02/14/tcp-and-udp-note/" target="_blank" rel="external">这里</a></p>
+<p>在TCP/IP中能够实现传输层功能的、具有代表性的协议是TCP和UDP。</p>
+<p>##TCP：</p>
+<p>TCP是面向连接的、可靠的流协议。流就是指不间断的数据结构，你可以把它想象成排水道中的水流。当应用程序采用TCP发送消息时，虽然可以保证发送的顺序，但还是犹如没有任何间隔的数据流发送给接收端。TCP充分地实现了数据传输时各种控制功能，可以进行丢包时的重发控制，还可以对次序乱掉的分包进行顺序控制。而这些在UDP中都没有。此外，TCP作为一种面向有连接的协议，只有在确认通信对端存在时才会发送数据，从而可以控制通信流量的浪费。根据TCP的这些机制，在IP这种无连接的网络上也能够实现高可靠性的通信。</p>
+<p>TCP为提供可靠性传输，实行“顺序控制”或“重发控制”机制。此外还具备“流控制（流量控制）”、“拥塞控制”、提供网络利用率等众多功能。</p>
+<p>TCP通过检验和、序列号、确认应答、重发控制、连接管理以及窗口控制等机制实现可靠性传输。</p>
+<p>###通过序列号与确认应答提高可靠性<br>在TCP中，当发送端的数据到达接收主机时，接收端主机会返回一个已收到消息的通知。这个消息叫做确认应答（ACK）。</p>
+<p><img src="/img/20140214001551.png" alt=""></p>
+<p>TCP通过肯定的确认应答（ACK）实现可靠的数据传输。当发送端将数据发出之后会等待对端的确认应答。如果有确认应答，说明数据已经成功到达对端。反之，则数据丢失的可能性很大。在一定时间内没有等到确认应答，发送端就可以认为数据已经丢失，并进行重发。由此，即使产生了丢包，仍然能够保证数据能够到达对端，实现可靠传输。未收到确认应答并不意味着数据一定丢失。也有可能是数据对方已经收到，只是返回的确认应答在途中丢失。这种情况也会导致发送端因没有收到确认应答，而认为数据没有到达目的地，从而进行重新发发送。</p>
+<p>上述这些确认应答处理、重发控制以及重复控制等功能都可以通过序列号实现。序列号是按顺序给发送数据的每一个字节（8位字节）都标上号码的编号。接收端查询接收数据TCP首部中的序列号和数据的长度，将自己下一步应该接收的序号作为确认应答返送回去。就这样，通过序列号和确认应答号，TCP可以实现可靠传输。</p>
+<p>###重发超时如何确定<br>重发超时是指在重发数据之前，等待确认应答到来的那个特定时间间隔。如果超过了这个时间仍未收到确认应答，发送端将进行数据重发。那么这个重发超时的具体时间长度又是如何确定的呢？</p>
+<p>最理想的是，找到一个最小时间，它能保证“确认应答一定能在这个时间内返回”。然而这个时间长短随着数据包途径的网络环境的不同而有所变化。例如在高速的LAN中时间相对较短，而在长距离的通信当中应该比LAN要长一些。即使是在同一个网络中，根据不同时段的网络堵塞程度时间的长短也会发生变化。TCP要求不论处在何种网络环境下都要提供高性能通信，并且无论网络拥堵情况发生何种变化，都必须保持这一特性。为此，它在每次发包时都会计算往返时间及其偏差。将这个往返时间和偏差相加重发超时的时间，就是比这个总和要稍大一点的值。</p>
+<p>在BSD的Unix以及Windows系统中，超时都以0.5秒为单位进行控制，因此重发超时都是0.5秒的整数倍。不过，由于最初的数据包还不知道往返时间，所以其重发超时一般设置为6秒左右。数据被重发之后若还是收不到确认应答，则进行再次发送。此时，等待确认应答的时间将会以2倍、4倍的指数函数延长。此外，数据也不会被无限、反复地重发。达到一定重发次数之后，如果仍没有任何确认应答返回，就会判断为网络或对端主机发生了异常，强制关闭连接。并且通知应用通信异常强行终止。</p>
+<p>###连接管理<br>UDP是一种面向无连接的通信协议，因此不检查对端是否可以通信，直接将UDP包发送出去。TCP与此相反，它会在数据通信之前，通过TCP首部发送一个SYN包作为建立连接的请求等待确认应答。如果对端发来确认应答，则认为可以进行数据通信。如果对端的确认应答未能到达，就不会进行数据通信。此外，在通信结束时会进行断开连接的处理（FIN包）。</p>
+<p>可以使用TCP首部用于控制的字段来管理TCP连接。一个连接的建立与断开，正常过程至少需要来回发送7个包才能完成。</p>
+<p><img src="/img/20140214001552.png" alt=""></p>
+<p>###TCP以段为单位发送数据<br>在建立TCP连接的同时，也可以确认发送数据包的单位，我们也可以称其为“最大消息长度”（MSS：Maximum Segment Size）。最理想的情况是，最大消息长度正好是IP中不会被分片处理的最大数据长度。</p>
+<p>TCP在传送大量数据时，是以MSS的大小将数据进行分割发送。进行重发时也是以MSS为单位。</p>
+<p>MSS是在三次握手的时候，在两端主机之间被计算得出。两端的主机在发出建立连接的请求时，会在TCP首部中写入MSS选项，告诉对方自己的接口能够适应MSS的大小。然后会在两者之间选择一个较小的值投入使用。</p>
+<p><img src="/img/20140214001553.png" alt=""></p>
+<p>###利用窗口控制提高速度<br>TCP以1个段为单位，每发一个段进行一次确认应答的处理，这样的传输方式有一个缺点，那就是，包的往返时间越长通信性能就越低。</p>
+<p>为解决这个问题，TCP引入了窗口这个概念。即使在往返时间较长的情况下，它也能控制网络性能的下降。确认应答不再是以每个分段，而是以更大的单位进行确认时，转发时间将会大幅度的缩短。也就是说，发送端主机，在发送了一个段以后不必要一直等待确认应答，而是继续发送。</p>
+<p><img src="/img/20140214001554.png" alt=""></p>
+<p>窗口大小就是无需等待确认应答而可以继续发送数据的最大值，如上，窗口大小为4个段。这个机制实现了使用大量的缓冲区，通过对多个段同时进行确认应答的功能。<br>收到确认应答的情况下，将窗口滑动到确认应答中的序列号的位置。这样可以顺序地将多个段同时发送提高通信性能。这种机制也被成为滑动窗口控制。</p>
+<p><img src="/img/20140214001555.png" alt=""></p>
+<p>###流控制<br>发送端根据自己的实际情况发送数据。但是，接收端可能收到的是一个毫无关系的数据包又可能会在处理其他问题上花费一些时间。因此在为这个数据包做其他处理时会耗费一些时间，甚至在高负荷的情况下无法接收任何数据。如此一来，如果接收端将本应该接收的数据丢弃的话，就又会触发重发机制，从而导致网络流量的无端浪费。<br>为了防止这种现象的发生，TCP提供一种机制可以让发送端根据接收端的实际接收能力控制发送的数据量。这就是所谓的流控制。它的具体操作是，接收端主机向发送端主机通知自己可以接收数据的大小，于是发送端会发送不超过这个限度的数据。该大小限度就被称作窗口大小。</p>
+<p>TCP首部中，专门有一个字段用来通知窗口大小。接收主机将自己可以接收的缓冲区大小放入这个字段中通知给发送端。这个字段的值越大，说明网络的吞吐量越高。<br>不过，接收端的这个缓冲区一旦面临数据溢出时，窗口大小的值也会随之被设置为一个更小的值通知给发送端，从而控制数据发送量。也就是说，发送端主机会根据接收端主机的指示，对发送数据的量进行控制。这也就形成了一个完整的TCP流控制（流量控制）。</p>
+<p><img src="/img/20140214114741.png" alt=""></p>
+<p>###拥塞控制<br>有了TCP的窗口控制，收发主机之间即使不再以一个数据段为单位发送确认应答，也能够连续发送大量数据包。然而，如果在通信刚开始时就发送大量数据，也可能会引发其他问题。在网络出现堵塞时，如果突然发送一个较大量的数据，极有可能导致整个网络的瘫痪。TCP为了防止该问题的出现，在通信一开始时就会通过一个叫做慢启动的算法得出的数值，对发送数据量进行控制。</p>
+<p>首先，为了在发送端调节所要发送数据的量，定义了一个叫做“拥塞窗口”的概念。于是在慢启动的时候，将这个拥塞窗口的大小设置为1个数据段（1MSS）发送数据，之后每收到一次确认应答（ACK），拥塞窗口的值就加1.在发送数据包时，将拥塞窗口的大小与接收端主机通知的窗口大小做比较，然后按照它们当中较小的那个值，发送比其还要小的数据量。</p>
+<p>###提高网络利用率的规范<br>Nagle算法：<br>TCP中为了提高网络的利用率，经常使用一个叫做Nagle的算法。该算法是指发送端即使还有应该发送的数据，但如果这部分数据很少的话，则进行延迟发送的一种处理机制。具体来说，就是仅在下列任意一种条件下才能发送数据。如果两个条件都不满足，那么暂时等待一段时间以后再进行数据发送。</p>
+<ol>
+<li>已发送的数据都已经收到确认应答时</li>
+<li>可以发送最大段长度（MSS）的数据时</li>
+</ol>
+<p><strong>延迟确认应答</strong>：</p>
+<p>当某个接收端收到这个小窗口的通知以后，会以它为上限发送数据，从而又降低了网络的利用率。为此，引入了一个方法，那就是收到数据以后并不立即返回确认应答，而是延迟一段时间的机制。</p>
+<p><strong>捎带应答</strong>：</p>
+<p>捎带应答是指在同一个TCP包中既发送数据又发送确认应答的一种机制。由此，网络的利用率会提高，计算机的负荷也会减轻。不过，确认应答必须得等到应用处理完数据并将作为回执的数据返回为止，才能进行捎带应答。</p>
+<p>##UDP：<br>UDP是User Datagram Protocol的缩写。UDP是不具有可靠性的数据报协议。细微的处理它会交给上层的应用去完成。在UDP的情况下，虽然可以确保发送消息的大小，却不能保证消息一定会到达。因此，应用有时会根据自己的需要进行重发处理。</p>
+<p>UDP不提供复杂的控制机制，利用IP提供面向无连接的通信服务。并且它是将应用程序发来的数据在收到的那一刻，立即按照原样发送到网络上的一种机制。</p>
+<p>即使是出现网络堵塞的情况下，UDP也无法进行流量控制等避免网络拥塞的行为。此外，传输途中即使出现丢包，UDP也不负责重发。甚至当出现包的到达顺序乱掉时也没有纠正的功能。如果需要这些细节控制，那么不得不交由采用UDP的应用程序去处理。UDP有点类似于用户说什么听什么的机制，但是需要用户充分考虑好上层协议类型并制作相应的应用程序。因此，也可以说，UDP按照“制造程序的那些用户的指示行事”。<br>由于UDP面向无连接，它可以随时发送数据。再加上UDP本身的处理既简单又高效，因此经常用于以下几个方面：</p>
+<ol>
+<li>包总量较少的通信（DNS、SNMP等）</li>
+<li>视频、音频等多媒体通信（即时通信）</li>
+<li>限定于LAN等特定网络中的应用通信</li>
+<li>广播通信（广播、多播）</li>
+</ol>
+<p>可能有人会认为，鉴于TCP是可靠的传输协议，那么它一定优于UDP。其实不然。TCP与UDP的优缺点无法简单地、绝对地去做比较。那么，对这两种协议应该如何加以区分使用呢？下面，我就对此问题做一简单说明。</p>
+<p>TCP用于在传输层有必要实现可靠的情况。由于它是面向有连接并具备顺序控制、重发控制等机制的，所以它可以为应用提供可靠传输。</p>
+<p>而UDP主要用于那些对高速传输和实时性有较高要求的通信或广播通信。我们拿通过IP电话进行通话作为例子。如果使用TCP，数据在传送途中如果丢失会重发，但这样无法刘畅地传输通话人的声音，会导致无法进行正常交流。而采用UDP，它不会进行重发处理。从而也就不会有声音大幅度延迟到达的问题。即使有部分数据丢失，也只是会影响某一小部分的通话。此外，在多播与广播通信中也使用UDP而不是TCP。RIP、DHCP等基于广播的协议也要依赖于UDP。因此，TCP和UDP应该根据应用的目的按需使用。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/02/TCP和udp的一些特性/" data-id="cj64uppxv0025lraedg6gzse3" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-语言中的指针和内存泄漏" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/02/语言中的指针和内存泄漏/" class="article-date">
+  <time datetime="2015-03-02T01:27:39.000Z" itemprop="datePublished">2015-03-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/c/">c</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/02/语言中的指针和内存泄漏/">语言中的指针和内存泄漏</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>转载自<a href="http://www.ibm.com/developerworks/cn/aix/library/au-toughgame/" target="_blank" rel="external">这里</a></p>
+<p>##引言</p>
+<p>对于任何使用 C 语言的人，如果问他们 C 语言的最大烦恼是什么，其中许多人可能会回答说是指针和内存泄漏。这些的确是消耗了开发人员大多数调试时间的事项。指针和内存泄漏对某些开发人员来说似乎令人畏惧，但是一旦您了解了指针及其关联内存操作的基础，它们就是您在 C 语言中拥有的最强大工具。</p>
+<p>本文将与您分享开发人员在开始使用指针来编程前应该知道的秘密。本文内容包括：</p>
+<ul>
+<li>导致内存破坏的指针操作类型</li>
+<li>在使用动态内存分配时必须考虑的检查点</li>
+<li>导致内存泄漏的场景</li>
+</ul>
+<p>如果您预先知道什么地方可能出错，那么您就能够小心避免陷阱，并消除大多数与指针和内存相关的问题。</p>
+<p>##什么地方可能出错？<br>有几种问题场景可能会出现，从而可能在完成生成后导致问题。在处理指针时，您可以使用本文中的信息来避免许多问题。</p>
+<p>###未初始化的内存<br>在本例中，p 已被分配了 10 个字节。这 10 个字节可能包含垃圾数据，如图 1 所示。</p>
+<pre><code>char *p = malloc ( 10 );
+</code></pre><p><img src="/img/垃圾数据.png" alt="图1.垃圾数据"></p>
+<p>如果在对这个 p 赋值前，某个代码段尝试访问它，则可能会获得垃圾值，您的程序可能具有不可预测的行为。p 可能具有您的程序从未曾预料到的值。</p>
+<p><strong>良好的实践是始终结合使用 memset 和 malloc，或者使用 calloc。</strong></p>
+<pre><code>char *p = malloc (10);
+memset(p,’’,10);
+</code></pre><p>现在，即使同一个代码段尝试在对 p 赋值前访问它，该代码段也能正确处理 Null 值（在理想情况下应具有的值），然后将具有正确的行为。</p>
+<p>###内存覆盖<br>由于 p 已被分配了 10 个字节，如果某个代码片段尝试向 p 写入一个 11 字节的值，则该操作将在不告诉您的情况下自动从其他某个位置“吃掉”一个字节。让我们假设指针 q 表示该内存。</p>
+<p><img src="/img/原始q内容.png" alt="图2.原始q内容"></p>
+<p><img src="/img/覆盖后的q内容.png" alt="图3.覆盖后的q内容"></p>
+<p>结果，指针 q 将具有从未预料到的内容。即使您的模块编码得足够好，也可能由于某个共存模块执行某些内存操作而具有不正确的行为。下面的示例代码片段也可以说明这种场景。</p>
+<pre><code>char *name = (char *) malloc(11);
+// Assign some value to name
+memcpy ( p,name,11); // Problem begins here
+</code></pre><p>在本例中，memcpy 操作尝试将 11 个字节写到 p，而后者仅被分配了 10 个字节。</p>
+<p>作为良好的实践，每当向指针写入值时，都要确保对可用字节数和所写入的字节数进行交叉核对。一般情况下，memcpy 函数将是用于此目的的检查点。</p>
+<p>###内存读取越界<br>内存读取越界 (overread) 是指所读取的字节数多于它们应有的字节数。这个问题并不太严重，在此就不再详述了。下面的代码提供了一个示例。</p>
+<pre><code>char *ptr = (char *)malloc(10);
+char name[20] ;
+memcpy ( name,ptr,20); // Problem begins here
+</code></pre><p>在本例中，memcpy 操作尝试从 ptr 读取 20 个字节，但是后者仅被分配了 10 个字节。这还会导致不希望的输出。</p>
+<p>###内存泄漏<br>内存泄漏可能真正令人讨厌。下面的列表描述了一些导致内存泄漏的场景。<br>重新赋值我将使用一个示例来说明重新赋值问题。</p>
+<pre><code>char *memoryArea = malloc(10);
+char *newArea = malloc(10);
+</code></pre><p>这向如下面的图 4 所示的内存位置赋值。</p>
+<p><img src="/img/图4.内存位置.png" alt="图4.内存位置"></p>
+<p>memoryArea 和 newArea 分别被分配了 10 个字节，它们各自的内容如图 4 所示。如果某人执行如下所示的语句（指针重新赋值）……</p>
+<pre><code>memoryArea = newArea;
+</code></pre><p>则它肯定会在该模块开发的后续阶段给您带来麻烦。</p>
+<p>在上面的代码语句中，开发人员将 memoryArea 指针赋值给 newArea 指针。结果，memoryArea 以前所指向的内存位置变成了孤立的，如下面的图 5 所示。它无法释放，因为没有指向该位置的引用。这会导致 10 个字节的内存泄漏。</p>
+<p><img src="/img/内存泄漏.png" alt="图5.内存泄漏"></p>
+<p>在对指针赋值前，请确保内存位置不会变为孤立的。</p>
+<ul>
+<li>首先释放父块</li>
+</ul>
+<p>假设有一个指针 memoryArea，它指向一个 10 字节的内存位置。该内存位置的第三个字节又指向某个动态分配的 10 字节的内存位置，如图 6 所示。</p>
+<p><img src="/img/图6.动态分配的内存.png" alt="图6.动态分配的内存"></p>
+<pre><code>free(memoryArea)
+</code></pre><p>如果通过调用 free 来释放了 memoryArea，则 newArea 指针也会因此而变得无效。newArea 以前所指向的内存位置无法释放，因为已经没有指向该位置的指针。换句话说，newArea 所指向的内存位置变为了孤立的，从而导致了内存泄漏。</p>
+<p>每当释放结构化的元素，而该元素又包含指向动态分配的内存位置的指针时，应首先遍历子内存位置（在此例中为 newArea），并从那里开始释放，然后再遍历回父节点。</p>
+<p>这里的正确实现应该为：</p>
+<pre><code>free( memoryArea-&gt;newArea);
+free(memoryArea);
+</code></pre><ul>
+<li>返回值的不正确处理</li>
+</ul>
+<p>有时，某些函数会返回对动态分配的内存的引用。跟踪该内存位置并正确地处理它就成为了 calling 函数的职责。</p>
+<pre><code>char *func ( )
+{
+ return malloc(20); // make sure to memset this location to ‘’…
+}
+void callingFunc ( )
+{
+ func ( ); // Problem lies here
+}
+</code></pre><p>在上面的示例中，callingFunc() 函数中对 func() 函数的调用未处理该内存位置的返回地址。结果，func() 函数所分配的 20 个字节的块就丢失了，并导致了内存泄漏。</p>
+<p>###归还您所获得的<br>在开发组件时，可能存在大量的动态内存分配。您可能会忘了跟踪所有指针（指向这些内存位置），并且某些内存段没有释放，还保持分配给该程序。</p>
+<p>始终要跟踪所有内存分配，并在任何适当的时候释放它们。事实上，可以开发某种机制来跟踪这些分配，比如在链表节点本身中保留一个计数器（但您还必须考虑该机制的额外开销）。</p>
+<p>###访问空指针<br>访问空指针是非常危险的，因为它可能使您的程序崩溃。始终要确保您不是 在访问空指针。</p>
+<p>##总结<br>本文讨论了几种在使用动态内存分配时可以避免的陷阱。要避免内存相关的问题，良好的实践是：</p>
+<ul>
+<li>始终结合使用 memset 和 malloc，或始终使用 calloc。</li>
+<li>每当向指针写入值时，都要确保对可用字节数和所写入的字节数进行交叉核对。</li>
+<li>在对指针赋值前，要确保没有内存位置会变为孤立的。</li>
+<li>每当释放结构化的元素（而该元素又包含指向动态分配的内存位置的指针）时，都应首先遍历子内存位置并从那里开始释放，然后再遍历回父节点。</li>
+<li>始终正确处理返回动态分配的内存引用的函数返回值。</li>
+<li>每个 malloc 都要有一个对应的 free。</li>
+<li>确保您不是在访问空指针。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/02/语言中的指针和内存泄漏/" data-id="cj64upq9s00g4lrae4scd75c8" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/">c</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-线程安全" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/01/线程安全/" class="article-date">
+  <time datetime="2015-03-01T14:01:15.000Z" itemprop="datePublished">2015-03-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/01/线程安全/">线程安全</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>如果你的代码所在的进程中有多个线程在同时运行，而这些线程可能会同时运行这段代码。如果每次运行结果和单线程运行的结果是一样的，而且其他的变量的值也和预期的是一样的，就是线程安全的。</p>
+<p>或者说:一个类或者程序所提供的接口对于线程来说是原子操作或者多个线程之间的切换不会导致该接口的执行结果存在二义性,也就是说我们不用考虑同步的问题。</p>
+<p>线程安全问题都是由全局变量及静态变量引起的。</p>
+<p>若每个线程中对全局变量、静态变量只有读操作，而无写操作，一般来说，这个全局变量是线程安全的；若有多个线程同时执行写操作，一般都需要考虑线程同步，否则的话就可能影响线程安全。</p>
+<p>##举例<br>比如一个 ArrayList 类，在添加一个元素的时候，它可能会有两步来完成：</p>
+<ol>
+<li>在 Items[Size] 的位置存放此元素</li>
+<li>增大 Size 的值。</li>
+</ol>
+<p>在单线程运行的情况下，如果 Size = 0，添加一个元素后，此元素在位置 0，而且 Size=1；</p>
+<p>而如果是在多线程情况下，比如有两个线程，线程 A 先将元素存放在位置 0。但是此时 CPU 调度线程A暂停，线程 B 得到运行的机会。线程B也向此 ArrayList 添加元素，因为此时 Size 仍然等于 0 （注意哦，我们假设的是添加一个元素是要两个步骤哦，而线程A仅仅完成了步骤1），所以线程B也将元素存放在位置0。然后线程A和线程B都继续运行，都增加 Size 的值。</p>
+<p>那好，我们来看看 ArrayList 的情况，元素实际上只有一个，存放在位置 0，而 Size 却等于 2。这就是“线程不安全”了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/01/线程安全/" data-id="cj64upq7j00f1lrae1aej0t46" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-排序算法总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/01/排序算法总结/" class="article-date">
+  <time datetime="2015-03-01T12:11:03.000Z" itemprop="datePublished">2015-03-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/算法/">算法</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/01/排序算法总结/">排序算法总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>参考书籍是:《数据结构与算法分析-c语言描述，weiss著》</p>
+<p>下图是排序算法时间复杂度等特性的一个总结：</p>
+<p><img src="/img/排序算法.png" alt=""></p>
+<p>下面详细总结一下各个算法，总结的方面包括：</p>
+<ol>
+<li>每个算法的思想是什么？</li>
+<li>每个算法的稳定性怎样？时间复杂度如何？</li>
+<li>在什么情况下，算法出现最好情况 or 最坏情况？</li>
+<li>每种算法的具体实现又是怎样的？</li>
+</ol>
+<p>##各个排序算法的空间复杂度<br>大家往往只关心时间复杂度，而忽略了空间复杂度，所以这里讲空间复杂度提到前面来讲</p>
+<p><code>冒泡排序</code>，<code>简单选择排序</code>，<code>堆排序</code>，<code>直接插入排序</code>，<code>希尔排序</code>的空间复杂度为O(1),因为需要一个临时变量来交换元素位置，(另外遍历序列时自然少不了用一个变量来做索引)</p>
+<p>快速排序空间复杂度为log2n(因为递归调用了)；归并排序空间复杂是O(n)，需要一个大小为n的临时数组.</p>
+<p>这里的一个问题是，归并排序也递归了，为什么时间复杂度不是log2n?</p>
+<p>答：<br>归并排序每次递归都要用到一个辅助表，长度与待排序的表长度相同，虽然递归次数是O(log2n)，但每次递归都会释放掉所占的辅助空间，所以下次递归的栈空间和辅助空间与这部分释放的空间就不相关了，因而空间复杂度还是O（n）。</p>
+<p>快速排序空间复杂度只是在通常情况下才为O(log2n)，如果是最坏情况的话，很显然就要O(n)的空间了。当然，可以通过随机化选择pivot来将空间复杂度降低到O(log2n)。</p>
+<p>##冒泡排序</p>
+<p>###基本思想<br>通过无序区中相邻记录关键字间的比较和位置的交换,使关键字最小的记录如气泡一般逐渐往上“漂浮”直至“水面”。</p>
+<p><img src="/img/冒泡排序.png" alt=""></p>
+<p>###时间复杂度</p>
+<p><strong>最好情况下</strong>：正序有序，则只需要比较n次。故，为O(n)</p>
+<p><strong>最坏情况下</strong>：逆序有序，则需要比较(n-1)+(n-2)+……+1，故为O(n*n)</p>
+<p>###稳定性<br>排序过程中只交换相邻两个元素的位置。因此，当两个数相等时，是没必要交换两个数的位置的。所以，它们的相对位置并没有改变，<strong>冒泡排序算法是稳定的</strong>！</p>
+<p>##代码</p>
+<pre><code>#define elementtype int
+void bubble_sort(elementtype *array, int n) {
+    elementtype tmp;
+    int i = 0, j = 0;
+    for(; i &lt; n - 1; i++) {
+        for(j = n -1; j &gt; i; j--) {
+            if(array[j] &lt; array[j - 1]) {
+                swap(array[j], array[j-1]);
+            }
+        }
+    }
+}
+</code></pre><p>##选择排序</p>
+<p>###思想<br>首先在未排序序列中找到最小元素，存放到排序序列的起始位置，然后，再从剩余未排序元素中继续寻找最小元素，然后放到排序序列末尾。以此类推，直到所有元素均排序完毕。具体做法是：选择最小的元素与未排序部分的首部交换，使得序列的前面为有序。</p>
+<p>选择排序是和冒泡排序差不多的一种排序。和冒泡排序交换相连数据不一样<br>的是，选择排序只有在确定了最小的数据之后，才会发生交换</p>
+<p>###时间复杂度<br><strong>最好情况</strong>：交换0次，但是每次都要找到最小的元素，因此大约必须遍历<code>N*N</code>次，因此为O(N*N)。减少了交换次数！ </p>
+<p><strong>最坏情况</strong>：平均情况下：O(N*N)</p>
+<p>###稳定性<br>由于每次都是选取未排序序列A中的最小元素x与A中的第一个元素交换，因此跨距离了，很可能破坏了元素间的相对位置，因此<strong>选择排序是不稳定的</strong>！</p>
+<p>例如数组为5,5,3，第一次就会将第一个5和3交换</p>
+<p>###代码</p>
+<pre><code>void select_sort(elementtype *array, int n) {
+    elementtype tmp;
+    int i, j, index;
+    if(array == NULL &amp;&amp; n &lt; 0)
+        exit(-1);
+
+    for(i = 0; i &lt; n - 1; i++) {
+        index = i;
+        for(j = i + 1; j &lt; n; j ++) {
+            if(array[j] &lt; array[index])
+                index = j;
+        }
+
+        if(index != i) {
+            swap(array[i], array[index]);
+        }
+    }
+}
+</code></pre><p>##插入排序</p>
+<p>###思想<br>有一个已经有序的数据序列，要求在这个已经排好的数据序列中插入一个数，但要求插入后此数据序列仍然有序，这个时候就要用到一种新的排序方法—-插入排序法,插入排序的基本操作就是将一个数据插入到已经排好序的有序数据中，从而得到一个新的、个数加一的有序数据，算法适用于少量数据的排序，时间复杂度为O(n^2)。是稳定的排序方法。插入算法把要排序的数组分成两部分：第一部分包含了这个数组的所有元素，但将最后一个元素除外（让数组多一个空间才有插入的位置），而第二部分就只包含这一个元素（即待插入元素）。在第一部分排序完成后，再将这个最后元素插入到已排好序的第一部分中。</p>
+<p>###时间复杂度<br><strong>最好的情况</strong>：正序有序(从小到大)，这样只需要比较n次，不需要移动。因此时间复杂度为O(n)<br><strong>最坏的情况</strong>：逆序有序,这样每一个元素就需要比较n次，共有n个元素，因此实际复杂度为O(n­2)<br><strong>平均情况</strong>：O(n­2)</p>
+<p>###稳定性<br>理解性记忆比死记硬背要好。因此，我们来分析下。稳定性，就是有两个相同的元素，排序先后的相对位置是否变化，主要用在排序时有多个排序规则的情况下。在插入排序中，K1是已排序部分中的元素，当K2和K1比较时，直接插到K1的后面(没有必要插到K1的前面，这样做还需要移动！！)，因此，插入排序是稳定的。</p>
+<p>###代码</p>
+<pre><code>void insert_sort(elementtype *array, int n) {
+    elementtype tmp;
+    int p, j;
+    for(p = 1; p &lt; n; p++) {
+        tmp = array[p];
+        for(j = p; j &gt; 0 &amp;&amp; array[j - 1] &gt; tmp; j--) {
+            array[j]= array[j - 1];
+        }
+        array[j] = tmp;
+    }
+}
+</code></pre><p>##shell排序</p>
+<p>###思想<br>Shell排序是DL. Shell于1959年针对直接插入排序算法改进提出的，属于插入排序的范畴，是对直接插入排序算法的改进。直接插入排序在基本有序时效率较高，并且在序列规模不是很大时效率也很高，Shell排序就是针对这两点进行改进。核心思想是：待排序列有n个元素，先取一个小于n的整数h1作为第一个增量，把待排序列以间隔h1分成若干子序列，子序列内使用插入排序；然后取第二个增量h2(&lt; h1)，重复上述的划分和排序，<br>直至所取的增量hl = 1 (h1 &gt; h2 &gt; … &gt; hl)。</p>
+<p>这样不管序列多么庞大，在先前较大步长分组下每个子序列规模都不是很大，用直接插入效率很高；后面步长变小，子序列变大，但由于整体有序性越来越明显，排序效率依然很高，大大提高了时间效率。</p>
+<p>###时间复杂度</p>
+<p><strong>最好情况</strong>：由于希尔排序的好坏和步长d的选择有很多关系，因此，目前还没有得出最好的步长如何选择(现在有些比较好的选择了，但不确定是否是最好的)。所以，不知道最好的情况下的算法时间复杂度。  </p>
+<p><strong>最坏情况</strong>：O(N*logN)，最坏的情况下和平均情况下差不多。  </p>
+<p><strong>平均情况</strong>：O(N*logN)</p>
+<p>###稳定性<br>由于多次插入排序，我们知道一次插入排序是稳定的，不会改变相同元素的相对顺序，但在不同的插入排序过程中，相同的元素可能在各自的插入排序中移动，最后其稳定性就会被打乱，所以<strong>shell排序是不稳定的</strong>。</p>
+<blockquote>
+<p>有个猜测，方便记忆：一般来说，若存在不相邻元素间交换，则很可能是不稳定的排序。</p>
+</blockquote>
+<p>###代码</p>
+<pre><code>void shell_sort(elementtype *array, int n) {
+    elementtype tmp;
+    int increment, i, j;
+    for(increment = n/2; increment &gt; 0; increment /= 2) {
+        for(i = increment; i &lt; n; i++) {
+            tmp = array[i];
+            for(j = i; j &gt;= increment &amp;&amp; array[j - increment] &gt; tmp; j -= increment)
+                    array[j] = array[j - increment];
+
+            array[j] = tmp;
+        }
+    }
+}
+</code></pre><p>##堆排序</p>
+<p>###思想<br>利用完全二叉树中双亲节点和孩子节点之间的内在关系，在当前无序区中选择关键字最大(或者最小)的记录。也就是说，以最小堆为例，根节点为最小元素，较大的节点偏向于分布在堆底附近。</p>
+<p>###时间复杂度<br>最坏情况下，接近于最差情况下：O(N*logN)，因此它是一种效果不错的排序算法</p>
+<p>###稳定性<br>堆排序需要不断地调整堆，因此<strong>堆排序是一种不稳定的排序</strong>！</p>
+<p>###代码</p>
+<pre><code>#define LeftChild(i) (2 * (i) + 1)
+void perc_down(int *a, int i, int size)
+{
+    int child;
+
+    int tmp = a[i];
+
+    for(; LeftChild(i) &lt; size ; i = child)
+    {
+        child = LeftChild(i);
+        if(child != size - 1 &amp;&amp; a[child] &lt; a[child + 1])
+                child ++;
+
+        /***************************
+         * 提升儿子到父结点，
+         * 儿子结点的位置上存在空穴，
+         * 需要继续比较
+         **************************/
+        if(a[child] &gt; tmp)
+                a[i] = a[child];
+        else/*不需要提升*/
+                break;
+    }
+    /*保存结点的位置找到*/
+    a[i] = tmp;
+}
+
+void build_maxheap(int *a, int size)
+{
+    int step = 0;
+
+    /***************************************
+     * (size-1)/2实质是找到a[size-1]的父结点，
+     * 也就是倒数第二层，堆的创建过程是一个
+     * 由低层到高层逐渐创建的过程
+     **************************************/
+    for(step = (size - 1) / 2 ; step &gt;= 0; -- step)
+        perc_down(a, step, size);
+}
+
+void heap_sort(int *a, int size)
+{
+    int i = 0;
+    /*创建堆*/
+    build_maxheap(a,size);
+
+    for(; i &lt; size; i++)
+        printf(&quot;%d &quot;, a[i]);
+    printf(&quot;\n&quot;);
+
+    for(i = size - 1; i &gt; 0; --i)
+    {
+        swap(a[i],a[0])；
+
+        /*更新堆的结构*/
+        perc_down(a,0,i);
+
+    }
+
+}
+</code></pre><p>##归并排序</p>
+<p>###思想<br>多次将两个或两个以上的有序表合并成一个新的有序表。</p>
+<p><img src="/img/归并排序.png" alt=""></p>
+<p>###时间复杂度</p>
+<p><strong>最好的情况</strong>：一趟归并需要n次，总共需要logN次，因此为O(N*logN) </p>
+<p><strong>最坏的情况</strong>： 接近于平均情况，为O(N*logN) </p>
+<p>说明：对长度为n的文件，需进行logN 趟二路归并，每趟归并的时间为O(n)，故其时间复杂度无论是在最好情况下还是在最坏情况下均是O(nlgn)。</p>
+<p>###稳定性<br><strong>归并排序最大的特色就是它是一种稳定的排序算法</strong>。归并过程中是不会改变元素的相对位置的。 </p>
+<p>缺点是，它需要O(n)的额外空间。但是很<strong>适合于多链表排序</strong>。</p>
+<p>###代码</p>
+<pre><code>/*left_start is the start of the left half, right_start is the start of the
+  right half*/
+void merge(int *array, int *tmp_array, int left_start, int right_start, int right_end)
+{
+    int left_end = right_start-1;
+    int length = right_end-left_start+1;
+
+    int tmp_pos = left_start;
+
+    while(left_start &lt;= left_end &amp;&amp; right_start &lt;= right_end) {
+        if(array[left_start] &lt;= array[right_start])
+            tmp_array[tmp_pos++] = array[left_start++];
+        else
+            tmp_array[tmp_pos++] = array[right_start++];
+    }
+
+    /*main loop*/
+    while(left_start &lt;= left_end)
+        tmp_array[tmp_pos++] = array[left_start++];
+    while(right_start &lt;= right_end)
+        tmp_array[tmp_pos++] = array[right_start++];
+
+    /*copy tmp_array back
+      注意这里必须使用right_end作为数组下标，不能用tmp_pos，因为此时的
+      tmp_pos已经越界了，上面多了一次++*/
+    int i;
+    for(i = 0; i &lt; length; i++, right_end--)  
+        array[right_end] = tmp_array[right_end];
+}
+
+void m_sort(int *array, int *tmp_array, int left, int right)
+{
+    int mid;
+
+    if(left &lt; right) {
+        mid = (left + right)/2;
+        m_sort(array, tmp_array, left, mid);
+        m_sort(array, tmp_array, mid+1, right);
+        merge(array, tmp_array, left, mid+1, right);
+    }
+}
+
+void merge_sort(int *array, int n)
+{
+    if(array == NULL || n &lt;= 0)
+        exit(-1);
+
+    int *tmp_array = (int *)malloc(n * sizeof(int));
+
+    if(tmp_array != NULL) {
+        m_sort(array, tmp_array, 0, n-1);
+        free(tmp_array);
+    }
+    else
+        exit(-1);
+}
+</code></pre><blockquote>
+<p>merge例程是精妙的。如果对merge的每个递归调用均局部声明一个临时数组，那么在任一时刻就可能有logN个临时数组处在活动期，这对于小内存的机器则是致命的。另一方面，如果merge例程动态分配并释放最小量临时内存，那么由malloc占用的时间会很多。严格测试指出，由于merge位于m_sort的最后一行，因此在任一时刻只需要一个临时数组活动，而且可以使用该临时数组的任意部分；我们将使用与输入数组array相同的部分。</p>
+</blockquote>
+<p>#快速排序</p>
+<p>###思想<br>它是由冒泡排序改进而来的。在待排序的n个记录中任取一个记录(通常取第一个记录),把该记录放入适当位置后,数据序列被此记录划分成两部分。所有关键字比该记录关键字小的记录放置在前一部分,所有比它大的记录放置在后一部分,并把该记录排在这两部分的中间(称为该记录归位),这个过程称作一趟快速排序。</p>
+<p><img src="/img/http://img2.imgtn.bdimg.com/it/u=2694285242,78285384&amp;fm=21&amp;gp=0.jpg" alt=""></p>
+<p>###时间复杂度<br><strong>最好的情况</strong>：因为每次都将序列分为两个部分(一般二分都复杂度都和logN相关)，故为 O(N*logN)  </p>
+<p><strong>最坏的情况</strong>：序列基本有序，选取的枢轴元素为最大值或最小值时，退化为冒泡排序，几乎要比较<code>N*N/2</code>次，故为O(N*N)</p>
+<blockquote>
+<p>如何避免最坏情况：为改进快速排序算法，随机选取界点或最左、最右、中间三个元素中的值处于中间的作为界点，通常可以避免原始序列有序的最坏情况。</p>
+</blockquote>
+<p>###稳定性<br>由于每次都需要和中轴元素交换，因此原来的顺序就可能被打乱。如序列为 5 3 3 4 3 8 9 10 11会将3的顺序打乱。所以说，<strong>快速排序是不稳定的</strong>！</p>
+<p>###代码</p>
+<pre><code>/*数据交换*/
+void swap(int *x,int *y)
+{
+   int temp;
+   temp = *x;
+   *x = *y;
+   *y = temp;
+}
+
+int choose_pivot(int i,int j )
+{
+   return((i+j) /2);
+}
+
+/*递归和分治*/
+void quick_sort(int list[],int left,int right)
+{
+   int key,i,j,k;
+   if(left &lt; right)
+   {
+      k = (left + right) / 2;
+      swap(&amp;list[left],&amp;list[k]);
+      key = list[left];
+      i = left+1;
+      j = right;
+      while(1)
+      {
+         while((i &lt; right) &amp;&amp; (list[i] &lt; key))
+                i++;
+         while((j &gt; left) &amp;&amp; (list[j] &gt; key))
+                j--;
+         if( i &lt; j) {
+                swap(&amp;list[i],&amp;list[j]);
+                //仅仅是为了防止死循环，见P183
+                if(list[i] == list[j] &amp;&amp; list[i] == key) {  
+                    i++;  //j--;
+                }
+         }
+         else
+            break;
+      }
+     // 交换两个元素的位置
+      swap(&amp;list[left],&amp;list[j]);
+     // 递归地对较小的数据序列进行排序
+      quick_sort(list,left,j-1);
+      quick_sort(list,j+1,right);
+   }
+} 
+</code></pre><p>快排在数据少的时候是不占优势的，所以一般是在数据少的时候用插入排序，数据多的时候用快排。上面的快排程序对书上的程序作了修改，防止了死循环，但并不是一个好程序。比较好的快排实现可以看<a href="https://github.com/michaelyou/data_structure/blob/master/sort.c" target="_blank" rel="external">这里</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/01/排序算法总结/" data-id="cj64upq5300c5lraeuj8gx001" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/排序/">排序</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-linux磁盘空间命令-df和du" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/27/linux磁盘空间命令-df和du/" class="article-date">
+  <time datetime="2015-02-27T01:16:16.000Z" itemprop="datePublished">2015-02-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/27/linux磁盘空间命令-df和du/">linux磁盘空间命令--df和du</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##df<br>对于磁盘存储方面，有很多命令行或基于GUI的工具，它可以告诉你关于当前磁盘空间的使用情况。这些工具用各种人们可读的格式展示磁盘利用率的详细信息，比如易于理解的总结，详细的统计信息或直观的可视化报告。如果你只想知道不同文件系统有多少空闲的磁盘空间，那么df命令可能是你所需要的。</p>
+<pre><code>[root@pc105 /]# df
+Filesystem           1K-blocks     Used Available Use% Mounted on
+/dev/mapper/VolGroup-lv_root
+                      51475068 48090628    763000  99% /
+tmpfs                  8135664       72   8135592   1% /dev/shm
+/dev/sda1               487652    93128    368924  21% /boot
+/dev/mapper/VolGroup-lv_home
+                     901109008  4270596 851058036   1% /home
+tmpfs                   102400        4    102396   1% /var/log/pearl2
+tmpfs                  8135664        4   8135660   1% /var/run/pearl2
+</code></pre><p>df命令可以展示任何“mounted”文件系统的磁盘利用率。该命令可以用不同的方式调用。</p>
+<p>###用人们可读的方式展示<br>默认情况下，df命令用1K为块来展示磁盘空间，这看起来不是很直观。“-h”参数使df用更可读的方式打印磁盘空间（例如 100K，200M，3G）。</p>
+<pre><code>[root@pc105 /]# df -h
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/mapper/VolGroup-lv_root
+                       50G   46G  746M  99% /
+tmpfs                 7.8G   72K  7.8G   1% /dev/shm
+/dev/sda1             477M   91M  361M  21% /boot
+/dev/mapper/VolGroup-lv_home
+                      860G  4.1G  812G   1% /home
+tmpfs                 100M  4.0K  100M   1% /var/log/pearl2
+tmpfs                 7.8G  4.0K  7.8G   1% /var/run/pearl2
+</code></pre><p>###展示Inode使用情况<br>当你监视磁盘使用情况时，你必须注意的不仅仅是磁盘空间还有“inode”的使用情况。在Linux中，inode是用来存储特定文件的元数据的一种数据结构，在创建一个文件系统时，inode的预先定义数量将被分配。这意味着，<strong>一个文件系统可能耗尽空间不只是因为大文件用完了所有可用空间，也可能是因为很多小文件用完了所有可能的inode</strong>。用“-i”选项展示inode使用情况。</p>
+<pre><code>[root@pc105 /]# df -i
+Filesystem             Inodes  IUsed    IFree IUse% Mounted on
+/dev/mapper/VolGroup-lv_root
+                      3276800 635298  2641502   20% /
+tmpfs                 2033916      3  2033913    1% /dev/shm
+/dev/sda1              128016     53   127963    1% /boot
+/dev/mapper/VolGroup-lv_home
+                     57229312  35042 57194270    1% /home
+tmpfs                 2033916      2  2033914    1% /var/log/pearl2
+tmpfs                 2033916      2  2033914    1% /var/run/pearl2
+</code></pre><p>###展示磁盘总利用率<br>默认情况下， df命令显示磁盘的单个文件系统的利用率。如果你想知道的所有文件系统的总磁盘使用量，增加“ –total ”选项（见最下面的汇总行）。</p>
+<pre><code>[root@pc105 /]# df -h --total
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/mapper/VolGroup-lv_root
+                       50G   46G  746M  99% /
+tmpfs                 7.8G   72K  7.8G   1% /dev/shm
+/dev/sda1             477M   91M  361M  21% /boot
+/dev/mapper/VolGroup-lv_home
+                      860G  4.1G  812G   1% /home
+tmpfs                 100M  4.0K  100M   1% /var/log/pearl2
+tmpfs                 7.8G  4.0K  7.8G   1% /var/run/pearl2
+total                 925G   51G  829G   6%
+</code></pre><p>##du<br>Linux du命令也是查看使用空间的，但是与df命令不同的是Linux du命令是对文件和目录磁盘使用的空间的查看，还是和df命令有一些区别的.</p>
+<p>###显示目录或者文件所占空间 </p>
+<pre><code>[root@localhost test]# du
+608     ./test6
+308     ./test4
+4       ./scf/lib
+4       ./scf/service/deploy/product
+4       ./scf/service/deploy/info
+12      ./scf/service/deploy
+16      ./scf/service
+4       ./scf/doc
+4       ./scf/bin
+32      ./scf
+8       ./test3
+1288    .
+[root@localhost test]#
+</code></pre><p>只显示当前目录下面的子目录的目录大小和当前目录的总的大小，最下面的1288为当前目录的总大小</p>
+<p>###显示指定文件所占空间</p>
+<pre><code>[root@localhost test]# du log2012.log 
+300     log2012.log
+[root@localhost test]#
+</code></pre><p>###查看指定目录的所占空间</p>
+<pre><code>[root@localhost test]# du scf
+4       scf/lib
+4       scf/service/deploy/product
+4       scf/service/deploy/info
+12      scf/service/deploy
+16      scf/service
+4       scf/doc
+4       scf/bin
+32      scf
+[root@localhost test]#
+</code></pre><p>###显示多个文件所占空间</p>
+<pre><code>[root@localhost test]# du log30.tar.gz log31.tar.gz 
+4       log30.tar.gz
+4       log31.tar.gz
+[root@localhost test]#
+</code></pre><p>###只显示总和的大小</p>
+<pre><code>[root@localhost test]# du -s
+1288    .
+[root@localhost test]# du -s scf
+32      scf
+[root@localhost test]# cd ..
+[root@localhost soft]# du -s test
+1288    test
+[root@localhost soft]#
+</code></pre><p>###方便阅读的格式显示</p>
+<pre><code>[root@localhost soft]# du -h test
+608K    test/test6
+308K    test/test4
+4.0K    test/scf/lib
+4.0K    test/scf/service/deploy/product
+4.0K    test/scf/service/deploy/info
+12K     test/scf/service/deploy
+16K     test/scf/service
+4.0K    test/scf/doc
+4.0K    test/scf/bin
+32K     test/scf
+8.0K    test/test3
+1.3M    test
+[root@localhost soft]#
+</code></pre><p>###文件和目录都显示</p>
+<pre><code>[root@localhost soft]# du -ah test
+4.0K    test/log31.tar.gz
+4.0K    test/test13.tar.gz
+300K    test/test6/linklog.log
+4.0K    test/test6/log2013.log
+300K    test/test6/log2012.log
+608K    test/test6
+4.0K    test/test4/log2013.log
+300K    test/test4/log2012.log
+308K    test/test4
+4.0K    test/scf/lib
+4.0K    test/scf/service/deploy/product
+4.0K    test/scf/service/deploy/info
+12K     test/scf/service/deploy
+16K     test/scf/service
+4.0K    test/scf/doc
+4.0K    test/scf/bin
+32K     test/scf
+4.0K    test/log2013.log
+300K    test/log2012.log
+4.0K    test/log30.tar.gz
+4.0K    test/log.tar.bz2
+4.0K    test/log.tar.gz
+4.0K    test/test3/log2013.log
+8.0K    test/test3
+4.0K    test/scf.tar.gz
+1.3M    test
+[root@localhost soft]#
+</code></pre><p>###显示几个文件或目录各自占用磁盘空间的大小，还统计它们的总和</p>
+<pre><code>[root@localhost test]# du -c log30.tar.gz log31.tar.gz 
+4       log30.tar.gz
+4       log31.tar.gz
+8       总计
+[root@localhost test]#
+</code></pre><p>###按照空间大小排序</p>
+<pre><code>[root@localhost test]# du|sort -nr|more
+1288    .
+608     ./test6
+308     ./test4
+32      ./scf
+16      ./scf/service
+12      ./scf/service/deploy
+8       ./test3
+4       ./scf/service/deploy/product
+4       ./scf/service/deploy/info
+4       ./scf/lib
+4       ./scf/doc
+4       ./scf/bin
+[root@localhost test]#
+</code></pre><p>###输出当前目录下各个子目录所使用的空间</p>
+<pre><code>[root@localhost test]# du -h  --max-depth=1
+608K    ./test6
+308K    ./test4
+32K     ./scf
+8.0K    ./test3
+1.3M    .
+[root@localhost test]#
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/27/linux磁盘空间命令-df和du/" data-id="cj64upq15005slrae37fev3fn" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shell/">shell</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Linux进阶：让效率翻倍的Bash技巧（一）-历史命令操作篇" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/25/Linux进阶：让效率翻倍的Bash技巧（一）-历史命令操作篇/" class="article-date">
+  <time datetime="2015-02-25T02:43:16.000Z" itemprop="datePublished">2015-02-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/25/Linux进阶：让效率翻倍的Bash技巧（一）-历史命令操作篇/">Linux进阶：让效率翻倍的Bash技巧（一）--历史命令操作篇</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#Linux进阶：让效率翻倍的Bash技巧（一）–历史命令操作篇</p>
+<p>许多使用过Linux一段时间的人通过一些基础操作已经能够把Linux各方面基本玩转，但是如果没有经过系统学习的话就容易缺乏一些实战技巧。这系列文章介绍一些关于bash的能够提高效率的技巧，主要是关于历史命令操作和一些快捷键，让你在命令行下工作效率翻倍。</p>
+<p>##历史命令</p>
+<ul>
+<li><p>最基本的查看历史命令 history</p>
+<pre><code>[root@pc105 data_stucture]# history
+
+1009  ping www.baidu.com
+1010  ssh 192.168.1.225
+1011  who
+1012  ping www.github.com
+1013  history
+1014  ls
+1015  cd data_stucture/
+1016  ls
+1017  g++ example_list.c 
+1018  ls
+1019  ./a.out
+1020  ls
+</code></pre></li>
+<li><p>!n 编号为n的历史命令</p>
+</li>
+</ul>
+<p>不用再复制粘贴，或者照着历史记录敲了。执行历史命令记录里面的某个命令，只需要 ! + <code>这条命令记录前的序号</code>，比如</p>
+<pre><code>[root@pc105 data_stucture]# 1012
+</code></pre><p>这样就可以执行1012序号对应的命令 ping www.github.com</p>
+<pre><code>[root@pc105 data_stucture]# !1012
+ping www.github.com
+PING github.com (192.30.252.129) 56(84) bytes of data.
+64 bytes from github.com (192.30.252.129): icmp_seq=1 ttl=49 time=384 ms
+64 bytes from github.com (192.30.252.129): icmp_seq=2 ttl=49 time=397 ms
+</code></pre><ul>
+<li>!-n  倒数第n个历史命令</li>
+</ul>
+<p>你也可以用 <code>!  - （倒数第几个命令）</code>来执行历史命令，比如<code>!-1</code>就是倒数第一个命令，<code>!-3</code>就是倒数第三个命令</p>
+<pre><code>[root@pc105 michael]# du -sh data_stucture
+2.9M    data_stucture
+[root@pc105 michael]# cp -r data_stucture/ data_stucture_bak
+[root@pc105 michael]# clear
+[root@pc105 michael]# !-3
+du -sh data_stucture
+2.9M    data_stucture
+[root@pc105 michael]# 
+</code></pre><ul>
+<li>!!  上一条命令</li>
+</ul>
+<p>!! 表示上一条命令，相当于 !-1 。</p>
+<p>这是一个极为方便实用的命令，比如一条很长的命令而且需要管理员权限，但是好不容易敲完但忘记加sudo，这里就可以直接用 sudo !!来完成刚刚的那条复杂的命令加sudo</p>
+<ul>
+<li>!keyword  查找包含该keyword的历史命令</li>
+</ul>
+<p>如果想查找包含某个关键字的历史命令，可以这样做</p>
+<pre><code>!keyword
+</code></pre><p>查找包含keyword的历史命令，然后回车就能执行这条历史命令</p>
+<pre><code>[root@pc105 michael]# !ping
+ping www.github.com
+PING github.com (192.30.252.128) 56(84) bytes of data.
+64 bytes from github.com (192.30.252.128): icmp_seq=1 ttl=49 time=390 ms
+</code></pre><p><strong>但是其实这个操作是很危险的，假如你看错或者记混了历史命令，在回车前你其实不知道要查找出的是哪条历史命令，而回车后这条命令就执行了，没有机会给你看一下查找出的命令具体是什么就执行了。很危险，不推荐这样做，可以使用 MagicSpace（见下文） 或者使用Ctrl + R 反向查找 （推荐）</strong></p>
+<ul>
+<li>Ctrl + R  反向查找命令</li>
+</ul>
+<p>快捷键Ctrl + R ，然后输入要查找的关键字，输入的同时，bash就会动态地增量搜索，找到想要的历史命令后可以按回车执行，或者esc把这条提取命令出来但是不执行。再按Ctrl + R 则继续往后查找符合条件的命令。</p>
+<pre><code>[root@pc105 michael]# ^C
+(reverse-i-search)`ping&apos;: ^Cng www.github.com
+</code></pre><ul>
+<li>history | grep keyword  列出所有符合条件的命令</li>
+</ul>
+<p>Ctrl + R 无疑是最方便常用的历史记录搜索方式，但是当然也可以用 history | grep keyword 来查找所有的符合条件的记录，然后再结合刚刚的! 方法完成命令。</p>
+<p>注意，以上所说的包含 ! 的技巧都是可以与别的命令拼接在一起的， 比如</p>
+<p>sudo  !-3  , time  !472， sudo  !apt</p>
+<p>##关于历史记录的参数的技巧：</p>
+<ul>
+<li>!$  上一条命令的最后一条参数</li>
+</ul>
+<p>如果说你只想用上条命令的参数，一个个打出来又太繁复，就可以这样</p>
+<pre><code>[root@pc105 michael]# ls /root/michael/data_stucture
+a.out                 example_ev.c      example_tree.c  polynomial.h     stack.h
+balance_sign.c        example_list.c    hanoi.c         proc_self_exe.c  threaded_binary_tree.c
+binaryheap.c          example_poly.c    hash.c          queue.c          tmp_tree.c
+binaryheap.h          example_queue.c   hash.h          queue.h          tree.c
+core.25191            example_search.c  list.c          search.c         tree.h
+crumble_test.c        example_sort.c    list.h          sort.c           -v
+example_binaryheap.c  example_stack.c   polynomial.c    stack.c          yanghui_triangle.c
+[root@pc105 michael]# cd !$
+cd /root/michael/data_stucture
+[root@pc105 data_stucture]#
+</code></pre><p>当然这种情形下也有更简单的方法，等讲到快捷键部分再说</p>
+<ul>
+<li>!^  上一条命令的第一个参数</li>
+</ul>
+<p>$ 表示最后一个参数，而 ^就表示的是第一个参数</p>
+<p>!^ 在这样的一个应用场景里十分方便：你刚备份了一个配置文件，然后想编辑这个配置文件</p>
+<pre><code>[root@pc105 home]# cp nginx.conf nginx.conf.bak
+[root@pc105 home]# vim !^
+vim nginx.conf
+</code></pre><ul>
+<li>:n  第n个参数</li>
+</ul>
+<p>^与$表示第一个参数和最后一个参数，而 :n 就表示第n个参数，比如 !:2就表示上一条命令的第2个参数</p>
+<pre><code>[root@pc105 home]# cp -r tmp tmp-bak
+[root@pc105 home]# cd !:2
+cd tmp
+[root@pc105 tmp]# 
+</code></pre><p>注意，参数符号不仅是可以 !$、!^、!:n 这样用，这些关于参数的符号都是可以和!表达式任意组合使用的，比如</p>
+<p>cd  !762:2 （表示762号历史命令的第2个参数）</p>
+<p>ls  !-3^ （表示倒数第3个命令的第一个参数）</p>
+<p>dpkg  -L  !apt$  (表示搜索含apt的命令的最后一个参数）</p>
+<ul>
+<li>magic-space  让历史记录表达式和参数符号立即显出原形</li>
+</ul>
+<p>虽然历史记录表达式和参数符号使用起来简易方便，但是在包含这些表达式和符号的命令回车执行之前，你是并不知道这些表达式和符号到底代表的什么。为了解决这个问题，我们可以使用Magic-Space</p>
+<pre><code>bind Space:magic-space
+</code></pre><p>使用了这个设置后，在bash中输入历史记录表达式和参数符号后，按一下空格，这些表达式和符号就立即变成它们所代表的历史命令和参数，简称magic space。</p>
+<p>可以把这句放到.bashrc中，让设置持久生效（Mac是在.bash_profile）。</p>
+<ul>
+<li>命令前加空格，使之不计入history<ol>
+<li>$ vim /etc/.bashrc # 挑個喜歡的位置加入下述  <code>export HISTCONTROL=ignorespace</code></li>
+<li>$ source .bashrc # 或 重新登入</li>
+<li>$  mysql -u root -pPASSWORD # mysql 前面有一個空白, 那此行指令就不會被紀錄進 history</li>
+</ol>
+</li>
+</ul>
+<p>臨時要用的話, 直接執行 HISTCONTROL=ignorespace, 也是可以達到同樣效果.</p>
+<p>在命令前加空格，就可以避免改该命令计入history，小伙伴们就可以在不用清空history的前提下干一些坏事了。</p>
+<ul>
+<li>HISTSIZE=0  不记录命令</li>
+</ul>
+<p>如果不想记录命令，可以设置HISTSIZE=0。如果想恢复，可以在设置HISTSIZE为一个大于零的值（默认为500或者1000）</p>
+<ul>
+<li>HISTCONTROL=ignoredups  去除重复命令</li>
+</ul>
+<p>这样设置后，多次的同样的命令连续执行就会只记录一次。</p>
+<p>历史记录篇就暂时介绍到这，下篇快捷键篇会介绍更多Bash的技巧。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/25/Linux进阶：让效率翻倍的Bash技巧（一）-历史命令操作篇/" data-id="cj64uppvz0017lraegnez0h9s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/bash/">bash</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shell/">shell</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-cookie-和session-的区别" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/12/cookie-和session-的区别/" class="article-date">
+  <time datetime="2015-02-12T06:37:50.000Z" itemprop="datePublished">2015-02-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/http/">http</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/12/cookie-和session-的区别/">cookie 和session 的区别</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>转载自<a href="http://www.cnblogs.com/shiyangxt/archive/2008/10/07/1305506.html" target="_blank" rel="external">这里</a>  </p>
+<p>当你在浏览网站的时候，WEB 服务器会先送一小小资料放在你的计算机上，Cookie 会把你在网站上所打的文字或是一些选择都纪录下来。当下次你再光临同一个网站，WEB 服务器会先看看有没有它上次留下的 Cookie 资料，有的话，就会依据 Cookie<br>里的内容来判断使用者，送出特定的网页内容给你。 Cookie 的使用很普遍，许多提供个人化服务的网站，都是利用 Cookie来辨认使用者，以方便送出使用者量身定做的内容，像是 Web 接口的免费 email 网站，都要用到 Cookie。</p>
+<p>具体来说cookie机制采用的是在客户端保持状态的方案，而session机制采用的是在服务器端保持状态的方案。</p>
+<p>同时我们也看到，由于采用服务器端保持状态的方案在客户端也需要保存一个标识，所以session机制可能需要借助于cookie机制来达到保存标识的目的，但实际上它还有其他选择。</p>
+<p>cookie机制。正统的cookie分发是通过扩展HTTP协议来实现的，服务器通过在HTTP的响应头中加上一行特殊的指示以提示浏览器按照指示生成相应的cookie。然而纯粹的客户端脚本如JavaScript或者VBScript也可以生成cookie。而cookie的使用是由浏览器按照一定的原则在后台自动发送给服务器的。浏览器检查所有存储的cookie，如果某个cookie所声明的作用范围大于等于将要请求的资源所在的位置，则把该cookie附在请求资源的HTTP请求头上发送给服务器。</p>
+<p>cookie的内容主要包括：名字，值，过期时间，路径和域。路径与域一起构成cookie的作用范围。若不设置过期时间，则表示这个cookie的生命期为浏览器会话期间，关闭浏览器窗口，cookie就消失。这种生命期为浏览器会话期的cookie被称为会话cookie。</p>
+<p>会话cookie一般不存储在硬盘上而是保存在内存里，当然这种行为并不是规范规定的。若设置了过期时间，浏览器就会把cookie保存到硬盘上，关闭后再次打开浏览器，这些cookie仍然有效直到超过设定的过期时间。存储在硬盘上的cookie可以在不同的浏览器进程间共享，比如两个IE窗口。而对于保存在内存里的cookie，不同的浏览器有不同的处理方式。</p>
+<p>session机制。session机制是一种服务器端的机制，服务器使用一种类似于散列表的结构（也可能就是使用散列表）来保存信息。</p>
+<p>当程序需要为某个客户端的请求创建一个session时，服务器首先检查这个客户端的请求里是否已包含了一个session标识（称为session id），如果已包含则说明以前已经为此客户端创建过session，服务器就按照session id把这个session检索出来<br>使用（检索不到，会新建一个），如果客户端请求不包含session id，则为此客户端创建一个session并且生成一个与此session相关联的session id，session id的值应该是一个既不会重复，又不容易被找到规律以仿造的字符串，这个session id将被在本次响应中返回给客户端保存。保存这个session id的方式可以采用cookie，这样在交互过程中浏览器可以自动的按照规则把这个标识发送给服务器。一般这个cookie的名字都是类似于SEEESIONID。但cookie可以被人为的禁止，则必须有其他机制以便在cookie被禁止时仍然能够把session id传递回服务器。</p>
+<p>经常被使用的一种技术叫做URL重写，就是把session id直接附加在URL路径的后面。还有一种技术叫做表单隐藏字段。就是服务器会自动修改表单，添加一个隐藏字段，以便在表单提交时能够把session id传递回服务器。比如： </p>
+<pre><code>&lt;form name=&quot;testform&quot; action=&quot;/xxx&quot;&gt; 
+&lt;input type=&quot;hidden&quot; name=&quot;jsessionid&quot; value=&quot;ByOK3vjFD75aPnrF7C2HmdnV6QZcEbzWoWiBYEnLerjQ99zWpBng!-145788764&quot;&gt; 
+&lt;input type=&quot;text&quot;&gt; 
+&lt;/form&gt; 
+</code></pre><p>实际上这种技术可以简单的用对action应用URL重写来代替。</p>
+<p>cookie 和session 的区别：</p>
+<ol>
+<li><p>cookie数据存放在客户的浏览器上，session数据放在服务器上。</p>
+</li>
+<li><p>cookie不是很安全，别人可以分析存放在本地的COOKIE并进行COOKIE欺骗<br>考虑到安全应当使用session。</p>
+</li>
+<li><p>session会在一定时间内保存在服务器上。当访问增多，会比较占用你服务器的性能<br>考虑到减轻服务器性能方面，应当使用COOKIE。</p>
+</li>
+<li><p>单个cookie保存的数据不能超过4K，很多浏览器都限制一个站点最多保存20个cookie。</p>
+</li>
+<li><p>所以个人建议：<br>将登陆信息等重要信息存放为SESSION<br>其他信息如果需要保留，可以放在COOKIE中</p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/12/cookie-和session-的区别/" data-id="cj64uppyk0031lraeyinjrfhh" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/http/">http</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/page/13/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/15/">__('next') &raquo;</a>
+  </nav>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

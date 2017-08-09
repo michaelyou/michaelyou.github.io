@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/page/17/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-python试题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/01/python试题/" class="article-date">
+  <time datetime="2015-02-01T06:19:48.000Z" itemprop="datePublished">2015-02-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/01/python试题/">python试题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##list与tuple的区别 ？dictionary与set的区别？<br>对于list与tupel的区别，在《Python核心编程2》中讲解的很清楚，可以总体概括为，可变与不可变、他们本质相同，但是就因为可变性就延伸了很多不同点。如list类型可以进行相应更改和方法操作，但tupel就没有这个功能。</p>
+<p>对于dict和set，一个是Python唯一的映射类型，一个是Python集合。python中集合对象（set）是一组无序排列的可哈希的值，包含两种类型：可变集合（set）和不可变集合（frozenset），所以set不是可哈希的，frozenset是可哈希的，能当作字典的键。字典和集合的详细区别可以点<a href="http://codingnow.cn/language/353.html" target="_blank" rel="external">这里</a></p>
+<p>##python中String类型和unicode什么关系?<br>string是字节串，而unicode是一个统一的字符集，utf-8是它的一种存储实现形式，string可为utf-8编码，也可编码为GBK等各种编码格式</p>
+<p>##输出从1加到100的和<br>    sum = 0<br>    for i in range(1, 101):<br>        sum += i<br>    print sum </p>
+<pre><code>#注意点：range的右范围是取不到的
+</code></pre><p>##如何在一个函数内修改一个全局变量？<br>在函数中使用global关键字声明全局变量，然后修改。如： </p>
+<pre><code>a = 10
+
+def add1():
+    global a
+    print a + 1
+
+add1()
+</code></pre><p>##except的用法和作用<br>Python的except用来捕获所有异常， 因为Python里面的每次错误都会抛出 一个异常，所以每个程序的错误都被当作一个运行时错误。</p>
+<p>以下是使用except的一个例子：</p>
+<pre><code>try:    
+    foo = opne(“file”) #open被错写为opne    
+except: 
+    sys.exit(“could not open file!”)
+</code></pre><p>因为这个错误是由于open被拼写成opne而造成的，然后被except捕获，所以debug程序的时候很容易不知道出了什么问题</p>
+<p>下面这个例子更好点：</p>
+<pre><code>try:
+    foo = opne(“file”) # 这时候except只捕获IOError
+except IOError:
+    sys.exit(“could not open file”)
+</code></pre><p>##如何反序的迭代一个序列?how do I iterate over a sequence in reverse order</p>
+<p>如果是一个list, 最快的解决方案是：</p>
+<pre><code>list.reverse()
+try:
+    for x in list:
+        “do something with x”
+finally:
+list.reverse()
+</code></pre><p>如果不是list, 最通用但是稍慢的解决方案是：</p>
+<pre><code>#range函数的参数
+#第一个：从这个数开始迭代
+#第二个：迭代到这个数
+#第三个：步长，为负表示倒序
+for i in range(len(sequence)-1, -1, -1):
+    x = sequence[i]
+</code></pre><p>##判断当前用户是否是root<br>    import os<br>    if os.geteuid() != 0:<br>        print “This program must be run as root. Aborting.”<br>    sys.exit(1)</p>
+<p>##什么是lambda函数?<br>Python允许你定义一种单行的小函数。定义lambda函数的形式如下：labmda 参数：表达式lambda函数默认返回表达式的值。你也可以将其赋值给一个变量。lambda函数可以接受任意个参数，包括可选参数，但是表达式只有一个：</p>
+<pre><code>&gt;&gt;&gt; g = lambda x, y: x*y
+&gt;&gt;&gt; g(3,4)
+12
+&gt;&gt;&gt; g = lambda x, y=0, z=0: x+y+z
+&gt;&gt;&gt; g(1)
+1
+&gt;&gt;&gt; g(3, 4, 7)
+14
+</code></pre><p>也能够直接使用lambda函数，不把它赋值给变量：</p>
+<pre><code>&gt;&gt;&gt; (lambda x,y=0,z=0:x+y+z)(3,5,6)
+14
+</code></pre><p>如果你的函数非常简单，只有一个表达式，不包含命令，可以考虑lambda函数。否则，你还是定义函数才对，毕竟函数没有这么多限制。</p>
+<p>##Python是如何进行内存管理的?<br>Python的内存管理是由Python得解释器负责的，开发人员可以从内存管理事务中解放出来，致力于应用程序的开发，这样就使得开发的程序错误更少，程序更健壮，开发周期更短</p>
+<p>##如何用Python来发送邮件?<br>以下代码可以在支持SMTP监听器的服务器上执行。</p>
+<pre><code>import sys, smtplib
+
+fromaddr = raw_input(“From: “)
+toaddrs = raw_input(“To: “).split(‘,’)
+print “Enter message, end with ^D:”
+msg = &quot;&quot;
+while 1:
+    line = sys.stdin.readline()
+    if not line:
+        break
+    msg = msg + line
+
+# 发送邮件部分
+server = smtplib.SMTP(‘localhost’)
+server.sendmail(fromaddr, toaddrs, msg)
+server.quit()
+</code></pre><p>##Python输出一个Fibonacci数列?</p>
+<p>方法一：</p>
+<pre><code>a,b = 0, 1
+while b&lt;100:
+    print (b),
+    a, b = b, a+b
+</code></pre><p>方法二：递归</p>
+<pre><code>def fibonacci2(n):  
+    if n == 1 or n == 2:  
+        return 1  
+    else:  
+        return fibonacci2(n-1) + fibonacci2(n-2)
+</code></pre><p>方法三：迭代</p>
+<pre><code>def fibonacci(n):  
+    if n == 1 or n == 2:  
+        return 1  
+
+    nPre = 1  
+    nLast = 1  
+    nResult = 0  
+    i = 2  
+    while i &lt; n:  
+        nResult = nPre + nLast  
+        nPre = nLast  
+        nLast = nResult  
+        i += 1  
+
+    return nResult  
+</code></pre><p>##Python里面如何生成随机数?<br>标准库random实现了一个随机数生成器，实例代码如下：</p>
+<pre><code>import random
+
+random.random()
+</code></pre><p>它会返回一个随机的0和1之间的浮点数</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/01/python试题/" data-id="cj64upq2j007ulrae874iv3mw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-python的socket编程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/31/python的socket编程/" class="article-date">
+  <time datetime="2015-01-31T12:29:30.000Z" itemprop="datePublished">2015-01-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/31/python的socket编程/">python的socket编程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>python的网络编程比c语言简单许多, 封装许多底层的实现细节, 方便程序员使用的同时, 也使程序员比较难了解一些底层的东西, 我觉得学网络编程还是用c语言更好一点。</p>
+<p>这篇文章将一些Linux网络编程的函数和Python网络编程函数做了一个简单的对照, 方便记忆。</p>
+<p>##Socket套接字的概念<br>Socket，是操作系统内核中的一个数据结构，它是网络中的节点进行相互通信的门户。它是网络进程的ID。网络通信，归根到底还是进程间的通信（不同计算机上的进程间通信, 又称进程间通信, IP协议进行的主要是端到端通信）。在网络中，每一个节点（计算机或路由）都有一个网络地址，也就是IP地址。两个进程通信时，首先要确定各自所在的网络节点的网络地址。但是，网络地址只能确定进程所在的计算机，而一台计算机上很可能同时运行着多个进程，所以仅凭网络地址还不能确定到底是和网络中的哪一个进程进行通信，因此套接口中还需要包括其他的信息，也就是端口号（PORT）。在一台计算机中，一个端口号一次只能分配给一个进程，也就是说，在一台计算机中，端口号和进程之间是一一对应关系。</p>
+<p>所以，使用端口号和网络地址的组合可以唯一的确定整个网络中的一个网络进程.<br>端口号的范围从0~65535，一类是由互联网指派名字和号码公司ICANN负责分配给一些常用的应用程序固定使用的“周知的端口”，其值一般为0~1023, 用户自定义端口号一般大于等于1024。</p>
+<p>每一个socket都用一个半相关描述{协议、本地地址、本地端口}来表示；一个完整的套接字则用一个相关描述{协议、本地地址、本地端口、远程地址、远程端口}来表示。socket也有一个类似于打开文件的函数调用，该函数返回一个整型的socket描述符，随后的连接建立、数据传输等操作都是通过socket来实现的</p>
+<p>###Socket类型<br>socket类型在Liunx和Python是一样的, 只是Python中的类型都定义在socket模块中, 调用方式socket.SOCK_XXXX</p>
+<ul>
+<li>流式socket（SOCK_STREAM） 用于TCP通信</li>
+</ul>
+<blockquote>
+<p>流式套接字提供可靠的、面向连接的通信流；它使用TCP协议，从而保证了数据传输的正确性和顺序性</p>
+</blockquote>
+<ul>
+<li>数据报socket（SOCK_DGRAM） 用于UDP通信</li>
+</ul>
+<blockquote>
+<p>数据报套接字定义了一种无连接的服务，数据通过相互独立的报文进行传输，是无序的，并且不保证是可靠、无差错的。它使用数据报协议UDP</p>
+</blockquote>
+<ul>
+<li>原始socket（SOCK_RAW） 用于新的网络协议实现的测试等</li>
+</ul>
+<blockquote>
+<p>原始套接字，普通的套接字无法处理ICMP、IGMP等网络报文，而SOCK_RAW可以, 其次，SOCK_RAW也可以处理特殊的IPv4报文；此外，利用原始套接字，可以通过IP_HDRINCL套接字选项由用户构造IP头。</p>
+</blockquote>
+<p>##Socket编程</p>
+<p>###TCP通信<br>TCP通信的基本步骤如下：</p>
+<p>服务端：socket—-bind—-listen—-while(True){—-accept—-recv—-send——}—-close</p>
+<p>客户端：socket———————————————connect—-send—-recv———-close</p>
+<p><img src="/img/TCP通信.png" alt="TCP通信.png"></p>
+<p>####socket函数<br>使用给定的地址族、套接字类型、协议编号（默认为0）来创建套接字</p>
+<pre><code>#Linux
+int socket(int domain, int type, int protocol);
+domain：AF_INET：Ipv4网络协议 AF_INET6：IPv6网络协议
+type : tcp：SOCK_STREAM   udp：SOCK_DGRAM
+protocol : 指定socket所使用的传输协议编号。通常为0.
+返回值：成功则返回套接口描述符，失败返回-1。
+
+
+#python
+socket.socket([family[, type[, proto]]])
+family : AF_INET (默认ipv4), AF_INET6(ipv6) or AF_UNIX(Unix系统进程间通信). 
+type : SOCK_STREAM (TCP), SOCK_DGRAM(UDP) . 
+protocol : 一般为0或者默认
+如果socket创建失败会抛出一个socket.error异常
+</code></pre><p>####服务器端函数</p>
+<p>#####bind函数<br>将套接字绑定到地址, python下,以元组（host,port）的形式表示地址, Linux下使用sockaddr_in结构体指针</p>
+<pre><code>#Linux
+int bind(int sockfd, struct sockaddr * my_addr, int addrlen);
+sockfd : 前面socket()的返回值
+my_addr : 结构体指针变量
+#####
+struct sockaddr_in  //常用的结构体
+{
+unsigned short int sin_family;  //即为sa_family AF_INET
+uint16_t sin_port;  //为使用的port编号
+struct in_addr sin_addr;  //为IP地址
+unsigned char sin_zero[8];  //未使用
+};
+struct in_addr
+{
+uint32_t s_addr;
+};
+####
+addrlen : sockaddr的结构体长度。通常是计算sizeof(struct sockaddr);
+返回值：成功则返回0，失败返回-1
+
+
+#python
+s.bind(address)
+s为socket.socket()返回的套接字对象
+address为元组（host,port）
+host: ip地址, 为一个字符串
+post: 自定义主机号, 为整型
+</code></pre><p>#####listen函数<br>使服务器的这个端口和IP处于监听状态，等待网络中某一客户机的连接请求。如果客户端有连接请求，端口就会接受这个连接</p>
+<pre><code>#Linux
+int listen(int sockfd,int backlog);
+sockfd : 为前面socket的返回值.
+backlog : 指定同时能处理的最大连接要求，通常为10或者5。最大值可设至128
+返回值：成功则返回0，失败返回-1
+
+
+#python
+s.listen(backlog)
+s为socket.socket()返回的套接字对象
+backlog : 操作系统可以挂起的最大连接数量。该值至少为1，大部分应用程序设为5就可以了
+</code></pre><p>#####accept函数<br>接受远程计算机的连接请求，建立起与客户机之间的通信连接。服务器处于监听状态时，如果某时刻获得客户机的连接请求，此时并不是立即处理这个请求，而是将这个请求放在等待队列中，当系统空闲时再处理客户机的连接请求。</p>
+<pre><code>#Linux
+int accept(int s,struct sockaddr * addr,int * addrlen);
+sockfd : 为前面socket的返回值.
+addr : 为结构体指针变量，和bind的结构体是同种类型的，系统会把远程主机的信息（远程主机的地址和端口号信息）保存到这个指针所指的结构体中。
+addrlen : 表示结构体的长度，为整型指针 
+返回值：成功则返回新的socket处理代码new_fd，失败返回-1
+#python
+s.accept()
+s为socket.socket()返回的套接字对象
+返回（conn,address）,其中conn是新的套接字对象，可以用来接收和发送数据。address是连接客户端的地址
+</code></pre><p>####客户端函数</p>
+<p>#####connect函数<br>用来请求连接远程服务器</p>
+<pre><code>#Linux
+int connect (int sockfd,struct sockaddr * serv_addr,int addrlen);
+sockfd : 为前面socket的返回值.
+serv_addr : 为结构体指针变量，存储着远程服务器的IP与端口号信息
+addrlen : 表示结构体变量的长度
+返回值：成功则返回0，失败返回-1
+
+
+#python
+s.connect(address)
+s为socket.socket()返回的套接字对象
+address : 格式为元组（hostname,port），如果连接出错，返回socket.error错误
+</code></pre><p>####通用函数<br>接收远端主机传来的数据</p>
+<p>#####recv函数</p>
+<pre><code>#Linux
+int recv(int sockfd,void *buf,int len,unsigned int flags);
+sockfd : 为前面accept的返回值.也就是新的套接字。
+buf : 表示缓冲区
+len : 表示缓冲区的长度
+flags : 通常为0
+返回值：成功则返回实际接收到的字符数，可能会少于你所指定的接收长度。失败返回-1
+
+
+#python
+s.recv(bufsize[,flag])
+s为socket.socket()返回的套接字对象
+bufsize : 指定要接收的数据大小
+flag : 提供有关消息的其他信息，通常可以忽略
+返回值为数据以字符串形式
+</code></pre><p>#####send函数<br>发送数据给指定的远端主机</p>
+<pre><code>#Linux
+int send(int s,const void * msg,int len,unsigned int flags);
+sockfd : 为前面socket的返回值.
+msg : 一般为常量字符串
+len : 表示长度
+flags : 通常为0
+返回值：成功则返回实际传送出去的字符数，可能会少于你所指定的发送长度。失败返回-1
+
+
+#python
+s.send(string[,flag])
+s为socket.socket()返回的套接字对象
+string : 要发送的字符串数据 
+flag : 提供有关消息的其他信息，通常可以忽略
+返回值是要发送的字节数量，该数量可能小于string的字节大小。
+s.sendall(string[,flag])
+#完整发送TCP数据。将string中的数据发送到连接的套接字，但在返回之前会尝试发送所有数据。
+返回值 : 成功返回None，失败则抛出异常。
+</code></pre><p>#####close函数<br>关闭套接字</p>
+<pre><code>#Linux
+int close(int fd);
+fd : 为前面的sockfd
+返回值：若文件顺利关闭则返回0，发生错误时返回-1
+
+
+#python
+s.close()
+s为socket.socket()返回的套接字对象
+</code></pre><p>####简单的客户端服务器TCP连接<br>一个简单的回显服务器和客户端模型, 客户端发出的数据, 服务器会回显到客户端的终端上(只是一个简单的模型, 没考虑错误处理等问题)</p>
+<pre><code>#服务器端
+#!/usr/bin/python
+# -*- coding:utf-8 -*-
+import socket   #socket模块
+import commands   #执行系统命令模块
+BUF_SIZE = 1024  #设置缓冲区大小
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #生成一个新的socket对象
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  #设置地址复用
+server.bind(server_addr)  #绑定地址
+server.listen(5)  #监听, 最大监听数为5
+while True:
+    client, client_addr = server.accept()  #接收TCP连接, 并返回新的套接字和地址
+    print &apos;Connected by&apos;, client_addr
+    while True :
+        data = client.recv(BUF_SIZE)  #从客户端接收数据
+        print data
+        client.sendall(data)  #发送数据到客户端
+server.close()
+
+
+
+#客户端
+#!/usr/bin/python
+# -*- coding:utf-8 -*-
+import socket
+BUF_SIZE = 1024  #设置缓冲区的大小
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #返回新的socket对象
+client.connect(server_addr)  #要连接的服务器地址
+while True:
+    data = raw_input(&quot;Please input some string &gt; &quot;)  
+    client.sendall(data)  #发送数据到服务器
+    data = client.recv(BUF_SIZE)  #从服务器端接收数据
+    print data
+client.close()
+</code></pre><p>####带错误处理的客户端服务器TCP连接<br>在进行网络编程时, 最好使用大量的错误处理, 能够尽量的发现错误, 也能够使代码显得更加严谨</p>
+<pre><code>#服务器端
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+import sys
+import socket   #socket模块
+BUF_SIZE = 1024  #设置缓冲区大小
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+try :
+  server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #生成一个新的socket对象
+except socket.error, msg :
+    print &quot;Creating Socket Failure. Error Code : &quot; + str(msg[0]) + &quot; Message : &quot; + msg[1]
+    sys.exit()
+print &quot;Socket Created!&quot;
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  #设置地址复用
+try : 
+    server.bind(server_addr)  #绑定地址
+except socket.error, msg :
+  print &quot;Binding Failure. Error Code : &quot; + str(msg[0]) + &quot; Message : &quot; + msg[1]
+  sys.exit()
+print &quot;Socket Bind!&quot;
+server.listen(5)  #监听, 最大监听数为5
+print &quot;Socket listening&quot;
+while True:
+    client, client_addr = server.accept()  #接收TCP连接, 并返回新的套接字和地址, 阻塞函数
+    print &apos;Connected by&apos;, client_addr
+    while True :
+        data = client.recv(BUF_SIZE)  #从客户端接收数据
+        print data
+        client.sendall(data)  #发送数据到客户端
+server.close()
+
+
+#客户端
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+import sys
+import socket
+BUF_SIZE = 1024  #设置缓冲区的大小
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+try : 
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #返回新的socket对象
+except socket.error, msg :
+    print &quot;Creating Socket Failure. Error Code : &quot; + str(msg[0]) + &quot; Message : &quot; + msg[1]
+    sys.exit()
+client.connect(server_addr)  #要连接的服务器地址
+while True:
+    data = raw_input(&quot;Please input some string &gt; &quot;)  
+    if not data :
+        print &quot;input can&apos;t empty, Please input again..&quot;
+        continue
+    client.sendall(data)  #发送数据到服务器
+    data = client.recv(BUF_SIZE)  #从服务器端接收数据
+    print data
+client.close()
+</code></pre><p>###UDP通信<br>UDP通信流程图如下：</p>
+<p>服务端：socket—-bind—-recvfrom—-sendto—-close</p>
+<p>客户端：socket—————sendto—-recvfrom—-close</p>
+<p><img src="/img/UDP通信.png" alt="UDP通信"></p>
+<p>#####sendto()函数<br>发送UDP数据, 将数据发送到套接字</p>
+<pre><code>#Linux
+int sendto(int sockfd, const void *msg,int len,unsigned int flags,const struct sockaddr *to, int tolen);
+sockfd : 为前面socket的返回值.
+msg : 一般为常量字符串
+len : 表示长度
+flags : 通常为0
+to : 表示目地机的IP地址和端口号信息, 表示地址的结构体
+tolen : 常常被赋值为sizeof (struct sockaddr)
+返回值 :　返回实际发送的数据字节长度或在出现发送错误时返回-1。
+
+
+#Python
+s.sendto(string[,flag],address)
+s为socket.socket()返回的套接字对象
+address : 指定远程地址, 形式为（ipaddr，port）的元组
+flag : 提供有关消息的其他信息，通常可以忽略
+返回值 : 发送的字节数。
+</code></pre><p>#####recvfrom()函数<br>接受UDP套接字的数据, 与recv()类似</p>
+<pre><code>#Linux
+int recvfrom(int sockfd,void *buf,int len,unsigned int flags,struct sockaddr *from,int *fromlen);
+sockfd : 为前面socket的返回值.
+msg : 一般为常量字符串
+len : 表示长度
+flags : 通常为0
+from :是一个struct sockaddr类型的变量，该变量保存连接机的IP地址及端口号
+fromlen : 常置为sizeof (struct sockaddr)。
+返回值 : 返回接收到的字节数或当出现错误时返回-1，并置相应的errno。
+
+
+#Python
+s.recvfrom(bufsize[.flag])
+返回值 : （data,address）元组, 其中data是包含接收数据的字符串，address是发送数据的套接字地址
+bufsize : 指定要接收的数据大小
+flag : 提供有关消息的其他信息，通常可以忽略
+</code></pre><p>####2.4. 简单的客户端服务器UDP连接</p>
+<pre><code>#服务器端
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+import socket
+BUF_SIZE = 1024  #设置缓冲区大小
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  #生成新的套接字对象
+server.bind(server_addr)  #套接字绑定IP和端口
+while True :
+    print &quot;waitting for data&quot;
+    data, client_addr = server.recvfrom(BUF_SIZE)  #从客户端接收数据
+    print &apos;Connected by&apos;, client_addr, &apos; Receive Data : &apos;, data
+    server.sendto(data, client_addr)  #发送数据给客户端
+server.close()
+
+
+#客户端
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+import socket
+import struct
+BUF_SIZE = 1024  #设置缓冲区
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  #生成新的套接字对象
+while True :
+    data = raw_input(&apos;Please Input data &gt; &apos;)
+    client.sendto(data, server_addr)  #向服务器发送数据
+    data, addr = client.recvfrom(BUF_SIZE)  #从服务器接收数据
+    print &quot;Data : &quot;, data
+client.close()
+</code></pre><p>###2.5. 其他</p>
+<pre><code>s.getpeername()
+#返回连接套接字的远程地址。返回值通常是元组（ipaddr,port）。
+s.getsockname()
+#返回套接字自己的地址。通常是一个元组(ipaddr,port)
+s.setsockopt(level,optname,value)
+#设置给定套接字选项的值。
+s.getsockopt(level,optname[.buflen])
+#返回套接字选项的值。
+s.settimeout(timeout)
+#设置套接字操作的超时期，timeout是一个浮点数，单位是秒。值为None表示没有超时期。一般，超时期应该在刚创建套接字时设置，因为它们可能用于连接的操作（如connect()）
+s.gettimeout()
+#返回当前超时期的值，单位是秒，如果没有设置超时期，则返回None。
+s.fileno()
+#返回套接字的文件描述符。
+s.setblocking(flag)
+#如果flag为0，则将套接字设为非阻塞模式，否则将套接字设为阻塞模式（默认值）。非阻塞模式下，如果调用recv()没有发现任何数据，或send()调用无法立即发送数据，那么将引起socket.error异常。
+s.makefile()
+#创建一个与该套接字相关连的文件
+</code></pre><p>##3. 参考链接<br><a href="https://docs.python.org/2/library/socket.html" target="_blank" rel="external">python-socket官方文档</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/31/python的socket编程/" data-id="cj64upq2h007mlraeeirrq3pd" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/socket/">socket</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-第十四部分-Deferred用于同步环境" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/30/第十四部分-Deferred用于同步环境/" class="article-date">
+  <time datetime="2015-01-30T14:18:36.000Z" itemprop="datePublished">2015-01-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/twisted/">twisted</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/30/第十四部分-Deferred用于同步环境/">第十四部分 Deferred用于同步环境</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文在<a href="http://krondo.com/?p=2205" target="_blank" rel="external">这里</a></p>
+<p>##介绍<br>这部分我们要介绍Deferred的另外一个功能。便于讨论，我们设定如下情景：假设由于众多的内部网请求一个外部诗歌下载服务器，但由于这个外部下载服务器性能太差或请求负荷太重。因此，我们不想将所有的内部请求全部发送到外部服务器。我们的处理办法是，在中间添加一个缓存代理。当一个请求来到后，我们可以从中间缓存代理中找到缓存的备份（如果有缓存）或者直接从外部服务器获得。部署图如图30所示：</p>
+<p><img src="/img/缓存代理服务器.png" alt="图30 缓存代理服务器"></p>
+<p>考虑到，客户端端发送请求来时，此缓存代理可能会将本地的缓冲的诗歌取出并回复，也有可能需要异步等待外部诗歌下载服务器的诗歌回复。如此一来，就会出现这样的情景：客户端发送来的请求，缓存代理处理请求可能是同步也可能是异步。</p>
+<p>要解决这个需要，就用到了Deferred的另一个特性，即可以在将Deferred返回前就激活这个Deferred。之所以可以这样做，是因为你可以在一个已经激活的deferred上添加回调处理函数。一个非常值得注意的是：已经被激活的deferred可以立即激活新添加的回调处理函数。图31表示一个已经激活的deferred：</p>
+<p><img src="/img/已经激活的deferred.png" alt="图31 已经激活的deferred"></p>
+<p>如果在此时，我们再为其另一对callback/errback，那么会立即激活新的回调并执行。如图32</p>
+<p><img src="/img/同一个deferred在添加新的回调之后.png" alt="图32 同一个deferred在添加新的回调之后"></p>
+<p>后面的callback回调被执行，是因为前面的callback执行成功。如果其执行失败，那么接下来执行的将是新添加的errback回调。</p>
+<p>我们可以通过 twisted-deferred/defer-11.py 示例来检测我们这里说到的特性。其中第二组例子，演示了deferred中的pause与unpause函数的功能，即可以暂停一个已经激活的deferred对其回调链上回调的激活。并可以用unpause来解除暂停设置。这两个函数同样完成了在回调中继续产生deferred期间的控制。</p>
+<p>##代理 1.0版本<br>让我们来看看第一个版本的缓存代理的实现twisted-server-1/poetry-proxy.py。由于该服务器既作为服务器向客户端请求提供本地缓存的诗歌，同时也要作为向外部诗歌下载服务器提出下载请求的客户端。因此，其有两套协议/工厂，一套实现服务器角色，另一套实现客户端角色。<br>首先我们先来看看ProxyService的实现部分：</p>
+<pre><code>class ProxyService(object):
+    poem = None # the cached poem
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+    def get_poem(self):
+        if self.poem is not None:
+            print &apos;Using cached poem.&apos;
+            return self.poem
+        print &apos;Fetching poem from server.&apos;
+        factory = PoetryClientFactory()
+        factory.deferred.addCallback(self.set_poem)
+        from twisted.internet import reactor
+        reactor.connectTCP(self.host, self.port, factory)
+        return factory.deferred
+    def set_poem(self, poem):
+        self.poem = poem
+        return poem
+</code></pre><p>主要的函数是get_poem。如果缓存中没有请求的诗歌，那么就会建立连接从外部服务器中异步取得而返回一个deferred，并将取得的诗歌放到缓冲区中。相反，若缓冲区中存在请求的诗歌，则直接返回诗歌。</p>
+<p>我们如何来处理这样一个返回值不确定的函数呢，让我们来看看实现服务器角色的协议/工厂：</p>
+<pre><code>class PoetryProxyProtocol(Protocol):
+    def connectionMade(self):
+        d = maybeDeferred(self.factory.service.get_poem)
+        d.addCallback(self.transport.write)
+        d.addBoth(lambda r: self.transport.loseConnection())
+class PoetryProxyFactory(ServerFactory):
+    protocol = PoetryProxyProtocol
+    def __init__(self, service):
+        self.service = service
+</code></pre><p>这里使用了maybeDeferred函数解决了这个问题。此函数的功能就是如果作为其参数返回值为defer，那么其不作任何处理，原样将defer返回。但如何返回值不是defer而是一个值（正如我们的缓存代理将本地缓冲的诗歌返回一样），那么这个maybeDeferred会将该值重新打包成一个已经激活的deferred返回，注意是已经激活的deferred。当然，如果返回的是一个异常，其也会将其打包成一个已经激活的deferred，只不过就不是通过callback而是errback激活的。</p>
+<p>##代理 2.0版本<br>前面我们已经提到，有另一种替代方法来实现这一机制。这在 twisted-server-2/poetry-proxy.py 中很好的说明了。即我们可以返回一个已经激活的defer，放在这儿就是如果缓存代理中有请求的诗歌，那么就通过返回一个激活的deferred：</p>
+<pre><code>def get_poem(self):
+    if self.poem is not None:
+        print &apos;Using cached poem.&apos;
+        # return an already-fired deferred
+        return succeed(self.poem)
+    print &apos;Fetching poem from server.&apos;
+    factory = PoetryClientFactory()
+    factory.deferred.addCallback(self.set_poem)
+    from twisted.internet import reactor
+    reactor.connectTCP(self.host, self.port, factory)
+    return factory.deferred
+</code></pre><p>如果我们去看succeed的源码会发现，其只是在返回一个deferred之前，将其激活。同样，如果想要返回一个以失败的方式激活的deferred，可以调用函数defer.fail<br>在这个版本中，由于get_poem返回的是deferred而不像前一个版本存在不确定性因素。因此协议实现就无需使用maybeDeferred：</p>
+<pre><code>class PoetryProxyProtocol(Protocol):
+    def connectionMade(self):
+        d = self.factory.service.get_poem()
+        d.addCallback(self.transport.write)
+        d.addBoth(lambda r: self.transport.loseConnection())
+</code></pre><p>##总结<br>这个部分我们学习到了deferred可以在返回之前被激活，这样我们就可以将其用于同步环境中。并且我们已经知道了有两种方法来实现。其一是使用maybeDeferred函数，其二是使用succeed/fail。两者返回的都是deferred，不同的是前者返回的可能是异步的也可能是同步的，而后者返回的肯定是同步的，即已经激活。</p>
+<p>Deferred可以在激活后添加新的回调也间接说明了我们在第九部分提到的，deferred中会在最后一个回调中遇到未处理异常，并在此deferred被垃圾回收（即其已经没有任何外界引用）时才将该异常的情况打印出来。即deferred回在其销毁前一直持有异常，等待可能还会添加进来的回调来处理。</p>
+<p>我们已经将deferred中的大部分功能都介绍完了，当然Twisted开发人员可能不会增强deferred的功能。我们下一部分将讲讲Twisted的其它内容。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/30/第十四部分-Deferred用于同步环境/" data-id="cj64upq6m00eplraedkgay7kx" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-第十三部分-使用Deferred新功能实现新客户端" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/30/第十三部分-使用Deferred新功能实现新客户端/" class="article-date">
+  <time datetime="2015-01-30T14:17:10.000Z" itemprop="datePublished">2015-01-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/twisted/">twisted</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/30/第十三部分-使用Deferred新功能实现新客户端/">第十三部分 使用Deferred新功能实现新客户端</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文见<a href="http://krondo.com/?p=2159" target="_blank" rel="external">这里</a></p>
+<p>##介绍<br>回忆下第10部分中的客户端5.1版。客户端使用一个Deferred来管理所有的回调链，其中包括一个格式转换引擎的调用。在那个版本中，这个引擎的实现是同步的。（即等待其执行再切到其它函数或任务中）<br>现在我们想实现一个新的客户端，其使用我们在第十二部分实现的格式服务器提供的格式转换服务。但这里有一个问题需要说清楚：由于格式转换服务是通过网络获取的，因此我们需要使用异步I/O。这也就意味着我们获取格式转换服务的API必须是异步实现的。换句话说，try_to_cummingsify回调将会在新客户端中返回一个 deferred。</p>
+<p>如果在一个deferred的回调链中的一个回函数又返回了一个 deferred会发生什么现象呢？我们规定前一个deferred为外层deferred，而后者则为内层deferred。假设回调N在外层deferred中返回一个内层的deferred。意味着这个回调宣称“我是一个异步函数，结果不会立即出现！”。由于外层的deferred需要调用回调链中下一个callback或errback并将回调N的结果传下去，因此，其必须等待直到内层deferred被激活。当然了，外层的deferred不可能处于阻塞状态，因为控制权此时已经转交给了reactor并且阻塞了。</p>
+<p>那么外层的deferred如何知晓何时恢复执行呢？很简单，在内层deferred上添加callback或errback即可（即激活内层的deferred）。因此，当内层deferrd被激活时，外层的deferred恢复其回调链的执行。当内层deferred回调执行成功，那么外层deferred会调用第N+1个callback回调。相反，如果内层deferred执行失败，那么外层deferred会调用第N+1个errback回调。</p>
+<p>图28形象地解释说明了这一过程：</p>
+<p><img src="/img/内层与外层deferred的交互.png" alt="图28 内层与外层deferred的交互"></p>
+<p>在这个图示中，外层的deferred有四个callback/errback对。当外围的deferred被激活后，其第一个callback回调返回了一个deferred（即内层deferred）。从这里开始，外层的deferred停止激活其回调链并且将控制权交还给了reactor（当然是在给内层deferred添加callback/errback之后）。过了一段时间之后，内层deferred被激活，然后执行它的回调链并执行完毕后恢复外层deferred的回调执行过程。注意到，外层deferred是无法激活内层deferred的。这是不可能的，因为外层的deferred根本就无法获知内层的deferred何时能把结果准备好及结果内容是什么。相反，外层的deferred只可能等待（当然是异步方式）内部deferred的激活。</p>
+<p>注意到外层deferred的产生内层deferred的回调的连线是黑色的而不是红色或蓝色，这是因为我们在内层deferred激活之前是无法获知此回调返回的结果是执行成功还执行失败。只有在内层deferred激活时，我们才能决定下一个回调是callback还是errback。</p>
+<p>图29从reactor的角度来说明了外层与内层deferred的执行序列：</p>
+<p><img src="/img/控制权的转换.png" alt="图29 控制权的转换"></p>
+<p>这也许是Deferred类最为复杂的功能，但无需担心你可能会花费大量时间来理解它。我们将在示例twisted-deferred/defer-10.py中说明如何使用它。这个例子中，我们创建了两个外层deferred，一个使用了简单的回调，另一个其中的一个回调返回了一个内部deferred。通过阅读这段代码，我们可以发现外层deferred是在内层deferred激活后才开始继续执行回调链的。</p>
+<p>##客户端版本6.0<br>我们将使用新学的deferred嵌套来重写我们的客户端来使用由服务器提供的样式转换服务。其实现代码在<br><a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-6/get-poetry.py#L1" target="_blank" rel="external">twisted-client-6/get-poetry.py</a>中。与前几个版本一样，协议与工厂都没有改变。但我们添加了进行格式转换服务请求的协议与工厂实现。下面是协议实现代码：</p>
+<pre><code>class TransformClientProtocol(NetstringReceiver):
+    def connectionMade(self):
+        self.sendRequest(self.factory.xform_name, self.factory.poem)
+    def sendRequest(self, xform_name, poem):
+        self.sendString(xform_name + &apos;.&apos; + poem)
+    def stringReceived(self, s):
+        self.transport.loseConnection()
+        self.poemReceived(s)
+    def poemReceived(self, poem):
+        self.factory.handlePoem(poem)
+</code></pre><p>使用NetstringReceiver作为基类可以很简单地实现我们的协议。只要连接一旦建立我们就发出格式转换服务的请求。当我们得到格式转换之后的诗歌后交给工厂进行处理，下面是工厂代码：</p>
+<pre><code>class TransformClientFactory(ClientFactory):
+    protocol = TransformClientProtocol
+    def __init__(self, xform_name, poem):
+        self.xform_name = xform_name
+        self.poem = poem
+        self.deferred = defer.Deferred()
+    def handlePoem(self, poem):
+        d, self.deferred = self.deferred, None
+        d.callback(poem)
+    def clientConnectionLost(self, _, reason):
+        if self.deferred is not None:
+            d, self.deferred = self.deferred, None
+            d.errback(reason)
+    clientConnectionFailed = clientConnectionLost
+</code></pre><p>值得注意的是，工厂是如何处理两种类型错误：连接失败与在诗歌未全部接收完就中断连接。并且clientConncetionLost可能会在我们已经接收完诗歌后激活执行（即连接断开了），但在这种情况下，self.deferred已经是个None值，这利益于handePoem中对deferredr 处理。</p>
+<p>这个工厂创建了一个deferred并且最后激活了它，这在Twisted编程中是一个好的习惯，即</p>
+<blockquote>
+<p>通常情况下，一个对象创建了一个deferred，那么它应当负责激活它。</p>
+</blockquote>
+<p>除了格式转换工厂外，还有一个Proxy类开包装了具体创建一个TCP连接到格式转换服务器：</p>
+<pre><code>class TransformProxy(object):
+    &quot;&quot;&quot;
+    I proxy requests to a transformation service.
+    &quot;&quot;&quot;
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+    def xform(self, xform_name, poem):
+        factory = TransformClientFactory(xform_name, poem)
+        from twisted.internet import reactor
+        reactor.connectTCP(self.host, self.port, factory)
+        return factory.deferred
+</code></pre><p>这个类提供了一个xform接口，以让其它程序请求格式转换服务。这样一来其它代码只需要提出请求并得到一个deferred，而无需考虑什么端口与IP地址之类的问题。<br>剩下的代码除了try_to_cummingsify外都没有改变：</p>
+<pre><code>def try_to_cummingsify(poem):
+    d = proxy.xform(&apos;cummingsify&apos;, poem)
+    def fail(err):
+        print &gt;&gt;sys.stderr, &apos;Cummingsify failed!&apos;
+        return poem
+    return d.addErrback(fail)
+</code></pre><p>这个作为外层deferred的回调返回了一个内层的deferred，但我们仍然需要更改main方法，除了创建了一个Proxy对象。由于try_to_cummingsify已经是deferred回调链中的一部分，因此其早已使用了异步方式。因此我们说main函数无需更改。</p>
+<p>你可能注意到return d.addErrback(fail)这句，其它它等于</p>
+<pre><code>d.addErrback(fail)
+return d
+</code></pre><p>##结束语<br>这一部分我们学习了关于deferred如何透明地完成了回调链内部再次处理deferred。并由此，我们可以无需考虑内部实现细节并放心地在外部deferred上添加回调。</p>
+<p>在第十四部分，我们将讲解deferred的另外一个特性。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/30/第十三部分-使用Deferred新功能实现新客户端/" data-id="cj64upq6i00ejlraesl3wfk81" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-第十二部分-改进诗歌下载服务器" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/30/第十二部分-改进诗歌下载服务器/" class="article-date">
+  <time datetime="2015-01-30T14:00:48.000Z" itemprop="datePublished">2015-01-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/twisted/">twisted</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/30/第十二部分-改进诗歌下载服务器/">第十二部分 改进诗歌下载服务器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#第十二部分 改进诗歌下载服务器<br>原文在<a href="http://krondo.com/?p=2101" target="_blank" rel="external">这里</a><br>新的服务器实现<br>这里我们要新写一个Twisted版的服务器。然后，再来讨论一些Deferred的新功能。</p>
+<p>在第九、十部分，我们提出了诗歌转换引擎这个概念。由于其实现太过简单，因此我们用随机选择来模拟了可能会出现转换失败的情景。但如果转换引擎位于服务器端，那么当服务器宕机就会出现真实的转换失败的情景了。<br>因此，在这部分我们要实现一个诗歌样式转换服务器，然后在一个部分，我们会重写我们的诗歌下载客户端来使用这一服务并且学习Deferred的新功能。</p>
+<p>##设计协议<br>到目前为止，服务器端与客户端之间的交互都是单向的。但样式转换服务需要两者进行双向交互-客户端将原始式样的诗歌发送给乳服务器，然后服务器将转换格式并将其发送给对应的客户端。因此，我们需要使用、或自己实现一个协议来实现这种交互。<br>我们设计服务器端可以提供若干种转换服务，而让客户端来进行选择。因此客户端需要向服务器端发送两部分信息：转换方式名与诗歌原始内容。服务器只是将转换格式之后的诗歌发送给客户端。这里使用到了简单的运程调用。</p>
+<p>Twisted支持需要种协议来解决这个问题：XML-RPC,Perspective Broker,AMP。<br>但介绍使用其中任何一种都需要大量的时间，因此我们使用自己实现的协议。我们约定客户端发送内容格式如下：</p>
+<p><strong>转换名称.诗歌内容</strong></p>
+<p>我们将其以netstring格式编码，当然服务器回发的信息也是以netstring格式编码。由于netstring使用了length-encoding，因此客户端能够识别出服务器没有将完整诗歌回发的情况。如果你尝试一下前面的协议，其无法检测到中途中断传输的情况。</p>
+<p>##代码<br>新的服务器实现代码在twisted-server-1/transformedpoetry.py中。首先，我们定义了一个TransformService类：</p>
+<pre><code>class TransformService(object):
+    def cummingsify(self, poem):
+        return poem.lower()
+</code></pre><p>这里我们仅仅实现了一种转换方法，我们可以不回新格式转换方法。有一个重要的地方需要注意：格式转换服务与具体协议的实现是完全分分离的。将协议逻辑与服务逻辑分开是Twisted编程中常见的模式。这样做可以通过多种协议实现同一种服务，以增加了代码的重用性。</p>
+<p>下面看看factory的实现代码：</p>
+<pre><code>class TransformFactory(ServerFactory):
+    protocol = TransformProtocol
+    def __init__(self, service):
+        self.service = service
+    def transform(self, xform_name, poem):
+        thunk = getattr(self, &apos;xform_%s&apos; % (xform_name,), None)
+        if thunk is None: # no such transform
+            return None
+        try:
+            return thunk(poem)
+        except:
+            return None # transform failed
+    def xform_cummingsify(self, poem):
+        return self.service.cummingsify(poem)
+</code></pre><p>factory提供了一个transform的函数，protocol就是用它来代表客户端连接请求进行诗歌格式转换。</p>
+<p>如果发现没有客户端请求的转换方法或转换失败，那么返回None。和TransformService一样，factory与具体的协议逻辑实现也是相互独立的。</p>
+<p>有一个地方需要引起注意：我们通过xfomr_前缀式方法来获取服务方法。这种方法在Twisted中很常见，尽管前缀经常发生变化，并且他们经常是依赖于独立于factory的一个对象（如此处的 TransformService）这是一种防止客户端使用蓄意恶性代码来让服务器端执行的方法。这种方法也提供了实现由服务提供具体协议代理的机制。<br>下面是协议实现代码：</p>
+<pre><code>class TransformProtocol(NetstringReceiver):
+    def stringReceived(self, request):
+        if &apos;.&apos; not in request: # bad request
+            self.transport.loseConnection()
+            return
+        xform_name, poem = request.split(&apos;.&apos;, 1)
+        self.xformRequestReceived(xform_name, poem)
+    def xformRequestReceived(self, xform_name, poem):
+        new_poem = self.factory.transform(xform_name, poem)
+        if new_poem is not None:
+            self.sendString(new_poem)
+        self.transport.loseConnection()
+</code></pre><p>在这个协议的实现中，我们通过继承NetstringReceiver来利用了Twisted对netstrings的实现。基类很好的处理了编码与解码功能，我们需要做的就是实现stringReceived方法。换句话说，stringReceived接收的参数是客户端编码之后的诗歌，而无需我们再去添加额外的编码信息。而且基类同样管理着缓冲区，即当一首诗歌完整接收完再进行解码。</p>
+<p>如果一切进展正常的话，我们会使用NetstringReceiver的 sendString方法来将格式转换成功后的诗歌发送给客户端。</p>
+<p>注意我们是如何通过定义xformRequestReceived方法将收到的信息一步步推向更高的抽象层而实现了Twisted的模式。</p>
+<p>##一个简单的客户端<br>我们会在下一个部分来实现相应的客户端，这里使用一个简单的脚本来实现客户端，代码位于twisted-server-1/transform-test中。如果你运行服务器端于11000端口：</p>
+<pre><code>python twisted-server-1/transformedpoetry.py --port 11000
+</code></pre><p>相应的运行脚本为：</p>
+<pre><code>./twisted-server-1/transform-test 11000
+</code></pre><p>那么你会看到如下输出（经过netstring编码）：</p>
+<pre><code>15:here is my poem,
+</code></pre><p>##讨论<br>在这个部分介绍了如下几个方面内容：</p>
+<ol>
+<li>双向通信</li>
+<li>基于Twisted已有的协议实现新协议</li>
+<li>将协议实现与服务功能实现独立分开</li>
+</ol>
+<p>双向通信的基本机制是很简单的。我们使用前面服务器端与客户端使用的相同的技术来写与读数据，唯一不同的是我们这次两者都使用了（读与写）。当然，一个复杂的协议需要复杂的代码来处理接收到的数据流与格式化输出的信息。这也是为什么使用已经存在的协议的原因。</p>
+<p>如果你开始觉得写简单的协议已经很上手了，那么最好就开始看看Twisted对不同协议的实现。尽管写一些简单的协议有助理解Twisted的编程风格，但在一个真实的程序中，最好是复用那些已经实现并证明性能良好的协议。</p>
+<p>最后一点是将协议解析逻辑与服务实现逻辑分开，这是Twisted编程中非常重要的一个模式。我们这个服务器程序只是一个演示，你可以想象一下真实的网络服务是相当复杂的。通过将服务与协议逻辑分开，你可以通过复用已有的服务代码来运行于其它的协议实现上。</p>
+<p>图27展示了一个格式转换服务器通过两种协议提供格式转换服务（当然，我们的服务器只提供了一种协议）：</p>
+<p><img src="/img/提供两种协议支持的格式转换服务器.png" alt="图27 提供两种协议支持的格式转换服务器"></p>
+<p>虽然在图27中使用了两种协议，但他们也许是只有几个协议属性不同。factory共享相同的服务。这样实现了代码的复用。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/30/第十二部分-改进诗歌下载服务器/" data-id="cj64upq6k00emlrae7ms94bgv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-第十一部分：改进诗歌下载服务器" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/30/第十一部分：改进诗歌下载服务器/" class="article-date">
+  <time datetime="2015-01-30T13:59:42.000Z" itemprop="datePublished">2015-01-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/twisted/">twisted</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/30/第十一部分：改进诗歌下载服务器/">第十一部分：改进诗歌下载服务器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#第十一部分：改进诗歌下载服务器<br>原文在<a href="http://krondo.com/?p=2048" target="_blank" rel="external">这里</a></p>
+<p>##诗歌下载服务器<br>到目前为止，我们已经学习了大量关于诗歌下载客户端的Twisted的知识，接下来，我们使用Twisted重新实现我们的服务器端。利益于Twisted的抽象机制，接下来你会发现我们前面已经几乎全部学习到这部分知识了。其实现源码在<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-server-1/fastpoetry.py#L1" target="_blank" rel="external">twisted-server-1/fastpoetry.py</a>中。之所以称其为fastpoetry是因为其并没有任何延迟的传输诗歌。注意到，其代码量比客户端少多了。</p>
+<p>让我们一部分一部分地来看服务端的实现，首先是poetryProtocol：</p>
+<pre><code>class PoetryProtocol(Protocol):
+    def connectionMade(self):
+        self.transport.write(self.factory.poem)
+        self.transport.loseConnection()
+</code></pre><p>如同客户端的实现，服务器端使用Protocol来管理连接（在这里，连接是由客户端发起的）。这里的Protocol实现了我们的诗歌下载逻辑的服务器端。由于我们协议逻辑处理的是单向的，服务器端的Protocol只负责发送数据。如果你访问服务器端，协议请求服务器在连接建立后立即发送诗歌，因此我实现了connectionMade方法，其会在Protocol中创建一个连接时被激活执行。</p>
+<p>这个方法告诉Transport做两件事：将整首诗歌发送出去然后关闭连接。当然，这两个动作都是同步操作。因此调用write函数也可以说成“一定要将整首诗歌发送到客户端”，调用loseConnection意味着“一旦将要求下载的诗歌发送完毕就关掉这个连接”。</p>
+<p>也许你看到了，Protocol是从Factory中获得诗歌内容的：</p>
+<pre><code>class PoetryFactory(ServerFactory):
+    protocol = PoetryProtocol
+    def __init__(self, poem):
+        self.poem = poem
+</code></pre><p>这么简单！除了创建PoetryProtocol工厂的仅有的工作是存储要发送的诗歌。<br>注意到我们继承了ServerFactory而不是ClientFactory。这是因为服务器是要被动地监听连接状态而不是像客户端一样去主动的创建。我们何以如此肯定呢？因为我们使用了listenTCP方法，其描述文档声明factory参数必须是ServerFactory类型的。</p>
+<p>我们在main函数中调用了listenTCP函数：<br>    def main():<br>        options, poetry_file = parse_args()<br>        poem = open(poetry_file).read()<br>        factory = PoetryFactory(poem)<br>        from twisted.internet import reactor<br>        port = reactor.listenTCP(options.port or 0, factory,nterface=options.iface)<br>        print ‘Serving %s on %s.’ % (poetry_file, port.getHost())<br>        reactor.run()</p>
+<p>其做了三件事：</p>
+<ol>
+<li>读取我们要发呈现的诗歌</li>
+<li>创建PoetryFactory并传入这首诗歌</li>
+<li>使用listenTCP来让Twisted监听指定的端口，并使用我们提供的factory来为每个连接创建一个protocol</li>
+</ol>
+<p>剩下的工作就是reactor来运转事件循环了。你可以使用前面任何一个客户端来测试这个服务器。</p>
+<p>##讨论<br>回忆下第五部分中的图8与图9.这两张图说明了一个协议在Twisted创建一个连接后如何创建一个协议并初始化它的。其实对于Twisted在其监听的端口处接听到一个连接之后的整个处理机制也是如此。这也是为什么connectTCP与listenTCP都需要一个factory参数的原因。</p>
+<p>我们在图9中没有展示是的，connectionMake其实也是Protocol初始化的一部分。无论在哪儿都一样（Dave是想说，connectionMade都会在Protocol初始化时执行），但我们在客户端处没有用到这个方法。并且我们在客户端的协议实现中的方法并没有在服务器处用到。因此，如果我们有这个需要，可以创建一个共享式的单一PoetryProtocol供客户端与服务器端使用。这各方式在Twisted经常见到。例如，NetstringReceiver protocol即能读从一个连接中读也能向一个连接中写netstrings。</p>
+<p>我们略去了写从低层来实现服务器端的内容，但我们仍要来思考一下下面发生的事情。首先，调用listenTCP来告诉Twisted创建一个 listening socket 并将其添加到事件循环中。在 listening socket 有事件发生并不意味有数据要读，而是说明有客户端在等待连接自己。</p>
+<p>Twisted会自动接受连接请求，并创建一个新客户端式连接来连接客户端与服务器（中间桥梁）。这个新的连接也要加入事件循环中，并且Twisted为其创建了一个Transport与一个专门为这个连接服务的PoetryProtocol。因此，Protocol实例总是连接到客户端式的socket，而不是监听式socket。<br>我们可以在图26中形象地看到这一结果：</p>
+<p><img src="/img/服务器端的网络连接.png" alt="图26：服务器端的网络连接"></p>
+<p>在图中，有三个客户端连接到服务器。每个Transport代表一个client socket，加上listening socket总共是四个被select循环监听的文件描述符（file descriptor).当一个客户端断开与其相关的transport的连接时，对应的PoetryProtocol也会被解引用并当作垃圾被回收。而PoetryFactory只要我们还在监听新的连接就会一直不停地工作（即PoetryFactory不会将PoetryProtocol会随着一个连接的断开而被销毁）。</p>
+<p>如果我们提供的诗歌很短的话，那么这些client socket与其相关的各种对象的生命期也就很短。但也有可能会是一台相当繁忙的服务器以至于同时有千百个客户端同时请求较长的诗歌。那没关系，因为Twisted并没有连接建立的限制。当然，当下载量持续的增加，在某个结点处，你会发现已经到达了OS的上限。对于那些高下载量的服务器，仔细的检测与测试是每天都必须的工作。</p>
+<p>并且Twisted在监听端口的数量上亦无限制。实际上，一个单一的Twisted线程可以监听数个端口并为其提供不同的服务（通过使用不同的factory作为listenTCP的参数即可）。并且经过精心的设计，使用一个Twisted线程来提供多个服务还是使用多个Twisted线程来实现可以推迟到部署阶段来做决定。</p>
+<p>我们这个版本的服务器有些功能是没有的。首先，它无法产生任何日志来帮助我们调试和分析网络出现的问题。另外，服务器也不是做为一个守护进程来运行，很容易通过ctrl+c来中止其执行。我们将会在第十二部分来分析这部分内容。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/30/第十一部分：改进诗歌下载服务器/" data-id="cj64upq6g00eglraec8uhdksh" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-第十部分：增强defer功能的客户端" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/30/第十部分：增强defer功能的客户端/" class="article-date">
+  <time datetime="2015-01-30T13:58:07.000Z" itemprop="datePublished">2015-01-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/twisted/">twisted</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/30/第十部分：增强defer功能的客户端/">第十部分：增强defer功能的客户端</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文在<a href="http://krondo.com/?p=1956" target="_blank" rel="external">这里</a></p>
+<p>##版本5.0<br>现在我们将要向诗歌下载客户端添加一些新的处理逻辑，包括在第九部分提到要添加的功能。不过，首先我要说明一点：我并不知道如何实现Byronification引擎。那超出了我的编程能力范围。取而代之的，我想实现一个简单的功能，即Cummingsifier。其只是将诗歌内容转换成小写字母：</p>
+<pre><code>def cummingsify(poem)
+    return poem.lower()
+</code></pre><p>这个方法如此之简单以至于它永远不会出错。版本5.0的实现代码在<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-5/get-poetry.py#L1" target="_blank" rel="external">twisted-client-5/get-poetry.py</a>文件中。我们使用了修改后的 cummingsify，其会随机地选择以下行为：</p>
+<ol>
+<li>返回诗歌的小写版本</li>
+<li>抛出一个GibberishError异常</li>
+<li>抛出一个ValueError</li>
+</ol>
+<p>这样，我们便模拟出来一个会因为各种意料不到的问题而执行失败的复杂算法。其它部分的仅有的改变在方法<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-5/get-poetry.py#L119" target="_blank" rel="external">poetry_main</a>中：</p>
+<pre><code>def poetry_main():
+    addresses = parse_args()
+    from twisted.internet import reactor
+    poems = []
+    errors = []
+    def try_to_cummingsify(poem):
+        try:
+            return cummingsify(poem)
+        except GibberishError:
+            raise
+        except:
+            print &apos;Cummingsify failed!&apos;
+            return poem
+    def got_poem(poem):
+        print poem
+        poems.append(poem)
+    def poem_failed(err):
+        print &gt;&gt;sys.stderr, &apos;The poem download failed.&apos;
+        errors.append(err)
+    def poem_done(_):
+        if len(poems) + len(errors) == len(addresses):
+            reactor.stop()
+    for address in addresses:
+        host, port = address
+        d = get_poetry(host, port)
+        d.addCallback(try_to_cummingsify)
+        d.addCallbacks(got_poem, poem_failed)
+        d.addBoth(poem_done)
+    reactor.run()
+</code></pre><p>因此，当从服务器上下载一首诗歌时，可能会出现如下情况：</p>
+<ol>
+<li>打印诗歌的小写版本</li>
+<li>打印 ”Cummingsify failed“并附上原始形式的诗歌</li>
+<li>打印”The peom download failed”。</li>
+</ol>
+<p>为了实现下面内容的效果，你可以打开多个服务器或开一个服务器而打开此程序次，直到你观察到所有不同的结果，当然也尝试一下去连接一个没有服务器值守的端口。</p>
+<p>图19是我们给deferred添加回调后形成的callback/errback链：</p>
+<p><img src="/img/deferred中的回调链.png" alt="图19 deferred中的回调链"></p>
+<p>注意到，”pass-throug”errback通过addCallback添加到链中。它会将任何其接收到的Failure传递给下一个errback（即poem_failed函数）。因此poem_failed函数可以处理来自get_poetry与try_to_commingsify两者的failure。下面让我们来分析下deferred可能会出现的激活情况，图20说明了我们能够下载到诗歌并且try_to_commingsify成功执行的路线图：</p>
+<p><img src="/img/成功下载到诗歌并且成功变换其格式.png" alt="图20 成功下载到诗歌并且成功变换其格式"></p>
+<p>在这种情况中，没有回调执行失败，因此控制权一直在callback中流动。注意到poem_done收到的结果是None，这是因为它并没有返回任何值。如果我们想让后续的回调都能触及到诗歌内容，只要显式地让got_poem返回诗歌即可。</p>
+<p>图21说明了我们在成功下载到诗歌后，但在try_to_cummingsify中抛出了GibberishError：</p>
+<p><img src="/img/成功下载到诗歌但出现了GibberishError.png" alt="图21 成功下载到诗歌但出现了GibberishError"></p>
+<p>由于try_to_cummingsify回调抛出了GibberishError，所以控制权转移到了errback链，即poem_fail回调被调用并传入的捕获的异常作为其参数。</p>
+<p>由于poem_failed并没有抛出获异常或返回一个Failure，因此在它执行完后，控制权又回到了callback链中。如果我们想让poem_fail完全处理好传进来的错误，那么返回一个None是再好不过的做法了。相反，如果我们只想让poem_failed采取一部分行动，但继续传递这个错误，那么我们需要改写poem_failed，即将参数err作为返回值返回。如此一来，控制权交给了下一个errback回调。</p>
+<p>注意到，迄今为止，got_poem与poem_failed都不可能出现执行失败的情况，因此errback链上的poem_done是不可能被激活的。但在任何情况下这样做都是安全的，这体现了“防御式”编程的思想。比如在got_poem或poem_failed出现了bugs，那么这样做就不会让这个bugs的影响进入Twisted的核心代码区。鉴于上面的描述，可以看出addBoth类型于try/except中的finally语句。</p>
+<p>下面我们再来看看第三种可能情况，即成功下载到诗歌但try_to_cummingsify抛出了VauleError，如图22：</p>
+<p><img src="/img/成功下载到诗歌当cummingsify执行失败.png" alt="图22：成功下载到诗歌当cummingsify执行失败"></p>
+<p>除了got_poem得到是原始式样的诗歌而不是小写版的外，与图20描述的情况完全相同。当然，控制权还是在try_to_cummingsif中进行了转移，即使用了try/except捕获了ValueError并返回了原始式样的诗歌。而这一切deferred并不知晓。<br>最后，我们来看看当试图连接一个无服务器值守的端口会出现什么情况，如图23所示：</p>
+<p><img src="/img/连接服务器失败.png" alt="图23 连接服务器失败"></p>
+<p>由于poem_failed返回了一个None，因此控权又回到了callback链中。</p>
+<p>##版本5.1<br>在版本5.0中我们使用普通的try/except来捕获try_to_cummingsify中的异常，而没有让deferred来捕获这个异常。这其实并没有什么错误，但下面我们将采取一种新的方式来处理异常。</p>
+<p>设想一下，我们让deferred来捕获 GibberishError 与ValueError 异常，并将其传递到errback链中进行处理。如果要保留原有的行为，那么需要下面的errback来判断错误类型是否为Valuerror，如果是，那么返回原始式样的诗歌，这样一来，控制权再次回到callback链中并将原始式样的诗歌打印出来。</p>
+<p>但有一个问题：errback并不会得到原始诗歌内容 。它只会得到由cummingsify抛出的vauleError异常。为了让errback处理这个错误，我们需要重新设计它来接收到原始式样的诗歌。</p>
+<p>一种方法是改变cummingsify以让异常信息中包含原始式样的诗歌。这也正是我们在5.1版本中做的，其代码实现在<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-5/get-poetry-1.py#L1" target="_blank" rel="external">twisted-client-5/get-poetry-1.py</a>中。我们改写ValueError异常为CannotCummingsify异常，其能将诗歌作为其第一个参数来传递。</p>
+<p>如果cummingsify中外部模块中一个真实存在的函数，那么其最好是通过另一个函数来捕获非GibberishError并抛出一个CannotCummingsify异常。这样，我们的poetry_main就成为：</p>
+<pre><code>def poetry_main():
+    addresses = parse_args()
+    from twisted.internet import reactor
+    poems = []
+    errors = []
+    def cummingsify_failed(err):
+        if err.check(CannotCummingsify):
+            print &apos;Cummingsify failed!&apos;
+            return err.value.args[0]
+        return err
+    def got_poem(poem):
+        print poem
+        poems.append(poem)
+    def poem_failed(err):
+        print &gt;&gt;sys.stderr, &apos;The poem download failed.&apos;
+        errors.append(err)
+    def poem_done(_):
+        if len(poems) + len(errors) == len(addresses):
+            reactor.stop()
+    for address in addresses:
+        host, port = address
+        d = get_poetry(host, port)
+        d.addCallback(cummingsify)
+        d.addErrback(cummingsify_failed)
+        d.addCallbacks(got_poem, poem_failed)
+        d.addBoth(poem_done)
+</code></pre><p>而新的deferred结构如图24所示：</p>
+<p><img src="/img/版本5.1的deferrd调用链结构.png" alt="图24：版本5.1的deferrd调用链结构"></p>
+<p>来看看cummingsify_failed的errback回调：</p>
+<pre><code>def cummingsify_failed(err):
+    if err.check(CannotCummingsify):
+        print &apos;Cummingsify failed!&apos;
+        return err.value.args[0]
+    return err
+</code></pre><p>我们使用了Failure中的<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/python/failure.py#L305" target="_blank" rel="external">check</a>方法来确认嵌入在Failure中的异常是否是CannotCummingsify的实例。如果是，我们返回异常的第一个参数（即原始式样诗歌）。因此，这样一来返回值就不是一个Failure了，控制权也就又回到callback链中了。否则（即异常不是CannotCummingsify的实例），我们返回一个Failure，即将错误传递到下一个errback中。</p>
+<p>图25说明了当我们捕获一个CannotCummingsify时的调用过程：</p>
+<p><img src="/img/捕获一个CannotCummingsify异常.png" alt="图25：捕获一个CannotCummingsify异常"></p>
+<p>因此，当我们使用deferrd时，可以选择使用try/except来捕获异常，也可以让deferred来将异常传递到errback回调链中进行处理。</p>
+<p>##总结：<br>在这个部分，我们增强了客户端的Deferred的功能，实现了异常与结果在callback/errback链中“路由”。（你可以将各个回调看作成路由器，然后根据传入参数的情况来决定其返回值进入下一个stage的哪条链，或者说控制权进入下一个stage的哪个类型的回调）。虽然示例程序是虚构出来的，但它揭示了控制权在deferred的回调链中交错传递具体方向依赖于返回值的类型。</p>
+<p>那我们是不是已经对deferred无所不知了？不，我们还会在下面的部分继续讲解deferred的更多的功能。但在第十一部分，我们先不讲这部分内容，而是实现我们的Twisted版本的诗歌下载服务器。</p>
+<p>##练习</p>
+<ol>
+<li>Figure 25 shows one of the four possible ways the deferreds in client 5.1 can fire. Draw the other three.</li>
+<li><p>Use the <a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/deferred-simulator.py#L1" target="_blank" rel="external">deferred simulator</a> to simulate all possible firings for clients 5.0 and 5.1. To get you started, this simulator program can represent the case where the try_to_cummingsify function succeeds in client 5.0:</p>
+<pre><code>r poem p
+r None r None
+r None r None
+</code></pre></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/30/第十部分：增强defer功能的客户端/" data-id="cj64upq6p00eslrae661rhqj5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-第九部分：第二个小插曲，Deferred" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/30/第九部分：第二个小插曲，Deferred/" class="article-date">
+  <time datetime="2015-01-30T13:56:42.000Z" itemprop="datePublished">2015-01-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/twisted/">twisted</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/30/第九部分：第二个小插曲，Deferred/">第九部分：第二个小插曲，Deferred</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文在<a href="http://krondo.com/?p=1825" target="_blank" rel="external">这里</a></p>
+<p>##更多关于回调的知识<br>稍微停下来再思考一下回调的机制。尽管对于以Twisted方式使用Deferred写一个简单的异步程序已经非常了解了，但Deferred提供更多的是只有在比较复杂环境下才会用到的功能。因此，下面我们自己想出一些复杂的环境，以此来观察当使用回调编程时会遇到哪些问题。然后，再来看看deferred是如何解决这些问题的。</p>
+<p>因此，我们为诗歌下载客户端添加了一个假想的功能。设想一些计算机科学家发明了一种新诗歌关联算法，<br>Byronification引擎。这个漂亮的算法根据一首诗歌生成一首使用Lord Byron式的同样的诗歌。另外，专家们提供了其Python的接口，即：</p>
+<pre><code>class IByronificationEngine(Interface): 
+    def byronificate(poem):
+        &quot;&quot;&quot;
+        Return a new poem like the original, but in the style of Lord Byron.
+        Raises GibberishError if the input is not a genuine poem.
+        &quot;&quot;&quot;
+</code></pre><p>像大多数高尖端的软件一样，其实现都存在着许多bugs。这意外着除了已知的异常外，这个byronificate 方法可能会抛出一些专家当时没有预料到的异常出来。</p>
+<p>我们还可以假设这个引擎能够非常快的动作以至于我们可以在主线程中调用到而无需考虑使用reactor。下面是我们想让程序实现的效果：</p>
+<ol>
+<li>尝试下载诗歌</li>
+<li>如果下载失败，告诉用户没有得到诗歌</li>
+<li>如果下载到诗歌，则转交给Byronificate处理引擎一份</li>
+<li>如果引擎抛出GibberishError，告诉用户没有得到诗歌</li>
+<li>如果引擎抛出其它异常，则将原始式样的诗歌立给用户</li>
+<li>如果我们得到这首诗歌，则打印它</li>
+<li>结束程序</li>
+</ol>
+<p>这里设计是当遇到GibberishError异常则表示没有得到诗歌，因此我们直接告诉用户下载失败即可。这也许对调试没什么用处，但我们的用户关心的只是我们下载到诗歌没有。另一方面，如果引擎因为一些其它的原因而出现处理失败，那么我们将原始诗歌交给用户。毕竟，有诗歌呈现总比没有好，虽然不是用户想要的Byron样式。</p>
+<p>下面是同步模式的代码：</p>
+<pre><code>try:
+    poem = get_poetry(host, port) # synchronous get_poetry
+except:
+    print &gt;&gt;sys.stderr, &apos;The poem download failed.&apos;
+else:
+    try:
+        poem = engine.byronificate(poem)
+    except GibberishError:
+        print &gt;&gt;sys.stderr, &apos;The poem download failed.&apos;
+    except:
+        print poem # handle other exceptions by using the original poem
+    else:
+        print poem
+sys.exit()
+</code></pre><p>这段代码可能经过一些重构会更加简单，但已经足以说明上面的逻辑流程。我们想升级那些最近使用deferred的客户端来使用这个功能。但这部分内容我准备把它放在第十部分。现在，我们来考虑一下，用版本3.1来实现这个功能，最后一个没有使用deferred的客户端。假设我们无需考虑处理异常，那么只是改变一下got_poem回调即可：</p>
+<pre><code>def got_poem(poem):
+    poems.append(byron_engine.byronificate(poem))
+    poem_done()
+</code></pre><p>那么如果byronificate抛出GibberishError异常或其它异常会发生什么呢？看看第六部分的图11,我们可以得到：</p>
+<ol>
+<li>这个异常会传播到工厂中的poem_finished回调，即激活got_poem的方法</li>
+<li>由于poem_finished并没有捕获这个异常，因此其会传递到protocol中的poemReceive函数</li>
+<li>然后来到connectionLost函数，仍然在protocol中</li>
+<li>然后就来到Twisted的核心区，最后止步于reactor。</li>
+</ol>
+<p>前面已经了解到，reactor会捕获异常并记录它而不是“崩溃”掉。但它却不会告诉用户我们的诗歌下载失败的消息。reactor并不知道任何诗歌或GibberishErrors的信息，它只是一段被设计成适应所有网络类型的通用代码，即便与诗歌无关的网络服务。（Dave这里想强调的是reactor只是做一些具有普遍意义的事情，不会单独去处理特定的问题，例如这里原GibberishErrors异常）</p>
+<p>注意异常是如何顺着调用链传递到具有通用性代码区域。并且看到，在got_poem后面任何一步都没有可望以我们客户端的具体要求来处理异常的。这与同步代码中的方式恰恰相反。</p>
+<p>图15揭示了一个同步客户端的调用栈：</p>
+<p><img src="/img/同步调用栈.png" alt="图15：同步调用栈"></p>
+<p>main函数是最高层，意味着它可以触及整个程序，它为什么要存在，并且它是如何在整体上表现的。典型的，main函数可以触及到用户在命令行输入想让程序做什么的参数。并且它还有一个特殊的目的：为一个命令行式的客户端打印结果。</p>
+<p>socket的connet函数，恰恰相反，其为最低层。它所知道的就是提供到指定地址的连接。它并不知道另一端是什么及我们为什么要进行连接。但connect有通用性，不管你因为何种服务要进行网络连接都可以使用它。</p>
+<p>get_poetry在中间，它知道要取一些诗歌，但并不知道如果得不到诗歌会发生什么。因此，从connect抛出的异常会向上传递，从低层的具有通用性的代码区到高层的具有针对性的代码区，直到其传递到知道如何处理这个异常的代码区。</p>
+<p>现在，我们再回来看看对3.1版的假想功能的实现。我们在图16里对调用栈进行了分析，当然只是说明了其中关键的函数：</p>
+<p><img src="/img/异步调用栈.png" alt="图16 异步调用栈"></p>
+<p>现在问题非常清晰了：在回调中，低层的代码（reactor）调用高层的代码，其甚至还会调用更高层的代码。因此一旦出现了异常，它并不会立即被其附件（在调用栈中可触及）的代码捕获，当然附近的代码也不可能处理它。由于异常每向上传递一次，就越靠近低层那些更加不知如何处理该异常的代码。</p>
+<p>一旦异常来到Twisted的核心代码区，游戏也就结束了。异常并不会被处理，只是被记录下来。因此我们在以最原始的回调方式使用回调时（不使用deferred），必须在其进入Twisted之间很好地处理各种异常，至少是我们知道的那些在我们自己设定的规则下会产生的异常。当然其也应该包括那些由我们自己的BUG产生的异常。</p>
+<p>由于bug可能存在于我们代码中的每个角落，因此我们必须将每个回调都放入try/except中，这样一来所有的异常都才有可能被捕获。这对于我们的errback同样适用，因为errback中也可能含有bugs。</p>
+<p>##Deferred的优秀架构<br>最终还得由Deferred来帮我们解决这类问题。当一个deferred激活了一个callback或errback时，它就会捕获各种由回调抛出的异常。换句话说，deferred扮演了try/except模块，这样一来，只要我们使用deferred就无需自己来实现这一层了。那deferred是如何解决这个问题的？很简单，它传递异常给在其链上的下一个errback。</p>
+<p>我们添加到deferred中的第一个errback回调来处理任何出错信息，信息是在deferred的errback函数调用时发出的。但第二个errback会处理任何由第一个errback或第一个callback抛出的异常，并一直按这种规则传递下去。<br>回忆下<a href="http://michaelyou.github.io/img/Deferred.png" target="_blank" rel="external">图12</a>.我们假设第一对callback/errback是stage0,下面则是stage1，stage2。。。依次类推。</p>
+<p>对于stage N来说，如果其callback或errback出错，那么stage N+1的errback就会被调用并收到一个Failure对象作为参数，同时stage N+1的callback就不会被调用了。</p>
+<p>通过将回调函数产生的异常向在链中传递，deferred将异常抛向了高层代码。这也意味着调用deferred的callback与errback永远不会在调用都本身处引发异常（只要你仅激活deferred一次），因此，底层的代码可以放心的激活deferred而无需担心会引发异常。相反，高层代码通过向deferred中添加errback（使用addErrback）来捕获异常。</p>
+<p>在同步代码中，异常会在其被捕获而停止传递，那么一个errback如何发出其捕获了异常这一信号呢？同样很简单：不再引发异常。这样一来，执行权就转移到了callback中来。因此对于stage N来说，不管是callback还是errback成功执行而没有抛出异常，那么stage N+1的callback就会被调用，同样，stage N+1的errback就不会被调用了。</p>
+<p>我们来总结一下吧：</p>
+<ol>
+<li>一个deferred有一个callback/errback对链，它们以添加到deferred中的顺序依次排列</li>
+<li>stage 0，即第一对errback/callbac，会在deferred激活时调用，具体调用那个看激活deferred的方式，若是通过.errback激活，则调用errback；同样若是通过.callback激活则调用callback。（这里的errback/callback实际是指通过addBoth添加的函数）</li>
+<li>如果stage N执行出现异常，则stage N+1的errback被调用，并且其参数即为stage N出现的异常</li>
+<li>同样，如果stage N成功，即没有抛出异常，则N+1的callback被调用，其第一个参数为stage N的返回值。</li>
+</ol>
+<p>图17更加直观的描述上述操作：</p>
+<p><img src="/img/deferred中的控制流程.png" alt="图17：deferred中的控制流程"></p>
+<p>绿色的线表示callback和errback成功执行没抛出异常，而红线表示出现了异常。这些线不仅说明了控制流程还说明了异常与返回值在链中流动的情况。图17显示了所有deferred能出现的可能路径，但实际只有一条路径会存在。图18显示了一条可能的路径：</p>
+<p><img src="/img/可能的deferred激活路线.png" alt="图18：可能的deferred激活路线"></p>
+<p>图18中，deferred的.callback函数被调用了，因此激活了stage 0的callback。这个callback成功的执行而没有抛出异常，因此控制权传给了stage 1的callback。但这个callbac执行失败而抛出异常，因此控制权传给了stage 2的errback。errback成功的处理了异常，而没有再抛出异常，因此控制权传给了stage 3的callback，并且将errback的返回值作为第一个参数传了进来（即stage 3的callback中）。</p>
+<p>图18中，可以看出，最后一个stage上的所有的回调出现异常时，都由下一层的errback来捕获并处理，但如果最后一个stage的callback或errback执行失败而抛出异常，怎么办呢？那么这个异常就会成为unhandled（未处理）。</p>
+<p>在同步代码中，未处理的异常会导致解释器崩溃，在原始方式使用回调的代码中未处理异常会由reactor捕获并记录下来。那么未处理异常出现在deferred中会怎样呢？让我们来做个试验。运行<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/defer-unhandled.py#L1" target="_blank" rel="external">twisted-deferred/defer-unhandled.py</a>试试。下面是输出：</p>
+<pre><code>Finished
+Unhandled error in Deferred: Traceback (most recent call last):
+...
+--- &lt;exception caught here&gt; ---
+...
+exceptions.Exception: oops
+</code></pre><p>如下几点需要引起我们的注意：</p>
+<ol>
+<li>最后一个print函数成功执行，意味着程序并没有因为出现未处理异常而崩溃。</li>
+<li>其只是将跟踪栈打印出来，而没有宕掉解释器</li>
+<li>跟踪栈的内容告诉我们deferred在何处捕获了异常</li>
+<li>“’Unhandle”的字符在“Finished”之后出现。</li>
+</ol>
+<p>之所以出现第4条是因为，这个消息只有在deferred被垃圾回收时才会打印出来。我们将在下面的部分看到其中的原因。</p>
+<p>在同步代码中，我们可以使用raise来重新抛出一个异常而无需其它参数。同样，我们也可以在errback中这样做。deferred通过以下两点来判断callback/errback是否执行成功：</p>
+<ol>
+<li>callback/errback “raise”一个异常，或</li>
+<li>callbakc/errback返回一个Failure对象</li>
+</ol>
+<p>因为errback的第一个参数就是一个Failure，因此一个errback可以在进行完其处理后可以再次抛出这个Failure。</p>
+<p>##Callbacks与Errbacks，成对出现<br>上面讨论内容中的一个问题必须要清楚：你添加callback与errback到一个defered的顺序会决定这个deferred的的整体运行情况。另一个必须搞清楚的是：在一个deferred中callback与errback往往是成对出现。有四个方法可以向一个deferred的回调链中添加callback/errback对：</p>
+<ol>
+<li>addCallbacks</li>
+<li>addCallback</li>
+<li>addErrback</li>
+<li>addBoth</li>
+</ol>
+<p>很明显的是，第一个与第四个是向链中添加函数对。当然中间两个也向链中添加函数对。AddCallback向链中添加一个显式的callback函数与一个隐式的”pass-through“函数（实在想不出一个对应的词）。一个pass-through函数只是虚设的函数，只将其第一个参数返回。由于errback回调函数的第一个参数是Failure，因此一个“path-through”的errback总是执行“失败”，即将异常传给下个errback回调。</p>
+<p>##deferred模拟器<br>这部分内容，没有译。其主要是帮助理解deferred，但你会发现，读其中的代码，根本更好的理解deferred。主要是我还没有理解，嘿嘿。所以就不知为不知吧。</p>
+<p>##总结</p>
+<p>经过这些对回调的考虑，发现由于回调式编程改变了低层代码与高层代码的关系，因此让回调产生的异常直接抛到栈中并不件好事。Deferred通过将异常捕获然后将其顺着回调链传递来解决了这个问题。</p>
+<p>我们同样意识到，原始数据（返回值）在链中被传递。结合这个两事实也就带来了这样一种场景：根据每个stage收到的结果的不同，deferred在callback与errback链中来回交错传递数据并执行。</p>
+<p>我们将在第十部分使用些学到的知识来更新我们的客户端。</p>
+<p>##练习</p>
+<ol>
+<li>Inspect the implementation of each of the four methods on the Deferred which add callbacks and errbacks. Verify that all methods add a callback/errback pair.</li>
+<li><p>Use the deferred simulator to investigate the difference between this code:</p>
+<pre><code>deferred.addCallbacks(my_callback, my_errback)
+</code></pre></li>
+</ol>
+<p>and this code:</p>
+<pre><code>deferred.addCallback(my_callback)
+deferred.addErrback(my_errback)
+</code></pre><p>Recall that the last two methods add implicit pass-through functions as one member of the pair.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/30/第九部分：第二个小插曲，Deferred/" data-id="cj64upq6300dxlraeq86txj55" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-如何重命名scrapy下载的图片" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/30/如何重命名scrapy下载的图片/" class="article-date">
+  <time datetime="2015-01-30T09:07:32.000Z" itemprop="datePublished">2015-01-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/scrapy/">scrapy</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/30/如何重命名scrapy下载的图片/">如何重命名scrapy下载的图片</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>默认情况下，使用ImagePipeline组件下载图片的时候，图片名称是以图片URL的SHA1值进行保存的。</p>
+<p>如：<br>图片URL:<a href="http://www.example.com/image.jpg" target="_blank" rel="external">http://www.example.com/image.jpg</a></p>
+<p>SHA1结果：3afec3b4765f8f0a07b78f98c07b83f013567a0a</p>
+<p>则图片名称：3afec3b4765f8f0a07b78f98c07b83f013567a0a.jpg</p>
+<p>但是，我想要以原来的图片名称进行保存，比如上面例子中的图片保存到本地的话，图片名称就应该是：image.jpg</p>
+<p>stackoverflow上说是可以重写<code>image_key</code>函数，不过我试了下，结果发现不行，重写的image_key函数没被调用。其实不是stackoverflow上的回答是错误的，在<code>scrapy 0.12</code>之前，确实应该这样来解决此问题，现在scrapy的版本已经更新了很多，这个方法不适用了，下面是ImagePipeline的源码中的提醒：</p>
+<blockquote>
+<p>ImagesPipeline.image_key(url) and file_key(url) methods are deprecated, please use file_path(request, response=None, info=None) instead</p>
+</blockquote>
+<p>也就是说，在最新版本的Scrapy中（0.24.4），使用<code>file_path</code>代替<code>image_key</code>函数。</p>
+<p>下面是新版本的解决方法，在<code>scrapy 0.24.4</code>中测试通过</p>
+<ul>
+<li><p>在pipelines.py中自定义ImagePipeline类，并重写file_path函数</p>
+<pre><code>from scrapy.contrib.pipeline.images import ImagesPipeline
+from scrapy.http import Request
+from scrapy.exceptions import DropItem
+
+class MyImagesPipeline(ImagesPipeline):
+    def file_path(self, request, response=None, info=None):
+        image_guid = request.url.split(&apos;/&apos;)[-1]
+        return &apos;full/%s&apos; % (image_guid)
+
+    #item[&apos;image_urls&apos;]是我们在item.py中定义的存放图片url的变量，如果定义了别的变量名，注意更换
+    def get_media_requests(self, item, info):
+        for image_url in item[&apos;image_urls&apos;]:
+            yield Request(image_url)
+
+    def item_completed(self, results, item, info):
+        image_paths = [x[&apos;path&apos;] for ok, x in results if ok]
+        if not image_paths:
+            raise DropItem(&quot;Item contains no images&quot;)
+        return item
+</code></pre></li>
+<li><p>修改setting.py</p>
+<pre><code>ITEM_PIPELINES = {
+    # &apos;scrapy.contrib.pipeline.images.ImagesPipeline&apos;: 1
+    &apos;sis.pipelines.MyImagesPipeline&apos;
+    }
+</code></pre></li>
+</ul>
+<p>可以参考stackoverflow上<a href="http://stackoverflow.com/questions/6194041/scrapy-image-download-how-to-use-custom-filename/22263951#22263951" target="_blank" rel="external">此问题的讨论</a></p>
+<p>原文地址在<a href="http://www.it165.net/pro/html/201402/9615.html" target="_blank" rel="external">这里</a>，本文做了一些删除和修改</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/30/如何重命名scrapy下载的图片/" data-id="cj64upq4p00bblraerhi4g3ej" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scrapy/">scrapy</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-第八部分：使用Deferred的诗歌下载客户端" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/30/第八部分：使用Deferred的诗歌下载客户端/" class="article-date">
+  <time datetime="2015-01-30T06:52:49.000Z" itemprop="datePublished">2015-01-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/twisted/">twisted</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/30/第八部分：使用Deferred的诗歌下载客户端/">第八部分：使用Deferred的诗歌下载客户端</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文点<a href="http://krondo.com/?p=1778" target="_blank" rel="external">这里</a></p>
+<p>##客户端4.0<br>我们已经对deferreds有些理解了，现在我们可以使用它重写我们的客户端。你可以在twisted-client-4/get-poetry.py中看到它的实现。</p>
+<p>这里的get_poetry已经再也不需要callback与errback参数了。相反，返回了一个用户可能根据需要添加callbacks和errbacks的新deferred。</p>
+<pre><code>def get_poetry(host, port):
+    &quot;&quot;&quot;
+    Download a poem from the given host and port. This function
+    returns a Deferred which will be fired with the complete text of
+    the poem or a Failure if the poem could not be downloaded.
+    &quot;&quot;&quot;
+    d = defer.Deferred()
+    from twisted.internet import reactor
+    factory = PoetryClientFactory(d)
+    reactor.connectTCP(host, port, factory)
+    return d
+</code></pre><p>这里的工厂使用一个deferred而不callback/errback对来初始化。一旦我们获取到poem后或者没有连接到服务器上，deferred就会以返回一首诗歌或一个failure的被激活。<br>    class PoetryClientFactory(ClientFactory):</p>
+<pre><code>protocol = PoetryProtocol
+
+def __init__(self, deferred):
+    self.deferred = deferred
+
+def poem_finished(self, poem):
+    if self.deferred is not None:
+        d, self.deferred = self.deferred, None
+        d.callback(poem)
+
+def clientConnectionFailed(self, connector, reason):
+    if self.deferred is not None:
+        d, self.deferred = self.deferred, None
+        d.errback(reason)
+</code></pre><p>注意我们在deferred被激活后是如何销毁其引用的。这种方式普便存在于Twisted的源代码中，这样做可以保证我们不会激活一个deferred两次。这也为Python的垃圾回收带来的方便。</p>
+<p>这里仍然不用去改变poetryProtocol。我们只需要更新poetry_main函数即可：</p>
+<pre><code>def poetry_main():
+    addresses = parse_args()
+
+    from twisted.internet import reactor
+
+    poems = []
+    errors = []
+
+    def got_poem(poem):
+        poems.append(poem)
+
+    def poem_failed(err):
+        print &gt;&gt;sys.stderr, &apos;Poem failed:&apos;, err
+        errors.append(err)
+
+    def poem_done(_):
+        if len(poems) + len(errors) == len(addresses):
+            reactor.stop()
+
+    for address in addresses:
+        host, port = address
+        d = get_poetry(host, port)
+        d.addCallbacks(got_poem, poem_failed)
+        d.addBoth(poem_done)
+
+    reactor.run()
+
+    for poem in poems:
+        print poem
+</code></pre><p>注意我们是如何利用deferred的回调链在不考虑两个主要的callback与errback回调外，重构poem_done调用的。</p>
+<p>由于deferred在Twisted大量被使用，使用小写字母d来表示当前正在工作中的deferred已经成为惯例。</p>
+<p>##讨论<br>新版本的客户端与我们前面的同步版本的客户端一样，get_poetry得到的参数都是诗歌下载服务器的地址。同步版本返回的是诗歌内容，而异步版本返回的却是一个deferred。返回一个deferred是Twisted的APIs或用Twisted写的程序常见的，这样一来我们可以这样来理解deferred：</p>
+<p>一个Deferred代表了一个“异步的结果”或者“结果还没有到来”</p>
+<p>在图13中可以更加清晰地表达出两者之间的不同：</p>
+<p><img src="/img/同步VS异步.png" alt="图13：同步VS异步"></p>
+<p>异步函数返回一个deferred，对用户意味着：</p>
+<blockquote>
+<p>我是一个异步函数。不管你想要什么，可能现在马上都得不到。但当结果来到时，我会激活这个deferred的callback链并返回结果。或者当出错时，相应地激活errback链并返回出错信息。</p>
+</blockquote>
+<p>当然，这个函数是不能随意激活这个deferred的，因为它已经返回了。但这个函数已经启动了一系列事件，这些事件最终将会激活这个deferred。<br>因此，deferred是为适应异步模式的一种延迟函数返回的方式。函数返回一个deferred意味着其是异步的，代表着将来的结果，也是对将来能够返回结果的一种承诺。</p>
+<p>同步函数也能返回一个deferred，因此严格点说，返回deferred只说可能是异步的。我们会在将来的例子中看到同步函数返回deferred。</p>
+<p>由于deferred的行为已经很好的定义与理解，因此在实现自己的API时返回一个deferred更容易让其它的Twisted程序理解你的代码。如果没有deferred，可能每个人写的模块都使用不同的方式来处理回调。这要一来就增加了相互理解的工作量。</p>
+<p>当你使用Deferred时，你仍然在使用回调，它们仍然由reactor来调用。</p>
+<p>当首次学习Twisted时，经常犯的一个错误就是：会给deferred增加一些它本身不能实现的功能。尤其是：经常假设在deferred上添加一个函数就可以使其变成异步函数。这可能会让你产生这样的</p>
+<p>想法：在Twisted 中可以通过将os.system的函数添加到deferred的回调链中。<br>我认为，这可能是没有弄清楚异步编程的原因才产生这样的想法。由于Twisted代码使用了大量的deferred但却很少会涉及到reactor，可能会认为deferred做了大部分工作。如果你是从开始阅读这个系列的，你就会知道事情远不是这样。虽然Twisted是由众多部分组合在一起来工作的，但实现异步的主要工作都是由reactor来完成的。Deferred是一个很好的抽象概念，但前面几个例子中的客户端我们却没有使用它，而reactor却都用到了。</p>
+<p>来看看我们第一个回调激活时的跟踪栈信息。运行twisted-client-4/get-poetry-stack.py让其连接你打开的服务器，你会得到如下输出：</p>
+<pre><code>File &quot;twisted-client-4/get-poetry-stack.py&quot;, line 129, in
+poetry_main()
+File &quot;twisted-client-4/get-poetry-stack.py&quot;, line 122, in poetry_main
+reactor.run() ... # some more Twisted function calls
+protocol.connectionLost(reason) 
+File &quot;twisted-client-4/get-poetry-stack.py&quot;, line 59, in connectionLost 
+self.poemReceived(self.poem) 
+File &quot;twisted-client-4/get-poetry-stack.py&quot;, line 62, in poemReceived
+self.factory.poem_finished(poem)
+File &quot;twisted-client-4/get-poetry-stack.py&quot;, line 75, in poem_finished
+d.callback(poem) # here&apos;s where we fire the deferred 
+... # some more methods on Deferreds
+File &quot;twisted-client-4/get-poetry-stack.py&quot;, line 105, in got_poem
+traceback.print_stack()
+</code></pre><p>这很像版本2.0的跟踪栈，图14可以很好地说明具体的调用关系：</p>
+<p><img src="/img/deferred的回调.png" alt="图14 deferred的回调"></p>
+<p>这很类似于我们前面的Twisted客户端，虽然这张图的调用关系并不清晰而会你摸不着头脑。但我们先不深入分析这张图。有一个细节并没有在这张图上反映出来：</p>
+<p>callback链直到第二个回调poem_done激活前才将控制权还给reactor。</p>
+<p>通过使用deferred，我们在由Twisted中的reactor启动的回调中加入了一些自己的东西，但我们并没有改变异步程序的基础架构。回忆下回调编程的特点：</p>
+<ol>
+<li>在一个时刻，只会有一个回调在运行</li>
+<li>当reactor运行时，那我们自己的代码则得不到运行</li>
+<li>反之则反之</li>
+<li>如果我们的回调函数发生阻塞，那么整个程序就跟着阻塞掉了<br>在一个 deferred上追加一个回调并不会改变上面这些实事。尤其是，第4 条。因此当一个deferred激活时被阻塞，那么整个Twisted就会陷入阻塞中。因此我们会得到如下结论：</li>
+</ol>
+<blockquote>
+<p>Deferred只是解决回调函数管理问题的一种解决方案。它并不一种替代回调方式也不能将阻塞式的回调变成非阻塞式回调的。</p>
+</blockquote>
+<p>我通过构建一个添加阻塞式回调的deferred来验证最后一点。验证代码文件为twisted-deferred/defer-block.py。第二个callback通过使用time.sleep来达到阻塞的效果。如果你运行该代码来观察打印信息顺序时，你会发现deferred中阻塞回调仍然会阻塞掉。</p>
+<p>##总结<br>函数通过返回一个Deferred，向使用者暗示“我是采用异步方式的”并且当结果到来时会使用一种特殊的机制（在此处添加你的callback与errback）来获得返回结果。Defered被广泛地运用在Twisted的每个角落，当你浏览Twisted源码时你就会不停地遇到它。</p>
+<p>4.0版本客户端是第一个使用Deferred的Twisted版的客户端，其使用方法为在其异步函数中返回一个deferred来。可以使用一些Twisted的APIs来使客户端的实现更加清晰些，但我觉得它能够很好地体现出一个简单的Twisted程序是怎么写的了，至少对于客户端可以如此肯定。事实上，后面我们会重构我们的服务器端。</p>
+<p>但我们对Deferred的讲解还没有结束。使用如此少量的代码，Deferred就能提供如此之多的功能。我们将在第9部分探讨其更多的功能和功能背后的动机。</p>
+<p>##练习</p>
+<ol>
+<li>Update client 4.0 to timeout if the poem isn’t received after a given period of time. Fire the deferred’s errback with a custom exception in that case. Don’t forget to close the connection when you do.</li>
+<li>Update client 4.0 to print out the appropriate server address when a poem download fails, so the user can tell which server is the culprit. Don’t forget you can add extra positional- and keyword-arguments when you attach callbacks and errbacks.</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/30/第八部分：使用Deferred的诗歌下载客户端/" data-id="cj64upq6900e8lraezg3ovrkb" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/page/16/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/18/">__('next') &raquo;</a>
+  </nav>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

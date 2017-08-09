@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>函数式编程(1) | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="##基本概念函数是Python内建支持的一种封装，我们通过把大段代码拆成函数，通过一层一层的函数调用，就可以把复杂任务分解成简单的任务，这种分解可以称之为面向过程的程序设计。函数就是面向过程的程序设计的基本单元。 而函数式编程（请注意多了一个“式”字）—— Functional Programming，虽然也可以归结到面向过程的程序设计，但其思想更接近数学计算。 我们首先要搞明白计算机（Compu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="函数式编程(1)">
+<meta property="og:url" content="http://yoursite.com/2015/05/06/函数式编程-1/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="##基本概念函数是Python内建支持的一种封装，我们通过把大段代码拆成函数，通过一层一层的函数调用，就可以把复杂任务分解成简单的任务，这种分解可以称之为面向过程的程序设计。函数就是面向过程的程序设计的基本单元。 而函数式编程（请注意多了一个“式”字）—— Functional Programming，虽然也可以归结到面向过程的程序设计，但其思想更接近数学计算。 我们首先要搞明白计算机（Compu">
+<meta property="og:image" content="http://www.liaoxuefeng.com/files/attachments/0013879622109990efbf9d781704b02994ba96765595f56000/0">
+<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="函数式编程(1)">
+<meta name="twitter:description" content="##基本概念函数是Python内建支持的一种封装，我们通过把大段代码拆成函数，通过一层一层的函数调用，就可以把复杂任务分解成简单的任务，这种分解可以称之为面向过程的程序设计。函数就是面向过程的程序设计的基本单元。 而函数式编程（请注意多了一个“式”字）—— Functional Programming，虽然也可以归结到面向过程的程序设计，但其思想更接近数学计算。 我们首先要搞明白计算机（Compu">
+<meta name="twitter:image" content="http://www.liaoxuefeng.com/files/attachments/0013879622109990efbf9d781704b02994ba96765595f56000/0">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-函数式编程-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/05/06/函数式编程-1/" class="article-date">
+  <time datetime="2015-05-06T06:30:40.000Z" itemprop="datePublished">2015-05-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      函数式编程(1)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##基本概念<br>函数是Python内建支持的一种封装，我们通过把大段代码拆成函数，通过一层一层的函数调用，就可以把复杂任务分解成简单的任务，这种分解可以称之为面向过程的程序设计。函数就是面向过程的程序设计的基本单元。</p>
+<p>而函数式编程（请注意多了一个“式”字）—— <code>Functional Programming</code>，虽然也可以归结到面向过程的程序设计，但其思想更接近数学计算。</p>
+<p>我们首先要搞明白计算机（<code>Computer</code>）和计算（<code>Compute</code>）的概念。</p>
+<p>在计算机的层次上，CPU执行的是加减乘除的指令代码，以及各种条件判断和跳转指令，所以，汇编语言是最贴近计算机的语言。</p>
+<p>而计算则指数学意义上的计算，越是抽象的计算，离计算机硬件越远。</p>
+<p>对应到编程语言，就是越低级的语言，越贴近计算机，抽象程度低，执行效率高，比如C语言；越高级的语言，越贴近计算，抽象程度高，执行效率低，比如Lisp语言。</p>
+<p>函数式编程就是一种抽象程度很高的编程范式，纯粹的函数式编程语言编写的函数没有变量，因此，任意一个函数，只要输入是确定的，输出就是确定的，这种纯函数我们称之为没有副作用。而允许使用变量的程序设计语言，由于函数内部的变量状态不确定，同样的输入，可能得到不同的输出，因此，这种函数是有副作用的。</p>
+<p>函数式编程的一个特点就是，允许把函数本身作为参数传入另一个函数，还允许返回一个函数！</p>
+<p>Python对函数式编程提供部分支持。由于Python允许使用变量，因此，Python不是纯函数式编程语言。</p>
+<p>##高阶函数<br>能够接受函数作为参数的函数，被称为高阶函数。函数式编程就是指这种高度抽象的编程范式。</p>
+<p>一个简单的高阶函数</p>
+<pre><code>def add(x, y, f):
+    return f(x) + f(y)
+</code></pre><p>如果传入abs作为参数f的值</p>
+<pre><code>add(-5, 9, abs)
+</code></pre><p>根据函数的定义，函数执行的代码实际上是：</p>
+<p>abs(-5) + abs(9)</p>
+<p>由于参数 x, y 和 f 都可以任意传入，如果 f 传入其他函数，就可以得到不同的返回值。</p>
+<p>比如说传入开平方根的函数</p>
+<blockquote>
+<p>计算平方根可以用函数：</p>
+<blockquote>
+<blockquote>
+<p>math.sqrt(2)<br>    1.4142…</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p><strong>参考代码</strong></p>
+<pre><code>import math
+def add(x, y, f):
+    return f(x) + f(y)
+print add(25, 9, math.sqrt)
+</code></pre><p>##map()函数</p>
+<p><strong>map()</strong>是 Python 内置的高阶函数，它接收<strong>一个函数 f</strong> 和<strong>一个 list</strong>，并通过把函数 f 依次作用在 list 的每个元素上，得到一个新的 list 并返回。</p>
+<p>例如，对于list [1, 2, 3, 4, 5, 6, 7, 8, 9]</p>
+<p>如果希望把list的每个元素都作平方，就可以用map()函数：</p>
+<p><img src="http://www.liaoxuefeng.com/files/attachments/0013879622109990efbf9d781704b02994ba96765595f56000/0" alt=""></p>
+<p>因此，我们只需要传入函数f(x)=x*x，就可以利用map()函数完成这个计算：</p>
+<pre><code>def f(x):
+    return x*x
+print map(f, [1, 2, 3, 4, 5, 6, 7, 8, 9])
+</code></pre><p>输出结果：</p>
+<pre><code>[1, 4, 9, 10, 25, 36, 49, 64, 81]
+</code></pre><p><strong>注意</strong>：map()函数不改变原有的 list，而是返回一个新的 list。</p>
+<p>利用map()函数，可以把一个 list 转换为另一个 list，只需要传入转换函数。</p>
+<p>由于list包含的元素可以是任何类型，因此，map() 不仅仅可以处理只包含数值的 list，事实上它可以处理包含任意类型的 list，只要传入的函数f可以处理这种数据类型。</p>
+<p><strong>栗子</strong>：假设用户输入的英文名字不规范，没有按照首字母大写，后续字母小写的规则，请利用map()函数，把一个list（包含若干不规范的英文名字）变成一个包含规范英文名字的list：</p>
+<p>输入：[‘adam’, ‘LISA’, ‘barT’]</p>
+<p>输出：[‘Adam’, ‘Lisa’, ‘Bart’]</p>
+<p><strong>参考代码</strong></p>
+<pre><code>def format_name(s):
+    return s[0].upper() + s[1:].lower()
+print map(format_name, [&apos;adam&apos;, &apos;LISA&apos;, &apos;barT&apos;])
+</code></pre><p>##reduce()函数</p>
+<p><strong>reduce()</strong>函数也是Python内置的一个高阶函数。reduce()函数接收的参数和 map()类似，<strong>一个函数 f</strong>，<strong>一个list</strong>，但行为和 map()不同，reduce()传入的函数 f 必须接收两个参数，reduce()对list的每个元素反复调用函数f，并返回最终结果值。</p>
+<p>例如，编写一个f函数，接收x和y，返回x和y的和：</p>
+<pre><code>def f(x, y):
+    return x + y
+</code></pre><p>调用 <code>reduce(f, [1, 3, 5, 7, 9])</code>时，reduce函数将做如下计算：</p>
+<pre><code>先计算头两个元素：f(1, 3)，结果为4；
+再把结果和第3个元素计算：f(4, 5)，结果为9；
+再把结果和第4个元素计算：f(9, 7)，结果为16；
+再把结果和第5个元素计算：f(16, 9)，结果为25；
+由于没有更多的元素了，计算结束，返回结果25。
+</code></pre><p>上述计算实际上是对 list 的所有元素求和。虽然Python内置了求和函数sum()，但是，利用reduce()求和也很简单。</p>
+<p><strong>reduce()还可以接收第3个可选参数，作为计算的初始值。</strong>如果把初始值设为100，计算：</p>
+<pre><code>reduce(f, [1, 3, 5, 7, 9], 100)
+</code></pre><p>结果将变为125，因为第一轮计算是：<br>计算初始值和第一个元素：<strong>f(100, 1)</strong>，结果为101。</p>
+<p>##filter()函数</p>
+<p><strong>filter()</strong>函数是 Python 内置的另一个有用的高阶函数，filter()函数接收<strong>一个函数 f</strong> 和<strong>一个list</strong>，这个函数 f 的作用是对每个元素进行判断，返回 True或 False，filter()根据判断结果自动过滤掉不符合条件的元素，返回由符合条件元素组成的新list。</p>
+<p>例如，要从一个<code>list [1, 4, 6, 7, 9, 12, 17]</code>中删除偶数，保留奇数，首先，要编写一个判断奇数的函数：</p>
+<pre><code>def is_odd(x):
+    return x % 2 == 1
+</code></pre><p>然后，利用filter()过滤掉偶数：</p>
+<pre><code>filter(is_odd, [1, 4, 6, 7, 9, 12, 17])
+</code></pre><p><strong>结果</strong>：[1, 7, 9, 17]</p>
+<p>利用filter()，可以完成很多有用的功能，例如，删除 None 或者空字符串：</p>
+<pre><code>def is_not_empty(s):
+    return s and len(s.strip()) &gt; 0
+filter(is_not_empty, [&apos;test&apos;, None, &apos;&apos;, &apos;str&apos;, &apos;  &apos;, &apos;END&apos;])
+</code></pre><p><strong>结果</strong>：[‘test’, ‘str’, ‘END’]</p>
+<p><strong>注意</strong>: s.strip(rm) 删除 s 字符串中开头、结尾处的 rm 序列的字符。</p>
+<p>当rm为空时，默认删除空白符（包括’\n’, ‘\r’, ‘\t’, ‘ ‘)，如下：</p>
+<pre><code>a = &apos;     123&apos;
+a.strip()
+</code></pre><p><strong>结果</strong>： ‘123’</p>
+<pre><code>a=&apos;\t\t123\r\n&apos;
+a.strip()
+</code></pre><p><strong>结果</strong>：’123’</p>
+<p><strong>栗子</strong>：<code>filter()</code> 接收的函数必须判断出一个数的平方根是否是整数，而 <code>math.sqrt()</code>返回结果是浮点数。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>import math
+def is_sqr(x):
+    r = int(math.sqrt(x))
+    return r*r==x
+print filter(is_sqr, range(1, 101))
+</code></pre><p>##sorted自定义排序函数</p>
+<p>Python内置的 sorted()函数可对list进行排序：</p>
+<pre><code>&gt;&gt;&gt;sorted([36, 5, 12, 9, 21])
+
+[5, 9, 12, 21, 36]
+</code></pre><p>但 sorted()也是一个高阶函数，它可以接收一个比较函数来实现自定义排序，比较函数的定义是，传入两个待比较的元素 x, y，<strong>如果 x 应该排在 y 的前面，返回 -1，如果 x 应该排在 y 的后面，返回 1。如果 x 和 y 相等，返回 0。</strong></p>
+<p>因此，如果我们要实现倒序排序，只需要编写一个reversed_cmp函数：</p>
+<pre><code>def reversed_cmp(x, y):
+    if x &gt; y:
+        return -1
+    if x &lt; y:
+        return 1
+    return 0
+</code></pre><p>这样，调用 sorted() 并传入 reversed_cmp 就可以实现倒序排序：</p>
+<pre><code>&gt;&gt;&gt; sorted([36, 5, 12, 9, 21], reversed_cmp)
+[36, 21, 12, 9, 5]
+</code></pre><p>sorted()也可以对字符串进行排序，字符串默认按照ASCII大小来比较：</p>
+<pre><code>&gt;&gt;&gt; sorted([&apos;bob&apos;, &apos;about&apos;, &apos;Zoo&apos;, &apos;Credit&apos;])
+[&apos;Credit&apos;, &apos;Zoo&apos;, &apos;about&apos;, &apos;bob&apos;]
+</code></pre><p>‘Zoo’排在’about’之前是因为’Z’的ASCII码比’a’小。</p>
+<p><strong>栗子</strong>：对字符串排序时，有时候忽略大小写排序更符合习惯。请利用sorted()高阶函数，实现忽略大小写排序的算法。</p>
+<p>输入：[‘bob’, ‘about’, ‘Zoo’, ‘Credit’]</p>
+<p>输出：[‘about’, ‘bob’, ‘Credit’, ‘Zoo’]</p>
+<p>对于比较函数cmp_ignore_case(s1, s2)，要忽略大小写比较，就是先把两个字符串都变成大写（或者都变成小写），再比较。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>def cmp_ignore_case(s1, s2):
+    u1 = s1.upper()
+    u2 = s2.upper()
+    if u1 &lt; u2:
+        return -1
+    if u1 &gt; u2:
+        return 1
+    return 0
+print sorted([&apos;bob&apos;, &apos;about&apos;, &apos;Zoo&apos;, &apos;Credit&apos;], cmp_ignore_case)
+</code></pre><p>##返回函数</p>
+<p>Python的函数不但可以返回int、str、list、dict等数据类型，还可以返回函数！<br>例如，定义一个函数 f()，我们让它返回一个函数 g，可以这样写：</p>
+<pre><code>def f():
+    print &apos;call f()...&apos;
+    # 定义函数g:
+    def g():
+        print &apos;call g()...&apos;
+    # 返回函数g:
+    return g
+</code></pre><p>仔细观察上面的函数定义，我们在函数 f 内部又定义了一个函数 g。由于函数 g 也是一个对象，函数名 g 就是指向函数 g 的变量，所以，最外层函数 f 可以返回变量 g，也就是函数 g 本身。</p>
+<p>调用函数 f，我们会得到 f 返回的一个函数：</p>
+<pre><code>&gt;&gt;&gt; x = f()   # 调用f()
+call f()...
+&gt;&gt;&gt; x   # 变量x是f()返回的函数：
+&lt;function g at 0x1037bf320&gt;
+&gt;&gt;&gt; x()   # x指向函数，因此可以调用
+call g()...   # 调用x()就是执行g()函数定义的代码
+</code></pre><p>请注意区分返回函数和返回值：</p>
+<pre><code>def myabs():
+    return abs   # 返回函数
+def myabs2(x):
+    return abs(x)   # 返回函数调用的结果，返回值是一个数值
+</code></pre><p>返回函数可以把一些计算延迟执行。例如，如果定义一个普通的求和函数：</p>
+<pre><code>def calc_sum(lst):
+    return sum(lst)
+</code></pre><p>调用calc_sum()函数时，将立刻计算并得到结果：</p>
+<pre><code>&gt;&gt;&gt; calc_sum([1, 2, 3, 4])
+10
+</code></pre><p>但是，如果返回一个函数，就可以“延迟计算”：</p>
+<pre><code>def calc_sum(lst):
+    def lazy_sum():
+        return sum(lst)
+    return lazy_sum
+</code></pre><p>调用calc_sum()并没有计算出结果，而是返回函数:</p>
+<pre><code>&gt;&gt;&gt; f = calc_sum([1, 2, 3, 4])
+&gt;&gt;&gt; f
+&lt;function lazy_sum at 0x1037bfaa0&gt;
+</code></pre><p>对返回的函数进行调用时，才计算出结果:</p>
+<pre><code>&gt;&gt;&gt; f()
+10
+</code></pre><p>由于可以返回函数，我们在后续代码里就可以决定到底要不要调用该函数。</p>
+<p><strong>栗子</strong>：请编写一个函数calc_prod(lst)，它接收一个list，返回一个函数，返回函数可以计算参数的乘积。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>def calc_prod(lst):
+    def lazy_prod():
+        def f(x, y):
+            return x * y
+        return reduce(f, lst, 1)
+    return lazy_prod
+f = calc_prod([1, 2, 3, 4])
+print f()
+</code></pre><p>##闭包</p>
+<p>在函数内部定义的函数和外部定义的函数是一样的，只是他们无法被外部访问：</p>
+<pre><code>def g():
+    print &apos;g()...&apos;
+
+def f():
+    print &apos;f()...&apos;
+    return g
+</code></pre><p>将 <code>g</code> 的定义移入函数 <code>f</code> 内部，防止其他代码调用 <code>g</code>：</p>
+<pre><code>def f():
+    print &apos;f()...&apos;
+    def g():
+        print &apos;g()...&apos;
+    return g
+</code></pre><p>但是，考察上一小节定义的 <code>calc_sum</code> 函数：</p>
+<pre><code>def calc_sum(lst):
+    def lazy_sum():
+        return sum(lst)
+    return lazy_sum
+</code></pre><p><strong>注意</strong>: 发现没法把 <code>lazy_sum</code> 移到 <code>calc_sum</code> 的外部，因为它引用了 <code>calc_sum</code> 的参数 <code>lst</code>。</p>
+<p>像这种内层函数引用了外层函数的变量（参数也算变量），然后返回内层函数的情况，称为<strong>闭包（Closure）</strong>。</p>
+<p>闭包的特点是返回的函数还引用了外层函数的局部变量，所以，要正确使用闭包，就要确保引用的局部变量在函数返回后不能变。举例如下：</p>
+<pre><code># 希望一次返回3个函数，分别计算1x1,2x2,3x3:
+def count():
+    fs = []
+    for i in range(1, 4):
+        def f():
+             return i*i
+        fs.append(f)
+    return fs
+
+f1, f2, f3 = count()
+</code></pre><p>你可能认为调用f1()，f2()和f3()结果应该是<code>1，4，9</code>，但实际结果全部都是 <code>9</code>（请自己动手验证）。</p>
+<p>原因就是当count()函数返回了3个函数时，这3个函数所引用的变量 i 的值已经变成了3。由于f1、f2、f3并没有被调用，所以，此时他们并未计算 i*i，当 f1 被调用时：</p>
+<pre><code>&gt;&gt;&gt; f1()
+9     # 因为f1现在才计算i*i，但现在i的值已经变为3
+</code></pre><p>因此，返回函数不要引用任何循环变量，或者后续会发生变化的变量。</p>
+<p><strong>栗子</strong>：返回闭包不能引用循环变量，请改写count()函数，让它正确返回能计算1x1、2x2、3x3的函数。</p>
+<p>考察下面的函数 f:</p>
+<pre><code>def f(j):
+    def g():
+        return j*j
+    return g
+</code></pre><p>它可以正确地返回一个闭包g，g所引用的变量j不是循环变量，因此将正常执行。<br>在count函数的循环内部，如果借助f函数，就可以避免引用循环变量i。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>def count():
+    fs = []
+    for i in range(1, 4):
+        def f(j):
+            def g():
+                return j*j
+            return g
+        r = f(i)
+        fs.append(r)
+    return fs
+f1, f2, f3 = count()
+print f1(), f2(), f3()
+</code></pre><p>##匿名函数</p>
+<p>高阶函数可以接收函数做参数，有些时候，我们不需要显式地定义函数，直接传入匿名函数更方便。</p>
+<p>在Python中，对匿名函数提供了有限支持。还是以<code>map()</code>函数为例，计算 f(x)=x2 时，除了定义一个<code>f(x)</code>的函数外，还可以直接传入匿名函数：</p>
+<pre><code>&gt;&gt;&gt; map(lambda x: x * x, [1, 2, 3, 4, 5, 6, 7, 8, 9])
+[1, 4, 9, 16, 25, 36, 49, 64, 81]
+</code></pre><p>通过对比可以看出，匿名函数 <code>lambda x: x * x</code> 实际上就是：</p>
+<pre><code>def f(x):
+    return x * x
+</code></pre><p><code>关键字lambda</code> 表示匿名函数，冒号前面的 <code>x 表示函数参数</code>。<br>匿名函数有个限制，就是<code>只能有一个表达式，不写return</code>，返回值就是该表达式的结果。</p>
+<p>使用匿名函数，可以不必定义函数名，直接创建一个函数对象，很多时候可以简化代码：</p>
+<pre><code>&gt;&gt;&gt; sorted([1, 3, 9, 5, 0], lambda x,y: -cmp(x,y))
+[9, 5, 3, 1, 0]
+</code></pre><p>返回函数的时候，也可以返回匿名函数：</p>
+<pre><code>&gt;&gt;&gt; myabs = lambda x: -x if x &lt; 0 else x 
+&gt;&gt;&gt; myabs(-1)
+1
+&gt;&gt;&gt; myabs(1)
+1
+</code></pre><p><strong>栗子</strong>：利用匿名函数简化以下代码：</p>
+<pre><code>def is_not_empty(s):
+    return s and len(s.strip()) &gt; 0
+
+filter(is_not_empty, [&apos;test&apos;, None, &apos;&apos;, &apos;str&apos;, &apos;  &apos;, &apos;END&apos;])
+</code></pre><p>定义匿名函数时，没有return关键字，且表达式的值就是函数返回值。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>print filter(lambda s: s and len(s.strip())&gt;0, [&apos;test&apos;, None, &apos;&apos;, &apos;str&apos;, &apos;  &apos;, &apos;END&apos;])
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/05/06/函数式编程-1/" data-id="cj64upq4400ajlraee7iyuxlx" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/05/06/函数式编程-2-装饰器和偏函数/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          函数式编程(2)--装饰器和偏函数
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/05/05/Python-中的下划线命名规则/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Python 中的下划线命名规则</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/page/10/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-海量数据处理" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/16/海量数据处理/" class="article-date">
+  <time datetime="2015-03-16T09:04:51.000Z" itemprop="datePublished">2015-03-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/算法/">算法</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/16/海量数据处理/">海量数据处理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>转载自<a href="http://blog.csdn.net/v_july_v/article/details/6685962" target="_blank" rel="external">这里</a></p>
+<p>##海量日志数据，提取出某日访问百度次数最多的那个IP。</p>
+<p>算法思想：分而治之+Hash</p>
+<ol>
+<li>IP地址最多有2^32=4G种取值情况，所以不能完全加载到内存中处理； </li>
+<li>可以考虑采用“分而治之”的思想，按照IP地址的Hash(IP)%1024值，把海量IP日志分别存储到1024个小文件中。这样，每个小文件最多包含4MB个IP地址； </li>
+<li>对于每一个小文件，可以构建一个IP为key，出现次数为value的Hash map，同时记录当前出现次数最多的那个IP地址；</li>
+<li>可以得到1024个小文件中的出现次数最多的IP，再依据常规的排序算法得到总体上出现次数最多的IP；</li>
+</ol>
+<p>##给定a、b两个文件，各存放50亿个url，每个url各占64字节，内存限制是4G，让你找出a、b文件共同的url？</p>
+<p><strong>方法</strong>：可以估计每个文件安的大小为5G×64=320G，远远大于内存限制的4G。所以不可能将其完全加载到内存中处理。考虑采取分而治之的方法。</p>
+<ol>
+<li>遍历文件a，对每个url求取<code>hash(url)%1000</code>，然后根据所取得的值将url分别存储到1000个小文件中(每个小文件存放的是经过<code>hash(url)%1000</code>计算后结果相同的url)，记为<code>a1a2a3...a999</code>。这样每个小文件的大约为300M。</li>
+</ol>
+<ul>
+<li><p>遍历文件b，采取和a相同的方式将url分别存储到1000小文件中，记为<code>b1b2b3...b999</code>。这样处理后，所有可能相同的url都在对应的小文件中，<code>a1-&gt;b1，a2-&gt;b2，...，a999-&gt;b999</code>，不对应的小文件不可能有相同的url(相同的url的<code>hash(url)%1000</code>的值也必然相等)。然后我们只要求出1000对小文件中相同的url即可。</p>
+</li>
+<li><p>求每对小文件中相同的url时，可以把其中一个小文件的url存储到<code>hash_set</code>中。然后遍历另一个小文件的每个url，看其是否在刚才构建的<code>hash_set</code>中，如果是，那么就是共同的url，存到文件里面就可以了。</p>
+</li>
+</ul>
+<p>注意点：</p>
+<ol>
+<li>hash后要判断每个文件大小，如果hash分的不均衡有文件较大，还应继续hash分文件，换个hash算法第二次再分较大的文件，一直分到没有较大的文件为止。这样文件标号可以用A1-2表示（第一次hash编号为1，文件较大所以参加第二次hash，编号为2）</li>
+<li>由于1存在，第一次hash如果有大文件，不能用直接set的方法。建议对每个文件都先用字符串自然顺序排序，然后具有相同hash编号的（如都是1-3，而不能a编号是1，b编号是1-1和1-2），可以直接从头到尾比较一遍。对于层级不一致的，如a1，b有1-1，1-2-1，1-2-2，层级浅的要和层级深的每个文件都比较一次，才能确认每个相同的url。</li>
+</ol>
+<p>##有10个文件，每个文件1G，每个文件的每一行存放的都是用户的query，每个文件的query都可能重复。要求你按照query的频度排序。</p>
+<p>方案1：</p>
+<ol>
+<li>顺序读取10个文件，按照<code>hash(query)%10</code>的结果将query写入到另外10个文件中。这样新生成的文件每个的大小大约也1G（假设hash函数是随机的）。</li>
+</ol>
+<ul>
+<li>找一台内存在2G左右的机器，依次对1中生成的10个文件用<code>hash_map(query, query_count)</code>来统计每个query出现的次数。利用快速/堆/归并排序按照出现次数进行排序。将排序好的<code>query</code>和对应的<code>query_cout</code>输出到文件中。这样得到了10个排好序的文件。</li>
+<li>对这10个文件进行归并排序（内排序与外排序相结合）。</li>
+</ul>
+<p>方案2：</p>
+<p>一般query的总量是有限的，只是重复的次数比较多而已，可能对于所有的query，一次性就可以加入到内存了。这样，我们就可以采用trie树/hash_map等直接来统计每个query出现的次数，然后按出现次数做快速/堆/归并排序就可以了</p>
+<p>##寻找热门查询：</p>
+<p>搜索引擎会通过日志文件把用户每次检索使用的所有检索串都记录下来，每个查询串的长度为1-255字节。假设目前有一千万个记录，这些查询串的重复读比较高，虽然总数是1千万，但是如果去除重复和，不超过3百万个。一个查询串的重复度越高，说明查询它的用户越多，也就越热门。请你统计最热门的10个查询串，要求使用的内存不能超过1G。</p>
+<ol>
+<li>先对这批海量数据预处理，在O（N）的时间内用Hash表完成统计；</li>
+<li>借助堆这个数据结构，找出Top K，时间复杂度为<code>N&#39;*logK</code>。即，借助堆结构，我们可以在log量级的时间内查找和调整/移动。因此，维护一个K(该题目中是10)大小的小根堆，然后遍历300万的Query，分别和根元素进行对比所以，我们最终的时间复杂度是：<code>O（N） + N&#39;*O（logK）</code>，（N为1000万，N’为300万）。</li>
+</ol>
+<p>##有一个1G大小的一个文件，里面每一行是一个词，词的大小不超过16字节，内存限制大小是1M。返回频数最高的100个词。</p>
+<p>方案1：</p>
+<ol>
+<li>顺序读文件中，对于每个词x，取<code>hash(x)%5000</code>，然后按照该值存到5000个小文件中。这样每个文件大概是200k左右。如果其中的有的文件超过了1M大小，还可以按照类似的方法继续往下分，直到分解得到的小文件的大小都不超过1M。</li>
+</ol>
+<ul>
+<li>对每个小文件，统计每个文件中出现的词以及相应的频率（可以采用trie树/hash_map等），并取出出现频率最大的100个词（可以用含100个结点的最小堆），并把100词及相应的频率存入文件，这样又得到了5000个文件。</li>
+<li>把这5000个文件进行归并（类似于归并排序）排序。</li>
+</ul>
+<p>##在2.5亿个整数中找出不重复的整数，内存不足以容纳这2.5亿个整数。</p>
+<p><strong>方案1</strong>：采用2-Bitmap（每个数分配2bit，00表示不存在，01表示出现一次，10表示多次，11无意义）进行，共需内存2^32*2bit=1GB内存，还可以接受。然后扫描这2.5亿个整数，查看Bitmap中相对应位，如果是00变01，01变10，10保持不变。所描完事后，查看bitmap，把对应位是01的整数输出即可。</p>
+<p><strong>方案2</strong>：也可采用上题类似的方法，进行划分小文件的方法。然后在小文件中找出不重复的整数，并排序。然后再进行归并，注意去除重复的元素。</p>
+<p>##腾讯面试题：给40亿个不重复的unsigned int的整数，没排过序的，然后再给一个数，如何快速判断这个数是否在那40亿个数当中？</p>
+<p><strong>方案1</strong>：申请512M(<code>512*1024*1024*8 = 40亿bit</code>)的内存，一个bit位代表一个unsigned int值。读入40亿个数，设置相应的bit位，读入要查询的数，查看相应bit位是否为1，为1表示存在，为0表示不存在。</p>
+<p><strong>方案2</strong>：这个问题在《编程珠玑》里有很好的描述，大家可以参考下面的思路，探讨一下：</p>
+<p>因为2^32为40亿多，所以给定一个数可能在，也可能不在其中；<br>这里我们把40亿个数中的每一个用32位的二进制来表示<br>假设这40亿个数开始放在一个文件中。</p>
+<p>然后将这40亿个数分成两类:</p>
+<ol>
+<li>最高位为0</li>
+<li>最高位为1</li>
+</ol>
+<p>并将这两类分别写入到两个文件中，其中一个文件中数的个数&lt;=20亿，而另一个&gt;=20亿（这相当于折半了）；与要查找的数的最高位比较并接着进入相应的文件再查找</p>
+<p>再然后把这个文件为又分成两类:</p>
+<ol>
+<li>次最高位为0</li>
+<li>次最高位为1</li>
+</ol>
+<p>并将这两类分别写入到两个文件中，其中一个文件中数的个数&lt;=10亿，而另一个&gt;=10亿（这相当于折半了）；</p>
+<p>与要查找的数的次最高位比较并接着进入相应的文件再查找。</p>
+<p>…….</p>
+<p>以此类推，就可以找到了,而且时间复杂度为O(logn)，方案2完。</p>
+<p>附：这里，再简单介绍下，位图方法：</p>
+<blockquote>
+<p>使用位图法判断整形数组是否存在重复<br>判断集合中存在重复是常见编程任务之一，当集合中数据量比较大时我们通常希望少进行几次扫描，这时双重循环法就不可取了。</p>
+<p>位图法比较适合于这种情况，它的做法是按照集合中最大元素max创建一个长度为max+1的新数组，然后再次扫描原数组，遇到几就给新数组的第几位置上1，如遇到5就给新数组的第六个元素置1，这样下次再遇到5想置位时发现新数组的第六个元素已经是1了，这说明这次的数据肯定和以前的数据存在着重复。这种给新数组初始化时置零其后置一的做法类似于位图的处理方法故称位图法。它的运算次数最坏的情况为2N。如果已知数组的最大值即能事先给新数组定长的话效率还能提高一倍。</p>
+</blockquote>
+<p>##海量数据分布在100台电脑中，想个办法高效统计出这批数据的TOP10。</p>
+<p>方案1：</p>
+<ol>
+<li>在每台电脑上求出TOP10，可以采用包含10个元素的堆完成（TOP10小，用最大堆，TOP10大，用最小堆）。比如求TOP10大，我们首先取前10个元素调整成最小堆，如果发现，然后扫描后面的数据，并与堆顶元素比较，如果比堆顶元素大，那么用该元素替换堆顶，然后再调整为最小堆。最后堆中的元素就是TOP10大。</li>
+</ol>
+<ul>
+<li>求出每台电脑上的TOP10后，然后把这100台电脑上的TOP10组合起来，共1000个数据，再利用上面类似的方法求出TOP10就可以了。</li>
+</ul>
+<p>##怎么在海量数据中找出重复次数最多的一个？</p>
+<p><strong>方案1</strong>：先做hash，然后求模映射为小文件，求出每个小文件中重复次数最多的一个，并记录重复次数。然后找出上一步求出的数据中重复次数最多的一个就是所求（具体参考前面的题）。</p>
+<p>##上千万或上亿数据（有重复），统计其中出现次数最多的前N个数据。</p>
+<p><strong>方案1</strong>：上千万或上亿的数据，现在的机器的内存应该能存下。所以考虑采用hash_map/搜索二叉树/红黑树等来进行统计次数。然后就是取出前N个出现次数最多的数据了，可以用堆机制完成。</p>
+<p>##1000万字符串，其中有些是重复的，需要把重复的全部去掉，保留没有重复的字符串。请怎么设计和实现？</p>
+<p><strong>方案1</strong>：这题用trie树比较合适，hash_map也应该能行。</p>
+<p>##一个文本文件，大约有一万行，每行一个词，要求统计出其中最频繁出现的前10个词，请给出思想，给出时间复杂度分析。</p>
+<p><strong>方案1</strong>：这题是考虑时间效率。用trie树统计每个词出现的次数，时间复杂度是<code>O(n*le)</code>（le表示单词的平准长度）。然后是找出出现最频繁的前10个词，可以用堆来实现，前面的题中已经讲到了，时间复杂度是<code>O(n*lg10)</code>。所以总的时间复杂度，是<code>O(n*le)</code>与<code>O(n*lg10)</code>中较大的哪一个。</p>
+<p>##一个文本文件，找出前10个经常出现的词，但这次文件比较长，说是上亿行或十亿行，总之无法一次读入内存，问最优解。</p>
+<p><strong>方案1</strong>：首先根据用hash并求模，将文件分解为多个小文件，对于单个文件利用上题的方法求出每个文件件中10个最常出现的词。然后再进行归并处理，找出最终的10个最常出现的词。</p>
+<p>##100w个数中找出最大的100个数。</p>
+<p><strong>方案1</strong>：在前面的题中，我们已经提到了，用一个含100个元素的最小堆完成。复杂度为O(100w*lg100)。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/16/海量数据处理/" data-id="cj64upq5h00cylraevifgshn5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-删除list里的重复元素" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/15/删除list里的重复元素/" class="article-date">
+  <time datetime="2015-03-15T06:21:26.000Z" itemprop="datePublished">2015-03-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/15/删除list里的重复元素/">删除list里的重复元素</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##方法一：先排序后比较大小</p>
+<pre><code>if List:
+    List.sort()
+last = List[-1]
+for i in range(len(List)-2, -1, -1):
+    if last==List[i]: 
+        del List[i]
+    else: 
+        last=List[i]
+</code></pre><p>问题：为什么要从后往前迭代呢？我们可以从list[0]开始啊，代码如下：</p>
+<pre><code>if List:
+    List.sort()
+begin = List[0]
+for i in range(1, len(list)):
+    if begin==List[i]: 
+        del List[i]
+    else: 
+        begin=List[i]
+</code></pre><p>运行一下，报错如下：</p>
+<pre><code>IndexError: list index out of range
+</code></pre><p>数组访问越界了！why？</p>
+<p>我们调用del删除list里的元素，相应的list的长度也会自动减小，但我们迭代的范围range(1, len(list))是一开始就计算好的，所以必然会越界。比如说：</p>
+<pre><code>li = [1,1,2,2,3,3,3,4,5,6]
+</code></pre><p>调用len计算得到li的长度为10，range(1,10)得到我们迭代的序列是1-9，但是当我们删除了li中的重复元素1,2,3之后，li的长度只剩下了6，可是我们依然会访问li[7]，因为访问序列一开始就计算好了，所以必然造成了越界。</p>
+<p>那从后向前是如何避免越界的呢？从后向前遍历，删除元素后，只是把这个元素之后的已经没有重复元素的序列向前移动一位，数组依然在变短，但这个时候是不会影响到我们向前遍历的。</p>
+<p>##方法二：使用set</p>
+<pre><code>&gt;&gt;&gt; li = [1,2,4,5,7,8,2,3,4,56,7]
+&gt;&gt;&gt; list(set(li))
+&gt;&gt;&gt; [1, 2, 3, 4, 5, 7, 8, 56]
+</code></pre><p>##方法三：使用列表综合</p>
+<pre><code>l1 = [&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;b&apos;,&apos;c&apos;,&apos;a&apos;,&apos;a&apos;]  
+l2 = []  
+[l2.append(i) for i in l1 if not i in l2]  
+print l2
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/15/删除list里的重复元素/" data-id="cj64upq4y00bzlraez0mnqmhh" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-tcp是流的一些思考-拆包和粘包" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/13/tcp是流的一些思考-拆包和粘包/" class="article-date">
+  <time datetime="2015-03-13T08:19:01.000Z" itemprop="datePublished">2015-03-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/TCP-IP/">TCP/IP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/13/tcp是流的一些思考-拆包和粘包/">tcp是流的一些思考--拆包和粘包</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>假设应用层协议是http</p>
+<p>我从浏览器中访问了一个网站，网站服务器给我发了200k的数据。建立连接的时候，通告的MSS是50k，所以为了防止ip层分片，tcp每次只会发送50k的数据，一共发了4个tcp数据包。如果我又访问了另一个网站，这个网站给我发了100k的数据，这次tcp会发出2个包，问题是，客户端收到6个包，怎么知道前4个包是一个页面，后两个是一个页面。既然是tcp将这些包分开了，那tcp会将这些包重组吗，它送给应用层的是什么？</p>
+<p>这是我自己想的一个场景，正式一点讲的话，这个现象叫<strong>拆包</strong>。</p>
+<p>我们再考虑一个问题。</p>
+<p>tcp中有一个negal算法，用途是这样的：通信两端有很多小的数据包要发送，虽然传送的数据很少，但是流程一点没少，也需要tcp的各种确认，校验。这样小的数据包如果很多，会造成网络资源很大的浪费，negal算法做了这样一件事，当来了一个很小的数据包，我不急于发送这个包，而是等来了更多的包，将这些小包组合成大包之后一并发送，不就提高了网络传输的效率的嘛。这个想法收到了很好的效果，但是我们想一下，如果是分属于两个不同页面的包，被合并在了一起，那客户那边如何区分它们呢？</p>
+<p>这就是<strong>粘包</strong>问题。</p>
+<p>从粘包问题我们更可以看出为什么tcp被称为流协议，因为它就跟水流一样，是没有边界的，没有消息的边界保护机制，所以tcp只有流的概念，没有包的概念。</p>
+<p>我们还需要有两个概念</p>
+<ul>
+<li><strong>长连接</strong>： Client方与Server方先建立通讯连接，连接建立后不断开， 然后再进行报文发送和接收。</li>
+<li><strong>短连接</strong>：Client方与Server每进行一次报文收发交易时才进行通讯连接，交易完毕后立即断开连接。此种方式常用于一点对多点  通讯，比如多个Client连接一个Server.</li>
+</ul>
+<p>下面我们揭晓答案：</p>
+<ol>
+<li>我想象的关于粘包的场景是不对的，http连接是短连接，请求之后，收到回答，立马断开连接，不会出现粘包。</li>
+<li>拆包现象是有可能存在的</li>
+</ol>
+<p>##处理拆包<br>既然拆包现象可能存在，如果遇到了，那么该如何处理呢？这里提供两种方法</p>
+<ol>
+<li>通过包头+包长+包体的协议形式，当服务器端获取到指定的包长时才说明获取完整。 </li>
+<li>指定包的结束标识，这样当我们获取到指定的标识时，说明包获取完整。 </li>
+</ol>
+<p>##处理粘包<br>我们从上面的分析看到，虽然像http这样的短连接协议不会出现粘包的现象，但是一旦建立了长连接，粘包还是有可能会发生的。</p>
+<p>网上的处理方法有很多，这里不列举了，但大家看这些处理方法，都会发现，这些方法并不好，都会做一些牺牲。比如禁用negal算法，就是以网络性能作为牺牲。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/13/tcp是流的一些思考-拆包和粘包/" data-id="cj64upq2x008klraekkuxuck9" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-一些阿里面试题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/12/一些阿里面试题/" class="article-date">
+  <time datetime="2015-03-12T12:17:38.000Z" itemprop="datePublished">2015-03-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/面试/">面试</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/12/一些阿里面试题/">一些阿里面试题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##内存泄露最终的结果在操作系统中的表现是什么？<br>内存泄漏形象的比喻是“操作系统可提供给所有进程的存储空间正在被某个进程榨干”，最终结果是<strong>程序运行时间越长，占用存储空间越来越多，最终用尽全部存储空间，整个系统崩溃。</strong>所以“内存泄漏”是从操作系统的角度来看的。这里的存储空间并不是指物理内存，而是指虚拟内存大小，这个虚拟内存大小取决于磁盘交换区设定的大小。由程序申请的一块内存，如果没有任何一个指针指向它，那么这块内存就泄漏了。</p>
+<p>从用户使用程序的角度来看，内存泄漏本身不会产生什么危害，作为一般的用户，根本感觉不到内存泄漏的存在。<strong>真正有危害的是内存泄漏的堆积，这会最终消耗尽系统所有的内存。</strong>从这个角度来说，一次性内存泄漏并没有什么危害，因为它不会堆积，而隐式内存泄漏危害性则非常大，因为较之于常发性和偶发性内存泄漏它更难被检测到。</p>
+<p>##malloc-free和new-delete的区别</p>
+<p>malloc-free是c/c++中的函数，new-delete是c++中的运算符</p>
+<p>##怎么知道http首部结束了？</p>
+<p>http首部由一个空行结束，也就是<code>\r\n\r\n</code>，表明了首部的结束和实体主体的开始。</p>
+<p>实体的主体部分包含一个由任意数据组成的数据块。并不是所有的报文都包含实体的主体部分。如<code>GET请求就不包含实体</code>。</p>
+<p>##tcpdump抓包是在哪一层？</p>
+<p>Linux下抓取报文的位置，是在链路层处理报文之后，交给网络层之前的位置。</p>
+<p>##同一端口可否同时被两个应用监听？<br>不可以，但是fork的子进程用netstat看确实和父进程监听在同一端口，但是这和两个独立的进程应该是有所区别的</p>
+<p>同一机器上的应用如果监听在同一端口，那socket的四元组就是一样的了，这是不可能的</p>
+<p>##查看命令的帮助文档的命令</p>
+<ul>
+<li>man是查看本地      </li>
+<li>info是查看在线</li>
+</ul>
+<p>##谁在决定是使用Big-endian，还是Little-endian？</p>
+<p>在计算存储中是CPU，也就是CPU的体系结构，还是有点抽象啊。比如x86的是小端，power-pc的是大端。</p>
+<p>##线性表的顺序结构和链表结构各有什么优缺点</p>
+<ul>
+<li><p>顺序结构：</p>
+<ul>
+<li>优点：易于查询，索引快 list[n]这样的操作，O(1)复杂度</li>
+<li>缺点：扩展性弱，不易删除、添加。</li>
+</ul>
+</li>
+<li><p>链表结构：</p>
+<ul>
+<li>优点：扩展性强，易于删除、添加</li>
+<li>缺点：不易于查询，索引慢，list[n]这样的操作，复杂度为O(n)</li>
+</ul>
+</li>
+</ul>
+<p>##shell的if和for语句</p>
+<p>if语句</p>
+<pre><code>if condition;
+then
+    commands
+fi
+</code></pre><p>for语句</p>
+<pre><code>for i in ***; do
+commands
+done
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/12/一些阿里面试题/" data-id="cj64upq350097lraeuqeqsghy" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-awk" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/12/awk/" class="article-date">
+  <time datetime="2015-03-12T12:15:22.000Z" itemprop="datePublished">2015-03-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/12/awk/">awk</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>awk是一款设计用于数据流的工具，可以进行高级文本处理。它颇有玩头的原因就在于可以对行和列进行操纵。awk有很多内建的功能，比如说数组，函数等，这是它和c语言的相同之处，灵活性是awk的最大优势。 另外，awk是一门语言哦，真的是一门语言，在<a href="http://news.163.com/15/0309/11/AK8TFD1P00014U9R.html" target="_blank" rel="external">TIOBE编程语言排行榜</a>中排名还在50之前呢。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/12/awk/" data-id="cj64uppyg002ulrae4zs3m5k8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-sed" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/12/sed/" class="article-date">
+  <time datetime="2015-03-12T12:13:45.000Z" itemprop="datePublished">2015-03-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/12/sed/">sed</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>sed是<strong>流编辑器</strong>(stream editor)的缩写。它是文本处理中不可或缺的工具，能够配合正则表达式使用，功能不同凡响。sed的一个众所周知的用法是进行文本替换</p>
+<p>##sed可以替换给定文本中的字符串<br>        sed ‘s/log/huhu/‘ ./time.sh //将log替换为huhu<br>或者</p>
+<pre><code>cat time.sh | sed &apos;s/log/huhu/&apos;  
+</code></pre><p>该命令从stdin读取输入。</p>
+<blockquote>
+<p>如果你用的是vi编辑器，你会发现它用于替换文本的命令和sed非常相似</p>
+</blockquote>
+<p>##保存被sed替换后的文件</p>
+<p>上面的命令，sed会打印出字符串被替换之后的文件，但是对于源文件，什么事情都没有发生，源文件内的字符串并没有被替换，如果想保存替换后的文件怎么办呢？</p>
+<p>这里分两个点来说</p>
+<ol>
+<li><p>想保留源文件，那么直接将输出重定向，生成新的文件即可</p>
+<pre><code>sed &apos;s/log/huhu/&apos; ./time.sh &gt; newfile
+</code></pre></li>
+<li><p>源文件不需要了，就在源文件上修改</p>
+<pre><code>sed -i &apos;s/log/huhu/&apos; ./time.sh
+</code></pre><p>加上-i参数后，就可以将替换结果保存在源文件</p>
+</li>
+</ol>
+<p>##替换全部，而不是每一行的第一个</p>
+<p>上面两个命令，细心的小伙伴会发现，它只替换每一行第一处符合模式的内容，如果要替换所有的内容，我们需要在命令的末尾加上参数g</p>
+<pre><code>sed &apos;s/log/huhu/g&apos; ./time.sh
+</code></pre><p>后缀/g意味着sed会替换每一处匹配。但是有时候我们只需要从第n处匹配开始替换，对此，我们可以使用/Ng选项。</p>
+<p>例如</p>
+<pre><code>[root@pc105 test]# echo thisthisthisthis | sed &apos;s/this/THIS/2g&apos;
+thisTHISTHISTHIS
+[root@pc105 test]# echo thisthisthisthis | sed &apos;s/this/THIS/3g&apos;
+thisthisTHISTHIS
+[root@pc105 test]# echo thisthisthisthis | sed &apos;s/this/THIS/4g&apos;
+thisthisthisTHIS
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/12/sed/" data-id="cj64upq2u008blraer2cbx3bs" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-print0-xargs" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/12/print0-xargs/" class="article-date">
+  <time datetime="2015-03-12T12:12:59.000Z" itemprop="datePublished">2015-03-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/12/print0-xargs/">print0 &amp;&amp; xargs</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>awk和sed之前看过，好久不用又忘记了，也没有总结，所以要学习还得再上网找资料，索性自己来总结一下。-print0和xargs之前一直在用，但是模模糊糊，一知半解，今天一并解决。</p>
+<p>##-print</p>
+<ol>
+<li>-print是find命令的一个参数，别的命令是没有的（我没见过，说错了请大家指正）</li>
+<li>-print0是-print的一个形态，也可以不加最后的0</li>
+</ol>
+<p>-print指明打印出匹配文件的文件名。当使用-print时，’\n’作为用于输出的文件名进行分隔。</p>
+<p>-print0指明使用’\0’作为匹配的文件名之间的定界符。</p>
+<p>##xargs</p>
+<p>我们可以用管道将一个命令的stdout重定向到另一个命令的stdin。例如：</p>
+<pre><code>command | grep &quot;text&quot;
+</code></pre><p>但是有些命令只能以命令行参数的形式接受数据，而无法通过stdin接受数据流。在这种情况下，我们无法用管道来提供哪些只有通过命令行参数才能提供的数据。</p>
+<p>只是就只能另辟蹊径了。该xargs命令上场了，他擅长将标准输入数据转换成命令行参数。xargs能够处理stdin并将其转换成特定命令的命令行参数。xargs也可以将单行或多行文本输入转换成其他格式，例如单行变多行或多行变单行。</p>
+<p>xargs应该紧跟在管道操作符之后，以标注输入作为主要的原数据流</p>
+<pre><code>command | xargs 
+</code></pre><p>例如：删除path路径下的所有文件</p>
+<pre><code>rm `find /path -type f`
+</code></pre><p>如果path目录下文件过多就会因为“参数列表过长”而报错无法执行。但改用xargs以后，问题即获解决。</p>
+<pre><code>find /path -type f -print0 | xargs -0 rm
+</code></pre><p>xargs将find产生的长串文件列表拆散成多个子串，然后对每个子串调用rm。</p>
+<p><strong>awk和sed的东西比较多，为了避免文章太长，另外写吧</strong></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/12/print0-xargs/" data-id="cj64upq1y006rlrae6ei8t5xq" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-用crontab定期执行脚本" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/12/用crontab定期执行脚本/" class="article-date">
+  <time datetime="2015-03-12T11:14:16.000Z" itemprop="datePublished">2015-03-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/12/用crontab定期执行脚本/">用crontab定期执行脚本</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#用crontab定期执行脚本</p>
+<p>一个完整的步骤是：</p>
+<pre><code>cd /etc/cron.d  //此目录下存放的是所有定期执行的cron文件
+crontab -e //建立一个新的定时任务
+</code></pre><p>大功告成！<br>就是这么简单，但我遇到了很多坑啊！</p>
+<ul>
+<li><p>我在task.croon里是这么写的</p>
+<pre><code>*/1 * * * * /root/test/time.sh
+</code></pre><p>我翻来覆去地看，和网上写的一样啊，怎么就是不执行呢？md，对的是这么写啊！</p>
+<pre><code>*/1 * * * *  root /root/test/time.sh
+</code></pre><p>你掉了一个字段啊，root给你吃了吗！你放在/etc/cron.d下面就是要加执行者这个字段的啊！</p>
+</li>
+</ul>
+<p>看看<code>/etc/crontab</code></p>
+<pre><code># Example of job definition:
+  # .---------------- minute (0 - 59)
+  # |  .------------- hour (0 - 23)
+  # |  |  .---------- day of month (1 - 31)
+  # |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+  # |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+  # |  |  |  |  |
+  # *  *  *  *  * user-name command to be executed
+</code></pre><p>人家指明了要加user-name看到木有啊！！！</p>
+<ul>
+<li><p>我在time.sh里面又是怎么写的呢？</p>
+<pre><code>/bin/date 
+</code></pre></li>
+</ul>
+<p>然后我就在电脑前等一分钟等他在终端给我打印了。我刷了会儿知乎，一看电脑，过了2分钟了，看看黑框框，说好的打印呢！！！啥都没有啊！！！</p>
+<p>有了就见鬼了，我最近怎么就蠢成这样了呢！！！</p>
+<p>这是一个后台任务啊，哪有终端啊，能不能重定向到标准输出呢？它根本没有标准输出你知道不知道，知道不知道！！！</p>
+<p>想看结果重定向到文件里去啊！！！</p>
+<pre><code>/bin/date &gt;&gt;/tmp/log
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/12/用crontab定期执行脚本/" data-id="cj64upq5r00d7lraetm2gorjx" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-用-proc收集信息" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/12/用-proc收集信息/" class="article-date">
+  <time datetime="2015-03-12T09:42:37.000Z" itemprop="datePublished">2015-03-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/12/用-proc收集信息/">用/proc收集信息</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li><p>获取cpu信息</p>
+<pre><code>cat /proc/cpuinfo
+</code></pre></li>
+<li><p>获取内存信息:</p>
+<pre><code>cat /proc/meminfo
+</code></pre></li>
+<li><p>获取分区信息:</p>
+<pre><code>cat /proc/partitions
+</code></pre></li>
+</ul>
+<p>每一个运行的进程在/proc下都有一个以该进程id命名的目录，<br>/proc/PID/下的重要文件：</p>
+<ul>
+<li>environ:包含与进程相关的环境变量；</li>
+<li>exe：到进程工作目录的符号链接；</li>
+<li>fd：进程所使用的文件描述符</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/12/用-proc收集信息/" data-id="cj64upq5q00d4lrae5avsfxqo" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-孤儿进程与僵尸进程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/12/孤儿进程与僵尸进程/" class="article-date">
+  <time datetime="2015-03-12T05:13:45.000Z" itemprop="datePublished">2015-03-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/12/孤儿进程与僵尸进程/">孤儿进程与僵尸进程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##前言<br>孤儿继承和僵尸进程是APUE里面的一个重要概念，之前看书不仔细，也没有总结，所以这两个概念一直很模糊，只知道是父进程和子进程有一个退了，至于到底是父进程退还是子进程退会产生孤儿进程和僵尸进程，一直是我的一块心病啊。今天有空，来认真总结一下。</p>
+<p>##基本概念</p>
+<p>在unix/linux中，子进程是通过父进程创建的(fork)。子进程的结束和父进程的运行是一个异步过程,即父进程永远无法预测子进程到底什么时候结束。 当一个进程完成它的工作终止之后，它的父进程需要调用wait()或者waitpid()系统调用取得子进程的终止状态。</p>
+<p><strong>孤儿进程</strong>：一个父进程退出，而它的一个或多个子进程还在运行，那么那些子进程将成为孤儿进程。孤儿进程将被init进程(进程号为1)所收养，并由init进程对它们完成状态收集工作。</p>
+<p><strong>僵尸进程</strong>：一个进程使用fork创建子进程，如果子进程退出，而父进程并没有调用wait或waitpid获取子进程的状态信息，那么子进程的进程描述符仍然保存在系统中。这种进程称之为僵死进程。</p>
+<p>我们再来分析一下：</p>
+<p><code>孤儿</code>的意思是什么？被父母抛弃了，或者没有父母。所以孤儿进程就是父进程不在了，留下子进程在继续运行。但孤儿不能自己存在啊，所以总会有好心人收养他，在unix系统里，这个好心人就是init进程，init进程会收养所有的孤儿进程，代替父进程手机子进程的终止状态。</p>
+<p>同理，什么是<code>僵尸</code>？如果你死了，你就有可能成为僵尸。子进程挂了之后，有一个重要的步骤就是父进程应该调用wait或者waitpid来获取它的终止状态，让它入土为安的。但有些父母非常不负责，他没有做。所以子进程不能入土，就只能继续在系统里飘荡，成了僵尸。这不怪他们啊，都是父进程害的！</p>
+<p>##危害</p>
+<p>有的人就说了，那干嘛一定要父进程调用wait和waitpid来回收子进程啊，子进程挂了就让他挂好了，父进程不要回收，让系统自己把回收的事干了。我也是这样想的，可是你知道父母的通病在哪里吗？就是他们对自己的小孩，都有旺盛的控制欲！</p>
+<p>unix提供了一种机制可以保证只要父进程想知道子进程结束时的状态信息， 就可以得到。这种机制就是: </p>
+<blockquote>
+<p>在每个进程退出的时候,内核释放该进程所有的资源,包括打开的文件,占用的内存等。 但是仍然为其保留一定的信息(包括进程号the process ID,退出状态the termination status of the process,运行时间the amount of CPU time taken by the process等)。直到父进程通过wait / waitpid来取时才释放。 </p>
+</blockquote>
+<p>所以就导致了问题，如果进程不调用wait / waitpid的话，那么保留的那段信息就不会释放，其进程号就会一直被占用，但是系统所能使用的进程号是有限的，如果产生大量的僵死进程，将因为没有可用的进程号而导致系统不能产生新的进程. 此即为僵尸进程的危害。</p>
+<p><code>孤儿进程</code>是没有父进程的进程，处理孤儿进程的这个重任落到了init进程身上，init进程就好像是一个民政局，专门负责处理孤儿进程的善后工作。每当出现一个孤儿进程的时候，内核就把孤 儿进程的父进程设置为init，而init进程会循环地wait()它的已经退出的子进程。这样，当一个孤儿进程凄凉地结束了其生命周期的时候，init进程就会代表党和政府出面处理它的一切善后工作。<strong>因此孤儿进程并不会有什么危害</strong>。</p>
+<p>任何一个子进程(init除外)在exit()之后，并非马上就消失掉，而是留下一个称为僵尸进程(Zombie)的数据结构，等待父进程处理。这是每个 子进程在结束时都要经过的阶段。如果子进程在exit()之后，父进程没有来得及处理，这时用ps命令就能看到子进程的状态是“Z”。如果父进程能及时 处理，可能用ps命令就来不及看到子进程的僵尸状态，但这并不等于子进程不经过僵尸状态。  如果父进程在子进程结束之前退出，则子进程将由init接管。init将会以父进程的身份对僵尸状态的子进程进行处理。</p>
+<p>##如何避免产生僵尸进程</p>
+<p>我们知道了僵尸进程产生的原因和危害，那么如何避免产生僵尸进程呢？</p>
+<p>一般，为了防止产生僵尸进程，在fork子进程之后我们都要wait它们；同时，当子进程退出的时候，内核都会给父进程一个SIGCHLD信号，所以我们可以建立一个捕获SIGCHLD信号的信号处理函数，在函数体中调用wait（或waitpid），就可以清理退出的子进程以达到防止僵尸进程的目的。如下代码所示：</p>
+<pre><code>void sig_chld( int signo ) {
+    pid_t pid;
+    int stat;
+    pid = wait(&amp;stat);    
+    printf( &quot;child %d exit\n&quot;, pid );
+    return;
+}
+
+int main() {
+    signal(SIGCHLD,  &amp;sig_chld);
+}
+</code></pre><p>先在main函数中给SIGCHLD信号注册一个信号处理函数（<code>sig_chld</code>），然后在子进程退出的时候，内核递交一个SIGCHLD的时候就会被主进程捕获而进入信号处理函数<code>sig_chld</code>，然后再在<code>sig_chld</code>中调用wait，就可以清理退出的子进程。这样退出的子进程就不会成为僵尸进程。</p>
+<p>但是，这种方法并不是完美的，有时候还是会有<strong>漏网之鱼</strong>，下面是就是一个例子：</p>
+<p>我们假设有一个<code>client/server</code>的程序，对于每一个连接过来的client，server都启动一个新的进程去处理来自这个client的请求。然后我们有一个client进程，在这个进程内，发起了多个到server的请求（假设5个），则server会fork 5个子进程来读取client输入并处理（同时，当客户端关闭套接字的时候，每个子进程都退出）；当我们终止这个client进程的时候 ，内核将自动关闭所有由这个client进程打开的套接字，那么由这个client进程发起的5个连接基本在同一时刻终止。这就引发了5个FIN，每个连接一个。server端接受到这5个FIN的时候，5个子进程基本在同一时刻终止。这就又导致差不多在同一时刻递交5个SIGCHLD信号给父进程，而最终结果大家将会发现，我们没有能够回收所有的5个进程，有僵尸进程产生了。</p>
+<p>wait函数不能处理这种情况的原因是：所有5个信号都在信号处理函数执行之前产生，而信号处理函数只执行一次，因为Unix信号一般是不排队的。 更为严重的是，本问题是不确定的，依赖于客户FIN到达服务器主机的时机，信号处理函数执行的次数并不确定。</p>
+<p>这种情况的正确的解决办法是调用waitpid而不是wait，方法为：<strong>信号处理函数中，在一个循环内调用waitpid，以获取所有已终止子进程的状态。我们必须指定WNOHANG选项，他告知waitpid在有尚未终止的子进程在运行时不要阻塞。（我们不能在循环内调用wait，因为没有办法防止wait在尚有未终止的子进程在运行时阻塞，wait将会阻塞到现有的子进程中第一个终止为止）</strong>。</p>
+<p>##产生了僵尸进程怎么办</p>
+<p>如果系统中出现了僵尸进程，如何打僵尸呢？</p>
+<p><img src="/img/僵尸.png" alt=""></p>
+<p>僵尸进程用kill命令是无法杀掉的，但是我们可以<strong>结果掉僵尸进程的爸爸</strong>，僵尸daddy挂了之后，僵尸进程就成了孤儿进程，会被init程序收养，然后init程序将其回收</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/12/孤儿进程与僵尸进程/" data-id="cj64upq4t00bklraesxnphrgo" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/page/9/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/11/">__('next') &raquo;</a>
+  </nav>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

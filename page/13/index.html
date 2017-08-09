@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/page/13/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-Questions-from-tencent" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/04/Questions-from-tencent/" class="article-date">
+  <time datetime="2015-03-04T13:28:52.000Z" itemprop="datePublished">2015-03-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/面试/">面试</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/04/Questions-from-tencent/">Questions from tencent</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##指针和引用的区别</p>
+<p>###相同点：</p>
+<ul>
+<li>都是地址的概念；<ul>
+<li>指针指向一块内存，它的内容是所指内存的地址；</li>
+<li>引用是某块内存的别名。<br>###区别：</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>指针是一个实体，而引用仅是个别名；</li>
+<li>引用使用时无需解引用(*)，指针需要解引用；</li>
+<li>引用只能在定义时被初始化一次，之后不可变；指针可变；</li>
+<li>引用没有 const，指针有 const；</li>
+<li>引用不能为空，指针可以为空；</li>
+<li>“sizeof 引用”得到的是所指向的变量(对象)的大小，而“sizeof 指针”得<br>到的是指针本身(所指向的变量或对象的地址)的大小；</li>
+<li>指针和引用的自增(++)运算意义不一样；</li>
+<li>从内存分配上看：程序为指针变量分配内存区域，而引用不需要分配内存区域。</li>
+</ol>
+<p>##static关键字的作用</p>
+<ol>
+<li><p>在函数体，局部的static变量。生存期为程序的整个生命周期；作用域却在函数体内（它在什么地方能被访问（空间））。 一个被声明为静态的变量在这一函数被调用过程中维持其值不变。因为它分配在静态存储区，函数调用结束后并不释放单元，但是在其它的作用域无法访问。当再次调用这个函数时，这个局部的静态变量还存在，而且作用在它的访问空间，因此访问到的是上次调用后的值。</p>
+</li>
+<li><p>在文件模块内（但在函数体外），一个被声明为静态的全局变量可以被模块内所有函数访问，但不能被模块外其它函数访问。它是一个本地的全局变量。限制静态全局变量的作用域。</p>
+</li>
+<li><p>在文件模块内，一个被声明为静态的函数只可被这一模块内的其它函数调用。那就是，这个函数被限制在声明它的模块的本地范围内使用。函数默认情况下是全局函数，可以被任意其它文件模块调用。</p>
+</li>
+</ol>
+<p>##const实现机制，比如：const int i,是怎么做到i只可读的？</p>
+<p><strong>实现机制</strong>：这些在编译期间完成，对于内置类型，如int， 编译器可能使用常数直接替换掉对此变量的引用。而对于结构体不一定。</p>
+<p><strong>看下面的例子：</strong></p>
+<pre><code>const int j=100;    
+int *p=const_cast&lt;int*&gt;(&amp;j);    
+*p=200;    
+cout&lt;&lt;j&lt;&lt;endl;    输出为什么是100呢？
+cout&lt;&lt;*p&lt;&lt;endl; //输出是改过的200
+</code></pre><p>编译器在优化代码时把cout&lt;&lt;j直接优化成cout&lt;&lt;100了，所以虽然p和&amp;j的值一样，但cout&lt;&lt;j不再通过访问j的地址输出。（反汇编时也有看到直接把数字压栈push 100 ）</p>
+<p>这是因为，const型在压栈时，是使用的直接的数，就有点像C的#define a 100</p>
+<p>##volatile的含义<br>变量可能在编译器的控制或监控之外改变，告诉编译器不要优化该变量，如被系统时钟更新的变量。</p>
+<p>volatile 的本意是“易变的”, 因为访问寄存器要比访问内存单元快的多,所以编译器一般都会作减少存取内存的优化，但有可能会读脏数据。当要求使用 volatile声明变量值的时候，系统总是重新从它所在的内存读取数据，即使它前面的指令刚刚从该处读取过数据。精确地说就是，遇到这个关键字声明的变量，编译器对访问该变量的代码就不再进行优化，从而可以提供对特殊地址的稳定访问；如果不使用 volatile，则编译器将对所声明的语句进行优化。（简洁的说就是：volatile关键词影响编译器编译的结果，用 volatile 声明的变量表示该变量随时可能发生变化，与该变量有关的运算，不要进行编译优化，以免出错）</p>
+<p><strong>volatile 的本质：</strong></p>
+<ul>
+<li><p>编译器的优化：在本次线程内, 当读取一个变量时，为提高存取速度，编译器优化时有时会先把变量读取到一个寄存器中；以后，再取变量值时，就直接从寄存器中取值；当变量值在本线程里改变时，会同时把变量的新值 copy 到该寄存器中，以便保持一致。当变量在因别的线程等而改变了值，该寄存器的值不会相应改变，从而造成应用程序读取的值和实际的变量值不一致。当该寄存器在因别的线程等而改变了值，原变量的值不会改变，从而造成应用程序读取的值和实际的变量值不一致。</p>
+</li>
+<li><p>volatile 应该解释为“直接存取原始内存地址”比较合适，“易变的”这种解释简直有点误导人。</p>
+</li>
+</ul>
+<p>##动态链接和静态链接的区别</p>
+<p>动态链接是指在生成可执行文件时不将所有程序用到的函数链接到一个文件，<br>因为有许多函数在操作系统带的dll文件中，当程序运行时直接从操作系统中找。<br>而静态链接就是把所有用到的函数全部链接到exe文件中。</p>
+<p>动态链接是只建立一个引用的接口，而真正的代码和数据存放在另外的可执行模块中，在运行时再装入；而静态链接是把所有的代码和数据都复制到本模块中，运行时就不再需要库了。</p>
+<p>##在C++程序中调用被C编译器编译过的函数，为什么要加extern“C”</p>
+<p>C++语言支持函数重载，c语言不支持函数重载。函数被C++编译后在库中的名称与C语言不同。假设某个函数的原型是<code>void foo(int x, int y)</code>.该函数被c编译器编译后在库中的名字为<code>_foo</code>，而C++编译器则会产生像<code>_foo_int_int</code>之类的名字</p>
+<p>C++提供了C连接交换指定符号<code>extern&quot;C&quot;</code>解决名字匹配问题</p>
+<p>##判断一个数是否是2的n次方</p>
+<pre><code>设数为x
+!(x &amp; (x - 1))
+</code></pre><p>##linux下统计一个文件中有多少个给定字符串<br>    grep -o ‘while’ list.c | wc -l</p>
+<p>##常问的几个linux命令</p>
+<p>###查看cpu信息</p>
+<pre><code>cat /proc/cpuinfo
+cat /proc/meminfo
+</code></pre><p>###查看硬盘信息<br>    df -lh</p>
+<p>###查看网卡信息<br>    dmesg | grep eth</p>
+<p>###更常用的命令(显示系统核心版本号、名称、机器类型等)<br>    uname -a</p>
+<p>##ipcs命令<br>ipcs：检查系统上共享内存的分配</p>
+<p>###用途<br>报告进程间通信设施状态。</p>
+<p>ipcs 命令往标准输出写入一些关于活动进程间通信设施的信息。如果没有指定任何标志，ipcs 命令用简短格式写入一些关于当前活动消息队列、共享内存段、信号量、远程队列和本地队列标题。</p>
+<p>Linux下ipcs指令的用法详解。ipcs是Linux下显示进程间通信设施状态的工具。可以显示消息队列、共享内存和信号量的信息。对于程序员可能更有用些，普通的系统管理员一般用不到此指令。</p>
+<p><strong>ipcrm</strong>：手动解除系统上共享内存的分配</p>
+<p>用途: 删除消息队列、信号集、或者共享内存标识。</p>
+<p>##文件描述符fd<br>fd只是一个整数，在open时产生。起到一个索引的作用，进程通过PCB中的文件描述符表找到该fd所指向的文件指针filp。</p>
+<p>文件描述符的操作(如: open)返回的是一个文件描述符,内核会在每个进程空间中维护一个文件描述符表, 所有打开的文件都将通过此表中的文件描述符来引用; </p>
+<p>而流(如: fopen)返回的是一个FILE结构指针, FILE结构是包含有文件描述符的，FILE结构函数可以看作是对fd直接操作的系统调用的封装, 它的优点是带有I/O缓存<br>每个进程在PCB（Process Control Block）即进程控制块中都保存着一份文件描述符表，文件描述符就是这个表的索引，文件描述表中每个表项都有一个指向已打开文件的指针，现在我们明确一下：已打开的文件在内核中用file结构体表示，文件描述符表中的指针指向file结构体。</p>
+<p>##内存分配</p>
+<p>内存分配方式有三种：</p>
+<ol>
+<li>从静态存储区域分配。内存在程序编译的时候就已经分配好，这块内存在程序的整个运行期间都存在。例如全局变量，static变量。</li>
+<li>在栈上创建。在执行函数时，函数内局部变量的存储单元都可以在栈上创建，函数执行结束时这些存储单元自动被释放。栈内存分配运算内置于处理器的指令集中，效率很高，但是分配的内存容量有限。</li>
+<li>从堆上分配，亦称动态内存分配。程序在运行的时候用malloc或new申请任意多少的内存，程序员自己负责在何时用free或delete释放内存。动态内存的生存期由我们决定，使用非常灵活，但问题也最多。</li>
+</ol>
+<p>##如何定位内存泄露</p>
+<p>内存泄漏是指堆内存的泄漏。堆内存是指程序从堆中分配的、大小任意的（内存块的大小可以在程序运行期决定）、使用完后必须显示释放的内存。应用程序一般使用malloc、realloc、new等函数从堆中分配到一块内存，使用完后，程序必须负责相应的调用free或delete释放该内存块。否则，这块内存就不能被再次使用，我们就说这块内存泄漏了。</p>
+<p>C++程序缺乏相应的手段来检测内存信息，只能使用top指令观察进程的动态内存总额。而且程序退出时，我们无法获知任何内存泄漏信息</p>
+<p>使用Linux命令回收内存，可以使用ps、kill两个命令检测内存使用情况和进行回收。在使用超级用户权限时使用命令“ps”，它会列出所有正在运行的程序名称和对应的进程号（PID）。kill命令的工作原理是向Linux操作系统的内核送出一个系统操作信号和程序的进程号（PID）</p>
+<p>##linux 的内存管理机制是什么？</p>
+<p>Linux 虚拟内存的实现需要 6 种机制的支持：地址映射机制、内存分配回收机制、缓存和刷新机制、请求页机制、交换机制和内存共享机制内存管理程序通过映射机制把用户程序的逻辑地址映射到物理地址。当用户程序运行时，如果发现程序中要用的虚地址没有对应的物理内存，就发出了请求页要求。如果有空闲的内存可供分配，就请求分配内存(于是用到了内存的分配和回收)，并把正在使用的物理页记录在缓存中(使用了缓存机制)。如果没有足够的内存可供分配，那么就调用交换机制；腾出一部分内存。另外，在地址映射中要通过 TLB(翻译后援存储器)来寻找物理页；交换机制中也要用到交换缓存，并且把物理页内容交换到交换文件中，也要修改页表来映射文件地址。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/04/Questions-from-tencent/" data-id="cj64uppwx001jlraewiermdcw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-如何实现守护进程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/04/如何实现守护进程/" class="article-date">
+  <time datetime="2015-03-04T08:10:42.000Z" itemprop="datePublished">2015-03-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/c/">c</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/04/如何实现守护进程/">如何实现守护进程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li><p>创建子进程，父进程退出。 （脱离控制终端），很自然地，子进程成了孤儿进程，被init进程收养。</p>
+</li>
+<li><p>子进程中创建新会话。</p>
+</li>
+</ul>
+<blockquote>
+<p>我们先介绍下进程组的概念：</p>
+<p>进程组是一个或者多个进程的集合，由进程组id来唯一标识，除了进程号PID之外，进程组ID也是一个进程的必备属性。<br>每个进程组都有一个组长进程，其组长进程的进程号PID等于进程组ID，且该进程ID不会因为组长进程的退出而受到影响。</p>
+<p><strong>会话期</strong></p>
+<p>会话组是一个或者多个进程组的集合，通常，一个会话开始于用户登录，终止于用户退出，在此期间用户运行的所有进程 都属于这个会话期。</p>
+<p>Setid函数就是用于创建一个新的会话，并担任该会话组的组长，有三个作用，让进程摆脱原会话和进程组，终端的控制，使进程完全独立出来。</p>
+</blockquote>
+<ul>
+<li>由于fork（）继承了父进程的工作目录，对以后的使用造成不便，所以我们要改变当前目录为根目录。</li>
+</ul>
+<ul>
+<li><p>关闭文件描述符。 （fork（）继承过来的）</p>
+</li>
+<li><p>重设文件权限掩码。因为由继承得来的文件模式屏蔽字可能会被设置为拒绝某些权限</p>
+<pre><code>void daemonize()
+{
+  pid_t pid;
+
+  pid = fork();
+
+  /* In case of fork is error. */
+  if (pid &lt; 0)
+    {
+      fprintf(stderr,&quot;fork error.\n&quot;);
+      exit(0);
+    }
+  /* In case of this is parent process. */
+  if (pid != 0)
+    exit (0);// 父进程退出
+  /* Become session leader and get pid. */
+  pid = setsid();
+  if (pid == -1)
+    {
+      fprintf(stderr, &quot;setsid failed..&quot;);
+      exit(0);
+    }
+  /* Change directory to root. */
+
+    chdir (&quot;/&quot;);
+
+  /* File descriptor close. */
+  int fd;
+  fd = open (&quot;/dev/null&quot;, O_RDWR, 0);
+  if(fd != -1)
+    {
+      dup2(fd, STDIN_FILENO);
+      dup2(fd, STDOUT_FILENO);
+      dup2(fd, STDERR_FILENO);//all the output to stdin&amp;stdout&amp;stderr will go into /dev/null now
+      if(fd &gt; 2)
+        close(fd);
+    }
+
+  umask (0);
+}
+</code></pre></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/04/如何实现守护进程/" data-id="cj64upq4o00b8lraes9wvop99" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-编译原理基础" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/04/编译原理基础/" class="article-date">
+  <time datetime="2015-03-04T07:28:31.000Z" itemprop="datePublished">2015-03-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/编译原理/">编译原理</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/04/编译原理基础/">编译原理基础</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>编译器</p>
+</blockquote>
+<p>答：一个编译器就是一个程序，它可以阅读以某一种语言编写的程序，并把该程序翻译成为一个等价的、用另一种语言编写的程序。编译器的重要任务之一就是报告它在翻译中发现的源程序中的错误</p>
+<blockquote>
+<p>把一种高级语言翻译成为另一种高级语言的编译器称为（source-to-source）的翻译器，翻译器使用C语言作为目标语言有什么好处？</p>
+</blockquote>
+<p>答：就好比为什么编译器要产生汇编语言而是不是机器语言一样，C语言更简单更常用更加容易理解，同样方便调试和输出。</p>
+<blockquote>
+<p>编译器和解释器之间的区别是什么</p>
+</blockquote>
+<p>答：编译器是把源程序的每一条语句都编译成机器语言,并保存成二进制文件,这样运行时计算机可以直接以机器语言来运行此程序,速度很快;</p>
+<p>  而解释器则是只在执行程序时,才一条一条的解释成机器语言给计算机来执行,所以运行速度是不如编译后的程序运行的快的.</p>
+<blockquote>
+<p>编译器相对与解释器的优点是什么？解释器相对与编译器的优点是什么？</p>
+</blockquote>
+<p>答：</p>
+<ul>
+<li>一个编译器产生的机器语言目标程序通常比一个解释器快很多；</li>
+<li>解释器的错误诊断效果通常比编译器更好。</li>
+</ul>
+<blockquote>
+<p>在一个语言处理系统中，编译器产生汇编语言而不是机器语言的好处是什么</p>
+</blockquote>
+<p>答：就如书中写到的“汇编语言比较容易调试和输出”，这样就减轻了编译器设计的工作量，将部分工作转到汇编器上，使得设计更专注于编译器本身，尽量减少超出其本身所容纳的内容的范围。</p>
+<blockquote>
+<p>描述一下汇编器所要完成的一些任务。</p>
+</blockquote>
+<p>答：汇编器就类似于编译器，只是它的源语言不是高级语言而是汇编语言。同样，它需要一个预处理器进行预处理，如聚合文件，展开宏等。写成的机器语言也要类似与连接器和加载器的程序，完成类似的工作。</p>
+<blockquote>
+<p>创建一个可执行的目标程序</p>
+</blockquote>
+<p>答：除了编译器之外，创建一个可执行的目标程序还需要一些其他程序。一个源程序可能被分割成为多个模块，并存放于独立的文件中。把源程序聚合在一起的任务有时 会由一个被称为预处理器（preprocessor）的程序独立完成。预处理器还负责把那些称为宏的缩写形式转换为源语言的语句。</p>
+<p>然后，将经过预处理的源程序作为输入传递给一个编译器。编译器可能产生一个汇编语言程序作为其输出，因为汇编语言容易输出和调试。接着，这个汇编语言程序由称为汇编器（assemble）的程序进行处理，并生成可重定位的机器代码。</p>
+<p>大型程序经常被分成多个部分进行编译，因此，可重定位的机器代码有必要和其他可重定位的目标文件以及库文件连接在一起，形成真正在机器上运行的代码。一个 文件中的代码可能指向另一个文件的位置，而链接器（Linker）能够解决外部内存地址的问题。最后，加载器（Loader）把所有的可执行目标文件放到 内存中执行。</p>
+<p><img src="/img/一个混合编译器.png" alt=""></p>
+<p><img src="/img/一个语言处理程序.png" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/04/编译原理基础/" data-id="cj64upq8100f7lraekc1mjazf" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-linux系统同步机制，什么是死锁，如何避免" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/04/linux系统同步机制，什么是死锁，如何避免/" class="article-date">
+  <time datetime="2015-03-04T07:24:45.000Z" itemprop="datePublished">2015-03-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/c/">c</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/04/linux系统同步机制，什么是死锁，如何避免/">linux系统同步机制，什么是死锁，如何避免</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##linux系统的同步机制</p>
+<ul>
+<li>信号量</li>
+<li>锁</li>
+</ul>
+<p>##死锁<br>线程A需要资源X，而线程B需要资源Y，而双方都掌握有对方所要的资源，这种情况称为死锁（deadlock），或死亡拥抱（the deadly embrace）。</p>
+<p>在并发程序设计中，死锁 (deadlock) 是一种十分常见的逻辑错误。通过采用正确的编程方式，死锁的发生不难避免。</p>
+<p>###死锁的四个必要条件<br>死锁的四个必要条件，这四个条件缺一不可，或者说只要破坏了其中任何一个条件，死锁就不可能发生。</p>
+<ol>
+<li>互斥（Mutual exclusion）：存在这样一种资源，它在某个时刻只能被分配给一个执行绪（也称为线程）使用；</li>
+<li>持有（Hold and wait）：当请求的资源已被占用从而导致执行程序阻塞时，资源占用者不但无需释放该资源，而且还可以继续请求更多资源；</li>
+<li>不可剥夺（No preemption）：执行程序获得到的互斥资源不可被强行剥夺，换句话说，只有资源占用者自己才能释放资源；</li>
+<li>环形等待（Circular wait）：若干执行程序以不同的次序获取互斥资源，从而形成环形等待的局面，想象在由多个执行程序组成的环形链中，每个执行绪都在等待下一个执行绪释放它持有的资源。</li>
+</ol>
+<p>###解除死锁的必要条件<br>不难看出，在死锁的四个必要条件中，第二、三和四项条件比较容易消除。通过引入事务机制，往往可以消除第二、三两项条件，方法是将所有上锁操作均作为事务对待，一旦开始上锁，即确保全部操作均可回退，同时通过锁管理器检测死锁，并剥夺资源（回退事务）。这种做法有时会造成较大开销，而且也需要对上锁模式进行较多改动。</p>
+<p>消除第四项条件是比较容易且代价较低的办法。具体来说这种方法约定：上锁的顺序必须一致。具体来说，我们人为地给锁指定一种类似“水位”的方向性属性。无论已持有任何锁，该执行者所有的上锁操作，必须按照一致的先后顺序从低到高（或从高到低）进行，且在一个系统中，只允许使用一种先后次序。</p>
+<p>请注意，放锁的顺序并不会导致死锁。也就是说，尽管按照 锁A, 锁B, 放A, 放B 这样的顺序来进行锁操作看上去有些怪异，但是只要大家都按先A后B的顺序上锁，便不会导致死锁。</p>
+<p>##解决方法：</p>
+<ol>
+<li>使用事务时，尽量缩短事务的逻辑处理过程，及早提交或回滚事务； (细化处理逻辑，执行一段逻辑后便回滚或者提交，然后再执行其它逻辑，直到事物执行完毕提交)</li>
+<li>设置死锁超时参数为合理范围，如：3分钟-10分种；超过时间，自动放弃本次操作，避免进程悬挂； </li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/04/linux系统同步机制，什么是死锁，如何避免/" data-id="cj64upq18005vlraeo9xfjaa0" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-共享内存" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/04/共享内存/" class="article-date">
+  <time datetime="2015-03-04T07:15:55.000Z" itemprop="datePublished">2015-03-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/c/">c</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/04/共享内存/">共享内存</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>共享内存定义：共享内存是最快的可用IPC（进程间通信）形式。它允许多个不相关的进程去访问同一部分逻辑内存。共享内存是由IPC为一个进程创建的一个特殊的·地址范围，它将出现在进程的地址空间中。其他进程可以把同一段共享内存段“连接到”它们自己的地址空间里去。所有进程都可以访问共享内存中的地址。如果一个进程向这段共享内存写了数据，所做的改动会立刻被有访问同一段共享内存的其他进程看到。因此共享内存对于数据的传输是非常高效的。</p>
+<p><strong>共享内存段被映射进进程空间之后，存在于进程空间的什么位置？共享内存段最大限制是多少？</strong></p>
+<pre><code>$sysctl kern.ipc.shmmax  //可以查看共享内存的大小
+kern.ipc.shmmax: 33554432
+</code></pre><p>共享内存存在于进程数据段，最大限制为0x2000000Byte</p>
+<p><img src="/img/一个linux进程的存储器映像.png" alt="一个linux进程的存储器映像"></p>
+<p>程序内总是从虚拟地址0x08048000处开始。用户栈总是从虚拟地址0xbfffffff处开始，共享对象总是加载在从虚拟地址0x40000000处开始的区域内。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/04/共享内存/" data-id="cj64upq3z00aelrae9us73qmz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-float与“零值”比较的-if-语句" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/04/float与“零值”比较的-if-语句/" class="article-date">
+  <time datetime="2015-03-04T03:11:55.000Z" itemprop="datePublished">2015-03-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/c/">c</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/04/float与“零值”比较的-if-语句/">float与“零值”比较的 if 语句</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##代码<br>    const float EPSINON = 0.00001;<br>    if ((x &gt;= - EPSINON) &amp;&amp; (x &lt;= EPSINON)）</p>
+<p>##解释<br>浮点数在内存中的存贮机制和整型数不同，有舍入误差，在计算机中用以近似表示任意某个实数。具体的说，这个实数由一个整数或定点数（即尾数）乘以某个基数（计算机中通常是2）的整数次幂得到，这种表示方法类似于基数为10的科学记数法。</p>
+<p>所以浮点数在运算过程中通常伴随着因为无法精确表示而进行的近似或舍入。但是这种设计的好处是可以在固定的长度上存储更大范围的数。</p>
+<p>例如，一个指数范围为±4的4位十进制浮点数可以用来表示43210，4.321或0.0004321，但是没有足够的精度来表示432.123和43212.3（必须近似为432.1和43210）。当然，实际使用的位数通常远大于4。</p>
+<p>所以浮点数不能够判断相等，像 if(x==0)的这样的编码是不总是正确的，我们在判断浮点数相等时，推荐用范围来确定，若x在某一范围内，我们就认为相等，至于范围怎么定义，要看实际情况而已了，float,和double 各有不同</p>
+<p>所以</p>
+<pre><code>const float EPSINON = 0.00001;  
+if ((x &gt;= - EPSINON) &amp;&amp; (x &lt;= EPSINON) 
+</code></pre><p>这样判断是可取的</p>
+<p><strong>至于为什么取0.00001，可以自己按实际情况定义</strong></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/04/float与“零值”比较的-if-语句/" data-id="cj64upq0c004xlraexmhp3omw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-进程与线程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/04/进程与线程/" class="article-date">
+  <time datetime="2015-03-04T02:54:11.000Z" itemprop="datePublished">2015-03-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/c/">c</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/04/进程与线程/">进程与线程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##多进程与多线程的对比</p>
+<p><img src="/img/多进程与多线程.png" alt="多进程与多线程"></p>
+<p>这里的<code>一个线程挂掉将导致整个进程挂掉</code>是指线程非正常退出或调用exit，正常return是不会导致进程挂掉的</p>
+<p>##进程与线程的对比</p>
+<p><img src="/img/进程与线程.png" alt="进程与线程"></p>
+<ul>
+<li><p>进程是具有一定独立功能的程序关于某个数据集合上的一次运行活动,进程是系统进行资源分配和调度的一个独立单位。</p>
+</li>
+<li><p>线程是进程的一个实体, 是CPU调度和分派的基本单位,它是比进程更小的能独立运行的基本单位.线程自己基本上不拥有系统资源,只拥有一点在运行中必不可少的资源(如程序计数器,一组寄存器和栈),但是它可与同属一个进程的其他的线程共享进程所拥有的全部资源。</p>
+</li>
+<li><p>一个线程可以创建和撤销另一个线程，同一个进程中的多个线程之间可以并发执行。</p>
+</li>
+</ul>
+<blockquote>
+<p>进程和线程的主要差别在于它们是不同的操作系统资源管理方式。进程有独立的地址空间，一个进程崩溃后，在保护模式下不会对其它进程产生影响，而线程只是一个进程中的不同执行路径。线程有自己的堆栈和局部变量，但线程之间没有单独的地址空间，一个线程死掉就等于整个进程死掉，所以多进程的程序要比多线程的程序 健壮，但在进程切换时，耗费资源较大，效率要差一些。但对于一些要求同时进行并且又要共享某些变量的并发操作，只能用线程，不能用进程。</p>
+</blockquote>
+<p>##一个有趣的解释-进程与线程</p>
+<ol>
+<li>计算机的核心是CPU，它承担了所有的计算任务。它就像一座工厂，时刻在运行。</li>
+<li>假定工厂的电力有限，一次只能供给一个车间使用。也就是说，一个车间开工的时候，其他车间都必须停工。背后的含义就是，单个CPU一次只能运行一个任务。</li>
+<li>进程就好比工厂的车间，它代表CPU所能处理的单个任务。任一时刻，CPU总是运行一个进程，其他进程处于非运行状态。</li>
+<li>一个车间里，可以有很多工人。他们协同完成一个任务。</li>
+<li>线程就好比车间里的工人。一个进程可以包括多个线程。</li>
+<li>车间的空间是工人们共享的，比如许多房间是每个工人都可以进出的。这象征一个进程的内存空间是共享的，每个线程都可以使用这些共享内存。</li>
+<li>可是，每间房间的大小不同，有些房间最多只能容纳一个人，比如厕所。里面有人的时候，其他人就不能进去了。这代表一个线程使用某些共享内存时，其他线程必须等它结束，才能使用这一块内存。</li>
+<li>一个防止他人进入的简单方法，就是门口加一把锁。先到的人锁上门，后到的人看到上锁，就在门口排队，等锁打开再进去。这就叫”互斥锁”（Mutual exclusion，缩写 Mutex），防止多个线程同时读写某一块内存区域。</li>
+<li>还有些房间，可以同时容纳n个人，比如厨房。也就是说，如果人数大于n，多出来的人只能在外面等着。这好比某些内存区域，只能供给固定数目的线程使用。</li>
+<li>这时的解决方法，就是在门口挂n把钥匙。进去的人就取一把钥匙，出来时再把钥匙挂回原处。后到的人发现钥匙架空了，就知道必须在门口排队等着了。这种做法叫做”信号量”（Semaphore），用来保证多个线程不会互相冲突。不难看出，mutex是semaphore的一种特殊情况（n=1时）。也就是说，完全可以用后者替代前者。但是，因为mutex较为简单，且效率高，所以在必须保证资源独占的情况下，还是采用这种设计。</li>
+<li>操作系统的设计，因此可以归结为三点：<ul>
+<li>以多进程形式，允许多个任务同时运行；</li>
+<li>以多线程形式，允许单个任务分成不同的部分运行；</li>
+<li>提供协调机制，一方面防止进程之间和线程之间产生冲突，另一方面允许进程之间和线程之间共享资源。</li>
+</ul>
+</li>
+</ol>
+<p>##总结</p>
+<ul>
+<li>一般运行一个程序称为一个进程。</li>
+<li>进程可以创建线程，也可以创建进程。</li>
+<li>线程是由进程管理的，线程之间、线程和父进程（创建线程的进程）之间可以共享内存变量（需要使用策略的）。</li>
+<li>进程之间一般不可以直接共享内存变量，需要使用一些进程间的控制共享内存变量。</li>
+<li>如果你使用并行计算，建议使用线程。</li>
+<li>进程就是地址空间，通常在Win32下就是4G，当然这是虚拟地址，有操作系统把这个虚拟的地址在背后转换到实际的物理地址。</li>
+<li>线程是具体的执行体，每一个进程必定有一个主线程。也是CPU、OS调度的基本单位。</li>
+<li>函数当然是在线程内，但更在进程内，通常一个函数一个自己的栈，但这个栈空间实际上呢，是在进程意义的，线程可以申请自己的存储，这叫“线程局部存储”。</li>
+</ul>
+<p>##参考<br><a href="http://www.ruanyifeng.com/blog/2013/04/processes_and_threads.html" target="_blank" rel="external">进程与线程的一个简单解释</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/04/进程与线程/" data-id="cj64upq9u00gblrae9bimz0ca" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-网络编程的一些知识点" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/03/网络编程的一些知识点/" class="article-date">
+  <time datetime="2015-03-03T12:02:05.000Z" itemprop="datePublished">2015-03-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/unix网络编程/">unix网络编程</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/03/网络编程的一些知识点/">网络编程的一些知识点</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##socket的缓冲区<br>每个套接字都有一个发送缓冲区和一个接收缓冲区.</p>
+<p> 接收缓冲区被TCP，UDP和SCTCP用来保存接收到的数据，直到由应用进程读取。<strong>对于TCP来说，套接字接收缓冲区可用空间的大小限制了TCP通告对端的窗口大小。TCP套接字接收缓冲区不可以溢出，因为不允许对端发出超过本端所通告窗口大小的数据，这就是TCP的流量控制。</strong>如果对端无视窗口大小而发出了超过窗口大小的数据，本端TCP将丢弃它们。然而对于UDP来说，当接收到的数据报装不进套接字接收缓冲区时，该数据报就被丢弃。回顾一下，<strong>UDP是没有流量控制的：较快的发送端可以很容易的淹没较慢的接收端，导致接收端的UDP丢弃数据报。</strong></p>
+<p>##socket 在什么情况下可读？</p>
+<ol>
+<li>正常有数据输入的时候；</li>
+<li>有异常发生的时候，read 返回 -1，errno 置为错误编号；</li>
+<li>对端关闭的时候，read 返回 0， 表示读文件结束；</li>
+<li>当这个socket 是一个监听 socket ，且连接数不为0，又有 SYN 进来时。</li>
+</ol>
+<p>##listen不是一个阻塞函数<br>listen的作用是将一个套接字设置为监听状态，并且设置监听数目</p>
+<p>他不是一个阻塞函数，设置完套接字后它就没有作用了，以后就是套接字在等待来自客户端的连接  </p>
+<p>##tcp三次握手的过程，accept发生在三次握手哪个阶段</p>
+<p>当客户发起请求时，内核将为每个新到的客户完成3次握手，直到达到相应套接字上listen调用的backlog数为止，然后在服务器调用accept时把这些已完成的连接传递给它。</p>
+<p>所以说，accept是在三次握手完成之后执行的</p>
+<ul>
+<li>第一次握手：客户端发送syn包(syn=j)到服务器。</li>
+<li>第二次握手：服务器收到syn包，必须确认客户的SYN（ack=j+1），同时自己也发送一个ASK包（ask=k）。</li>
+<li>第三次握手：客户端收到服务器的SYN＋ACK包，向服务器发送确认包ACK(ack=k+1)。</li>
+</ul>
+<p>三次握手完成后，客户端和服务器就建立了tcp连接。这时可以调用accept函数获得此连接。</p>
+<p>accept会阻塞直到3次握手成功为止</p>
+<p>##为什么客户端不需要调用bind<br>   客户端在调用函数connect之前不必非得调用bind函数（当然也可以调用），因为如果需要的话，内核会确定源ip地址，并选择一个临时端口作为源端口。</p>
+<p>   服务在listen之前也可以不调用bind函数，这样内核同样会为套接字选一个ip和临时端口。让内核来选择临时端口对tcp客户端来说是常见的。但是对于tcp服务器来说却即为罕见，因为服务器是通过众所周知端口被大家认识的。</p>
+<p>   同样，调用bind可以指定ip地址或端口，可以都指定，也可以都不指定，也可以只指定其中一个。</p>
+<p>##traceroute的实现原理<br>   每个IP数据报都有TTL字段，每经过一个路由器，该字段就被减1，抵达路由器的数据报的TTL为1或0时，就会被丢弃，同时会发送一个ICMP“传输超时”错误报文给原始发送者。traceroute利用了这个特性，它首先向目的地发送一个TTL设置为1的UDP数据报。当这个UDP数据报抵达第一跳时，路由器注意到TTL为1，就会将其丢弃，并发回一个ICMP报文，从这个ICMP报文的源地址中，可以得到第一跳的IP地址，然后traceroute用gethostbyaddr来查询它的名字。为获得下一跳的标识，traceroute重复这个过程，只是把TTL设置为2，当这个数据报到达第一跳时，TTL被减为1并转发往下一跳，在那里发现TTL为1，丢弃它，并返回ICMP报文，通过不断增加TTL来重复这个过程，traceroute就可以获得从源到目的地之间的路径消息。</p>
+<p>##TCP 的头有多少个字节？有哪些字段？<br>TCP 头有 20个字节，选项12个字节.</p>
+<ul>
+<li>源端口号16位</li>
+<li>目的端口号16位</li>
+<li>SEQ32位(序列号)</li>
+<li>ACK32位(确认序列号)</li>
+<li>包头长度4位</li>
+<li>保留字段6位</li>
+<li>包类型6位</li>
+<li>窗口大小16位</li>
+<li>校验和16位</li>
+<li>紧急指针16位</li>
+<li>可选项32位</li>
+</ul>
+<p>之后是<strong>数据</strong></p>
+<p>##keepalive 是什么？起什么作用？起作用的过程是什么？<br>keepalive 是 TCP 协议内的心跳机制，用来维护链接的状态，默认不开启。服务器端每隔一段事件会向空闲两小时以上的链接的对端发送一个 keepalive 包，有以下情形：</p>
+<ol>
+<li>对端回复 ACK，链接保活，再次空闲两小时后重新探测；</li>
+<li>对端的应用程序已经退出，TCP 回复一个 RST包，链接关闭；</li>
+<li>对端的应用程序卡死/无反应，TCP 回复一个 FIN包，来终止链接；</li>
+<li>对端机器无任何反应，服务器端将持续发送 keepalive 包，超时则关闭链接。时间范围半小时到两小时。</li>
+</ol>
+<p>##UDP的recvfrom函数可以返回0</p>
+<p>写一个长度为0的数据报是可行的。在UDP情况下，这会形成一个只包含一个IP首部（对于IPv4通常为20字节，对于IPv6通常为40字节）和一个8字节UDP首部而没有数据的IP数据报。这也意味着对于数据报协议，recvfrom返回0值是可以接受的：它不像TCP套接字上read返回0值那样表示对端关闭连接。既然UDP是无连接的，因此也就没有诸如关闭一个UDP连接之类的事情</p>
+<p>##UDP 的 connect 有什么作用？<br>UDP 的 connect  和 TCP 的 connect 不同之处在于，UDP connect 的时候只会进行对端的记录，以及显而易见的错误的检查（比如 IP 压根儿填错了啊），而没有 TCP 的三次握手操作；这时，当前的 UDP socket 也被限定于只与 connect 指定的对端通信，当前的 socket 发生的异常也只会通知到 当前进程；同时，UDP 的 connect 是可以进行重复操作进行对端更新的，即 connect 完 A 之后，再调用 connect B 也是可以的，这与 TCP 不同。</p>
+<p>UDP 链接的两种模式：</p>
+<ol>
+<li>socket —&gt; sendto —&gt; recvfrom</li>
+<li>socket —&gt; connect —&gt; send —&gt; recv </li>
+</ol>
+<p>第二种模式也是可以使用 sendto 和 recvfrom 的，但是 参数内的 地址信息需要置成 NULL。</p>
+<p>##EAGAIN错误的含义</p>
+<p>在Linux环境下开发经常会碰到很多错误(设置errno)，其中EAGAIN是其中比较常见的一个错误(比如用在非阻塞操作中)。</p>
+<p>从字面上来看，是提示再试一次。这个错误经常出现在当应用程序进行一些非阻塞(non-blocking)操作(对文件或socket)的时候。例如，以 O_NONBLOCK的标志打开文件/socket/FIFO，如果你连续做read操作而没有数据可读。此时程序不会阻塞起来等待数据准备就绪返回，read函数会返回一个错误EAGAIN，提示你的应用程序现在没有数据可读请稍后再试。</p>
+<p>又例如，当一个系统调用(比如fork)因为没有足够的资源(比如虚拟内存)而执行失败，返回EAGAIN提示其再调用一次(也许下次就能成功)。</p>
+<p><strong>Linux - 非阻塞socket编程处理EAGAIN错误</strong><br>　在linux进行非阻塞的socket接收数据时经常出现Resource temporarily unavailable，errno代码为11(EAGAIN)，这是什么意思？</p>
+<p>这表明你在非阻塞模式下调用了阻塞操作，在该操作没有完成就返回这个错误，这个错误不会破坏socket的同步，不用管它，下次循环接着recv就可以。<strong><em>对非阻塞socket而言，EAGAIN不是一种错误。在VxWorks和Windows上，EAGAIN的名字叫做EWOULDBLOCK</em></strong>。</p>
+<p>另外，如果出现EINTR即errno为4，错误描述Interrupted system call，操作也应该继续。</p>
+<p>最后，如果recv的返回值为0，那表明连接已经断开，我们的接收操作也应该结束。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/03/网络编程的一些知识点/" data-id="cj64upq8400felraeyrr7nyqm" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-connect函数会阻塞，怎么解决？" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/03/connect函数会阻塞，怎么解决？/" class="article-date">
+  <time datetime="2015-03-03T11:57:01.000Z" itemprop="datePublished">2015-03-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/unix网络编程/">unix网络编程</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/03/connect函数会阻塞，怎么解决？/">connect函数会阻塞，怎么解决？</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>建立socket后默认connect()函数为阻塞连接状态，在大多数实现中，connect的超时时间在75s至几分钟之间，想要缩短超时时间，可解决问题的两种方法：</p>
+<ul>
+<li>方法一、将socket句柄设置为非阻塞状态。</li>
+<li>方法二、采用信号处理函数设置阻塞超时控制。</li>
+</ul>
+<p>##设置套接字为非阻塞<br>可以将套接字设置为非阻塞，下面是具体步骤</p>
+<ol>
+<li>建立socket</li>
+<li>将该socket设置为非阻塞模式</li>
+<li>调用connect()，如果返回0，则连接建立；如果返回-1，检查errno ，如果值为 EINPROGRESS，则连接正在建立。</li>
+<li>使用select()检查该socket描述符是否可写（注意，是可写）</li>
+<li>根据select()返回的结果判断connect()结果，如果规定时间内成功建立，则描述符变为可写；否则，采用getsockopt函数捕获错误信息</li>
+<li>将socket设置为阻塞模式（<strong>如果你的程序不需要用阻塞模式的，这步就省了，不过一般情况下都是用阻塞模式的，这样也容易管理</strong>）</li>
+</ol>
+<p>下面是设置套接字为非阻塞的例程  </p>
+<pre><code>{
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if(sockfd &lt; 0) exit(1);
+    struct sockaddr_in serv_addr;
+    ………//以服务器地址填充结构serv_addr
+    int error=-1, len;
+    len = sizeof(int);
+    timeval tm;
+    fd_set set;
+    unsigned long ul = 1;
+
+    ioctl(sockfd, FIONBIO, &amp;ul); //设置为非阻塞模式
+    bool ret = false;
+
+    if( connect(sockfd, (struct sockaddr *)&amp;serv_addr, sizeof(serv_addr)) == -1)
+    {
+            tm.tv_set = TIME_OUT_TIME;
+            tm.tv_uset = 0;
+            FD_ZERO(&amp;set);
+            FD_SET(sockfd, &amp;set);
+            if( select(sockfd+1, NULL, &amp;set, NULL, &amp;tm) &gt; 0)
+            {
+                    getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &amp;error, (socklen_t *)&amp;len);
+                    if(error == 0) ret = true;
+                        else ret = false;
+            } 
+            else 
+                ret = false;
+    }
+    else 
+        ret = true;
+    ul = 0;
+    ioctl(sockfd, FIONBIO, &amp;ul); //设置为阻塞模式
+    //下面还可以进行发包收包操作
+    ……………
+}
+</code></pre><p>##采用信号处理函数设置阻塞超时控制</p>
+<pre><code>sigset(SIGALRM, u_alarm_handler);
+alarm(2);
+code = connect(socket_fd, (struct sockaddr*)&amp;socket_st, sizeof(struct sockaddr_in));
+alarm(0);
+sigrelse(SIGALRM);
+</code></pre><p>首先定义一个中断信号处理函数u_alarm_handler，用于超时后的报警处理，然后定义一个2秒的定时器，执行connect，当系统connect成功，则系统正常执行下去；如果connect不成功阻塞在这里，则超过定义的2秒后，系统会产生一个信号，触发执行u_alarm_handler函数， 当执行完u_alarm_handler后，程序将继续从connect的下面一行执行下去。</p>
+<p>其中，处理函数可以如下定义，也可以加入更多的错误处理。</p>
+<pre><code>void u_alarm_handler()
+{
+}
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/03/connect函数会阻塞，怎么解决？/" data-id="cj64uppyi002ylrae32i51h4t" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-UNP上的一些问题与回答" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/03/UNP上的一些问题与回答/" class="article-date">
+  <time datetime="2015-03-03T11:07:37.000Z" itemprop="datePublished">2015-03-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/unix网络编程/">unix网络编程</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/03/UNP上的一些问题与回答/">UNP上的一些问题与回答</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>在一个以太网上的主机和一个令牌环网上的主机之间建立一个连接，其中以太网上的主机的TCP通告的MSS为1460，令牌环网上的主机的TCP通告的MSS为4096.两个主机都没有实现路径MTU发现功能。观察分组，我们在另个相反方向上都找不到大于1460字节的数据，为什么？</p>
+</blockquote>
+<p>答：令牌环网上的主机不能发送超过1460字节的数据，因为它接受到的MSS是1460.以太网上的主机可以发送最多4096的数据（因为他接收到的MSS是4096），但是为了避免分片，它不会超过外出接口（即以太网）的MTU。TCP净荷不能超过对端宣告的MSS，但是净荷小于这个数量的TCP分节总是可以发送的。</p>
+<blockquote>
+<p>如果没有收到来自对端的MSS选项，本端的TCP就采用536这个MSS值。为什么使用这个值？</p>
+</blockquote>
+<p>答：对于IPv4这个默认值产生576字节的IP数据报（其中IPv4首部占用20字节，TCP首部占用20字节，剩下536字节的TCP净荷），这是IPv4的最小重组缓冲区的大小</p>
+<blockquote>
+<p>对于一个TCP套接字调用close会导致发送一个FIN，然后是正常的TCP连接终止序列。在使用fork的并发程序中，为什么父进程对connfd调用close没有终止它与客户端的连接，子进程依然能够运行呢(unp-p92)？</p>
+</blockquote>
+<p>答：每个文件或套接字都有一个引用计数。引用计数在文件表项中维护，它是当前打开着的引用该文件或套接字的描述符的个数。socket返回后与listened关联的文件表项的引用计数值为1.  accept返回后与connfd关联的文件表项的引用计数值为1.然而fork返回后，这两个描述符就在父进程与子进程间共享（也就是被复制），因此与这两个套接字相关联的文件表项各自的访问计数值均为2。这么一来，当父进程关闭connfd时，它只是把相应的引用计数值从2减为1。该套接字真正清理和资源释放要等到其引用计数值达到0时才发生。这会在稍后子进程也关闭connfd时发生</p>
+<blockquote>
+<p>调用fork的时候，套接字描述符在父进程和子进程间共享，但是子进程调用exec程序，不就是失去对端地址了吗？</p>
+</blockquote>
+<p>答：当子程序调用exec执行真正的服务器程序（譬如说telnet服务器程序）时，子进程的内存印象被替换成新的telnet服务器的程序文件（也就是说包含对端地址的那个套接字地址结构就此丢失），不过那个已连接套接字描述符跨exec继续保持开放。telnet服务器首先调用的函数之一便是getpeername，用于获取客户的IP地址和端口号</p>
+<blockquote>
+<p>对于UDP，调用recvfrom，不管应用请求多大，recvfrom绝不会返回多于一个数据报的数据。而TCP可以！</p>
+</blockquote>
+<p> 例如,我们连续发送三个数据包,大小分别是2k, 4k , 8k,这三个数据包,都已经到达了接收端的网络堆栈中,如果使 用UDP协议,不管我们使用多大的接收缓冲区去接收数据,我们必须有 三次接收动作,才能够把所有的数据包接收完.而使用TCP协议,我们 只要把接收的缓冲区大小设置在14k以上,我们就能够一次把所有的 数据包接收下来.只需要有一次接收动作.</p>
+<p>这就是因为UDP协议的保护消息边界使得每一个消息都是独立的.而 流传输,却把数据当作一串数据流,他不认为数据是一个一个的消息.</p>
+<p>所以有很多人在使用tcp协议通讯的时候,并不清楚tcp是基于流的 传输,当连续发送数据的时候,他们时常会认识tcp会丢包.其实不然, 因为当他们使用的缓冲区足够大时,他们有可能会一次接收到两个甚 至更多的数据包,而很多人往往会忽视这一点,只解析检查了第一个<br>数据包,而已经接收的其他数据包却被忽略了.所以大家如果要作这 类的网络编程的时候,必须要注意这一点.</p>
+<p><strong>结论</strong></p>
+<p>根据以上所说，可以这样理解，TCP为了保证可靠传输，尽量减少额外开销（每次发包都要验证），因此采用了流式传输，面向流的传输，相对于面向消息的传输，可以减少发送包的数量。从而减少了额外开销。但是，对于数据传输频繁的程序来讲，使用TCP可能会容易粘包。当然，对接收端的程序来讲，如果机器负荷很重，也会在接收缓冲里粘包。这样，就需要接收端额外拆包，增加了工作量。因此，这个特别适合的是数据要求可靠传输，但是不需要太频繁传输的场合（两次操作间隔100ms，具体是由TCP等待发送间隔决定的，取决于内核中的socket的写法）</p>
+<p>而UDP，由于面向的是消息传输，它把所有接收到的消息都挂接到缓冲区的接受队列中，因此，它对于数据的提取分离就更加方便，但是，它没有粘包机制，因此，当发送数据量较小的时候，就会发生数据包有效载荷较小的情况，也会增加多次发送的系统发送开销（系统调用，写硬件等）和接收开销。因此，应该最好设置一个比较合适的数据包的包长，来进行UDP数据的发送。（UDP最大载荷为1472，因此最好能每次传输接近这个数的数据量，这特别适合于视频，音频等大块数据的发送，同时，通过减少握手来保证流媒体的实时性）</p>
+<blockquote>
+<p>对于UDP/IPv4套接字，可传递给sendto的最大长度是多少；也就是说，可装填在一个UDP/IPv4数据报中的最大数据量是多少？</p>
+</blockquote>
+<p><img src="ipv4首部.png" alt="ipv4首部格式"></p>
+<p>IPv4数据报最大为65536字节，这是由上图中16位的总长度字段决定的。IPv4的首部需要20字节，UDP首部需要8字节。留给UDP用户的数据最大为65507字节.</p>
+<p>那么我们使用UDP的时候，是否就能发送65507字节的数据呢？答案是否定的</p>
+<p>在进行UDP编程的时候,我们最容易想到的问题就是,一次发送多少bytes好?</p>
+<p>首先,我们知道,TCP/IP通常被认为是一个四层协议系统,包括链路层,网络层,运输层,应用层.</p>
+<p>UDP属于运输层,下面我们由下至上一步一步来看:</p>
+<p>以太网(Ethernet)数据帧的长度必须在46-1500字节之间，这是由以太网的物理特性决定的。这个1500字节被称为链路层的MTU(最大传输单元)。但这并不是指链路层的长度被限制在1500字节，其实这这个MTU指的是链路层的数据区，并不包括链路层的首部和尾部的18个字节。所以，事实上，这个1500字节就是网络层IP数据报的长度限制。因为IP数据报的首部为20字节，所以IP数据报的数据区长度最大为1480字节。而这个1480字节就是用来放TCP传来的TCP报文段或UDP传来的UDP数据报的。又因为UDP数据报的首部8字节，所以UDP数据报的数据区最大长度为1472字节。这个1472字节就是我们可以使用的字节数。:)</p>
+<p>当我们发送的UDP数据大于1472的时候会怎样呢？</p>
+<p>这也就是说IP数据报大于1500字节，大于MTU。这个时候发送方IP层就需要分片(fragmentation)。把数据报分成若干片，使每一片都小于MTU。而接收方IP层则需要进行数据报的重组。这样就会多做许多事情，而更严重的是，由于UDP的特性，当某一片数据传送中丢失时，接收方便无法重组数据报。将导致丢弃整个UDP数据报。</p>
+<p>因此，在普通的局域网环境下，我建议将UDP的数据控制在1472字节以下为好。</p>
+<p>进行Internet编程时则不同，因为Internet上的路由器可能会将MTU设为不同的值。</p>
+<p>如果我们假定MTU为1500来发送数据的，而途经的某个网络的MTU值小于1500字节，那么系统将会使用一系列的机<br>制来调整MTU值，使数据报能够顺利到达目的地，这样就会做许多不必要的操作.</p>
+<p>鉴于Internet上的标准MTU值为576字节，所以我建议在进行Internet的UDP编程时.</p>
+<p>最好将UDP的数据长度控件在548字节(576-8-20)以内.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/03/UNP上的一些问题与回答/" data-id="cj64uppy5002jlraebeoqhdzd" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/page/12/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/14/">__('next') &raquo;</a>
+  </nav>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

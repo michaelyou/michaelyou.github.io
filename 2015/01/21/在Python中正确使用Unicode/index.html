@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>在Python中正确使用Unicode | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="正确处理文本，特别是正确处理Unicode。是个老生常谈的问题，有时甚至会难倒经验丰富的开发者。并不是因为这个问题很难，而是因为对软件中的文本，开发者没有正确理解一些关键概念及其表示方法。在StackOverflow上搜索关于 UnicodeDecodeError相关的问题，可以看到很多人都有这样的误解。这些错误的概念可以追溯到Unicode出现之前。那时许多现今的开发者还没入职，也包括我自己。如">
+<meta name="keywords" content="python,unicode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Python中正确使用Unicode">
+<meta property="og:url" content="http://yoursite.com/2015/01/21/在Python中正确使用Unicode/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="正确处理文本，特别是正确处理Unicode。是个老生常谈的问题，有时甚至会难倒经验丰富的开发者。并不是因为这个问题很难，而是因为对软件中的文本，开发者没有正确理解一些关键概念及其表示方法。在StackOverflow上搜索关于 UnicodeDecodeError相关的问题，可以看到很多人都有这样的误解。这些错误的概念可以追溯到Unicode出现之前。那时许多现今的开发者还没入职，也包括我自己。如">
+<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在Python中正确使用Unicode">
+<meta name="twitter:description" content="正确处理文本，特别是正确处理Unicode。是个老生常谈的问题，有时甚至会难倒经验丰富的开发者。并不是因为这个问题很难，而是因为对软件中的文本，开发者没有正确理解一些关键概念及其表示方法。在StackOverflow上搜索关于 UnicodeDecodeError相关的问题，可以看到很多人都有这样的误解。这些错误的概念可以追溯到Unicode出现之前。那时许多现今的开发者还没入职，也包括我自己。如">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-在Python中正确使用Unicode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/21/在Python中正确使用Unicode/" class="article-date">
+  <time datetime="2015-01-21T13:23:49.000Z" itemprop="datePublished">2015-01-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      在Python中正确使用Unicode
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>正确处理文本，特别是正确处理Unicode。是个老生常谈的问题，有时甚至会难倒经验丰富的开发者。并不是因为这个问题很难，而是因为对软件中的文本，开发者没有正确理解一些关键概念及其表示方法。在StackOverflow上搜索关于 <a href="http://stackoverflow.com/search?q=unicodedecodeerror" target="_blank" rel="external">UnicodeDecodeError</a>相关的问题，可以看到很多人都有这样的误解。这些错误的概念可以追溯到Unicode出现之前。那时许多现今的开发者还没入职，也包括我自己。如果这些错误的概念没有散布开来，其实不是个问题。现在很多人都有这些错误概念，部分原因是因为有些非常流行的语言传播，甚至固化了这些错误概念，使得纠正起来反而变得很困难。</p>
+<p>根据对Unicode的支持情况，编程语言可以划分为4类：</p>
+<ul>
+<li>在Unicode出现或流行之前编写的语言。C和C++就属于这一类。这类语言对unicode的支持参差不齐。或没有内置到语言中，或很难正确的使用。因此开发者常常会用错。</li>
+<li>对Unicode支持稍好一点。这些语言在Unicode广泛流行后才出现的，但语言中对unicode的操作方式是严重错误的。虽然这些语言诞生较晚，但依然含有第一类语言中的所有缺点。以我的经验，其中代表语言就是PHP。尽管还有其他语言也同样糟糕。</li>
+<li>对Unicode支持基本正确，但有少数致命缺点的语言。这一类语言比较“现代”，且能理解Unicode，但依然无法让开发者正确的处理unicode，导致在这些语言中对unicode会出现一些严重不足。让我很沮丧的是，Python 2.x就属于这一类（下文会详细介绍）。</li>
+<li>能正确处理Unicode的语言。这些语言完全支持Unicode，可以用Unicode方便快速的完成任务，且不易出错。Java和.NET平台就属于这一类语言。<br>那么，Unicode到底是什么，我们在Unicode上犯了哪些错误？Joel这篇 <a href="http://www.joelonsoftware.com/articles/Unicode.html" target="_blank" rel="external">The absolute minimum every software developer absolutely, positively must know about unicode</a> 绝对是每个软件开发者必须阅读的文章。为了为简洁起见，以及照顾那些天生耐心不够的朋友，我会在本文中对其进行总结。</li>
+</ul>
+<p>##字符和字节</p>
+<p>基本事实是，若想正确的处理文本，就必须了解字符的抽象概念。不严谨的定义一下，字符表示的是文本中的单个符号。更重要的是，一个字符不是一个字节。我再强调一遍！一个字符不是一个字节！！！而且，一个字符有许多表示方法，不同的表示方法会使用不同的字节数。就像前面我说的那样，字符就是文本中最小的单元。</p>
+<p>Unicode以大家都认可的方式定义了一系列的字符。可以将Unicode理解成一个字符数据库，每个字符都与唯一的数字关联，称为code point。这样，英文大写字母A的codepoint是<font color="red"> <code>U+0041</code></font> 。而欧元符号的codepoint是 <font color="red"><code>U+20A0</code></font> ，其他类似。一个文本字符串就是这样一系列的codepoint，表示字符串中每个字符元素。</p>
+<p>当然，你迟早会需要储存和传输这些理论上的Unicode字符串。如果选择一种其他人可以理解的方式以字节方式进行表示，就可以以大家都理解的方式互相发送文本。这里就需要引入字符编码（encoding）。</p>
+<p>字符编码是在理想的字符和实际的字节表示方法之间的映射。这种映射无需面面俱到，即在某种编码中也许无法表示一些特定的字符。同时也无须为每个字符使用相同的内存空间，譬如某些字符使用单字节编码，而其他字符需要多个字节。</p>
+<p>由于同一个字符的字节表现形式不止一种。这意味着当遇到了一串字节，如果不知道使用的是什么编码，即使知道这些字节表示的是文本，也不知道是什么意思。所能做的就是猜使用的编码。简而言之，字节不是文本。即使忘了文中介绍的所有内容，也要记住这句话。为了读写文本，归根结底就是要知道其中使用的编码方式，不管是从约定、标识信息、或是其他方法得知。</p>
+<p>##Python是如何处理Unicode</p>
+<p>从这里开始介绍Python的Unicode支持。在Python的类型层次中，有3种不同的字符串类型：“unicode”，表示Unicode字符串（文本字符串）、“str”，表示字节字符串（二进制数据）；“basestring”。表示前两种字符串类型的父类。在我看来，Python在这里犯了一个错误，根据前面的定义，这让Python成为第三类语言，而没有成为第四类。</p>
+<p>我用了很长的篇幅苦口婆心的强调字节和字符在本质上是不同的东西，只有通过字符编码才能互相转换。但不幸的是，Python犯了两个互不相关的错误，轻轻松松的就会让你忘掉这些。</p>
+<p>第一个错误的严重性值得商榷：即将一串字节视为字符串。是否应该这样做还有争议。Java和,NET认为这样做是不对的，而其他一些语言却持有相反的态度。无论如何，你可能希望对文本进行某些操作，如正则匹配、字符串替代等。将这些操作应用到字节序列上都是没有意义的。而Python将字节序列作为另一种类型的字符串对待，允许在这两者上执行同样的操作。</p>
+<p>第二个错误的严重性大一些，Python试图在字节串和字符串之间以不为人所察觉的方式进行转化。在不同的转换中，在条件允许的情况下，Python会试图在字节串和unicode字符串直接进行转换。例如将字节串和unicode字节串连接到一起时。根据前面的介绍，不使用encoding就在不同类型之间进行转换是没有意义的。所以Python依赖一个“默认编码”，该编码由 <font color="red"><code>sys.setdefaultencoding()</code></font> 指定。在大多数平台上，默认的是ASCII编码。但对于所有转换，使用这种编码几乎都是错误的。如果不手动指定编码就调用 <font color="red"><code>str()</code></font> 或 <font color="red"><code>unicode()</code></font> ，或是函数以字符串作为参数，但传递的是其他类型的参数时，都会使用这个默认编码。</p>
+<p>走出这个unicode困境的一个解决办法是，调用<font color="red"><code>sys.setdefaultencoding()</code></font> 将默认的编码设置为真正会用到的编码。但这样仅仅是将问题隐藏起来，虽然这样刚开始能解决一些文本处理问题。但缺乏实际可行性，因为许多应用，特别是网络应用，在不同的地方会使用不同的文本编码。</p>
+<p>正确的解决方法是修改代码，以正确的方式处理文本。下面是一些应该做到的指导性意见：</p>
+<ul>
+<li>所有文本字符串都应该是unicode类型，而不是str类型。如果处理的是文本，而变量类型是str，这就是bug了！</li>
+<li>若要将字节串解码成字符串，需要使用正确的解码，即 <font color="red">var.decode(encoding) </font>（如， <font color="red"><code>var.decode(&#39;utf-8&#39;)</code></font> ）。将文本字符串编码成字节，使用var.encode(encoding)。</li>
+<li>永远不要对unicode字符串使用 <font color="red">str()</font> ，也不要在不指定编码的情况下就对字节串使用 <font color="red">unicode()</font> 。</li>
+<li>当应用从外部读取数据时，应将其视为字节串，即str类型的，接着调用 <font color="red"><code>.decode()</code></font> 将其解释成文本。同样，在将文本发送到外部时，总是对文本调用 <font color="red"><code>.encode()</code></font> 。</li>
+<li>如果代码中使用字符串字面值来表示文本，总是应该含有’u’前缀。但实际上，永远不要在代码中定义原始的字符串字面值。不管怎样，我自己是很讨厌这一条，也许其他人也和我一样吧。</li>
+</ul>
+<p>顺便说一句，Python 3修复了这些问题，可以正确的处理unicode和字符串，这样Python就完全位于第四类中了，更多信息参见官方的 更新说明 中关于Unicode的部分。</p>
+<p>希望这些内容能帮到你，如果对unicode到底是什么，如何处理unicode有疑惑的话，现在应该都清楚了。下次遇到 <font color="red"><code>UnicodeEncodeError</code></font> 或 <font color="red"><code>UnicodeDecodeError</code></font> 错误时，就应该完全知道问题出在哪，也知道如何去修复这些问题！</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/21/在Python中正确使用Unicode/" data-id="cj64upq4i00aylrae1owt7p8s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/unicode/">unicode</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/01/22/LRU/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          LRU
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/01/21/网络基础-一些小面试题/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">网络基础-一些小面试题</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

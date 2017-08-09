@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>网络编程的一些知识点 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="##socket的缓冲区每个套接字都有一个发送缓冲区和一个接收缓冲区.  接收缓冲区被TCP，UDP和SCTCP用来保存接收到的数据，直到由应用进程读取。对于TCP来说，套接字接收缓冲区可用空间的大小限制了TCP通告对端的窗口大小。TCP套接字接收缓冲区不可以溢出，因为不允许对端发出超过本端所通告窗口大小的数据，这就是TCP的流量控制。如果对端无视窗口大小而发出了超过窗口大小的数据，本端TCP将丢">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络编程的一些知识点">
+<meta property="og:url" content="http://yoursite.com/2015/03/03/网络编程的一些知识点/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="##socket的缓冲区每个套接字都有一个发送缓冲区和一个接收缓冲区.  接收缓冲区被TCP，UDP和SCTCP用来保存接收到的数据，直到由应用进程读取。对于TCP来说，套接字接收缓冲区可用空间的大小限制了TCP通告对端的窗口大小。TCP套接字接收缓冲区不可以溢出，因为不允许对端发出超过本端所通告窗口大小的数据，这就是TCP的流量控制。如果对端无视窗口大小而发出了超过窗口大小的数据，本端TCP将丢">
+<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="网络编程的一些知识点">
+<meta name="twitter:description" content="##socket的缓冲区每个套接字都有一个发送缓冲区和一个接收缓冲区.  接收缓冲区被TCP，UDP和SCTCP用来保存接收到的数据，直到由应用进程读取。对于TCP来说，套接字接收缓冲区可用空间的大小限制了TCP通告对端的窗口大小。TCP套接字接收缓冲区不可以溢出，因为不允许对端发出超过本端所通告窗口大小的数据，这就是TCP的流量控制。如果对端无视窗口大小而发出了超过窗口大小的数据，本端TCP将丢">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-网络编程的一些知识点" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/03/网络编程的一些知识点/" class="article-date">
+  <time datetime="2015-03-03T12:02:05.000Z" itemprop="datePublished">2015-03-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/unix网络编程/">unix网络编程</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      网络编程的一些知识点
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##socket的缓冲区<br>每个套接字都有一个发送缓冲区和一个接收缓冲区.</p>
+<p> 接收缓冲区被TCP，UDP和SCTCP用来保存接收到的数据，直到由应用进程读取。<strong>对于TCP来说，套接字接收缓冲区可用空间的大小限制了TCP通告对端的窗口大小。TCP套接字接收缓冲区不可以溢出，因为不允许对端发出超过本端所通告窗口大小的数据，这就是TCP的流量控制。</strong>如果对端无视窗口大小而发出了超过窗口大小的数据，本端TCP将丢弃它们。然而对于UDP来说，当接收到的数据报装不进套接字接收缓冲区时，该数据报就被丢弃。回顾一下，<strong>UDP是没有流量控制的：较快的发送端可以很容易的淹没较慢的接收端，导致接收端的UDP丢弃数据报。</strong></p>
+<p>##socket 在什么情况下可读？</p>
+<ol>
+<li>正常有数据输入的时候；</li>
+<li>有异常发生的时候，read 返回 -1，errno 置为错误编号；</li>
+<li>对端关闭的时候，read 返回 0， 表示读文件结束；</li>
+<li>当这个socket 是一个监听 socket ，且连接数不为0，又有 SYN 进来时。</li>
+</ol>
+<p>##listen不是一个阻塞函数<br>listen的作用是将一个套接字设置为监听状态，并且设置监听数目</p>
+<p>他不是一个阻塞函数，设置完套接字后它就没有作用了，以后就是套接字在等待来自客户端的连接  </p>
+<p>##tcp三次握手的过程，accept发生在三次握手哪个阶段</p>
+<p>当客户发起请求时，内核将为每个新到的客户完成3次握手，直到达到相应套接字上listen调用的backlog数为止，然后在服务器调用accept时把这些已完成的连接传递给它。</p>
+<p>所以说，accept是在三次握手完成之后执行的</p>
+<ul>
+<li>第一次握手：客户端发送syn包(syn=j)到服务器。</li>
+<li>第二次握手：服务器收到syn包，必须确认客户的SYN（ack=j+1），同时自己也发送一个ASK包（ask=k）。</li>
+<li>第三次握手：客户端收到服务器的SYN＋ACK包，向服务器发送确认包ACK(ack=k+1)。</li>
+</ul>
+<p>三次握手完成后，客户端和服务器就建立了tcp连接。这时可以调用accept函数获得此连接。</p>
+<p>accept会阻塞直到3次握手成功为止</p>
+<p>##为什么客户端不需要调用bind<br>   客户端在调用函数connect之前不必非得调用bind函数（当然也可以调用），因为如果需要的话，内核会确定源ip地址，并选择一个临时端口作为源端口。</p>
+<p>   服务在listen之前也可以不调用bind函数，这样内核同样会为套接字选一个ip和临时端口。让内核来选择临时端口对tcp客户端来说是常见的。但是对于tcp服务器来说却即为罕见，因为服务器是通过众所周知端口被大家认识的。</p>
+<p>   同样，调用bind可以指定ip地址或端口，可以都指定，也可以都不指定，也可以只指定其中一个。</p>
+<p>##traceroute的实现原理<br>   每个IP数据报都有TTL字段，每经过一个路由器，该字段就被减1，抵达路由器的数据报的TTL为1或0时，就会被丢弃，同时会发送一个ICMP“传输超时”错误报文给原始发送者。traceroute利用了这个特性，它首先向目的地发送一个TTL设置为1的UDP数据报。当这个UDP数据报抵达第一跳时，路由器注意到TTL为1，就会将其丢弃，并发回一个ICMP报文，从这个ICMP报文的源地址中，可以得到第一跳的IP地址，然后traceroute用gethostbyaddr来查询它的名字。为获得下一跳的标识，traceroute重复这个过程，只是把TTL设置为2，当这个数据报到达第一跳时，TTL被减为1并转发往下一跳，在那里发现TTL为1，丢弃它，并返回ICMP报文，通过不断增加TTL来重复这个过程，traceroute就可以获得从源到目的地之间的路径消息。</p>
+<p>##TCP 的头有多少个字节？有哪些字段？<br>TCP 头有 20个字节，选项12个字节.</p>
+<ul>
+<li>源端口号16位</li>
+<li>目的端口号16位</li>
+<li>SEQ32位(序列号)</li>
+<li>ACK32位(确认序列号)</li>
+<li>包头长度4位</li>
+<li>保留字段6位</li>
+<li>包类型6位</li>
+<li>窗口大小16位</li>
+<li>校验和16位</li>
+<li>紧急指针16位</li>
+<li>可选项32位</li>
+</ul>
+<p>之后是<strong>数据</strong></p>
+<p>##keepalive 是什么？起什么作用？起作用的过程是什么？<br>keepalive 是 TCP 协议内的心跳机制，用来维护链接的状态，默认不开启。服务器端每隔一段事件会向空闲两小时以上的链接的对端发送一个 keepalive 包，有以下情形：</p>
+<ol>
+<li>对端回复 ACK，链接保活，再次空闲两小时后重新探测；</li>
+<li>对端的应用程序已经退出，TCP 回复一个 RST包，链接关闭；</li>
+<li>对端的应用程序卡死/无反应，TCP 回复一个 FIN包，来终止链接；</li>
+<li>对端机器无任何反应，服务器端将持续发送 keepalive 包，超时则关闭链接。时间范围半小时到两小时。</li>
+</ol>
+<p>##UDP的recvfrom函数可以返回0</p>
+<p>写一个长度为0的数据报是可行的。在UDP情况下，这会形成一个只包含一个IP首部（对于IPv4通常为20字节，对于IPv6通常为40字节）和一个8字节UDP首部而没有数据的IP数据报。这也意味着对于数据报协议，recvfrom返回0值是可以接受的：它不像TCP套接字上read返回0值那样表示对端关闭连接。既然UDP是无连接的，因此也就没有诸如关闭一个UDP连接之类的事情</p>
+<p>##UDP 的 connect 有什么作用？<br>UDP 的 connect  和 TCP 的 connect 不同之处在于，UDP connect 的时候只会进行对端的记录，以及显而易见的错误的检查（比如 IP 压根儿填错了啊），而没有 TCP 的三次握手操作；这时，当前的 UDP socket 也被限定于只与 connect 指定的对端通信，当前的 socket 发生的异常也只会通知到 当前进程；同时，UDP 的 connect 是可以进行重复操作进行对端更新的，即 connect 完 A 之后，再调用 connect B 也是可以的，这与 TCP 不同。</p>
+<p>UDP 链接的两种模式：</p>
+<ol>
+<li>socket —&gt; sendto —&gt; recvfrom</li>
+<li>socket —&gt; connect —&gt; send —&gt; recv </li>
+</ol>
+<p>第二种模式也是可以使用 sendto 和 recvfrom 的，但是 参数内的 地址信息需要置成 NULL。</p>
+<p>##EAGAIN错误的含义</p>
+<p>在Linux环境下开发经常会碰到很多错误(设置errno)，其中EAGAIN是其中比较常见的一个错误(比如用在非阻塞操作中)。</p>
+<p>从字面上来看，是提示再试一次。这个错误经常出现在当应用程序进行一些非阻塞(non-blocking)操作(对文件或socket)的时候。例如，以 O_NONBLOCK的标志打开文件/socket/FIFO，如果你连续做read操作而没有数据可读。此时程序不会阻塞起来等待数据准备就绪返回，read函数会返回一个错误EAGAIN，提示你的应用程序现在没有数据可读请稍后再试。</p>
+<p>又例如，当一个系统调用(比如fork)因为没有足够的资源(比如虚拟内存)而执行失败，返回EAGAIN提示其再调用一次(也许下次就能成功)。</p>
+<p><strong>Linux - 非阻塞socket编程处理EAGAIN错误</strong><br>　在linux进行非阻塞的socket接收数据时经常出现Resource temporarily unavailable，errno代码为11(EAGAIN)，这是什么意思？</p>
+<p>这表明你在非阻塞模式下调用了阻塞操作，在该操作没有完成就返回这个错误，这个错误不会破坏socket的同步，不用管它，下次循环接着recv就可以。<strong><em>对非阻塞socket而言，EAGAIN不是一种错误。在VxWorks和Windows上，EAGAIN的名字叫做EWOULDBLOCK</em></strong>。</p>
+<p>另外，如果出现EINTR即errno为4，错误描述Interrupted system call，操作也应该继续。</p>
+<p>最后，如果recv的返回值为0，那表明连接已经断开，我们的接收操作也应该结束。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/03/网络编程的一些知识点/" data-id="cj64upq8400felraeyrr7nyqm" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/03/04/进程与线程/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          进程与线程
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/03/03/connect函数会阻塞，怎么解决？/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">connect函数会阻塞，怎么解决？</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

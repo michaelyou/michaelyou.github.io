@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/page/11/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-linux系统性能调试-uptime命令" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/12/linux系统性能调试-uptime命令/" class="article-date">
+  <time datetime="2015-03-12T02:38:38.000Z" itemprop="datePublished">2015-03-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/12/linux系统性能调试-uptime命令/">linux系统性能调试-uptime命令</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>我们可以使用uptime命令来监视Linux系统性能和状态， 这是一种非常有效的简单方法。uptime命令会显示在一定时间间隔内系统运行队列中进程的信息。通过这些信息可以大致地分析系统的工作负载。所以当系统性能下降时，首先应使用uptime命令来观察系统运行队列中进程的情况。</p>
+<pre><code>$ uptime 
+
+2:07pm up 11 days, 4:54, 9 users, load average: 1.90, 1.98, 2.01
+</code></pre><p>在上面显示内容其中有用的信息是三个负载的平均值：1.90、1.98和2.01分别是前1分钟、5分钟和15分钟内的负载平均值。  </p>
+<p> 系统管理员需要定期运行uptime命令以观察系统的平均负载值及其变化趋势。系统的问题往往通过上述数据反映出来。当系统负载增大时，说明多条命令被阻塞在内存和I/O系统中。这时需要检查系统的有关信息。一般Linux系统，负载为2和3 表示轻载，5和6表示中等程度负载，10 以上为过载。不同系统的划分标准是不同的。系统管理员应根据实际情况确定自己系统中划分轻载和过载的界限。-</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/12/linux系统性能调试-uptime命令/" data-id="cj64upq1d0061lrae6s3frs6u" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-linux系统性能调试-free命令" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/12/linux系统性能调试-free命令/" class="article-date">
+  <time datetime="2015-03-12T02:36:35.000Z" itemprop="datePublished">2015-03-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/12/linux系统性能调试-free命令/">linux系统性能调试--free命令</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>使用free命令可以查看系统中内存空间的大小。内存是以KB为单位来衡量的。例如用户可以用free命令来获取系统内存空间的大小信息，命令如下：</p>
+<pre><code>$ free 
+
+              Total  used   free  shared  buffers  cached 
+Mem:         95772  86748   9024   54480     5796   36164 
+-/+ buffers/cache:  44788  50984 
+Swap:       136512   7000 129512 
+</code></pre><p>在上面显示内容中：</p>
+<ul>
+<li>Mem行中的total栏显示了当前Linux正在使用的RAM总量。</li>
+<li>used栏显示的是被占用的内存空间，但Mem行与这一栏结合并不能产生最好的分析结果，因为其中包含了Linux分配给磁盘缓冲区的一部分分区。在大多数系统中，used栏显示的值和total栏的值相当。然而，我们可以核对used栏、-/+buffers/cache行对应的值来查看有多少内存处于使用状态（used栏、Swap栏对应的数值）。这一部分是作为内存来用的磁盘，而磁盘速度比内存慢，所以最好优先使用物理内存，交换内存则较少使用。–</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/12/linux系统性能调试-free命令/" data-id="cj64upq1c005ylraevi5fibkq" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-网络编程调试" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/10/网络编程调试/" class="article-date">
+  <time datetime="2015-03-10T09:05:52.000Z" itemprop="datePublished">2015-03-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/unix网络编程/">unix网络编程</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/10/网络编程调试/">网络编程调试</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##记录网络服务名和它们对应使用的端口号及协议</p>
+<pre><code>cat /etc/services
+</code></pre><p>##查看某个端口号的使用状态</p>
+<pre><code>lsof -i :6000 （查看哪个进程正在监听6000这个端口）
+lsof -i TCP:6000 （只显示监听此端口的TCP连接，上面不加选项的就是指TCP&amp;UDP）
+</code></pre><p>lsof命令还可以用来显示谁在使用某个文件或文件夹，例如：</p>
+<pre><code>lsof  /root/michael/unp（会显示谁当前在用/root/michael/unp文件夹）
+</code></pre><p>##netstat<br>netstat 默认情况下，绑定在INADDR_ANY的服务器的套接字是不列出来的，不过可以用 -a 选项改变默认设置（解释：不加-a选项，netstat命令不显示LISTEN状态的条目，所以如果需要显示LISTEN，就需要加上-a）。</p>
+<pre><code>netstat -apt（-p选项表示输出PID，-t选项表示监听tcp端口），这个命令可以很方便地显示套接字上程序的PID和名字
+
+netstat -apu：显示监听在udp端口的信息
+
+netstat -napt（加上-n选项表示以数字形式表示地址和端口号，而不是别名）
+
+netstat -nr：可以显示路由表
+
+netstat -i：可以获得计算机基本的网络接口信息
+</code></pre><p><strong>这些命令输出中的<code>*</code>是表示通配地址（INADDR_ANY）</strong></p>
+<p>Netstat 命令用于显示各种网络相关信息，如网络连接，路由表，接口状态 (Interface Statistics)，masquerade 连接，多播成员 (Multicast Memberships) 等等。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/10/网络编程调试/" data-id="cj64upq9400filrae53391uaz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-百度的一些面试题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/09/百度的一些面试题/" class="article-date">
+  <time datetime="2015-03-09T14:00:33.000Z" itemprop="datePublished">2015-03-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/面试/">面试</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/09/百度的一些面试题/">百度的一些面试题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#ping是工作在哪一层的，用的什么协议<br>ping工作在IP层，用的是ICMP协议。traceroute也是基于ICMP协议</p>
+<p>#常用的即时通讯软件用的是什么协议</p>
+<ol>
+<li>QQ主要采用UDP，某些情况下采用TCP。</li>
+<li>其他IM大多数时候采用TCP，涉及到音频、视频传输会用到UDP</li>
+</ol>
+<p>#http状态码</p>
+<ul>
+<li>首位为1：这一类型的状态码，代表请求已被接受，需要继续处理。这类响应是临时响应，只包含状态行和某些可选的响应头信息，并以空行结束。由于 HTTP/1.0 协议中没有定义任何 1xx 状态码，所以除非在某些试验条件下，服务器禁止向此类客户端发送 1xx 响应。</li>
+<li>首位为2：成功</li>
+<li>首位为3：重定向</li>
+<li>首位为4：客户方错误</li>
+<li>首位为5：服务器错误</li>
+</ul>
+<p>#设有1000个元素,用二分法查找时,最大比较次数是</p>
+<p>10次 = [log2(1000)] + 1，方括号是取整等于9</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/09/百度的一些面试题/" data-id="cj64upq5s00dalraeq4856425" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-epoll为什么高效" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/07/epoll为什么高效/" class="article-date">
+  <time datetime="2015-03-07T14:22:39.000Z" itemprop="datePublished">2015-03-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/unix网络编程/">unix网络编程</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/07/epoll为什么高效/">epoll为什么高效</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##无需遍历整个fd集合<br>首先回忆一下select 模型，当有I/O 事件到来时，select 通知应用程序有事件到了快去处理，而应用程序必须轮询所有的fd集合，测试每个fd是否有事件发生，并处理事件；代码像下面这样：</p>
+<pre><code>int res = select(maxfd+1, &amp;readfds,NULL, NULL, 120);
+if (res &gt; 0)
+{
+    for (int i = 0; i &lt;MAX_CONNECTION; i++)
+    {
+       if (FD_ISSET(allConnection[i], &amp;readfds))
+       {
+           handleEvent(allConnection[i]);
+       }
+    }
+}
+// if(res == 0) handle timeout, res &lt; 0handle error
+</code></pre><p>Epoll 不仅会告诉应用程序有I/0事件到来，还会告诉应用程序相关的信息，这些信息是应用程序填充的，因此根据这些信息应用程序就能直接定位到事件，而不必遍历整个fd集合。</p>
+<pre><code>int res = epoll_wait(epfd, events, 20,120);
+for (int i = 0; i &lt; res;i++)
+{
+    handleEvent(events[n]);
+}
+</code></pre><p>##Epoll 关键数据结构<br>Epoll 速度快和其数据结构密不可分，其关键数据结构就是：</p>
+<pre><code>struct epoll_event {
+    __uint32_tevents;      // Epoll events
+    epoll_data_tdata;      // User data variable
+};
+typedef union epoll_data {
+    void *ptr;
+    int fd;
+    __uint32_t u32;
+    __uint64_t u64;
+} epoll_data_t;
+</code></pre><p>可见epoll_data 是一个 union 结构体 , 借助于它应用程序可以保存很多类型的信息 :fd 、指针等等。有了它，应用程序就可以直接定位目标了。</p>
+<p>别小看了这些效率的提高,在一个大规模并发的服务器中,轮询IO是最耗时间的操作之一。</p>
+<p>对比最早给出的阻塞IO的处理模型, 可以看到采用了多路复用IO之后, 程序可以自由的进行自己除了IO操作之外的工作, 只有到IO状态发生变化的时候由多路复用IO进行通知, 然后再采取相应的操作, 而不用一直阻塞等待IO状态发生变化了.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/07/epoll为什么高效/" data-id="cj64upq07004olrae901ecldo" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-epoll的事件触发方式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/07/epoll的事件触发方式/" class="article-date">
+  <time datetime="2015-03-07T13:34:13.000Z" itemprop="datePublished">2015-03-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/unix网络编程/">unix网络编程</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/07/epoll的事件触发方式/">epoll的事件触发方式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>参考自<a href="http://blog.chinaunix.net/uid-24517549-id-4051156.html" target="_blank" rel="external">这里</a></p>
+<p>假如有这样一个例子：</p>
+<ol>
+<li>我们已经把一个用来从管道中读取数据的文件句柄(RFD)添加到epoll描述符</li>
+<li>这个时候从管道的另一端被写入了2KB的数据</li>
+<li>调用epoll_wait()，并且它会返回RFD，说明它已经准备好读取操作</li>
+<li>然后我们读取了1KB的数据</li>
+<li>调用epoll_wait()……</li>
+</ol>
+<p>##Edge Triggered 工作模式：<br>如果我们在第1步将RFD添加到epoll描述符的时候使用了EPOLLET标志，那么在第5步调用<code>epoll_wait()</code>之后将有可能会挂起，因为剩余的数据还存在于文件的输入缓冲区内，而且数据发出端还在等待一个针对已经发出数据的反馈信息。只有在监视的文件句柄上发生了某个事件的时候 ET 工作模式才会汇报事件。因此在第5步的时候，调用者可能会放弃等待仍在存在于文件输入缓冲区内的剩余数据。在上面的例子中，会有一个事件产生在RFD句柄上，因为在第2步执行了一个写操作，然后，事件将会在第3步被销毁。</p>
+<p>因为第4步的读取操作没有读空文件输入缓冲区内的数据，因此我们在第5步调用 <code>epoll_wait()</code>完成后，是否挂起是不确定的。epoll工作在ET模式的时候，必须使用<strong>非阻塞套接口</strong>，以避免由于一个文件句柄的阻塞读/阻塞写操作把处理多个文件描述符的任务饿死。最好以下面的方式调用ET模式的epoll接口，在后面会介绍避免可能的缺陷。</p>
+<ol>
+<li>基于非阻塞文件句柄</li>
+<li>只有当read()或者write()返回EAGAIN时才需要挂起，等待。但这并不是说每次read()时都需要循环读，直到读到产生一个EAGAIN才认为此次事件处理完成，当read()返回的读到的数据长度小于请求的数据长度时，就可以确定此时缓冲中已没有数据了，也就可以认为此事读事件已处理完成。</li>
+</ol>
+<p>##Level Triggered 工作模式<br>相反的，以LT方式调用epoll接口的时候，它就相当于一个速度比较快的poll()，并且无论后面的数据是否被使用，因此他们具有同样的职能。因为即使使用ET模式的epoll，在收到多个chunk的数据的时候仍然会产生多个事件。调用者可以设定EPOLLONESHOT标志，在 <code>epoll_wait()</code>收到事件后epoll会与事件关联的文件句柄从epoll描述符中禁止掉。因此当EPOLLONESHOT设定后，使用带有 EPOLL_CTL_MOD标志的<code>epoll_ctl()</code>处理文件句柄就成为调用者必须作的事情。</p>
+<p>##总结<br>LT(level triggered水平触发或条件触发)是epoll缺省的工作方式，并且同时支持block和no-block socket.在这种做法中，内核告诉你一个文件描述符是否就绪了，然后你可以对这个就绪的fd进行IO操作。如果你不作任何操作，内核还是会继续通知你的，所以，这种模式编程出错误可能性要小一点。传统的select/poll都是这种模型的代表．</p>
+<p>ET (edge-triggered边缘触发或事件触发)是高速工作方式，只支持no-block socket，它效率要比LT更高。ET与LT的区别在于，当一个新的事件到来时，ET模式下当然可以从<code>epoll_wait</code>调用中获取到这个事件，<strong>可是如果这次没有把这个事件对应的套接字缓冲区处理完，在这个套接字中没有新的事件再次到来时，在ET模式下是无法再次从epoll_wait调用中获取这个事件的。而LT模式正好相反，只要一个事件对应的套接字缓冲区还有数据，就总能从<code>epoll_wait</code>中获取这个事件。</strong><br>因此，LT模式下开发基于epoll的应用要简单些，不太容易出错。而在ET模式下事件发生时，如果没有彻底地将缓冲区数据处理完，则会导致缓冲区中的用户请求得不到响应。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/07/epoll的事件触发方式/" data-id="cj64upq0b004ulraeo5236ytz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-执行可执行程序时内存分配的方式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/07/执行可执行程序时内存分配的方式/" class="article-date">
+  <time datetime="2015-03-07T12:22:54.000Z" itemprop="datePublished">2015-03-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/c/">c</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/07/执行可执行程序时内存分配的方式/">执行可执行程序时内存分配的方式&amp;&amp;BSS段</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##一个由C/C++编译的程序占用的内存分为以下几个部分</p>
+<ol>
+<li>栈区（stack）— 由编译器自动分配释放，存放函数的参数值，局部变量的值等。其操作方式类似于数据结构中的栈。</li>
+<li>堆区（heap）— 一般由程序员分配释放，若程序员不释放，程序结束时可能由OS回收。注意它与数据结构中的堆是两回事，分配方式倒是类似于链表，呵呵。</li>
+<li>全局区（静态区）（static）—全局变量和静态变量的存储是放在一块的，初始化的全局变量和静态变量在一块区域，未初始化的全局变量和未初始化的静态变量在相邻的另一块区域。 - 程序结束后有系统释放</li>
+<li>文字常量区 —常量字符串就是放在这里的。程序结束后由系统释放</li>
+<li>程序代码区(text)—存放函数体的二进制代码。</li>
+</ol>
+<p><img src="/img/一个linux进程的存储器映像.png" alt=""></p>
+<p>##举例</p>
+<pre><code>int a = 0;    //全局初始化区 
+char *p1;     //全局未初始化区 
+main() 
+{ 
+    int b;                   //栈 
+    char s[] = &quot;abc&quot;;        //s[]在栈区，abc在常量区 
+    char *p2;                //栈 
+    char *p3 = &quot;123456&quot;;     //123456\0在常量区，p3在栈上。 
+    static int c = 0；       //全局（静态）初始化区 
+    p1 = (char *)malloc(10); 
+    p2 = (char *)malloc(20); //分配得来得10和20字节的区域就在堆区。 
+    strcpy(p1, &quot;123456&quot;);    //123456\0放在常量区，编译器可能会将它与p3所指向的&quot;123456&quot;优化成一块。 
+} 
+</code></pre><p>##堆和栈的区别</p>
+<ol>
+<li>stack的空间由操作系统自动分配/释放，heap上的空间需要手动分配/释放</li>
+<li>栈的空间有限，堆是很大的自由存储区。</li>
+<li>程序在编译期对变量和函数分配内存都在栈上进行，且程序运行过程中函数调用参数的传递也在栈上进行</li>
+</ol>
+<p>##BSS段</p>
+<p>可执行程序包括BSS段、数据段、代码段（也称文本段）。</p>
+<p>BSS（Block Started by Symbol）通常是指用来存放程序中未初始化的全局变量和静态变量的一块内存区域。特点是:可读写的，在程序执行之前BSS段会自动清0。所以，未初始的全局变量在程序执行之前已经成0了。</p>
+<p>注意和数据段的区别，<strong>BSS存放的是未初始化的全局变量和静态变量，数据段存放的是初始化后的全局变量和静态变量</strong>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/07/执行可执行程序时内存分配的方式/" data-id="cj64upq4w00btlraep1fnm87d" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-连续字数组的最大和-负数的表示形式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/07/连续字数组的最大和-负数的表示形式/" class="article-date">
+  <time datetime="2015-03-07T09:19:26.000Z" itemprop="datePublished">2015-03-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/算法/">算法</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/07/连续字数组的最大和-负数的表示形式/">连续子数组的最大和 &amp;&amp; 负数的表示形式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>输入一个整形数组，数组里有正数也有负数。<br>数组中连续的一个或多个整数组成一个子数组，每个子数组都有一个和。<br>求所有子数组的和的最大值。要求时间复杂度为O(n)。</p>
+<p>例如输入的数组为1, -2, 3, 10, -4, 7, 2, -5，<br>和最大的子数组为3, 10, -4, 7, 2，<br>因此输出为该子数组的和18。</p>
+</blockquote>
+<pre><code>int find_greatest_sum_of_subarray(int *array, int length) {
+    if(array == NULL || length &lt;=0)
+        return -1; //返回错误
+
+    int sum = 0;
+    int greatest_sum = 0x80000000;
+
+    int i;
+    for(i = 0; i &lt; length; i++) {
+        if(sum &lt;= 0)
+            sum = array[i];
+        else
+            sum += array[i];
+
+        if(sum &gt; greatest_sum)
+            greatest_sum = sum;
+    }
+
+    return greatest_sum;
+}
+</code></pre><p>代码是很简单的，分析可以参考何海涛的《剑指offer》面试题31</p>
+<p>这里想说的是这一句</p>
+<pre><code>int greatest_sum = 0x80000000;
+</code></pre><p><code>greatest_sum</code>初始化为什么不是0呢？你可以初始化为0试一下，会发现，当输入数组的字数组的最大和是负数的时候，程序的输出是0，也就是<code>greatest_sum</code>的初始值。说到这里大家应该明白了，我们应该将<code>greatest_sum</code>初始化为32位有符号数的最小值(32位的最小负数)，那为什么是0x80000000，最小负数不是0xffffffff吗？</p>
+<p>这就要考虑到负数在计算机中的存储形式了</p>
+<p>正数在计算机中是用源码存储的，正数1就是0x00000001，正数2就是0x00000002(0000 0000 0000 0000 0000 0000 0000 0010)，但是负数是不一样的，负数在计算机中是用补码存储的</p>
+<blockquote>
+<p>补码 = 原码去反(符号位不变) + 1</p>
+</blockquote>
+<p>举例：-1</p>
+<p>#####原码：1000 0000 0000 0000 0000 0000 0000 0001</p>
+<p>#####反码：1111 1111 1111 1111 1111 1111 1111 1110</p>
+<p>#####补码：1111 1111 1111 1111 1111 1111 1111 1111</p>
+<p>举例：-2147483647(0xffffffff)</p>
+<p>#####原码：1111 1111 1111 1111 1111 1111 1111 1111</p>
+<p>#####反码：1000 0000 0000 0000 0000 0000 0000 0000</p>
+<p>#####补码：1000 0000 0000 0000 0000 0000 0000 0001（ox80000001）</p>
+<p>同理-2147483646在计算机内是0x80000002</p>
+<p>那么问题来了，0x80000000是什么呢？在计算机内它表示的是-2147483648，是有符号32位整数的最小值。</p>
+<p>32位有符号整数的表示范围为：<br>-2147483648 – 2147483647</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/07/连续字数组的最大和-负数的表示形式/" data-id="cj64upqa500gklraenqluk1ox" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-TCP-IP的一些基础知识" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/06/TCP-IP的一些基础知识/" class="article-date">
+  <time datetime="2015-03-06T13:00:22.000Z" itemprop="datePublished">2015-03-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/TCP-IP/">TCP/IP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/06/TCP-IP的一些基础知识/">TCP/IP的一些基础知识</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##TCP为什么要被称为数据流？</p>
+<p>建立连接，数据就在该连接上流动，可以是双向的，没有边界，所以叫数据流</p>
+<p>TCP是面向连接的、可靠的流协议。流就是指不间断的数据结构，你可以把它想象成排水道中的水流。当应用程序采用TCP发送消息时，虽然可以保证发送的顺序，但还是犹如没有任何间隔的数据流发送给接收端。TCP充分地实现了数据传输时各种控制功能，可以进行丢包时的重发控制，还可以对次序乱掉的分包进行顺序控制。而这些在UDP中都没有。此外，TCP作为一种面向有连接的协议，只有在确认通信对端存在时才会发送数据，从而可以控制通信流量的浪费。根据TCP的这些机制，在IP这种无连接的网络上也能够实现高可靠性的通信。</p>
+<p>##流量控制与拥塞控制的区别</p>
+<p>###拥塞控制：<br>防止过多的数据注入到网络中，这样可以使网络中的路由器或链路不致过载。拥塞控制所要做的都有一个前提：网络能够承受现有的网络负荷。拥塞控制是一个全局性的过程，涉及到所有的主机、路由器，以及与降低网络传输性能有关的所有因素。</p>
+<p>###流量控制：<br>指点对点通信量的控制，是端到端的问题。流量控制所要做的就是抑制发送端发送数据的速率，以便使接收端来得及接收</p>
+<p>##TCP和UDP有什么不同？</p>
+<ol>
+<li>在链接状态上，TCP 是面向链接的，UDP 则是面向无链接的；</li>
+<li>在数据传输的质量上，TCP 以数据流的方式传输，保证数据的有序性，准确性，完整性，数据传输质量高；UDP 则是以数据报的形式，独立发送数据报，不能保证数据是否到达，是否完整，是否有序，数据传输质量低于TCP；</li>
+<li>在数据包的大小上，TCP 包头至少20个字节，但是 UDP 只有 8个字节；</li>
+<li>对系统资源的要求（TCP 较多，UDP 少）</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/06/TCP-IP的一些基础知识/" data-id="cj64uppxc001wlraeccgx6rr6" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-IO复用-select-poll-epoll比较" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/06/IO复用-select-poll-epoll比较/" class="article-date">
+  <time datetime="2015-03-06T12:58:51.000Z" itemprop="datePublished">2015-03-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/unix网络编程/">unix网络编程</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/06/IO复用-select-poll-epoll比较/">IO复用--select,poll,epoll比较</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##select模型</p>
+<ol>
+<li>最大并发数限制，因为一个进程所打开的FD（文件描述符）是有限制的，由FD_SETSIZE设置，默认值是1024/2048，因此Select模型的最大并发数就被相应限制了。自己改改这个FD_SETSIZE？想法虽好，可是先看看下面吧…</li>
+<li>效率问题，select每次调用都会线性扫描全部的FD集合，这样效率就会呈现线性下降，把FD_SETSIZE改大的后果就是，大家都慢慢来，什么？都超时了？？！！</li>
+<li>内核/用户空间 内存拷贝问题，如何让内核把FD消息通知给用户空间呢？在这个问题上select采取了内存拷贝方法。</li>
+</ol>
+<p>##poll模型</p>
+<p>基本上效率和select是相同的，select缺点的2和3它都没有改掉。</p>
+<p>##Epoll的提升</p>
+<p>把其他模型逐个批判了一下，再来看看Epoll的改进之处吧，其实把select的缺点反过来那就是Epoll的优点了。</p>
+<ol>
+<li>Epoll没有最大并发连接的限制，上限是最大可以打开文件的数目，这个数字一般远大于2048, 一般来说这个数目和系统内存关系很大，具体数目可以cat /proc/sys/fs/file-max察看。</li>
+<li>效率提升，Epoll最大的优点就在于它只管你“活跃”的连接，而跟连接总数无关，因此在实际的网络环境中，Epoll的效率就会远远高于select和poll。</li>
+<li>内存拷贝，Epoll在这点上使用了“共享内存”，这个内存拷贝也省略了。</li>
+</ol>
+<p>##总结</p>
+<p><strong>select</strong> 是采用内核轮询方式，每次调用都需要轮询 FD_SET，默认最多可以接受 1024 个fd，可更改为更大，但是随着数量的增多，轮询周期的变长，性能会急剧下降；</p>
+<p><strong>poll</strong> 是 select 的改进版，将 FD_SET 改造成由（ fd，监听事件类型，实际事件类型 ）为节点组成的链，解除了1024 的限制，其他并无大的区别，当 fd 多时，同样会造成效率下降；</p>
+<p><strong>epoll</strong> 将 轮询机制 改造为 事件触发机制，给每一个 fd 附上一个 callback，当监听事件发生时，就将 fd 链接到 就绪链表，调用 epoll_wait 时，只用检查就绪链表就可以了，而不需要像 select 和 poll 一样进行轮询。</p>
+<p>另外，<strong>select</strong> 和 <strong>poll</strong> 是将存有 fd 的结构或者数组再每次调用的时候都复制到内核态，然后调用完再复制回用户态，而无所谓是否有意义。<strong>epoll</strong> 使用内存映射，减去了这部分的data-copy操作。</p>
+<p>再者，从触发方式上来看，<strong>select</strong> 和 <strong>poll</strong> 都只有 条件触发（也可以叫水平触发），<strong>epoll</strong> 则有条件触发 和 事件触发（也可以叫边缘触发）两种。</p>
+<p>在选择使用哪种方式的时候，需要根据 fd 的多少和活跃程度来判断。当fd 数量较少，且都比较活跃的时候，使用 <strong>select</strong> 或者 <strong>poll</strong> 反而有可能效率更高，因为毕竟 <strong>epoll</strong>  要有多次的回调函数。</p>
+<p>好东西都是要付出代价的！</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/06/IO复用-select-poll-epoll比较/" data-id="cj64uppvr000wlraeprcdkkmv" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/page/10/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/12/">__('next') &raquo;</a>
+  </nav>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

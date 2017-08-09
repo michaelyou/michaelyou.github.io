@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>第九部分：第二个小插曲，Deferred | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="原文在这里 ##更多关于回调的知识稍微停下来再思考一下回调的机制。尽管对于以Twisted方式使用Deferred写一个简单的异步程序已经非常了解了，但Deferred提供更多的是只有在比较复杂环境下才会用到的功能。因此，下面我们自己想出一些复杂的环境，以此来观察当使用回调编程时会遇到哪些问题。然后，再来看看deferred是如何解决这些问题的。 因此，我们为诗歌下载客户端添加了一个假想的功能。设">
+<meta name="keywords" content="python,异步编程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第九部分：第二个小插曲，Deferred">
+<meta property="og:url" content="http://yoursite.com/2015/01/30/第九部分：第二个小插曲，Deferred/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="原文在这里 ##更多关于回调的知识稍微停下来再思考一下回调的机制。尽管对于以Twisted方式使用Deferred写一个简单的异步程序已经非常了解了，但Deferred提供更多的是只有在比较复杂环境下才会用到的功能。因此，下面我们自己想出一些复杂的环境，以此来观察当使用回调编程时会遇到哪些问题。然后，再来看看deferred是如何解决这些问题的。 因此，我们为诗歌下载客户端添加了一个假想的功能。设">
+<meta property="og:image" content="http://yoursite.com/img/同步调用栈.png">
+<meta property="og:image" content="http://yoursite.com/img/异步调用栈.png">
+<meta property="og:image" content="http://yoursite.com/img/deferred中的控制流程.png">
+<meta property="og:image" content="http://yoursite.com/img/可能的deferred激活路线.png">
+<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第九部分：第二个小插曲，Deferred">
+<meta name="twitter:description" content="原文在这里 ##更多关于回调的知识稍微停下来再思考一下回调的机制。尽管对于以Twisted方式使用Deferred写一个简单的异步程序已经非常了解了，但Deferred提供更多的是只有在比较复杂环境下才会用到的功能。因此，下面我们自己想出一些复杂的环境，以此来观察当使用回调编程时会遇到哪些问题。然后，再来看看deferred是如何解决这些问题的。 因此，我们为诗歌下载客户端添加了一个假想的功能。设">
+<meta name="twitter:image" content="http://yoursite.com/img/同步调用栈.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-第九部分：第二个小插曲，Deferred" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/30/第九部分：第二个小插曲，Deferred/" class="article-date">
+  <time datetime="2015-01-30T13:56:42.000Z" itemprop="datePublished">2015-01-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/twisted/">twisted</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      第九部分：第二个小插曲，Deferred
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文在<a href="http://krondo.com/?p=1825" target="_blank" rel="external">这里</a></p>
+<p>##更多关于回调的知识<br>稍微停下来再思考一下回调的机制。尽管对于以Twisted方式使用Deferred写一个简单的异步程序已经非常了解了，但Deferred提供更多的是只有在比较复杂环境下才会用到的功能。因此，下面我们自己想出一些复杂的环境，以此来观察当使用回调编程时会遇到哪些问题。然后，再来看看deferred是如何解决这些问题的。</p>
+<p>因此，我们为诗歌下载客户端添加了一个假想的功能。设想一些计算机科学家发明了一种新诗歌关联算法，<br>Byronification引擎。这个漂亮的算法根据一首诗歌生成一首使用Lord Byron式的同样的诗歌。另外，专家们提供了其Python的接口，即：</p>
+<pre><code>class IByronificationEngine(Interface): 
+    def byronificate(poem):
+        &quot;&quot;&quot;
+        Return a new poem like the original, but in the style of Lord Byron.
+        Raises GibberishError if the input is not a genuine poem.
+        &quot;&quot;&quot;
+</code></pre><p>像大多数高尖端的软件一样，其实现都存在着许多bugs。这意外着除了已知的异常外，这个byronificate 方法可能会抛出一些专家当时没有预料到的异常出来。</p>
+<p>我们还可以假设这个引擎能够非常快的动作以至于我们可以在主线程中调用到而无需考虑使用reactor。下面是我们想让程序实现的效果：</p>
+<ol>
+<li>尝试下载诗歌</li>
+<li>如果下载失败，告诉用户没有得到诗歌</li>
+<li>如果下载到诗歌，则转交给Byronificate处理引擎一份</li>
+<li>如果引擎抛出GibberishError，告诉用户没有得到诗歌</li>
+<li>如果引擎抛出其它异常，则将原始式样的诗歌立给用户</li>
+<li>如果我们得到这首诗歌，则打印它</li>
+<li>结束程序</li>
+</ol>
+<p>这里设计是当遇到GibberishError异常则表示没有得到诗歌，因此我们直接告诉用户下载失败即可。这也许对调试没什么用处，但我们的用户关心的只是我们下载到诗歌没有。另一方面，如果引擎因为一些其它的原因而出现处理失败，那么我们将原始诗歌交给用户。毕竟，有诗歌呈现总比没有好，虽然不是用户想要的Byron样式。</p>
+<p>下面是同步模式的代码：</p>
+<pre><code>try:
+    poem = get_poetry(host, port) # synchronous get_poetry
+except:
+    print &gt;&gt;sys.stderr, &apos;The poem download failed.&apos;
+else:
+    try:
+        poem = engine.byronificate(poem)
+    except GibberishError:
+        print &gt;&gt;sys.stderr, &apos;The poem download failed.&apos;
+    except:
+        print poem # handle other exceptions by using the original poem
+    else:
+        print poem
+sys.exit()
+</code></pre><p>这段代码可能经过一些重构会更加简单，但已经足以说明上面的逻辑流程。我们想升级那些最近使用deferred的客户端来使用这个功能。但这部分内容我准备把它放在第十部分。现在，我们来考虑一下，用版本3.1来实现这个功能，最后一个没有使用deferred的客户端。假设我们无需考虑处理异常，那么只是改变一下got_poem回调即可：</p>
+<pre><code>def got_poem(poem):
+    poems.append(byron_engine.byronificate(poem))
+    poem_done()
+</code></pre><p>那么如果byronificate抛出GibberishError异常或其它异常会发生什么呢？看看第六部分的图11,我们可以得到：</p>
+<ol>
+<li>这个异常会传播到工厂中的poem_finished回调，即激活got_poem的方法</li>
+<li>由于poem_finished并没有捕获这个异常，因此其会传递到protocol中的poemReceive函数</li>
+<li>然后来到connectionLost函数，仍然在protocol中</li>
+<li>然后就来到Twisted的核心区，最后止步于reactor。</li>
+</ol>
+<p>前面已经了解到，reactor会捕获异常并记录它而不是“崩溃”掉。但它却不会告诉用户我们的诗歌下载失败的消息。reactor并不知道任何诗歌或GibberishErrors的信息，它只是一段被设计成适应所有网络类型的通用代码，即便与诗歌无关的网络服务。（Dave这里想强调的是reactor只是做一些具有普遍意义的事情，不会单独去处理特定的问题，例如这里原GibberishErrors异常）</p>
+<p>注意异常是如何顺着调用链传递到具有通用性代码区域。并且看到，在got_poem后面任何一步都没有可望以我们客户端的具体要求来处理异常的。这与同步代码中的方式恰恰相反。</p>
+<p>图15揭示了一个同步客户端的调用栈：</p>
+<p><img src="/img/同步调用栈.png" alt="图15：同步调用栈"></p>
+<p>main函数是最高层，意味着它可以触及整个程序，它为什么要存在，并且它是如何在整体上表现的。典型的，main函数可以触及到用户在命令行输入想让程序做什么的参数。并且它还有一个特殊的目的：为一个命令行式的客户端打印结果。</p>
+<p>socket的connet函数，恰恰相反，其为最低层。它所知道的就是提供到指定地址的连接。它并不知道另一端是什么及我们为什么要进行连接。但connect有通用性，不管你因为何种服务要进行网络连接都可以使用它。</p>
+<p>get_poetry在中间，它知道要取一些诗歌，但并不知道如果得不到诗歌会发生什么。因此，从connect抛出的异常会向上传递，从低层的具有通用性的代码区到高层的具有针对性的代码区，直到其传递到知道如何处理这个异常的代码区。</p>
+<p>现在，我们再回来看看对3.1版的假想功能的实现。我们在图16里对调用栈进行了分析，当然只是说明了其中关键的函数：</p>
+<p><img src="/img/异步调用栈.png" alt="图16 异步调用栈"></p>
+<p>现在问题非常清晰了：在回调中，低层的代码（reactor）调用高层的代码，其甚至还会调用更高层的代码。因此一旦出现了异常，它并不会立即被其附件（在调用栈中可触及）的代码捕获，当然附近的代码也不可能处理它。由于异常每向上传递一次，就越靠近低层那些更加不知如何处理该异常的代码。</p>
+<p>一旦异常来到Twisted的核心代码区，游戏也就结束了。异常并不会被处理，只是被记录下来。因此我们在以最原始的回调方式使用回调时（不使用deferred），必须在其进入Twisted之间很好地处理各种异常，至少是我们知道的那些在我们自己设定的规则下会产生的异常。当然其也应该包括那些由我们自己的BUG产生的异常。</p>
+<p>由于bug可能存在于我们代码中的每个角落，因此我们必须将每个回调都放入try/except中，这样一来所有的异常都才有可能被捕获。这对于我们的errback同样适用，因为errback中也可能含有bugs。</p>
+<p>##Deferred的优秀架构<br>最终还得由Deferred来帮我们解决这类问题。当一个deferred激活了一个callback或errback时，它就会捕获各种由回调抛出的异常。换句话说，deferred扮演了try/except模块，这样一来，只要我们使用deferred就无需自己来实现这一层了。那deferred是如何解决这个问题的？很简单，它传递异常给在其链上的下一个errback。</p>
+<p>我们添加到deferred中的第一个errback回调来处理任何出错信息，信息是在deferred的errback函数调用时发出的。但第二个errback会处理任何由第一个errback或第一个callback抛出的异常，并一直按这种规则传递下去。<br>回忆下<a href="http://michaelyou.github.io/img/Deferred.png" target="_blank" rel="external">图12</a>.我们假设第一对callback/errback是stage0,下面则是stage1，stage2。。。依次类推。</p>
+<p>对于stage N来说，如果其callback或errback出错，那么stage N+1的errback就会被调用并收到一个Failure对象作为参数，同时stage N+1的callback就不会被调用了。</p>
+<p>通过将回调函数产生的异常向在链中传递，deferred将异常抛向了高层代码。这也意味着调用deferred的callback与errback永远不会在调用都本身处引发异常（只要你仅激活deferred一次），因此，底层的代码可以放心的激活deferred而无需担心会引发异常。相反，高层代码通过向deferred中添加errback（使用addErrback）来捕获异常。</p>
+<p>在同步代码中，异常会在其被捕获而停止传递，那么一个errback如何发出其捕获了异常这一信号呢？同样很简单：不再引发异常。这样一来，执行权就转移到了callback中来。因此对于stage N来说，不管是callback还是errback成功执行而没有抛出异常，那么stage N+1的callback就会被调用，同样，stage N+1的errback就不会被调用了。</p>
+<p>我们来总结一下吧：</p>
+<ol>
+<li>一个deferred有一个callback/errback对链，它们以添加到deferred中的顺序依次排列</li>
+<li>stage 0，即第一对errback/callbac，会在deferred激活时调用，具体调用那个看激活deferred的方式，若是通过.errback激活，则调用errback；同样若是通过.callback激活则调用callback。（这里的errback/callback实际是指通过addBoth添加的函数）</li>
+<li>如果stage N执行出现异常，则stage N+1的errback被调用，并且其参数即为stage N出现的异常</li>
+<li>同样，如果stage N成功，即没有抛出异常，则N+1的callback被调用，其第一个参数为stage N的返回值。</li>
+</ol>
+<p>图17更加直观的描述上述操作：</p>
+<p><img src="/img/deferred中的控制流程.png" alt="图17：deferred中的控制流程"></p>
+<p>绿色的线表示callback和errback成功执行没抛出异常，而红线表示出现了异常。这些线不仅说明了控制流程还说明了异常与返回值在链中流动的情况。图17显示了所有deferred能出现的可能路径，但实际只有一条路径会存在。图18显示了一条可能的路径：</p>
+<p><img src="/img/可能的deferred激活路线.png" alt="图18：可能的deferred激活路线"></p>
+<p>图18中，deferred的.callback函数被调用了，因此激活了stage 0的callback。这个callback成功的执行而没有抛出异常，因此控制权传给了stage 1的callback。但这个callbac执行失败而抛出异常，因此控制权传给了stage 2的errback。errback成功的处理了异常，而没有再抛出异常，因此控制权传给了stage 3的callback，并且将errback的返回值作为第一个参数传了进来（即stage 3的callback中）。</p>
+<p>图18中，可以看出，最后一个stage上的所有的回调出现异常时，都由下一层的errback来捕获并处理，但如果最后一个stage的callback或errback执行失败而抛出异常，怎么办呢？那么这个异常就会成为unhandled（未处理）。</p>
+<p>在同步代码中，未处理的异常会导致解释器崩溃，在原始方式使用回调的代码中未处理异常会由reactor捕获并记录下来。那么未处理异常出现在deferred中会怎样呢？让我们来做个试验。运行<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/defer-unhandled.py#L1" target="_blank" rel="external">twisted-deferred/defer-unhandled.py</a>试试。下面是输出：</p>
+<pre><code>Finished
+Unhandled error in Deferred: Traceback (most recent call last):
+...
+--- &lt;exception caught here&gt; ---
+...
+exceptions.Exception: oops
+</code></pre><p>如下几点需要引起我们的注意：</p>
+<ol>
+<li>最后一个print函数成功执行，意味着程序并没有因为出现未处理异常而崩溃。</li>
+<li>其只是将跟踪栈打印出来，而没有宕掉解释器</li>
+<li>跟踪栈的内容告诉我们deferred在何处捕获了异常</li>
+<li>“’Unhandle”的字符在“Finished”之后出现。</li>
+</ol>
+<p>之所以出现第4条是因为，这个消息只有在deferred被垃圾回收时才会打印出来。我们将在下面的部分看到其中的原因。</p>
+<p>在同步代码中，我们可以使用raise来重新抛出一个异常而无需其它参数。同样，我们也可以在errback中这样做。deferred通过以下两点来判断callback/errback是否执行成功：</p>
+<ol>
+<li>callback/errback “raise”一个异常，或</li>
+<li>callbakc/errback返回一个Failure对象</li>
+</ol>
+<p>因为errback的第一个参数就是一个Failure，因此一个errback可以在进行完其处理后可以再次抛出这个Failure。</p>
+<p>##Callbacks与Errbacks，成对出现<br>上面讨论内容中的一个问题必须要清楚：你添加callback与errback到一个defered的顺序会决定这个deferred的的整体运行情况。另一个必须搞清楚的是：在一个deferred中callback与errback往往是成对出现。有四个方法可以向一个deferred的回调链中添加callback/errback对：</p>
+<ol>
+<li>addCallbacks</li>
+<li>addCallback</li>
+<li>addErrback</li>
+<li>addBoth</li>
+</ol>
+<p>很明显的是，第一个与第四个是向链中添加函数对。当然中间两个也向链中添加函数对。AddCallback向链中添加一个显式的callback函数与一个隐式的”pass-through“函数（实在想不出一个对应的词）。一个pass-through函数只是虚设的函数，只将其第一个参数返回。由于errback回调函数的第一个参数是Failure，因此一个“path-through”的errback总是执行“失败”，即将异常传给下个errback回调。</p>
+<p>##deferred模拟器<br>这部分内容，没有译。其主要是帮助理解deferred，但你会发现，读其中的代码，根本更好的理解deferred。主要是我还没有理解，嘿嘿。所以就不知为不知吧。</p>
+<p>##总结</p>
+<p>经过这些对回调的考虑，发现由于回调式编程改变了低层代码与高层代码的关系，因此让回调产生的异常直接抛到栈中并不件好事。Deferred通过将异常捕获然后将其顺着回调链传递来解决了这个问题。</p>
+<p>我们同样意识到，原始数据（返回值）在链中被传递。结合这个两事实也就带来了这样一种场景：根据每个stage收到的结果的不同，deferred在callback与errback链中来回交错传递数据并执行。</p>
+<p>我们将在第十部分使用些学到的知识来更新我们的客户端。</p>
+<p>##练习</p>
+<ol>
+<li>Inspect the implementation of each of the four methods on the Deferred which add callbacks and errbacks. Verify that all methods add a callback/errback pair.</li>
+<li><p>Use the deferred simulator to investigate the difference between this code:</p>
+<pre><code>deferred.addCallbacks(my_callback, my_errback)
+</code></pre></li>
+</ol>
+<p>and this code:</p>
+<pre><code>deferred.addCallback(my_callback)
+deferred.addErrback(my_errback)
+</code></pre><p>Recall that the last two methods add implicit pass-through functions as one member of the pair.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/30/第九部分：第二个小插曲，Deferred/" data-id="cj64upq6300dxlraeq86txj55" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/01/30/第十部分：增强defer功能的客户端/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          第十部分：增强defer功能的客户端
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/01/30/如何重命名scrapy下载的图片/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">如何重命名scrapy下载的图片</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

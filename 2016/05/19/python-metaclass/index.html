@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Python Metaclass | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="这是e-satis同学在stackoverflow上的回答 ##类也是对象在理解metaclass之前（metaclass也被称为元类，这里就不翻译了），你要先掌握python中的class。python中class的概念非常奇特（一切皆对象），这一点借鉴了Smalltalk这门语言。 在大部分语言中，class只是用来描述如何产生一个object（翻译成对象，这里也不翻译了）的代码段。这在pyt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python Metaclass">
+<meta property="og:url" content="http://yoursite.com/2016/05/19/python-metaclass/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="这是e-satis同学在stackoverflow上的回答 ##类也是对象在理解metaclass之前（metaclass也被称为元类，这里就不翻译了），你要先掌握python中的class。python中class的概念非常奇特（一切皆对象），这一点借鉴了Smalltalk这门语言。 在大部分语言中，class只是用来描述如何产生一个object（翻译成对象，这里也不翻译了）的代码段。这在pyt">
+<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python Metaclass">
+<meta name="twitter:description" content="这是e-satis同学在stackoverflow上的回答 ##类也是对象在理解metaclass之前（metaclass也被称为元类，这里就不翻译了），你要先掌握python中的class。python中class的概念非常奇特（一切皆对象），这一点借鉴了Smalltalk这门语言。 在大部分语言中，class只是用来描述如何产生一个object（翻译成对象，这里也不翻译了）的代码段。这在pyt">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-python-metaclass" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/05/19/python-metaclass/" class="article-date">
+  <time datetime="2016-05-19T14:55:30.000Z" itemprop="datePublished">2016-05-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Python Metaclass
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这是<a href="http://stackoverflow.com/users/9951/e-satis" target="_blank" rel="external">e-satis同学</a>在stackoverflow上的<a href="http://stackoverflow.com/questions/100003/what-is-a-metaclass-in-python/6581949#6581949" target="_blank" rel="external">回答</a></p>
+<p>##类也是对象<br>在理解<code>metaclass</code>之前（<code>metaclass</code>也被称为<code>元类</code>，这里就不翻译了），你要先掌握python中的class。python中class的概念非常奇特（一切皆对象），这一点借鉴了<code>Smalltalk</code>这门语言。</p>
+<p>在大部分语言中，class只是用来描述如何产生一个object（翻译成<code>对象</code>，这里也不翻译了）的代码段。这在python中也成立：<br>In most languages, classes are just pieces of code that describe how to produce an object. That’s kinda true in Python too:</p>
+<pre><code>&gt;&gt;&gt; class ObjectCreator(object):
+...       pass
+... 
+
+&gt;&gt;&gt; my_object = ObjectCreator()
+&gt;&gt;&gt; print(my_object)
+&lt;__main__.ObjectCreator object at 0x8974f2c&gt;
+</code></pre><p>但是Python中的class不止如此。class也是object。</p>
+<p>对，类也是对象</p>
+<p>只要你使用了class关键字，Python就会创建一个object。下面的代码段在内存中创建了一个名为<code>ObjectCreator</code>的object：</p>
+<pre><code>&gt;&gt;&gt; class ObjectCreator(object):
+...       pass
+... 
+</code></pre><p>这个object（这个class）本身就具有创建object的能力，这就是为什么它是一个类。</p>
+<p>但是，它同时也是一个object，所以你可以：</p>
+<ul>
+<li>将它赋值给一个变量</li>
+<li>复制它</li>
+<li>给它添加属性</li>
+<li>将它作为函数参数进行传递</li>
+</ul>
+<p>e.g.:</p>
+<pre><code>&gt;&gt;&gt; print(ObjectCreator) # you can print a class because it&apos;s an object
+&lt;class &apos;__main__.ObjectCreator&apos;&gt;
+&gt;&gt;&gt; def echo(o):
+...       print(o)
+... 
+&gt;&gt;&gt; echo(ObjectCreator) # you can pass a class as a parameter
+&lt;class &apos;__main__.ObjectCreator&apos;&gt;
+&gt;&gt;&gt; print(hasattr(ObjectCreator, &apos;new_attribute&apos;))
+False
+&gt;&gt;&gt; ObjectCreator.new_attribute = &apos;foo&apos; # you can add attributes to a class
+&gt;&gt;&gt; print(hasattr(ObjectCreator, &apos;new_attribute&apos;))
+True
+&gt;&gt;&gt; print(ObjectCreator.new_attribute)
+foo
+&gt;&gt;&gt; ObjectCreatorMirror = ObjectCreator # you can assign a class to a variable
+&gt;&gt;&gt; print(ObjectCreatorMirror.new_attribute)
+foo
+&gt;&gt;&gt; print(ObjectCreatorMirror())
+&lt;__main__.ObjectCreator object at 0x8997b4c&gt;
+</code></pre><p>##动态创建类<br>因为类即是对象，所以你可以动态地创建它们，就像创建一个普通的object。</p>
+<p>首先，你可以在一个函数中用class关键字来创建一个类。</p>
+<pre><code>&gt;&gt;&gt; def choose_class(name):
+...     if name == &apos;foo&apos;:
+...         class Foo(object):
+...             pass
+...         return Foo # return the class, not an instance
+...     else:
+...         class Bar(object):
+...             pass
+...         return Bar
+...     
+&gt;&gt;&gt; MyClass = choose_class(&apos;foo&apos;) 
+&gt;&gt;&gt; print(MyClass) # the function returns a class, not an instance
+&lt;class &apos;__main__.Foo&apos;&gt;
+&gt;&gt;&gt; print(MyClass()) # you can create an object from this class
+&lt;__main__.Foo object at 0x89c6d4c&gt;
+</code></pre><p>但是这还不够动态，因为你还是需要自己写整个类。</p>
+<p>因为类即是对象，它们一定是由什么东西生成的。</p>
+<p>当你使用class关键字，Python会自动创建这个对象。但是就像Python中其他东西一样，Python总会给你提供一种方法来手动操作它。</p>
+<p>还记得type函数吗？这个古老而强大的函数可以告诉我们一个对象的类型是什么：</p>
+<pre><code>&gt;&gt;&gt; print(type(1))
+&lt;type &apos;int&apos;&gt;
+&gt;&gt;&gt; print(type(&quot;1&quot;))
+&lt;type &apos;str&apos;&gt;
+&gt;&gt;&gt; print(type(ObjectCreator))
+&lt;type &apos;type&apos;&gt;
+&gt;&gt;&gt; print(type(ObjectCreator()))
+&lt;class &apos;__main__.ObjectCreator&apos;&gt;
+</code></pre><p>well，type还有一个截然不同的能力，它也能动态创建类。type可以接受一个类的描述作为参数，然后返回一个类。(我知道，同一个函数因为传入的参数不同而表现出完全不同的用法是很傻的。但是这是Python为了保持向后兼容)</p>
+<p><code>type</code>这样工作：</p>
+<pre><code>type(name of the class, 
+     tuple of the parent class (for inheritance, can be empty), 
+     dictionary containing attributes names and values)
+</code></pre><p>e.g.:</p>
+<pre><code>&gt;&gt;&gt; class MyShinyClass(object):
+...       pass
+can be created manually this way:
+
+&gt;&gt;&gt; MyShinyClass = type(&apos;MyShinyClass&apos;, (), {}) # returns a class object
+&gt;&gt;&gt; print(MyShinyClass)
+&lt;class &apos;__main__.MyShinyClass&apos;&gt;
+&gt;&gt;&gt; print(MyShinyClass()) # create an instance with the class
+&lt;__main__.MyShinyClass object at 0x8997cec&gt;
+</code></pre><p>你可能注意到我们用<code>MyShinyClass</code>作为了类的名字，也用它来作为变量接受类的引用。我们可以给他们取不同的名字，但是没有必要将事情复杂化。</p>
+<p><code>type</code>接受一个字典来定义类的属性，所以：</p>
+<pre><code>&gt;&gt;&gt; class Foo(object):
+...       bar = True
+Can be translated to:
+
+&gt;&gt;&gt; Foo = type(&apos;Foo&apos;, (), {&apos;bar&apos;:True})
+And used as a normal class:
+
+&gt;&gt;&gt; print(Foo)
+&lt;class &apos;__main__.Foo&apos;&gt;
+&gt;&gt;&gt; print(Foo.bar)
+True
+&gt;&gt;&gt; f = Foo()
+&gt;&gt;&gt; print(f)
+&lt;__main__.Foo object at 0x8a9b84c&gt;
+&gt;&gt;&gt; print(f.bar)
+True
+</code></pre><p>并且，可以继承它:</p>
+<pre><code>&gt;&gt;&gt;   class FooChild(Foo):
+...         pass
+</code></pre><p>这个也可以写作为:</p>
+<pre><code>&gt;&gt;&gt; FooChild = type(&apos;FooChild&apos;, (Foo,), {})
+&gt;&gt;&gt; print(FooChild)
+&lt;class &apos;__main__.FooChild&apos;&gt;
+&gt;&gt;&gt; print(FooChild.bar) # bar is inherited from Foo
+True
+</code></pre><p>最终你可能会希望为你的类增加方法。只需要定义一个有恰当签名的函数并且作为属性赋值就可以了。</p>
+<pre><code>&gt;&gt;&gt; def echo_bar(self):
+...       print(self.bar)
+... 
+&gt;&gt;&gt; FooChild = type(&apos;FooChild&apos;, (Foo,), {&apos;echo_bar&apos;: echo_bar})
+&gt;&gt;&gt; hasattr(Foo, &apos;echo_bar&apos;)
+False
+&gt;&gt;&gt; hasattr(FooChild, &apos;echo_bar&apos;)
+True
+&gt;&gt;&gt; my_foo = FooChild()
+&gt;&gt;&gt; my_foo.echo_bar()
+True
+</code></pre><p>动态创建了类之后，你能够给类添加更多的方法，就跟给一个正常创建的对象添加方法一样。</p>
+<pre><code>&gt;&gt;&gt; def echo_bar_more(self):
+...       print(&apos;yet another method&apos;)
+... 
+&gt;&gt;&gt; FooChild.echo_bar_more = echo_bar_more
+&gt;&gt;&gt; hasattr(FooChild, &apos;echo_bar_more&apos;)
+True
+</code></pre><p>可以看到：在Python中，类是对象，你可以动态创建类。这些就是当你使用<code>class</code>关键字的时候，Python在幕后做的事。而这些，都是通过metaclass来实现。</p>
+<p>##什么是<code>metaclass</code>(终于开始了)<br>metaclass是创建class的“东西”。</p>
+<p>你定义class是为了创建对象是吧？但是我们也知道Python中的类也是对象。</p>
+<p>well，metaclass就是用来创建这些对象（类）的。它们是class的class，你可以理解为：</p>
+<pre><code>MyClass = MetaClass()
+MyObject = MyClass()
+</code></pre><p>你已经看到了<code>type</code>让你可以这样做：</p>
+<pre><code>MyClass = type(&apos;MyClass&apos;, (), {})
+</code></pre><p>这是因为<code>type</code>方法本质上就是一个metaclass。type是Python在背后用来创建所有类的metaclass。</p>
+<p>现在你可能想搞清楚为什么<code>type</code>要全部用小写字母，而不是写成<code>Type</code>?</p>
+<p>我想这是为了要和str、int保持一致。type只是用来创建类对象的类。你可以通过查看<code>__class__</code>属性来验证这一点。在Python中，一切，所有一切都是对象。包括整数，字符串，函数和类，它们都是对象。并且它们都是从一个类创建而来。</p>
+<pre><code>&gt;&gt;&gt; age = 35
+&gt;&gt;&gt; age.__class__
+&lt;type &apos;int&apos;&gt;
+&gt;&gt;&gt; name = &apos;bob&apos;
+&gt;&gt;&gt; name.__class__
+&lt;type &apos;str&apos;&gt;
+&gt;&gt;&gt; def foo(): pass
+&gt;&gt;&gt; foo.__class__
+&lt;type &apos;function&apos;&gt;
+&gt;&gt;&gt; class Bar(object): pass
+&gt;&gt;&gt; b = Bar()
+&gt;&gt;&gt; b.__class__
+&lt;class &apos;__main__.Bar&apos;&gt;
+Now, what is the __class__ of any __class__ ?
+
+&gt;&gt;&gt; age.__class__.__class__
+&lt;type &apos;type&apos;&gt;
+&gt;&gt;&gt; name.__class__.__class__
+&lt;type &apos;type&apos;&gt;
+&gt;&gt;&gt; foo.__class__.__class__
+&lt;type &apos;type&apos;&gt;
+&gt;&gt;&gt; b.__class__.__class__
+&lt;type &apos;type&apos;&gt;
+</code></pre><p>所以，一个metaclass仅仅是创建类对象的东西。如果你愿意，你可以称呼它为<code>类工厂</code>。</p>
+<p><code>type</code>是Python使用的内置的metaclass，当然，你也可以创建自己的metaclass。</p>
+<p>##<strong>metaclass</strong>属性<br>当你定义一个类的时候，你可以添加一个<code>__metaclass__</code>属性。</p>
+<pre><code>class Foo(object):
+  __metaclass__ = something...
+  [...]
+</code></pre><p>如果你这样做了，Python将会使用这个metaclass去创建Foo类。</p>
+<p>注意了，这里面有一些技巧。</p>
+<p>你首先写下了<code>class Foo(object)</code>，但是这个时候类对象Foo还没有被在内存中创建。</p>
+<p>Python将会在类的定义中寻找<code>__metaclass__</code>属性。如果找到了，Python就会用它来创建类对象Foo。如果没有，那它就用<code>type</code>来创建这个类。</p>
+<p>请把上面一段多读几遍。</p>
+<p>当你写下：</p>
+<pre><code>class Foo(Bar):
+  pass
+</code></pre><p>Python做了下面的工作：</p>
+<p>Foo中有<code>__metaclass__</code>属性吗？</p>
+<p>如果有，使用<code>__metaclass__</code>的值在内存中创建一个类对象（我说的是类对象，请紧跟我的思路），取名为Foo。</p>
+<p>如果Python找不到<code>__metaclass__</code>，他会在MODULE层面继续找<code>__metaclass__</code>（所谓MODULE层面，可以理解我类定义的文件内，把这个文件看成一个MODULE），并且做和前面相同的操作（但这只适用于没有继承的类，也就是旧式类）。</p>
+<p>如果仍未找到<code>__metaclass__</code>，它会用Bar（第一父类）的metaclass（可能是默认的<code>type</code>）来创建类对象。</p>
+<p>Be careful here that the <code>__metaclass__</code> attribute will not be inherited, the metaclass of the parent (<code>Bar.__class__</code>) will be. If <code>Bar</code> used a <code>__metaclass__</code> attribute that created <code>Bar</code> with <code>type()</code> (and not <code>type.__new__()</code>), the subclasses will not inherit that behavior.</p>
+<p>现在最大的问题是，你能给<code>__metaclass__</code>赋什么值？</p>
+<p>答案是：可以创建一个类的值。</p>
+<p>那什么可以创建一个类呢？<code>type</code>或者它的子类，或者任意用到了它的东西。</p>
+<p>##自定义 metaclass<br>metaclass的主要目的就是在类创建的时候，动态地修改它。</p>
+<p>通常你会为API做这些工作，因为你想创建符合当前上下文的类。想象一个很傻的例子，你想让你的模块内所有的类的属性都大写。有好几种方法能达到这个需求，其中一种就是在MODULE层面设置<code>__metaclass__</code>。</p>
+<p>通过这种方法，所有这个模块内的类都会用这个metaclass来创建，我们只需要告诉这个metaclass来将所有的属性都转换成大写。</p>
+<p>幸运的是，<code>__metaclass__</code>可以是任意可调用的东西，它并不需要是一个普通的类（我知道，某些名字里带有‘class’的东西并不需要是一个class，请理解这一点，这很有帮助）。所以我们用一个函数作为一个简单的例子开始。</p>
+<pre><code># the metaclass will automatically get passed the same argument
+# that you usually pass to `type`
+def upper_attr(future_class_name, future_class_parents, future_class_attr):
+  &quot;&quot;&quot;
+    Return a class object, with the list of its attribute turned 
+    into uppercase.
+  &quot;&quot;&quot;
+
+  # pick up any attribute that doesn&apos;t start with &apos;__&apos; and uppercase it
+  uppercase_attr = {}
+  for name, val in future_class_attr.items():
+      if not name.startswith(&apos;__&apos;):
+          uppercase_attr[name.upper()] = val
+      else:
+          uppercase_attr[name] = val
+
+  # let `type` do the class creation
+  return type(future_class_name, future_class_parents, uppercase_attr)
+
+__metaclass__ = upper_attr # this will affect all classes in the module
+
+class Foo(): # global __metaclass__ won&apos;t work with &quot;object&quot; though
+  # but we can define __metaclass__ here instead to affect only this class
+  # and this will work with &quot;object&quot; children
+  bar = &apos;bip&apos;
+
+print(hasattr(Foo, &apos;bar&apos;))
+# Out: False
+print(hasattr(Foo, &apos;BAR&apos;))
+# Out: True
+
+f = Foo()
+print(f.BAR)
+# Out: &apos;bip&apos;
+</code></pre><p>现在，我们用一个真正的类作为metaclass来做相同的事情：</p>
+<pre><code># remember that `type` is actually a class like `str` and `int`
+# so you can inherit from it
+class UpperAttrMetaclass(type): 
+    # __new__ is the method called before __init__
+    # it&apos;s the method that creates the object and returns it
+    # while __init__ just initializes the object passed as parameter
+    # you rarely use __new__, except when you want to control how the object
+    # is created.
+    # here the created object is the class, and we want to customize it
+    # so we override __new__
+    # you can do some stuff in __init__ too if you wish
+    # some advanced use involves overriding __call__ as well, but we won&apos;t
+    # see this
+    def __new__(upperattr_metaclass, future_class_name, 
+                future_class_parents, future_class_attr):
+
+        uppercase_attr = {}
+        for name, val in future_class_attr.items():
+            if not name.startswith(&apos;__&apos;):
+                uppercase_attr[name.upper()] = val
+            else:
+                uppercase_attr[name] = val
+
+        return type(future_class_name, future_class_parents, uppercase_attr)
+</code></pre><p>但是，这种写法并不<code>OOP</code>（<code>Object-oriented programming</code>，面向对象编程）,我们直接调用了<code>type</code>，并且我们没有覆盖或者调用父类的<code>__new__</code>方法，让我们这么做：</p>
+<pre><code>class UpperAttrMetaclass(type): 
+
+    def __new__(upperattr_metaclass, future_class_name, 
+                future_class_parents, future_class_attr):
+
+        uppercase_attr = {}
+        for name, val in future_class_attr.items():
+            if not name.startswith(&apos;__&apos;):
+                uppercase_attr[name.upper()] = val
+            else:
+                uppercase_attr[name] = val
+
+        # reuse the type.__new__ method
+        # this is basic OOP, nothing magic in there
+        return type.__new__(upperattr_metaclass, future_class_name, 
+                            future_class_parents, uppercase_attr)
+</code></pre><p>你可能已经注意到了有个额外的参数<code>upperattr_metaclass</code>，这并没有什么特别的。<code>__new__</code>方法的第一个参数总是表示当前的实例，就像在普通的类方法中的self参数一样。</p>
+<p>当然了，为了清晰起见，这里的名字我起的比较长。但是就像self一样，所有的参数都有它们约定俗成的名称。因此，在真实的产品代码中一个元类应该是像这样的：                         </p>
+<pre><code>class UpperAttrMetaclass(type): 
+
+    def __new__(cls, clsname, bases, dct):
+
+        uppercase_attr = {}
+        for name, val in dct.items():
+            if not name.startswith(&apos;__&apos;):
+                uppercase_attr[name.upper()] = val
+            else:
+                uppercase_attr[name] = val
+
+        return type.__new__(cls, clsname, bases, uppercase_attr)
+</code></pre><p>我们还可以使用<code>super</code>让它更清晰一点，这会<code>ease inheritance</code>（因为你可以拥有metaclass，从metaclass继承，从type继承）</p>
+<pre><code>class UpperAttrMetaclass(type): 
+
+    def __new__(cls, clsname, bases, dct):
+
+        uppercase_attr = {}
+        for name, val in dct.items():
+            if not name.startswith(&apos;__&apos;):
+                uppercase_attr[name.upper()] = val
+            else:
+                uppercase_attr[name] = val
+
+        return super(UpperAttrMetaclass, cls).__new__(cls, clsname, bases, uppercase_attr)
+</code></pre><p>就是这样，除此之外，对于metaclass真的没什么可说的了。</p>
+<p>使用了metaclass的代码看起来复杂的原因并不是因为metaclass本身，而是因为你通常会用metaclass做一些晦涩的事情，依赖于自省、控制继承，和像<code>__dict__</code>这样的变量等。</p>
+<p>诚然，metaclass用来搞<code>黑魔法</code>非常合适，因而会搞出来复杂的东西。但是就metaclass本身而言，他们非常简单：</p>
+<ul>
+<li>拦截类的创建</li>
+<li>修改这个类</li>
+<li>返回被修改过的类</li>
+</ul>
+<h2 id="为什么要用metaclass而不是函数？"><a href="#为什么要用metaclass而不是函数？" class="headerlink" title="为什么要用metaclass而不是函数？"></a>为什么要用metaclass而不是函数？</h2><p>既然metaclass可以接受任意可调用的对象，那为什么我们还要用一个类来给它赋值，这样不是明显更复杂吗？</p>
+<p>这样做有下面几个理由：</p>
+<ul>
+<li>意图会更加明显。当你读到<code>UpperAttrMetaclass(type)</code>的时候，你知道接下来会发生什么。</li>
+<li>你可以使用OOP，metaclass可以继承自别的metaclass，覆写父类的方法。metaclass甚至可以使用metaclass。</li>
+<li>你可以将代码组织得更好。当你使用元类的时候肯定不会是像我上面举的这种简单场景，通常都是针对比较复杂的问题。将多个方法归总到一个类中会很有帮助，也会使得代码更容易阅读。</li>
+<li>你可以使用<code>__new__</code>, <code>__init__</code>以及<code>__call__</code>这样的特殊方法。它们能帮你处理不同的任务。就算通常你可以把所有的东西都在<code>__new__</code>里处理掉，有些人还是觉得用<code>__init__</code>更舒服些。</li>
+<li>这些类被称为metaclass，靠，这肯定意味这什么，我要小心！</li>
+</ul>
+<h2 id="究竟为什么要使用metaclass"><a href="#究竟为什么要使用metaclass" class="headerlink" title="究竟为什么要使用metaclass"></a>究竟为什么要使用metaclass</h2><p>下面回答我们最大的问题，为什么我们要使用这个晦涩难懂且容易出错的特性？</p>
+<p>好吧，一般来说，你根本用不上它：</p>
+<blockquote>
+<p>“元就是深 度的魔法，99%的用户应该根本不必为此操心。如果你想搞清楚究竟是否需要用到元类，那么你就不需要它。那些实际用到元类的人都非常清楚地知道他们需要做什么，而且根本不需要解释为什么要用元类。”  —— Python界的领袖 Tim Peters</p>
+</blockquote>
+<p>metaclass最多的应用场景是创建API。一个典型的例子是Django的ORM系统。它允许你像下面一样定义一些东西：</p>
+<pre><code>class Person(models.Model):
+  name = models.CharField(max_length=30)
+  age = models.IntegerField()
+</code></pre><p>但是如果你这样做的话：</p>
+<pre><code>guy = Person(name=&apos;bob&apos;, age=&apos;35&apos;)
+print(guy.age)
+</code></pre><p>它不会返回一个<code>IntegerField</code>对象，而是返回了一个整数，甚至可以从数据库里取出数据。</p>
+<p>这个可能是因为<code>models.Model</code>定义了<code>__metaclass__</code>，它用了一些魔法来将你刚刚定义的简单的<code>Person</code>类转换成对数据库的一个复杂的hook。Django通过暴露一个使用metaclass的API让这些复杂的东西简化，通过这个API重新创建代码，在背后完成真正的工作。</p>
+<p>##结语<br>首先，你要知道类其实是能够创建出类实例的对象。事实上，类本身也是实例，他们是metaclass的实例。</p>
+<pre><code>&gt;&gt;&gt; class Foo(object): pass
+&gt;&gt;&gt; id(Foo)
+142630324
+</code></pre><p>在Python中，一切皆对象，它们不是类的实例就是metaclass的实例。</p>
+<p><strong>除了<code>type</code></strong></p>
+<p>type实际上是它自己的metaclass。在纯Python环境中这是不可能做到的（你不能创建一个类，metaclass是这个类自身），这是通过在实现层面通过一些手段做到的。</p>
+<p>其次，metaclass很复杂。对于一些非常简单的类的更改，你并不需要使用metaclass。你可以用下面两个不同的技术来修改类</p>
+<ul>
+<li>monkey patching</li>
+<li>class decorators</li>
+</ul>
+<p>当你需要动态修改类的时候，99%的情况下，你最好用上面两个方法。当然了，其实在99%的情况下，你根本不需要修改类:D</p>
+<p>##The Metaclass Hook in Python 3</p>
+<p><a href="http://python-3-patterns-idioms-test.readthedocs.io/en/latest/Metaprogramming.html#the-metaclass-hook-in-python-3" target="_blank" rel="external">metaclass在python3中语法有了变化</a></p>
+<p>Python3改变了metaclass的语法。你仍然可以定义<code>__metaclass</code>属性，但是Python会忽略它。取而代之的是，你可以在基类列表中使用一个关键字参数：</p>
+<pre><code>class Simple1(object, metaclass = SimpleMeta1):
+    ...
+</code></pre><p>这意味着在Python3中，直接将<code>__metaclass__</code>定义成一个类或者一个方法都不再可行。所有的metaclass都必须被定义成单独的类。这种方法也有好处，它让metaclass更具有一致性，当然也更易读和理解。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/05/19/python-metaclass/" data-id="cj64upq22006zlrae9um1cy96" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/06/05/Python-面试题集锦-转载/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Python 面试题集锦[转载]
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/05/19/Django打印请求的sql/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Django打印请求的sql</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

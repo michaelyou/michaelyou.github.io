@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>openstack-horizon管理页面屏蔽 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="openstack的用户有role的属性，horizon根据用户的role不同展示不同的页面，如果role为admin，除了项目页面外，还会展示管理员页面。  这是很正常的逻辑，一个项目一个管理员，其他人的role都是member。但是实际开发中可能遇到这样的问题：horizon提供的功能很简单，可能不能满足你的要求，于是你使用了opencontrail来补充，但是，登录opencontrail的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="openstack-horizon管理页面屏蔽">
+<meta property="og:url" content="http://yoursite.com/2015/05/15/openstack-horizon管理页面屏蔽/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="openstack的用户有role的属性，horizon根据用户的role不同展示不同的页面，如果role为admin，除了项目页面外，还会展示管理员页面。  这是很正常的逻辑，一个项目一个管理员，其他人的role都是member。但是实际开发中可能遇到这样的问题：horizon提供的功能很简单，可能不能满足你的要求，于是你使用了opencontrail来补充，但是，登录opencontrail的">
+<meta property="og:image" content="http://yoursite.com/img/管理员.png">
+<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="openstack-horizon管理页面屏蔽">
+<meta name="twitter:description" content="openstack的用户有role的属性，horizon根据用户的role不同展示不同的页面，如果role为admin，除了项目页面外，还会展示管理员页面。  这是很正常的逻辑，一个项目一个管理员，其他人的role都是member。但是实际开发中可能遇到这样的问题：horizon提供的功能很简单，可能不能满足你的要求，于是你使用了opencontrail来补充，但是，登录opencontrail的">
+<meta name="twitter:image" content="http://yoursite.com/img/管理员.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-openstack-horizon管理页面屏蔽" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/05/15/openstack-horizon管理页面屏蔽/" class="article-date">
+  <time datetime="2015-05-15T06:50:52.000Z" itemprop="datePublished">2015-05-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/openstack/">openstack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      openstack-horizon管理页面屏蔽
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>openstack的用户有role的属性，horizon根据用户的role不同展示不同的页面，如果role为admin，除了项目页面外，还会展示管理员页面。</p>
+<p><img src="/img/管理员.png" alt=""></p>
+<p>这是很正常的逻辑，一个项目一个管理员，其他人的role都是member。但是实际开发中可能遇到这样的问题：horizon提供的功能很简单，可能不能满足你的要求，于是你使用了<a href="http://www.opencontrail.org/" target="_blank" rel="external">opencontrail</a>来补充，但是，登录opencontrail的时候要求用户具有admin权限，我们必须要给所有人都加上admin权限，而opencontrail又缺乏管理项目和用户的功能，还是需要使用openstack，这样诸多拥有admin权限的人都能看到管理员界面，如果对系统不了解，误删了一些项目或者用户，会让你排查到抓狂。</p>
+<p>怎么解决这个问题呢？我的想法是，只有用户名和role均为admin的用户才能看到管理页面，role满足但是用户名不满足的用户只能看到project。据此得到的解决方案有两种，下面分别叙述。</p>
+<p>##方法一：openstack_auth的permission</p>
+<p>horizon左侧显示的导航栏是一个个dashboard，这些dashboard里面的子项目称为panel，代码中判断显示或者不显示一个dashboard取决于用户的permission，那permission在哪里定义呢？在openstack_auth这个模块中。</p>
+<pre><code>/usr/lib/python2.7/dist-packages/openstack_auth/backend.py
+</code></pre><p>backend.py文件中的类<code>KeystoneBackend</code>中的函数<code>get_all_permissions</code>中定义了用户的权限：</p>
+<pre><code>def get_all_permissions(self, user, obj=None):
+    &quot;&quot;&quot;Returns a set of permission strings that this user has through
+       his/her Keystone &quot;roles&quot;.
+
+       The permissions are returned as ``&quot;openstack.{{ role.name }}&quot;``.
+    &quot;&quot;&quot;
+    if user.is_anonymous() or obj is not None:
+        return set()
+    # TODO(gabrielhurley): Integrate policy-driven RBAC
+    #                      when supported by Keystone.
+    #print user.username
+    role_perms = set([&quot;openstack.roles.%s&quot; % role[&apos;name&apos;].lower()
+                      for role in user.roles])
+    service_perms = set([&quot;openstack.services.%s&quot; % service[&apos;type&apos;].lower()
+                      for service in user.service_catalog])
+    return role_perms | service_perms
+</code></pre><p>可以看到我们有的权限是<code>role_perms</code>和<code>service_perms</code>，不妨将它们打印出来看一下，倒数第二行加个打印：</p>
+<pre><code>print role_perms | service_perms
+</code></pre><p>内容为：</p>
+<pre><code>set([u&apos;openstack.services.compute&apos;,  u&apos;openstack.services.orchestration&apos;, u&apos;openstack.services.identity&apos;, u&apos;openstack.roles
+.keystoneserviceadmin&apos;, u&apos;openstack.services.network&apos;, u&apos;openstack.roles.keystoneadmin&apos;, u&apos;openstack.services.volume&apos;, u&apos;openstack.services.ec2&apos;, u&apos;openstack.roles.admin&apos;, u&apos;openstack.services.image&apos;])
+</code></pre><p>如果我们想通过用户名来限制dashboard和panel的显示，那就要增加name_perm这个字段，修改后的函数如下：</p>
+<pre><code>def get_all_permissions(self, user, obj=None):
+    &quot;&quot;&quot;Returns a set of permission strings that this user has through
+       his/her Keystone &quot;roles&quot;.
+
+       The permissions are returned as ``&quot;openstack.{{ role.name }}&quot;``.
+    &quot;&quot;&quot;
+    if user.is_anonymous() or obj is not None:
+        return set()
+    # TODO(gabrielhurley): Integrate policy-driven RBAC
+    #                      when supported by Keystone.
+    #print user.username
+    role_perms = set([&quot;openstack.roles.%s&quot; % role[&apos;name&apos;].lower()
+                      for role in user.roles])
+    service_perms = set([&quot;openstack.services.%s&quot; % service[&apos;type&apos;].lower()
+                      for service in user.service_catalog])
+    name_perms = set([&quot;openstack.username.%s&quot; % user.username.lower()])
+    return role_perms | service_perms | name_perms
+</code></pre><p>这样就增加了name_perms，打印出来如下：</p>
+<pre><code>set([u&apos;openstack.services.compute&apos;, u&apos;openstack.username.youwangqiu&apos;, u&apos;openstack.services.orchestration&apos;, u&apos;openstack.services.identity&apos;, u&apos;openstack.roles
+.keystoneserviceadmin&apos;, u&apos;openstack.services.network&apos;, u&apos;openstack.roles.keystoneadmin&apos;, u&apos;openstack.services.volume&apos;, u&apos;openstack.services.ec2&apos;, u&apos;openstack.roles.admin&apos;, u&apos;openstack.services.image&apos;])
+</code></pre><p>这样只是让用户有了这个权限字段，怎么让dashboard和panel知道呢？这就要到</p>
+<pre><code>/usr/share/openstack-dashboard/openstack_dashboard/dashboards
+</code></pre><p>这个目录下来看。</p>
+<pre><code>root@contrail-you:/usr/share/openstack-dashboard/openstack_dashboard/dashboards# ls
+admin  __init__.py  __init__.pyc  project  router  settings
+</code></pre><p>这里的admin，project，router和setting就是4个独立的dashboard，因为是限制管理员界面，很明显，应该是<code>admin</code>这个dashboard。</p>
+<p>这个dashboard的类似于config文件在dashboard.py文件中</p>
+<pre><code>import horizon
+
+
+class SystemPanels(horizon.PanelGroup):
+    slug = &quot;admin&quot;
+    name = _(&quot;System Panel&quot;)
+    panels = (&apos;overview&apos;, &apos;metering&apos;, &apos;hypervisors&apos;, &apos;aggregates&apos;,
+              &apos;instances&apos;, &apos;volumes&apos;, &apos;flavors&apos;, &apos;images&apos;,
+              &apos;networks&apos;, &apos;routers&apos;, &apos;info&apos;)
+
+class IdentityPanels(horizon.PanelGroup):
+    slug = &quot;identity&quot;
+    name = _(&quot;Identity Panel&quot;)
+    panels = (&apos;domains&apos;, &apos;projects&apos;, &apos;users&apos;, &apos;groups&apos;, &apos;roles&apos;)        
+
+class Admin(horizon.Dashboard):
+    name = _(&quot;Admin&quot;)
+    slug = &quot;admin&quot;
+    panels = (SystemPanels, IdentityPanels)
+
+    default_panel = &apos;overview&apos;
+    permissions = (&apos;openstack.roles.admin&apos;,)
+
+
+horizon.register(Admin)
+</code></pre><p>可以看到显示admin这个dashboard的权限是roles为admin(<code>permissions = (&#39;openstack.roles.admin&#39;,)</code>)，非常容易想到我们把permission这么改不就行了：</p>
+<pre><code>permissions = (&apos;openstack.username.admin&apos;,&apos;openstack.roles.admin&apos;,)
+</code></pre><p>非常遗憾，如果这么修改，<code>SystemPanels</code>和<code>IdentityPanels</code>对于非admin用户名的用户都不会显示，会导致用户无法访问。那能不能单独给IdentityPanels增加permission呢？答案也是否定的，IdentityPanels继承的类并不支持permission字段，如果你硬是要给他加上支持，那应该会有很大的工作量。</p>
+<blockquote>
+<p>其实2014版的dashboard已经解决了这个问题，在2014版里，identity是作为一个单独的dashboard存在的，这样我们就可以增加permission的内容而无需担心影响别的用户了，笔者用的是2012版</p>
+</blockquote>
+<p>如何是好呢？我们还有一个笨方法!</p>
+<p>在dashboard层面不能限制的话我们可以在panel层面限制啊！</p>
+<p>以<strong>用户</strong>这个panel为例，修改</p>
+<pre><code>/usr/share/openstack-dashboard/openstack_dashboard/dashboards/admin/users/panel.py
+</code></pre><p>将这个文件修改为：</p>
+<pre><code>from django.utils.translation import ugettext_lazy as _
+
+import horizon
+
+from openstack_dashboard.dashboards.admin import dashboard
+
+
+class Users(horizon.Panel):
+    name = _(&quot;Users&quot;)
+    slug = &apos;users&apos;
+    permissions = (&apos;openstack.username.admin&apos;,) #增加这一行
+
+
+dashboard.Admin.register(Users)
+</code></pre><p>其实就是增加了permission这一行，现在可以登录看一下了，你会发现<strong>用户</strong>这个子项目已经不见了，大功告成，如果要把管理员这整个dashboard搞消失，只需要将这个dashboard里的所有panel都加上permission做限制就可以了。</p>
+<p>这个方法比较烦，但是应用了permission的思想，我比较倾向于这个方法。方法二比较简单，只需要改动一处。</p>
+<p>##方法二：在生成页面之前</p>
+<p>毕竟是个web，总是要生成html的，在这些html里搜索一下会发现，左边的导航栏是用<code>horizon_nav</code>这个函数生成的。路径如下：</p>
+<pre><code>/usr/lib/python2.7/dist-packages/horizon/templatetags/horizon.py
+</code></pre><p>这个函数是作为参数传入到模版中去的，只要在这里修改dashboard就能让admin栏不显示</p>
+<p>原理很简单，对非admin用户名的用户，将dashboard里的admin这个dashboard删掉，只保留project这个dashboard。当然少不了一些调试，如果你有一些django的开发经验，应该很容易搞定，修改后的<code>horizon_nav</code>函数如下：</p>
+<pre><code>@register.inclusion_tag(&apos;horizon/_accordion_nav.html&apos;, takes_context=True)
+def horizon_nav(context):
+    if &apos;request&apos; not in context:
+        return {}
+    current_dashboard = context[&apos;request&apos;].horizon.get(&apos;dashboard&apos;, None)
+    current_panel = context[&apos;request&apos;].horizon.get(&apos;panel&apos;, None)
+    dashboards = []
+    for dash in Horizon.get_dashboards():
+        panel_groups = dash.get_panel_groups()
+        non_empty_groups = []
+        for group in panel_groups.values():
+            allowed_panels = []
+            for panel in group:
+                if callable(panel.nav) and panel.nav(context):
+                    allowed_panels.append(panel)
+                elif not callable(panel.nav) and panel.nav:
+                    allowed_panels.append(panel)
+            if allowed_panels:
+                non_empty_groups.append((group.name, allowed_panels))
+        if callable(dash.nav) and dash.nav(context):
+            dashboards.append((dash, SortedDict(non_empty_groups)))
+        elif not callable(dash.nav) and dash.nav:
+            dashboards.append((dash, SortedDict(non_empty_groups)))
+    username = context[&apos;request&apos;].user.username  #**new**
+    if username != &apos;admin&apos;:  #**new**
+        dashboards = [dashboard for dashboard in dashboards if dashboards[0].slug != &apos;admin&apos;]    #**new**
+    return {&apos;components&apos;: dashboards,
+            &apos;user&apos;: context[&apos;request&apos;].user,
+            &apos;current&apos;: current_dashboard,
+            &apos;current_panel&apos;: current_panel.slug if current_panel else &apos;&apos;, 
+            &apos;request&apos;: context[&apos;request&apos;]}
+</code></pre><p><strong>NOTE:注意修改之后务必重启web</strong></p>
+<p>有不明白之处，可以联系：wq_you@163.com</p>
+<p>##参考资料</p>
+<p><a href="http://www.cnblogs.com/yuxc/p/3419102.html" target="_blank" rel="external">Horizon Is Easy, Horizon Is Complex</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/05/15/openstack-horizon管理页面屏蔽/" data-id="cj64upq1w006llrae3sqylp6p" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/05/19/让mac的终端实现克隆会话功能/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          让mac的终端实现克隆会话功能
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/05/15/终端和finder的切换/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">终端和finder的切换</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

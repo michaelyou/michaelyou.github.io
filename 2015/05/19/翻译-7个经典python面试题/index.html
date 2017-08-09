@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>[翻译]7个经典python面试题 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="原文在这里toptal ##下面的代码输出什么？ list = [&amp;apos;a&amp;apos;, &amp;apos;b&amp;apos;, &amp;apos;c&amp;apos;, &amp;apos;d&amp;apos;, &amp;apos;e&amp;apos;] print list[10:] 上面的代码输出[]，并且不会导致IndexError错误 跟你想的一样，当取列表元素的时候，如果索引值超过了元素的个数(例如在上面的列表中，取list[">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[翻译]7个经典python面试题">
+<meta property="og:url" content="http://yoursite.com/2015/05/19/翻译-7个经典python面试题/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="原文在这里toptal ##下面的代码输出什么？ list = [&amp;apos;a&amp;apos;, &amp;apos;b&amp;apos;, &amp;apos;c&amp;apos;, &amp;apos;d&amp;apos;, &amp;apos;e&amp;apos;] print list[10:] 上面的代码输出[]，并且不会导致IndexError错误 跟你想的一样，当取列表元素的时候，如果索引值超过了元素的个数(例如在上面的列表中，取list[">
+<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[翻译]7个经典python面试题">
+<meta name="twitter:description" content="原文在这里toptal ##下面的代码输出什么？ list = [&amp;apos;a&amp;apos;, &amp;apos;b&amp;apos;, &amp;apos;c&amp;apos;, &amp;apos;d&amp;apos;, &amp;apos;e&amp;apos;] print list[10:] 上面的代码输出[]，并且不会导致IndexError错误 跟你想的一样，当取列表元素的时候，如果索引值超过了元素的个数(例如在上面的列表中，取list[">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-翻译-7个经典python面试题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/05/19/翻译-7个经典python面试题/" class="article-date">
+  <time datetime="2015-05-19T09:30:02.000Z" itemprop="datePublished">2015-05-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      [翻译]7个经典python面试题
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文在<a href="http://www.toptal.com/python/interview-questions" target="_blank" rel="external">这里toptal</a></p>
+<p>##下面的代码输出什么？</p>
+<pre><code>list = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;]
+print list[10:]
+</code></pre><p>上面的代码输出<code>[]</code>，并且不会导致<code>IndexError</code>错误</p>
+<p>跟你想的一样，当取列表元素的时候，如果索引值超过了元素的个数(例如在上面的列表中，取list[10])将会导致<code>IndexError</code>错误。但是，取一个列表的切片的时候，如果起始索引超过了元素个数，将不会引起<code>IndexError</code>错误，仅返回一个空列表。</p>
+<p>这一特性将会导致一些非常难于追踪的bug，因为在运行时根本没有错误产生。</p>
+<p>##下面的代码在Python2中的输出是什么？解释你的答案</p>
+<pre><code>def div1(x,y):
+    print &quot;%s/%s = %s&quot; % (x, y, x/y)
+
+def div2(x,y):
+    print &quot;%s//%s = %s&quot; % (x, y, x//y)
+
+div1(5,2)
+div1(5.,2)
+div2(5,2)
+div2(5.,2.)
+</code></pre><p>另外，在Python3中上面的代码的输出有何不同(假设代码中的print语句都转化成了Python3中的语法结构)？</p>
+<p>在<strong>Python2</strong>中，代码的输出是：</p>
+<pre><code>5/2 = 2
+5.0/2 = 2.5
+5//2 = 2
+5.0//2.0 = 2.0
+</code></pre><p>默认情况下，如果两个操作数都是整数，Python2默认执行整数运算。所以，<code>5/2</code> 结果是<code>2</code>，而<code>5./2</code>结果是<code>2.5</code></p>
+<p>注意你可以通过下面的import语句来覆盖Python2中的这一行为</p>
+<pre><code>from __future__ import division 
+</code></pre><p>还要注意“双斜杠”(<code>//</code>)操作符将会一直执行整除，忽略操作数的类型。这就是为什么5.0//2.0即使在Python2中结果也是2.0</p>
+<p>但是在Python3并没有这一行为。两个操作数都是整数时，也不执行整数运算。在Python3中，输出如下：</p>
+<pre><code>5/2 = 2.5
+5.0/2 = 2.5
+5//2 = 2
+5.0//2.0 = 2.0
+</code></pre><p>##下面代码的输出是什么？请解释你的答案</p>
+<pre><code>def extendList(val, list=[]):
+    list.append(val)
+    return list
+
+list1 = extendList(10)
+list2 = extendList(123,[])
+list3 = extendList(&apos;a&apos;)
+
+print &quot;list1 = %s&quot; % list1
+print &quot;list2 = %s&quot; % list2
+print &quot;list3 = %s&quot; % list3
+</code></pre><p>如何修改函数<code>ExtendList</code>的定义才能产生我们希望的行为？</p>
+<p>输出为：</p>
+<pre><code>list1 = [10, &apos;a&apos;]
+list2 = [123]
+list3 = [10, &apos;a&apos;]
+</code></pre><p>很多人会错误地预计<code>list1</code>等于<code>［10］</code>，<code>list3</code>等于<code>[&#39;a&#39;]</code>，认为<code>extendList</code>函数的<code>list</code>参数在每一次函数被调用时都会被设置为默认值<code>[]</code></p>
+<p>但是，真实的情况是，默认的<code>list</code>只在函数定义的时候被创建一次。之后不指定<code>list</code>参数地调用<code>extendList</code>函数时，使用的都是同一个<code>list</code>。这是因为带默认参数的表达式是在函数定义的时候被计算的，而不是在函数调用时。</p>
+<p>所以，<code>list1</code>和<code>list3</code>都是在操作同一个默认<code>list</code>，而<code>list2</code>是在操作它自己创建的一个独立的<code>list</code>(将自己的空<code>list</code>作为参数传递过去)</p>
+<p><code>extendlist</code>的定义可以这样定义来达到我们预期的效果：</p>
+<pre><code>def extendList(val, list=None):
+    if list is None:
+        list = []
+    list.append(val)
+    return list
+</code></pre><p>调用修改后的函数，输出是：</p>
+<pre><code>list1 = [10]
+list2 = [123]
+list3 = [&apos;a&apos;]
+</code></pre><p>##下面代码的输出是什么？请解释你的答案</p>
+<pre><code>class Parent(object):
+    x = 1
+
+class Child1(Parent):
+    pass
+
+class Child2(Parent):
+    pass
+
+print Parent.x, Child1.x, Child2.x
+Child1.x = 2
+print Parent.x, Child1.x, Child2.x
+Parent.x = 3
+print Parent.x, Child1.x, Child2.x
+</code></pre><p>输出为：</p>
+<pre><code>1 1 1
+1 2 1
+3 2 3
+</code></pre><p>让很多人感到疑惑和惊讶的是，最后一行的输出竟然不是<code>3 2 1</code>而是<code>3 2 3</code>. 为什么修改了Parent.X的值会影响到<code>Child2.x</code>，但是同时又没有改变<code>Child1.x</code>的值呢？        </p>
+<p>这个问题的关键在于，在python中，类中的变量在内部被当作字典处理。如果一个变量名在当前类的字典中没有被发现，系统将会在这个类的祖先(例如，它的父类)中继续寻找，直到找到为止(如果一个变量名在这个类和这个类的祖先中都没有，那么将会引发一个<code>AttributeError</code>错误)</p>
+<p>因此，在父类中将变量x赋值为1，那么x变量将可以被当前类和所有这个类的子类引用。这就是为什么第一个print语句输出为<code>1 1 1</code>.</p>
+<p>接下来，如果它的子类覆盖了这个值(例如， 当我们执行<code>Child1.x = 2</code>)，那么这个变量的值仅仅在这个子类中发生了改变。这就是为什么第二个print语句输出<code>1 2 1</code></p>
+<p>最后，如果父类改变了这个变量的值(例如，我们执行<code>Parent.x = 3</code>)，所有没有覆盖这个参数值的子类(在这个例子中覆盖了参数的就是<code>Child2</code>)都会受到影响，这就是为什么第三个print语句的输出为<code>3 2 3</code></p>
+<p>##下面代码的输出是什么？请解释你的答案</p>
+<pre><code>def multipliers():
+    return [lambda x : i * x for i in range(4)]
+
+print [m(2) for m in multipliers()]
+</code></pre><p>怎么修改multipliers的定义才能达到期望的效果？</p>
+<p>上面代码的输出是<code>[6, 6, 6, 6]</code>(不是<code>[0, 2, 4, 6]</code>).</p>
+<p>原因是Python的闭包是延迟绑定(<code>late binding</code>)的。这表明在闭包中使用的变量直到内层函数被调用的时候才会被查找。结果是，当调用<code>multipliers()</code>返回的函数时，<code>i</code>参数的值会在这时被在调用环境中查找。所以，无论调用返回的哪个函数，<code>for</code>循环此时已经结束，<code>i</code>等于它最终的值<code>3</code>。因此，所有返回的函数都要乘以传递过来的<code>3</code>，因为上面的代码传递了<code>2</code>作为参数，所以他们都返回了<code>6</code>（即，<code>3 * 2</code>）</p>
+<p>(顺便提一句，正如在书<a href="http://docs.python-guide.org/en/latest/" target="_blank" rel="external">《The Hitchhiker’s Guide to Python》</a>中提出来的一样, 有一种广泛传播的误解认为这个问题和lambda表达式有关，事实并非如此。通过labda表达式产生的函数并没有什么特别之处，使用普通的<code>def</code>定义的函数的行为和lambda表达式产生的函数的行为是一样的.)</p>
+<p>下面是一些可以绕过这个问题的方法。</p>
+<p>方法一是像下面一样使用Python的生成器(generator)</p>
+<pre><code>def multipliers():
+     for i in range(4): yield lambda x : i * x 
+</code></pre><p>另一个方法是创造一个闭包，通过使用一个默认参数来立即绑定它的参数</p>
+<pre><code>def multipliers():
+    return [lambda x, i=i : i * x for i in range(4)]
+</code></pre><p>或者，你也可以使用functools.partial函数：</p>
+<pre><code>from functools import partial
+from operator import mul
+
+def multipliers():
+    return [partial(mul, i) for i in range(4)]
+</code></pre><p>##考虑下面的代码片段:</p>
+<pre><code>1. list = [ [ ] ] * 5
+2. list  # output?
+3. list[0].append(10)
+4. list  # output?
+5. list[1].append(20)
+6. list  # output?
+7. list.append(30)
+8. list  # output?
+</code></pre><p>第2，4，6，8行的输出是什么？解释你的答案.</p>
+<p>输出如下:</p>
+<pre><code>[[], [], [], [], []]
+[[10], [10], [10], [10], [10]]
+[[10, 20], [10, 20], [10, 20], [10, 20], [10, 20]]
+[[10, 20], [10, 20], [10, 20], [10, 20], [10, 20], 30]
+</code></pre><p>下面是解释:</p>
+<p>第一行的输出凭直觉就能知道，很容易理解。即：<code>list = [ [ ] ] * 5</code>创建了一个元素是5个列表的列表。</p>
+<p>但是，这里要理解的关键是，<code>list = [ [ ] ] * 5</code>并没有创建一个包含5个不同列表的列表。创建的这个列表里的5个列表，是对同一个列表的引用（a a list of 5 references to the same list）。理解了这些，你就能更好地理解余下的输出。</p>
+<p><code>list[0].append(10)</code>将数字10添加到第一个列表。但是由于5个列表是对同一个列表的引用，所以输出是<code>[[10], [10], [10], [10], [10]]</code>。</p>
+<p>同样的，<code>list[1].append(20)</code>将20追加到第二个列表。但是同样，由于这5个列表引用同一个列表，所以输出：<code>[[10, 20], [10, 20], [10, 20], [10, 20], [10, 20]]</code>.</p>
+<p>相比之下， <code>list.append(30)</code>是将一个全新的元素追加到“外层”的列表，所以产生了这样的输出：<code>[[10, 20], [10, 20], [10, 20], [10, 20], [10, 20], 30]</code>.</p>
+<p>##有一个拥有N个元素的列表，用一个列表解析式生成一个新的列表，元素的值同时满足以下条件:</p>
+<pre><code>(a) 偶数，以及
+(b) 在原列表中，索引为偶数
+</code></pre><p>例如，如果list[2]的值是偶数，那么这个元素应该也被包含在新列表中，因为它在原列表中的索引也是偶数(即 2). 但是， 如果list[3]是偶数，那这个值不应该被包含在新列表中，因为它在原列表中的索引是一个奇数。</p>
+<p>一个简单的解法如下：</p>
+<pre><code>[x for x in list[::2] if x%2 == 0]
+</code></pre><p>例如，给出下面的列表:</p>
+<pre><code>#        0   1   2   3    4    5    6    7    8
+list = [ 1 , 3 , 5 , 8 , 10 , 13 , 18 , 36 , 78 ]
+</code></pre><p>列表解析式<code>[x for x in list[::2] if x%2 == 0]</code> 会生成:</p>
+<pre><code>[10, 18, 78]
+</code></pre><p>这个表达式首先取列表中索引是偶数的数字，然后过滤掉所有的奇数.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/05/19/翻译-7个经典python面试题/" data-id="cj64upq9700fllrae6x1wwvtj" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/05/19/翻译-python招聘指南/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          [翻译]python招聘指南
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/05/19/部署multi-region-openstack环境/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">部署multi-region openstack环境</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

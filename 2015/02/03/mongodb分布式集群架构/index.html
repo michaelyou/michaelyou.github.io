@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>mongodb分布式集群架构 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文转载自这里 ##关于mongodb  MongoDB是一个基于分布式文件存储的数据库。由C++语言编写。旨在为WEB应用提供可扩展的高性能数据存储解决方案。 MongoDB是一个介于关系数据库和非关系数据库之间的产品，是非关系数据库当中功能最丰富，最像关系数据库的。他支持的数据结构非常松散，是类似json的bjson格式，因此可以存储比较复杂的数据类型。Mongo最大的特点是他支持的查询语言非">
+<meta name="keywords" content="数据库,mongodb">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mongodb分布式集群架构">
+<meta property="og:url" content="http://yoursite.com/2015/02/03/mongodb分布式集群架构/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="本文转载自这里 ##关于mongodb  MongoDB是一个基于分布式文件存储的数据库。由C++语言编写。旨在为WEB应用提供可扩展的高性能数据存储解决方案。 MongoDB是一个介于关系数据库和非关系数据库之间的产品，是非关系数据库当中功能最丰富，最像关系数据库的。他支持的数据结构非常松散，是类似json的bjson格式，因此可以存储比较复杂的数据类型。Mongo最大的特点是他支持的查询语言非">
+<meta property="og:image" content="http://yoursite.com/2015/02/03/mongodb分布式集群架构/161802143.png">
+<meta property="og:image" content="http://yoursite.com/2015/02/03/mongodb分布式集群架构/162121526.png">
+<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mongodb分布式集群架构">
+<meta name="twitter:description" content="本文转载自这里 ##关于mongodb  MongoDB是一个基于分布式文件存储的数据库。由C++语言编写。旨在为WEB应用提供可扩展的高性能数据存储解决方案。 MongoDB是一个介于关系数据库和非关系数据库之间的产品，是非关系数据库当中功能最丰富，最像关系数据库的。他支持的数据结构非常松散，是类似json的bjson格式，因此可以存储比较复杂的数据类型。Mongo最大的特点是他支持的查询语言非">
+<meta name="twitter:image" content="http://yoursite.com/2015/02/03/mongodb分布式集群架构/161802143.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-mongodb分布式集群架构" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/03/mongodb分布式集群架构/" class="article-date">
+  <time datetime="2015-02-03T08:47:08.000Z" itemprop="datePublished">2015-02-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/数据库/">数据库</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      mongodb分布式集群架构
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文转载自<a href="mongodb分布式集群架构">这里</a></p>
+<p>##关于mongodb</p>
+<blockquote>
+<p>MongoDB是一个基于分布式文件存储的数据库。由C++语言编写。旨在为WEB应用提供可扩展的高性能数据存储解决方案。 MongoDB是一个介于关系数据库和非关系数据库之间的产品，是非关系数据库当中功能最丰富，最像关系数据库的。他支持的数据结构非常松散，是类似json的bjson格式，因此可以存储比较复杂的数据类型。Mongo最大的特点是他支持的查询语言非常强大，其语法有点类似于面向对象的查询语言，几乎可以实现类似关系数据库单表查询的绝大部分功能，而且还支持对数据建立索引。</p>
+</blockquote>
+<p>##mongodb分布式应用原理<br>&gt;<br>MongoDB集群包括一定数量的mongod（分片存储数据）、mongos（路由处理）、config server（配置节点）、clients（客户端）、arbiter（仲裁节点：为了选举某个分片存储数据节点那台为主节点）。</p>
+<p><img src="161802143.png" alt=""></p>
+<ol>
+<li>shards：一个shard为一组mongod，通常一组为两台，主从或互为主从，这一组mongod中的数据时相同的，具体可见《mongodb分布式之数据复制》。数据分割按有序分割方式，每个分片上的数据为某一范围的数据块，故可支持指定分片的范围查询，这同google的BigTable 类似。数据块有指定的最大容量，一旦某个数据块的容量增长到最大容量时，这个数据块会切分成为两块；当分片的数据过多时，数据块将被迁移到系统的其他分片中。另外，新的分片加入时，数据块也会迁移。</li>
+<li>mongos：可以有多个，相当于一个控制中心，负责路由和协调操作，使得集群像一个整体的系统。mongos可以运行在任何一台服务器上，有些选择放在shards服务器上，也有放在client 服务器上的。mongos启动时需要从config servers上获取基本信息，然后接受client端的请求，路由到shards服务器上，然后整理返回的结果发回给client服务器。</li>
+<li>config server：存储集群的信息，包括分片和块数据信息。主要存储块数据信息，每个config server上都有一份所有块数据信息的拷贝，以保证每台config server上的数据的一致性。</li>
+<li>shard key：为了分割数据集，需要制定分片key的格式，类似于用于索引的key格式，通常由一个或多个字段组成以分发数据，比如：{ name : 1 }{ _id : 1 }{ lastname : 1, firstname : 1 }{ tag : 1, timestamp : -1 }mongoDB的分片为有序存储(1为升序，-1为降序)，shard key相邻的数据通常会存在同一台服务（数据块）上。</li>
+</ol>
+<p>##mongodb分布式部署方式<br>服务器部署可以有多种方式。首先，每台config server、mongos、mongod都可以是单独的服务器，但这样会导致某些服务器的浪费，比如config server。下图为物理机共享的集群部署，不需要额外加机器。</p>
+<p><img src="162121526.png" alt=""></p>
+<p>当然也有其他的方案，比如把mongos部署在所有的mongod（server1-6）上，又或者在每个运用服务器（server7）上部署mongos。这样部署有个好处在于，appserver和mongos之间的通信建立在localhost interface上，减少了通信成本。当然，此乃官方说法，但本人有想法，尽管减少了appserver和mongos之间的通信成本，但mongos与mongod之间的通信成本却增加了，而且把mongos部署在appserver上并不是很利于sa管理，mongoDB应该是一个相对独立的系统，与应用的耦合度应该尽量降到最低，万一应用想要换数据库，也能多少减少些工作量。</p>
+<p>##mongodb分布式的安装</p>
+<ul>
+<li><p>下载</p>
+<pre><code>wget http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.0.4.tgz
+</code></pre></li>
+<li><p>安装</p>
+<pre><code>tar zxvf mongodb-linux-2.0.4.tgz
+cp -fr mongodb-linux-*2.0.4/* /data/mongodb/
+mkdir -p /data/mongodb/data/      #创建数据存储目录                      
+mkdir -p /data/mongodb/log/       #创建日志存储目录
+mkdir -p /data/mongodb/config/    #创建配置存储目录
+mkdir -p /data/mongodb/arbiter/   #创建仲裁节点存储目录
+</code></pre></li>
+<li><p>单机模式以及个参数说明</p>
+<pre><code>mongod --fork --bind_ip 127.0.0.1 --port 11811 --dbpath /data/mongodb/data --directoryperdb --logpath /data/mongodb/log/db1.log --logappend  --nohttpinterface
+netstat -ntlp|grep mongod
+</code></pre></li>
+</ul>
+<p>简单的参数说明：</p>
+<blockquote>
+<ul>
+<li>–logpath 日志文件路径 </li>
+<li>–master 指定为主机器  </li>
+<li>–slave 指定为从机器   </li>
+<li>–source 指定主机器的IP地址</li>
+<li>–pologSize 指定日志文件大小不超过64M.因为resync是非常操作量大且耗时，最好通过设置一个足够大的oplogSize来避免resync(默认的 oplog大小是空闲磁盘大小的5%)。</li>
+<li>–logappend 日志文件末尾添加</li>
+<li>–port 启用端口号</li>
+<li>–fork 在后台运行</li>
+<li>–only 指定只复制哪一个数据库</li>
+<li>–slavedelay 指从复制检测的时间间隔</li>
+<li>–auth 是否需要验证权限登录(用户名和密码)</li>
+<li>–noauth 不需要验证权限登录(用户名和密码)</li>
+</ul>
+</blockquote>
+<p>##集群模式mongos,mongod,configsvr<br>    1.Shard分片–第一组分片  192.168.200.226:<br>    /data/mongodb/bin/mongod –replSet rep1 –fork –port 11813 –maxConns 65535 –dbpath /data/mongodb/data –directoryperdb –logpath /data/mongodb/log/db.log –logappend –nohttpinterface</p>
+<pre><code>#启动rep1分片的一个数据节点
+/data/mongodb/bin/mongos --configdb 192.168.201.226:11812 --port 11811 --fork --chunkSize 256 --logpath /data/mongodb/log/ms.log   
+#启动路由节点，读取201.226上的配置节点的配置文件，（在配置节点启动后启动）
+/data/mongodb/bin/mongod --replSet rep1 --fork --port 11814 --dbpath /data/mongodb/arbiter --directoryperdb --logpath /data/mongodb/log/arbiter.log --logappend --nohttpinterface
+#启动分片的仲裁节点192.168.201.226:    
+/data/mongodb/bin/mongod --replSet rep1 --fork --port 11813 --maxConns 65535 --dbpath /data/mongodb/data --directoryperdb --logpath /data/mongodb/log/db.log --logappend --nohttpinterface
+#启动rep1分片的第二个数据节点
+/data/mongodb/bin/mongos --configdb 192.168.201.226:11812 --port 11811 --fork --chunkSize 256 --logpath /data/mongodb/log/ms.log
+#启动第二个路由节点 （在配置节点启动后启动）
+2.ConfigServer---   #启动config server     192.168.201.226:          
+/data/mongodb/bin/mongod --configsvr --dbpath /data/mongodb/config --port 11812 --fork --logpath /data/mongodb/log/mc.log
+#启动配置节点，注意配置节点应该优先启动，不然路由节点读取不到配置节点信息则会启动失败。
+3.Mongos路由---   #启动mongos，指定config server, chunkSize 256M   192.168.201.226:      
+/data/mongodb/bin/mongos --configdb 192.168.201.226:11812 --port 11811 --fork --chunkSize 256 --logpath /data/mongodb/log/ms.log
+#启动路由节点
+
+#由于机器有限，只配置了一个shard分片，该分片里有2个节点，新增加分片只需对应改replSet 名称即可。
+
+4.配置replSet: 连接任一mongod membersmongo 192.168.201.226:11813 config = {_id: &apos;rep1&apos;, members: [{_id: 0, host: &apos;192.168.200.226:11813&apos;, priority: 2},                     
+#priority 为定义优先级，默认为1，高优先级会被认为是主节点优先启用。{_id: 1, host: &apos;192.168.201.226:11813&apos;},{_id: 2, host: &apos;192.168.200.226:11814&apos;, arbiterOnly: true}]}   rs.initiate(config);   rs.status()
+
+5.连接mongos增加shard 80G   
+   mongo 192.168.201.226:11811/admin   show dbs   use admin   db.runCommand({addshard:&apos;rep1/192.168.201.226:11813,192.168.200.226:11813&apos;,maxsize:81920})   
+   db.runCommand({listshards:1})
+6.连接mongos增加创建test库和c1集合，并测试
+   mongo 192.168.201.226:11811/admin
+   db.runCommand({enablesharding:&apos;test&apos;})
+   printShardingStatus()
+   db.runCommand({shardcollection:&apos;test.auto_increment_id&apos;, key:{_id:1}, unique : true})
+   db.runCommand({shardcollection:&apos;test.c1&apos;, key:{_id:1}, unique : true})
+   for (var i = 1; i &lt;= 100; i++)db.c1.save({id:i,value1:&quot;1234567890&quot;,value2:&quot;1234567890&quot;,value3:&quot;1234567890&quot;,value4:&quot;1234567890&quot;})
+   db.c1.stats()
+   db.createCollection(&quot;cap_coll&quot;, {capped:true, size:100000, max:100});
+   db.mycoll.validate();
+
+7.检查： db.printCollectionStats()
+
+8.管理: mongo 127.0.0.1:11811
+    show dbs
+    use admin
+    show collections
+    db.serverStatus()
+    db.shutdownServer()
+    exit
+9.索引：db.product_data.ensureIndex({data_id: 1}, {unique: true,dropDups: true}); #创建索引
+       db.product_data.dropIndexes();#删除索引 
+</code></pre><blockquote>
+<p>至此，mongodb的分布式架构就架起来了，并且通过测试和log的分析，可看服务是否正常，下面就需要php客户端的支持，和程序的运行，之后加到监控里，就可以在线上部署使用了。                                      </p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/03/mongodb分布式集群架构/" data-id="cj64upq1t006elraeyr721cko" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/02/04/scrapy的一些知识点/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          scrapy的一些知识点
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/02/03/python的-classmethod-修饰符/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">python的@classmethod 修饰符</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
