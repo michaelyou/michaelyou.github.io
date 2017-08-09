@@ -1,93 +1,376 @@
 <!DOCTYPE html>
-<html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
-  <title>Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Youmai の Blog">
 <meta property="og:url" content="http://yoursite.com/page/7/index.html">
-<meta property="og:site_name" content="Hexo">
+<meta property="og:site_name" content="Youmai の Blog">
+<meta property="og:description" content="世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也">
+<meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="Youmai の Blog">
+<meta name="twitter:description" content="世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/page/7/"/>
+
+
+
+
+
+  <title>Youmai の Blog</title>
   
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
-  
+
+
+
+
+
+
+
 
 </head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right 
+   page-home 
+ ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youmai の Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
       
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main">
-  
-    <article id="post-MTV-开发模式" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/04/15/MTV-开发模式/" class="article-date">
-  <time datetime="2015-04-15T12:15:05.000Z" itemprop="datePublished">2015-04-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
+        <p class="site-subtitle"></p>
+      
   </div>
 
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
   </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/04/15/MTV-开发模式/">MTV 开发模式</a>
-    </h1>
+</div>
+
+<nav class="site-nav">
   
 
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+  <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/MTV-开发模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/MTV-开发模式/" itemprop="url">MTV 开发模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T20:15:05+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>我们来花点时间考虑下 Django 数据驱动 Web 应用的总体设计。</p>
+      
+
+      
+        
+          
+            <p>我们来花点时间考虑下 Django 数据驱动 Web 应用的总体设计。</p>
 <p>我们在前面章节提到过，Django 的设计鼓励松耦合及对应用程序中不同部分的严格分割。 遵循这个理念的话，要想修改应用的某部分而不影响其它部分就比较容易了。 在视图函数中，我们已经讨论了通过模板系统把业务逻辑和表现逻辑分隔开的重要性。 在数据库层中，我们对数据访问逻辑也应用了同样的理念。</p>
 <p>把<code>数据存取逻辑</code>、<code>业务逻辑</code>和<code>表现逻辑</code>组合在一起的概念有时被称为软件架构的<code>Model-View-Controller (MVC)</code>模式。 在这个模式中， <code>Model</code> 代表数据存取层，<code>View</code>代表的是系统中选择显示什么和怎么显示的部分，<code>Controller</code> 指的是系统中根据用户输入并视需要访问模型，以决定使用哪个视图的那部分。</p>
 <p>为什么用缩写？</p>
@@ -113,46 +396,147 @@
 <p>如果你熟悉其它的 MVC Web开发框架，比方说 Ruby on Rails，你可能会认为 Django 视图是控制器，而 Django 模板是视图。 很不幸，这是对 MVC 不同诠释所引起的错误认识。 在 Django 对 MVC 的诠释中，视图用来描述要展现给用户的数据；不是数据 如何展现 ,而且展现 哪些 数据。 相比之下，Ruby on Rails 及一些同类框架提倡控制器负责决定向用户展现哪些数据，而视图则仅决定 如何 展现数据，而不是展现 哪些 数据。</p>
 <p>两种诠释中没有哪个更加正确一些。 重要的是要理解底层概念。</p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/04/15/MTV-开发模式/" data-id="cj64uppvw0013lraerrrneoxd" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-django-locals-技巧" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/04/15/django-locals-技巧/" class="article-date">
-  <time datetime="2015-04-15T11:54:43.000Z" itemprop="datePublished">2015-04-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django-locals-技巧/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/04/15/django-locals-技巧/">django-locals()技巧</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/django-locals-技巧/" itemprop="url">django-locals()技巧</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T19:54:43+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>思考一下我们对 current_datetime 的最后一次赋值:</p>
+      
+
+      
+        
+          
+            <p>思考一下我们对 current_datetime 的最后一次赋值:</p>
 <pre><code>def current_datetime(request):
     now = datetime.datetime.now()
     return render_to_response(&apos;current_datetime.html&apos;, {&apos;current_date&apos;: now})
@@ -164,46 +548,147 @@
 </code></pre><p>在此，我们没有像之前那样手工指定 context 字典，而是传入了 locals() 的值，<strong>它囊括了函数执行到该时间点时所定义的一切变量</strong>。 因此，我们将 now 变量重命名为 current_date ，因为那才是模板所预期的变量名称。 在本例中， locals() 并没有带来多 大 的改进，但是如果有多个模板变量要界定而你又想偷懒，这种技术可以减少一些键盘输入。</p>
 <p><strong>使用 locals() 时要注意是它将包括 所有 的局部变量，它们可能比你想让模板访问的要多。 在前例中， locals() 还包含了 request 。对此如何取舍取决你的应用程序。</strong></p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/04/15/django-locals-技巧/" data-id="cj64uppz2003slraeyyxxhnyx" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-django载入模板的顺序" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/04/15/django载入模板的顺序/" class="article-date">
-  <time datetime="2015-04-15T11:43:01.000Z" itemprop="datePublished">2015-04-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django载入模板的顺序/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/04/15/django载入模板的顺序/">Django载入模板的顺序</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/django载入模板的顺序/" itemprop="url">Django载入模板的顺序</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T19:43:01+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>Django默认会在配置文件<code>setting.py</code>的<code>TEMPLATE_LOADERS</code>中开启<code>django.template.loaders.filesystem.Loader</code>，开启该选项后可以按照<code>TEMPLATE_DIRS</code>中列出的路径的先后顺序从中查找并载入模板。</p>
+      
+
+      
+        
+          
+            <p>Django默认会在配置文件<code>setting.py</code>的<code>TEMPLATE_LOADERS</code>中开启<code>django.template.loaders.filesystem.Loader</code>，开启该选项后可以按照<code>TEMPLATE_DIRS</code>中列出的路径的先后顺序从中查找并载入模板。</p>
 <p>比如有如下配置：</p>
 <pre><code>TEMPLATE_LOADERS = (
     &apos;django.template.loaders.filesystem.Loader&apos;,
@@ -255,176 +740,580 @@ TEMPLATE_DIRS = (
 <p><code>&#39;django.template.loaders.app_directories.Loader&#39;</code>会自动去app下面的template目录下寻找模板，所以采用这种方法就无需给’DIRS’赋值</p>
 <p>第一部分转载自<a href="http://blog.csdn.net/zyz511919766/article/details/18355827" target="_blank" rel="external">这里</a></p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/04/15/django载入模板的顺序/" data-id="cj64upq09004rlrae5g853fvw" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-URLconf" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/04/15/URLconf/" class="article-date">
-  <time datetime="2015-04-15T09:21:14.000Z" itemprop="datePublished">2015-04-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/URLconf/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/04/15/URLconf/">URLconf</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/URLconf/" itemprop="url">URLconf</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T17:21:14+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>URLconf 就像是 Django 所支撑网站的目录。 它的本质是 URL 模式以及要为该 URL 模式调用的视图函数之间的映射表。 你就是以这种方式告诉 Django，对于这个 URL 调用这段代码，对于那个 URL 调用那段代码。 例如，当用户访问/foo/时，调用视图函数<code>foo_view()</code>，这个视图函数存在于Python模块文件view.py中。</p>
+      
+
+      
+        
+          
+            <p>URLconf 就像是 Django 所支撑网站的目录。 它的本质是 URL 模式以及要为该 URL 模式调用的视图函数之间的映射表。 你就是以这种方式告诉 Django，对于这个 URL 调用这段代码，对于那个 URL 调用那段代码。 例如，当用户访问/foo/时，调用视图函数<code>foo_view()</code>，这个视图函数存在于Python模块文件view.py中。</p>
 <p>执行 <code>django-admin.py startproject</code>时，该脚本会自动为你建了一份<code>URLconf</code>（即 <code>urls.py</code>文件）</p>
 <blockquote>
 <p>默认情况下，URLconf 所有内容都被注释起来了——Django 应用程序还是白版一块。 （注：那是上一节中Django怎么知道显示欢迎页面的原因。 如果 URLconf 为空，Django 会认定你才创建好新项目，因此也就显示那种信息。</p>
 </blockquote>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/04/15/URLconf/" data-id="cj64uppy8002mlraem5inxiin" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-django的时区" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/04/15/django的时区/" class="article-date">
-  <time datetime="2015-04-15T09:20:07.000Z" itemprop="datePublished">2015-04-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django的时区/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/04/15/django的时区/">Django的时区</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/django的时区/" itemprop="url">Django的时区</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T17:20:07+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>视乎你的机器，显示的日期与时间可能和实际的相差几个小时。 这是因为Django是有时区意识的，并且默认时区为<code>America/Chicago</code>。 （它必须有个值，它的默认值是Django的诞生地：美国/芝加哥）如果你处在别的时区，你需要在settings.py文件中更改这个值。请参见它里面的注释，以获得最新世界时区列表。在中国我们设置为<code>Asia/Shanghai</code></p>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/04/15/django的时区/" data-id="cj64uppzx004llraeg5ooh7u3" class="article-share-link">Share</a>
       
+
+      
+        
+          
+            <p>视乎你的机器，显示的日期与时间可能和实际的相差几个小时。 这是因为Django是有时区意识的，并且默认时区为<code>America/Chicago</code>。 （它必须有个值，它的默认值是Django的诞生地：美国/芝加哥）如果你处在别的时区，你需要在settings.py文件中更改这个值。请参见它里面的注释，以获得最新世界时区列表。在中国我们设置为<code>Asia/Shanghai</code></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-django-启动web" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/04/15/django-启动web/" class="article-date">
-  <time datetime="2015-04-15T09:18:49.000Z" itemprop="datePublished">2015-04-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django-启动web/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/04/15/django-启动web/">Django--启动web</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/django-启动web/" itemprop="url">Django--启动web</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T17:18:49+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>runserver 命令在 8000 端口启动开发服务器，且仅监听本地连接。 要想要更改服务器端口的话，可将端口作为命令行参数传入：</p>
+      
+
+      
+        
+          
+            <p>runserver 命令在 8000 端口启动开发服务器，且仅监听本地连接。 要想要更改服务器端口的话，可将端口作为命令行参数传入：</p>
 <pre><code>python manage.py runserver 8080
 </code></pre><p>通过指定一个 IP 地址，你可以告诉服务器–允许非本地连接访问。 如果你想和其他开发人员共享同一开发站点的话，该功能特别有用。 <code>0.0.0.0</code> 这个 IP 地址，告诉服务器去侦听任意的网络接口。</p>
 <pre><code>python manage.py runserver 0.0.0.0:8000
 </code></pre>
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/04/15/django-启动web/" data-id="cj64uppzc0047lraelaujm6j7" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-使用django的出错页来帮助调试" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/04/15/使用django的出错页来帮助调试/" class="article-date">
-  <time datetime="2015-04-15T09:14:11.000Z" itemprop="datePublished">2015-04-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/使用django的出错页来帮助调试/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/04/15/使用django的出错页来帮助调试/">使用Django的出错页来帮助调试</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/使用django的出错页来帮助调试/" itemprop="url">使用Django的出错页来帮助调试</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T17:14:11+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>##出错页解析<br>在页面顶部，你可以得到关键的异常信息： 异常数据类型、异常的参数 、在哪个文件中引发了异常、出错的行号等等。</p>
+      
+
+      
+        
+          
+            <p>##出错页解析<br>在页面顶部，你可以得到关键的异常信息： 异常数据类型、异常的参数 、在哪个文件中引发了异常、出错的行号等等。</p>
 <p>在关键异常信息下方，该页面显示了对该异常的完整 Python 追踪信息。 这类似于你在 Python 命令行解释器中获得的追溯信息，只不过后者更具交互性。 对栈中的每一帧，Django 均显示了其文件名、函数或方法名、行号及该行源代码。</p>
 <p>点击该行代码 (以深灰色显示)，你可以看到出错行的前后几行，从而得知相关上下文情况。</p>
 <p><strong>点击栈中的任何一帧的“Local vars”可以看到一个所有局部变量的列表，以及在出错 那一帧时它们的值。 这些调试信息相当有用。</strong></p>
@@ -436,46 +1325,147 @@ TEMPLATE_DIRS = (
 <p>不知道你是不是那种使用小心放置的 print 语句来帮助调试的程序员？ 你其实可以用 Django 出错页来做这些，而不用 print 语句。 <strong>在你视图的任何位置，临时插入一个 assert False 来触发出错页。 然后，你就可以看到局部变量和程序语句了</strong></p>
 <p>–《django book 2.0》</p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/04/15/使用django的出错页来帮助调试/" data-id="cj64upq3h009ylraemwt5xqjh" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-django-动态url" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/04/15/django-动态url/" class="article-date">
-  <time datetime="2015-04-15T09:05:59.000Z" itemprop="datePublished">2015-04-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django-动态url/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/04/15/django-动态url/">Django--动态url</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/django-动态url/" itemprop="url">Django--动态url</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T17:05:59+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>在 大多数动态web应用程序，URL通常都包含有相关的参数。 举个例子，一家在线书店会为每一本书提供一个URL，如：<code>/books/243/</code>、<code>/books/81196/</code>。</p>
+      
+
+      
+        
+          
+            <p>在 大多数动态web应用程序，URL通常都包含有相关的参数。 举个例子，一家在线书店会为每一本书提供一个URL，如：<code>/books/243/</code>、<code>/books/81196/</code>。</p>
 <p>让我们创建第三个视图来显示当前时间和加上时间偏差量的时间，设计是这样的： <code>/time/plus/1/</code> 显示当前时间＋1个小时的页面, <code>/time/plus/2/</code> 显示当前时间＋2个小时的页面, <code>/time/plus/3/</code> 显示当前时间＋3个小时的页面，以此类推。</p>
 <p>新手可能会考虑写不同的视图函数来处理每个时间偏差量，URL配置看起来就象这样：</p>
 <pre><code>urlpatterns = patterns(&apos;&apos;,
@@ -551,46 +1541,147 @@ def hours_ahead(request, offset):
 </blockquote>
 <p>–《django book 2.0》</p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/04/15/django-动态url/" data-id="cj64uppz80040lraefcojsuhh" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-django是如何处理请求的" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/04/15/django是如何处理请求的/" class="article-date">
-  <time datetime="2015-04-15T08:56:40.000Z" itemprop="datePublished">2015-04-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django是如何处理请求的/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/04/15/django是如何处理请求的/">Django是如何处理请求的</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/django是如何处理请求的/" itemprop="url">Django是如何处理请求的</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T16:56:40+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>当你通过在浏览器里敲<code>http://127.0.0.1:8000/hello/</code>来访问<code>Hello world</code>消息得时候，Django在后台有些什么动作呢？</p>
+      
+
+      
+        
+          
+            <p>当你通过在浏览器里敲<code>http://127.0.0.1:8000/hello/</code>来访问<code>Hello world</code>消息得时候，Django在后台有些什么动作呢？</p>
 <p>所有均开始于setting文件。当你运行<code>python manage.py runserver</code>，脚本将在于manage.py同一个目录下查找名为setting.py的文件。这个文件包含了所有有关这个Django项目的配置信息，均大写： <code>TEMPLATE_DIRS</code> , <code>DATABASE_NAME</code> , 等. 最重要的设置是<code>ROOT_URLCONF</code>，它将作为URLconf告诉Django在这个站点中那些Python的模块将被用到</p>
 <p>还记得什么时候<code>django-admin.py startproject</code>创建文件<code>settings.py</code>和<code>urls.py</code>吗？自动创建的settings.py包含一个<code>ROOT_URLCONF</code>配置用来指向自动产生的<code>urls.py</code>. 打开文件<code>settings.py</code>你将看到如下：</p>
 <pre><code>ROOT_URLCONF = &apos;mysite.urls&apos;
@@ -615,46 +1706,147 @@ def hours_ahead(request, offset):
 <p>你现在知道了怎么做一个 Django-powered 页面了，真的很简单，只需要写视图函数并用 <code>URLconfs</code>把它们和URLs对应起来。 你可能会认为用一系列正则表达式将URLs映射到函数也许会比较慢，但事实却会让你惊讶。</p>
 <p>–《django book 2.0》</p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/04/15/django是如何处理请求的/" data-id="cj64uppze004blrae0nfx61xr" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-URLconf的url匹配" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/04/15/URLconf的url匹配/" class="article-date">
-  <time datetime="2015-04-15T08:26:40.000Z" itemprop="datePublished">2015-04-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/URLconf的url匹配/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/04/15/URLconf的url匹配/">URLconf的url匹配</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/URLconf的url匹配/" itemprop="url">URLconf的url匹配</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T16:26:40+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>Django在检查URL模式前，移除每一个申请的URL开头的斜杠(/)。 这意味着我们为<code>/hello/</code>写URL模式不用包含斜杠(/)。（刚开始，这样可能看起来不直观，但这样的要求简化了许多工作，如URL模式内嵌，我们将在django book第八章谈及。）</p>
+      
+
+      
+        
+          
+            <p>Django在检查URL模式前，移除每一个申请的URL开头的斜杠(/)。 这意味着我们为<code>/hello/</code>写URL模式不用包含斜杠(/)。（刚开始，这样可能看起来不直观，但这样的要求简化了许多工作，如URL模式内嵌，我们将在django book第八章谈及。）</p>
 <p>模式包含了一个尖号(^)和一个美元符号($)。这些都是正则表达式符号，并且有特定的含义： <strong>上箭头要求表达式对字符串的头部进行匹配，美元符号则要求表达式对字符串的尾部进行匹配</strong>。</p>
 <p>最好还是用范例来说明一下这个概念。 如果我们用尾部不是$的模式<code>’^hello/’</code>，那么任何以<code>/hello/</code>开头的URL将会匹配，例如：<code>/hello/foo</code>和<code>/hello/bar</code>，而不仅仅是<code>/hello/</code>。类似地，如果我们忽略了尖号(^)，即<code>’hello/$’</code>，那么任何以<code>hello/</code>结尾的URL将会匹配，例如：<code>/foo/bar/hello/</code>。如果我们简单使用<code>hello/</code>，即没有^开头和$结尾，那么任何包含<code>hello/</code>的URL将会匹配，如：<code>/foo/hello/bar</code>。因此，我们使用这两个符号以确保只有<code>/hello/</code>匹配，不多也不少。</p>
 <p>你大多数的URL模式会以<code>^</code>开始、以<code>$</code>结束，但是拥有复杂匹配的灵活性会更好。</p>
@@ -662,129 +1854,312 @@ def hours_ahead(request, offset):
 <p>如果你是喜欢所有URL都以’/’结尾的人（Django开发者的偏爱），那么你只需要在每个URL后添加斜杠，并且设置<code>”APPEND_SLASH”</code>为<code>”True”</code>. 如果不喜欢URL以斜杠结尾或者根据每个URL来决定，那么需要设置<code>”APPEND_SLASH”</code>为<code>”False”</code>,并且根据你自己的意愿来添加结尾斜杠/在URL模L模式后.</p>
 <p>–《django book 2.0》</p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/04/15/URLconf的url匹配/" data-id="cj64uppye002rlraeikzjbxax" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+  </section>
 
   
-
-
-  <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/6/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/8/">__('next') &raquo;</a>
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right"></i></a>
   </nav>
-</section>
+
+
+
+          </div>
+          
+
+
+          
+
+        </div>
         
-          <aside id="sidebar">
+          
   
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
     </div>
   </div>
 
-
-  
+  <aside id="sidebar" class="sidebar">
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="You Wangqiu" />
+          <p class="site-author-name" itemprop="name">You Wangqiu</p>
+           
+              <p class="site-description motion-element" itemprop="description">世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">206</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
     </div>
-  </div>
+  </aside>
 
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
-          </li>
-        
-          <li>
-            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
-          </li>
-        
-          <li>
-            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
-          </li>
-        
-          <li>
-            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
-          </li>
-        
-          <li>
-            <a href="/2016/06/05/Python-面试题集锦-转载/">Python 面试题集锦[转载]</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
         
       </div>
-      <footer id="footer">
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
   
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2017 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">You Wangqiu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
     
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
-
   </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
 </body>
 </html>

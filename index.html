@@ -1,93 +1,376 @@
 <!DOCTYPE html>
-<html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
-  <title>Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Youmai の Blog">
 <meta property="og:url" content="http://yoursite.com/index.html">
-<meta property="og:site_name" content="Hexo">
+<meta property="og:site_name" content="Youmai の Blog">
+<meta property="og:description" content="世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也">
+<meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="Youmai の Blog">
+<meta name="twitter:description" content="世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/"/>
+
+
+
+
+
+  <title>Youmai の Blog</title>
   
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
-  
+
+
+
+
+
+
+
 
 </head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right 
+   page-home 
+ ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youmai の Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
       
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main">
-  
-    <article id="post-Django外键赋值" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/19/Django外键赋值/" class="article-date">
-  <time datetime="2016-12-19T02:46:48.000Z" itemprop="datePublished">2016-12-19</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
+        <p class="site-subtitle"></p>
+      
   </div>
 
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
   </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
-    </h1>
+</div>
+
+<nav class="site-nav">
   
 
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+  <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/19/Django外键赋值/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/19/Django外键赋值/" itemprop="url">Django外键赋值</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-19T10:46:48+08:00">
+                2016-12-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <pre><code>class Article(models.Model):
+      
+
+      
+        
+          
+            <pre><code>class Article(models.Model):
     title = models.CharField(max_length=1024, default=&apos;&apos;)
     ...
     def __str__(self):
@@ -152,46 +435,147 @@ Out[49]: 14266
 <p>我们再看看<code>__set__</code>，代码太长就不贴了（就在<code>__get__</code>方法下面）。除了给外键字段（<code>article</code>）赋值外，还会将pk字段（<code>article_id</code>，是<code>lh_field.attname</code>的值）设置为None，这样下次请求的时候就能拿到正确的值。</p>
 <p>以上都是ForeignKey的Magic，而当我们给<code>article_id</code>赋值的时候，只是在给一个普通的attribute赋值而已，没有任何magic，不会清理对应外键的cache，这时候拿到的instance仍然是cache中原来的那个instance。</p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/19/Django外键赋值/" data-id="cj64uppv7000mlrae7awn6h3d" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-Django-redis如何支持存取整型和布尔值" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/" class="article-date">
-  <time datetime="2016-11-02T21:16:48.000Z" itemprop="datePublished">2016-11-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/03/Django-redis如何支持存取整型和布尔值/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/03/Django-redis如何支持存取整型和布尔值/" itemprop="url">Django-redis如何支持存取整型和布尔值</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-03T05:16:48+08:00">
+                2016-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>redis支持5种数据类型，分别是string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set：有序集合)。整型值和布尔值并不在其中。存储整型和布尔值时，redis会将其转换为字符串</p>
+      
+
+      
+        
+          
+            <p>redis支持5种数据类型，分别是string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set：有序集合)。整型值和布尔值并不在其中。存储整型和布尔值时，redis会将其转换为字符串</p>
 <pre><code>127.0.0.1:6379&gt; SET test_key 1
 OK
 127.0.0.1:6379&gt; GET test_key
@@ -278,46 +662,147 @@ except (ValueError, TypeError):
 <p>如果大家需要写自己的<code>redis client</code>的话，可以参考一下这些设计，会给使用带来很大的方便。</p>
 <p><strong>Note</strong>: <code>Python3</code> 中<code>pickle</code>和<code>cPickle</code>已经合并为<code>pickle</code></p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/03/Django-redis如何支持存取整型和布尔值/" data-id="cj64uppuz000clrae3sw5uv34" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-Django-model去掉unique_together报错" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/10/17/Django-model去掉unique_together报错/" class="article-date">
-  <time datetime="2016-10-17T00:46:48.000Z" itemprop="datePublished">2016-10-17</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/17/Django-model去掉unique_together报错/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/10/17/Django-model去掉unique_together报错/" itemprop="url">Django model去掉unique_together报错</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-17T08:46:48+08:00">
+                2016-10-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>事情是这样的，我有一个存储考试的表</p>
+      
+
+      
+        
+          
+            <p>事情是这样的，我有一个存储考试的表</p>
 <pre><code>class Exam(models.Model):
     category = models.ForiegnKey(Category)
     name = models.CharField(max_length=128)
@@ -362,46 +847,147 @@ except (ValueError, TypeError):
 <pre><code>alter table exam add index(category_id);
 </code></pre><p>这样，migrate就能成功了。</p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/17/Django-model去掉unique_together报错/" data-id="cj64uppuw000alrae5ybjet0k" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-python-string-intern" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/10/python-string-intern/" class="article-date">
-  <time datetime="2016-07-10T02:12:09.000Z" itemprop="datePublished">2016-07-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/python/">python</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/10/python-string-intern/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/10/python-string-intern/">python_string_intern</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/07/10/python-string-intern/" itemprop="url">python_string_intern</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-10T10:12:09+08:00">
+                2016-07-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>这篇文章会介绍<code>CPython 2.7.12</code>中字符串<code>intern</code>的知识。</p>
+      
+
+      
+        
+          
+            <p>这篇文章会介绍<code>CPython 2.7.12</code>中字符串<code>intern</code>的知识。</p>
 <p>首先举一个例子说明内置的<code>intern</code>函数的用法：</p>
 <pre><code>&gt;&gt;&gt; s1 = &apos;foo!&apos;
 &gt;&gt;&gt; s2 = &apos;foo!&apos;
@@ -665,46 +1251,147 @@ True
 <p>这个窥孔，你可以认为是一个滑动窗口，编译器在实施窥孔优化时，就仅仅分析这个窗口内的指令。每次转换之后，可能还会暴露相邻窗口之间的某些优化机会，所以可以多次调用窥孔优化，尽可能提升性能。</p>
 <p>窥孔优化可以在四个方面寻找优化机会：冗余指令删除，包括冗余的load和store指令以及死代码(不会执行的代码);控制流优化；强度削弱；利用特有指令。</p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/07/10/python-string-intern/" data-id="cj64upq260075lraeehhou46v" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-Python-面试题集锦-转载" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/06/05/Python-面试题集锦-转载/" class="article-date">
-  <time datetime="2016-06-05T08:59:45.000Z" itemprop="datePublished">2016-06-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/python/">python</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/05/Python-面试题集锦-转载/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/06/05/Python-面试题集锦-转载/">Python 面试题集锦[转载]</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/06/05/Python-面试题集锦-转载/" itemprop="url">Python 面试题集锦[转载]</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-06-05T16:59:45+08:00">
+                2016-06-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <h1 id="Python语言特性"><a href="#Python语言特性" class="headerlink" title="Python语言特性"></a>Python语言特性</h1><h2 id="Python的函数参数传递"><a href="#Python的函数参数传递" class="headerlink" title="Python的函数参数传递"></a>Python的函数参数传递</h2><p>看两个例子:</p>
+      
+
+      
+        
+          
+            <h1 id="Python语言特性"><a href="#Python语言特性" class="headerlink" title="Python语言特性"></a>Python语言特性</h1><h2 id="Python的函数参数传递"><a href="#Python的函数参数传递" class="headerlink" title="Python的函数参数传递"></a>Python的函数参数传递</h2><p>看两个例子:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">a = <span class="number">1</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fun</span><span class="params">(a)</span>:</span></div><div class="line">    a = <span class="number">2</span></div><div class="line">fun(a)</div><div class="line"><span class="keyword">print</span> a  <span class="comment"># 1</span></div></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">a = []</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fun</span><span class="params">(a)</span>:</span></div><div class="line">    a.append(<span class="number">1</span>)</div><div class="line">fun(a)</div><div class="line"><span class="keyword">print</span> a  <span class="comment"># [1]</span></div></pre></td></tr></table></figure>
 <p>所有的变量都可以理解是内存中一个对象的<code>“引用”</code>，或者，也可以看似<code>c</code>中<code>void*</code>的感觉。</p>
@@ -1153,46 +1840,147 @@ True
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">rebuild</span><span class="params">(pre, center)</span>:</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> pre:</div><div class="line">        <span class="keyword">return</span></div><div class="line">    cur = Node(pre[<span class="number">0</span>])</div><div class="line">    index = center.index(pre[<span class="number">0</span>])</div><div class="line">    cur.left = rebuild(pre[<span class="number">1</span>:index + <span class="number">1</span>], center[:index])</div><div class="line">    cur.right = rebuild(pre[index + <span class="number">1</span>:], center[index + <span class="number">1</span>:])</div><div class="line">    <span class="keyword">return</span> cur</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">deep</span><span class="params">(root)</span>:</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> root:</div><div class="line">        <span class="keyword">return</span></div><div class="line">    deep(root.left)</div><div class="line">    deep(root.right)</div><div class="line">    <span class="keyword">print</span> root.data</div></pre></td></tr></table></figure>
 <h2 id="单链表逆置"><a href="#单链表逆置" class="headerlink" title="单链表逆置"></a>单链表逆置</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, data=None, next=None)</span>:</span></div><div class="line">        self.data = data</div><div class="line">        self.next = next</div><div class="line"></div><div class="line">link = Node(<span class="number">1</span>, Node(<span class="number">2</span>, Node(<span class="number">3</span>, Node(<span class="number">4</span>, Node(<span class="number">5</span>, Node(<span class="number">6</span>, Node(<span class="number">7</span>, Node(<span class="number">8</span>, Node(<span class="number">9</span>)))))))))</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">rev</span><span class="params">(link)</span>:</span></div><div class="line">    pre = link</div><div class="line">    cur = link.next</div><div class="line">    pre.next = <span class="keyword">None</span></div><div class="line">    <span class="keyword">while</span> cur:</div><div class="line">        tmp = cur.next</div><div class="line">        cur.next = pre</div><div class="line">        pre = cur</div><div class="line">        cur = tmp</div><div class="line">    <span class="keyword">return</span> pre</div><div class="line"></div><div class="line">root = rev(link)</div><div class="line"><span class="keyword">while</span> root:</div><div class="line">    <span class="keyword">print</span> root.data</div><div class="line">    root = root.next</div></pre></td></tr></table></figure>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/06/05/Python-面试题集锦-转载/" data-id="cj64uppx7001slraefg9s0ihl" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-python-metaclass" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/05/19/python-metaclass/" class="article-date">
-  <time datetime="2016-05-19T14:55:30.000Z" itemprop="datePublished">2016-05-19</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/python/">python</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/19/python-metaclass/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/05/19/python-metaclass/">Python Metaclass</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/05/19/python-metaclass/" itemprop="url">Python Metaclass</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-19T22:55:30+08:00">
+                2016-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>这是<a href="http://stackoverflow.com/users/9951/e-satis" target="_blank" rel="external">e-satis同学</a>在stackoverflow上的<a href="http://stackoverflow.com/questions/100003/what-is-a-metaclass-in-python/6581949#6581949" target="_blank" rel="external">回答</a></p>
+      
+
+      
+        
+          
+            <p>这是<a href="http://stackoverflow.com/users/9951/e-satis" target="_blank" rel="external">e-satis同学</a>在stackoverflow上的<a href="http://stackoverflow.com/questions/100003/what-is-a-metaclass-in-python/6581949#6581949" target="_blank" rel="external">回答</a></p>
 <p>##类也是对象<br>在理解<code>metaclass</code>之前（<code>metaclass</code>也被称为<code>元类</code>，这里就不翻译了），你要先掌握python中的class。python中class的概念非常奇特（一切皆对象），这一点借鉴了<code>Smalltalk</code>这门语言。</p>
 <p>在大部分语言中，class只是用来描述如何产生一个object（翻译成<code>对象</code>，这里也不翻译了）的代码段。这在python中也成立：<br>In most languages, classes are just pieces of code that describe how to produce an object. That’s kinda true in Python too:</p>
 <pre><code>&gt;&gt;&gt; class ObjectCreator(object):
@@ -1541,46 +2329,147 @@ print(guy.age)
     ...
 </code></pre><p>这意味着在Python3中，直接将<code>__metaclass__</code>定义成一个类或者一个方法都不再可行。所有的metaclass都必须被定义成单独的类。这种方法也有好处，它让metaclass更具有一致性，当然也更易读和理解。</p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/05/19/python-metaclass/" data-id="cj64upq22006zlrae9um1cy96" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-Django打印请求的sql" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/05/19/Django打印请求的sql/" class="article-date">
-  <time datetime="2016-05-19T14:50:31.000Z" itemprop="datePublished">2016-05-19</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Django/">Django</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/19/Django打印请求的sql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/05/19/Django打印请求的sql/">Django打印请求的sql</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/05/19/Django打印请求的sql/" itemprop="url">Django打印请求的sql</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-19T22:50:31+08:00">
+                2016-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>我们平时都是用django的ORM来进行数据库操作，ORM会将我们的Python代码转换成sql语句。但是，有的时候我们得到的结果并不是理想中的结果，这时候一个有效的debug方法就是查看ORM生成的sql语句。下面是获取sql的方法：</p>
+      
+
+      
+        
+          
+            <p>我们平时都是用django的ORM来进行数据库操作，ORM会将我们的Python代码转换成sql语句。但是，有的时候我们得到的结果并不是理想中的结果，这时候一个有效的debug方法就是查看ORM生成的sql语句。下面是获取sql的方法：</p>
 <pre><code>&gt;&gt;&gt; from django.db import connection
 &gt;&gt;&gt; connection.queries
 [{&apos;sql&apos;: &apos;SELECT polls_polls.id, polls_polls.question, polls_polls.pub_date FROM polls_polls&apos;,
@@ -1596,46 +2485,147 @@ print(guy.age)
 <p><a href="http://www.mail-archive.com/django-users@googlegroups.com/msg67486.html" target="_blank" rel="external">http://www.mail-archive.com/django-users@googlegroups.com/msg67486.html</a></p>
 <p><a href="https://docs.djangoproject.com/en/1.9/faq/models/" target="_blank" rel="external">https://docs.djangoproject.com/en/1.9/faq/models/</a></p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/05/19/Django打印请求的sql/" data-id="cj64uppv5000jlraeml2j6njm" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-pyc文件和python程序的执行过程" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/01/23/pyc文件和python程序的执行过程/" class="article-date">
-  <time datetime="2016-01-23T10:44:56.000Z" itemprop="datePublished">2016-01-23</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/python/">python</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/01/23/pyc文件和python程序的执行过程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/01/23/pyc文件和python程序的执行过程/">pyc文件和python程序的执行过程</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/01/23/pyc文件和python程序的执行过程/" itemprop="url">pyc文件和python程序的执行过程</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-01-23T18:44:56+08:00">
+                2016-01-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>##Python是一门解释型语言？</p>
+      
+
+      
+        
+          
+            <p>##Python是一门解释型语言？</p>
 <p>初学Python时，听到的关于Python的第一句话就是，Python是一门解释性语言，我就这样一直相信下去，直到发现了<code>*.pyc</code>文件的存在。如果是解释型语言，那么生成的<code>*.pyc</code>文件是什么呢？<code>c</code>应该是<code>compiled</code>的缩写才对啊！</p>
 <p>为了防止其他学习Python的人也被这句话误解，那么我们就在文中来澄清下这个问题，并且把一些基础概念给理清。</p>
 <p>##解释型语言和编译型语言</p>
@@ -1696,48 +2686,147 @@ java hello
 <p><img src="/img/pyc10.jpg" alt=""></p>
 <p>不用仔细看代码，我们可以很清楚地看到原理，其实每次在载入之前都会先检查一下py文件和pyc文件保存的最后修改日期，如果不一致则重新生成一份<code>pyc</code>文件。</p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/01/23/pyc文件和python程序的执行过程/" data-id="cj64upq1z006ulraeq610gvzj" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-mysql-command" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/01/23/mysql-command/" class="article-date">
-  <time datetime="2016-01-23T10:12:22.000Z" itemprop="datePublished">2016-01-23</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/数据库/">数据库</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/01/23/mysql-command/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/01/23/mysql-command/">MySQL语句</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/01/23/mysql-command/" itemprop="url">MySQL语句</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-01-23T18:12:22+08:00">
+                2016-01-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>##数据库连接与用户</p>
+      
+
+      
+        
+          
+            <p>##数据库连接与用户</p>
 <p>###连接数据库<br>    mysql -h 主机地址 -u 用户名 －p 用户密码</p>
 <pre><code>连接到本地数据库： mysql -h 127.0.0.1 -u root -p 然后输入密码
 </code></pre><p>###创建用户<br>    CREATE USER ‘username’@’host’ IDENTIFIED BY ‘password’;</p>
@@ -1871,48 +2960,147 @@ alter table userinfo change column username varchar(20)
 </code></pre><p>###显示数据表中重复的记录和记录条数</p>
 <pre><code>SELECT name,age,count(*) FROM tb_stu WHERE age = &apos;19&apos; group by date
 </code></pre>
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/01/23/mysql-command/" data-id="cj64upq1w006jlraetp8011xb" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-vim操作" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/01/16/vim操作/" class="article-date">
-  <time datetime="2016-01-16T12:43:32.000Z" itemprop="datePublished">2016-01-16</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/vim/">vim</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/01/16/vim操作/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/01/16/vim操作/">vim操作</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/01/16/vim操作/" itemprop="url">vim操作</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-01-16T20:43:32+08:00">
+                2016-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/vim/" itemprop="url" rel="index">
+                    <span itemprop="name">vim</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>##移动光标</p>
+      
+
+      
+        
+          
+            <p>##移动光标</p>
 <p>###单词级</p>
 <ul>
 <li><code>w</code> or <code>W</code> 向右移动到下一单词开头</li>
@@ -2011,129 +3199,312 @@ alter table userinfo change column username varchar(20)
 <li><code>V</code> 同样是快操作，但是一次操作一行</li>
 </ul>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/01/16/vim操作/" data-id="cj64upq32008zlraeq8882jiv" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+  </section>
 
   
-
-
-  <nav id="page-nav">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
-</section>
+
+
+
+          </div>
+          
+
+
+          
+
+        </div>
         
-          <aside id="sidebar">
+          
   
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
     </div>
   </div>
 
-
-  
+  <aside id="sidebar" class="sidebar">
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="You Wangqiu" />
+          <p class="site-author-name" itemprop="name">You Wangqiu</p>
+           
+              <p class="site-description motion-element" itemprop="description">世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">206</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
     </div>
-  </div>
+  </aside>
 
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
-          </li>
-        
-          <li>
-            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
-          </li>
-        
-          <li>
-            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
-          </li>
-        
-          <li>
-            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
-          </li>
-        
-          <li>
-            <a href="/2016/06/05/Python-面试题集锦-转载/">Python 面试题集锦[转载]</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
         
       </div>
-      <footer id="footer">
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
   
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2017 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">You Wangqiu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
     
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
-
   </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
 </body>
 </html>

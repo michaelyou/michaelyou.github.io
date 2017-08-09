@@ -1,93 +1,376 @@
 <!DOCTYPE html>
-<html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
-  <title>Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Youmai の Blog">
 <meta property="og:url" content="http://yoursite.com/page/17/index.html">
-<meta property="og:site_name" content="Hexo">
+<meta property="og:site_name" content="Youmai の Blog">
+<meta property="og:description" content="世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也">
+<meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="Youmai の Blog">
+<meta name="twitter:description" content="世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/page/17/"/>
+
+
+
+
+
+  <title>Youmai の Blog</title>
   
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
-  
+
+
+
+
+
+
+
 
 </head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right 
+   page-home 
+ ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youmai の Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
       
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main">
-  
-    <article id="post-python的socket编程" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/01/31/python的socket编程/" class="article-date">
-  <time datetime="2015-01-31T12:29:30.000Z" itemprop="datePublished">2015-01-31</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/python/">python</a>
+        <p class="site-subtitle"></p>
+      
   </div>
 
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
   </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/31/python的socket编程/">python的socket编程</a>
-    </h1>
+</div>
+
+<nav class="site-nav">
   
 
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+  <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/31/python的socket编程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/31/python的socket编程/" itemprop="url">python的socket编程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-31T20:29:30+08:00">
+                2015-01-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>python的网络编程比c语言简单许多, 封装许多底层的实现细节, 方便程序员使用的同时, 也使程序员比较难了解一些底层的东西, 我觉得学网络编程还是用c语言更好一点。</p>
+      
+
+      
+        
+          
+            <p>python的网络编程比c语言简单许多, 封装许多底层的实现细节, 方便程序员使用的同时, 也使程序员比较难了解一些底层的东西, 我觉得学网络编程还是用c语言更好一点。</p>
 <p>这篇文章将一些Linux网络编程的函数和Python网络编程函数做了一个简单的对照, 方便记忆。</p>
 <p>##Socket套接字的概念<br>Socket，是操作系统内核中的一个数据结构，它是网络中的节点进行相互通信的门户。它是网络进程的ID。网络通信，归根到底还是进程间的通信（不同计算机上的进程间通信, 又称进程间通信, IP协议进行的主要是端到端通信）。在网络中，每一个节点（计算机或路由）都有一个网络地址，也就是IP地址。两个进程通信时，首先要确定各自所在的网络节点的网络地址。但是，网络地址只能确定进程所在的计算机，而一台计算机上很可能同时运行着多个进程，所以仅凭网络地址还不能确定到底是和网络中的哪一个进程进行通信，因此套接口中还需要包括其他的信息，也就是端口号（PORT）。在一台计算机中，一个端口号一次只能分配给一个进程，也就是说，在一台计算机中，端口号和进程之间是一一对应关系。</p>
 <p>所以，使用端口号和网络地址的组合可以唯一的确定整个网络中的一个网络进程.<br>端口号的范围从0~65535，一类是由互联网指派名字和号码公司ICANN负责分配给一些常用的应用程序固定使用的“周知的端口”，其值一般为0~1023, 用户自定义端口号一般大于等于1024。</p>
@@ -426,48 +709,147 @@ s.makefile()
 #创建一个与该套接字相关连的文件
 </code></pre><p>##3. 参考链接<br><a href="https://docs.python.org/2/library/socket.html" target="_blank" rel="external">python-socket官方文档</a></p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/31/python的socket编程/" data-id="cj64upq2h007mlraeeirrq3pd" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/socket/">socket</a></li></ul>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-第十四部分-Deferred用于同步环境" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/01/30/第十四部分-Deferred用于同步环境/" class="article-date">
-  <time datetime="2015-01-30T14:18:36.000Z" itemprop="datePublished">2015-01-30</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/twisted/">twisted</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第十四部分-Deferred用于同步环境/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/30/第十四部分-Deferred用于同步环境/">第十四部分 Deferred用于同步环境</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/30/第十四部分-Deferred用于同步环境/" itemprop="url">第十四部分 Deferred用于同步环境</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T22:18:36+08:00">
+                2015-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/twisted/" itemprop="url" rel="index">
+                    <span itemprop="name">twisted</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>原文在<a href="http://krondo.com/?p=2205" target="_blank" rel="external">这里</a></p>
+      
+
+      
+        
+          
+            <p>原文在<a href="http://krondo.com/?p=2205" target="_blank" rel="external">这里</a></p>
 <p>##介绍<br>这部分我们要介绍Deferred的另外一个功能。便于讨论，我们设定如下情景：假设由于众多的内部网请求一个外部诗歌下载服务器，但由于这个外部下载服务器性能太差或请求负荷太重。因此，我们不想将所有的内部请求全部发送到外部服务器。我们的处理办法是，在中间添加一个缓存代理。当一个请求来到后，我们可以从中间缓存代理中找到缓存的备份（如果有缓存）或者直接从外部服务器获得。部署图如图30所示：</p>
 <p><img src="/img/缓存代理服务器.png" alt="图30 缓存代理服务器"></p>
 <p>考虑到，客户端端发送请求来时，此缓存代理可能会将本地的缓冲的诗歌取出并回复，也有可能需要异步等待外部诗歌下载服务器的诗歌回复。如此一来，就会出现这样的情景：客户端发送来的请求，缓存代理处理请求可能是同步也可能是异步。</p>
@@ -530,48 +912,147 @@ class PoetryProxyFactory(ServerFactory):
 <p>Deferred可以在激活后添加新的回调也间接说明了我们在第九部分提到的，deferred中会在最后一个回调中遇到未处理异常，并在此deferred被垃圾回收（即其已经没有任何外界引用）时才将该异常的情况打印出来。即deferred回在其销毁前一直持有异常，等待可能还会添加进来的回调来处理。</p>
 <p>我们已经将deferred中的大部分功能都介绍完了，当然Twisted开发人员可能不会增强deferred的功能。我们下一部分将讲讲Twisted的其它内容。</p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/30/第十四部分-Deferred用于同步环境/" data-id="cj64upq6m00eplraedkgay7kx" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-第十三部分-使用Deferred新功能实现新客户端" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/01/30/第十三部分-使用Deferred新功能实现新客户端/" class="article-date">
-  <time datetime="2015-01-30T14:17:10.000Z" itemprop="datePublished">2015-01-30</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/twisted/">twisted</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第十三部分-使用Deferred新功能实现新客户端/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/30/第十三部分-使用Deferred新功能实现新客户端/">第十三部分 使用Deferred新功能实现新客户端</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/30/第十三部分-使用Deferred新功能实现新客户端/" itemprop="url">第十三部分 使用Deferred新功能实现新客户端</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T22:17:10+08:00">
+                2015-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/twisted/" itemprop="url" rel="index">
+                    <span itemprop="name">twisted</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>原文见<a href="http://krondo.com/?p=2159" target="_blank" rel="external">这里</a></p>
+      
+
+      
+        
+          
+            <p>原文见<a href="http://krondo.com/?p=2159" target="_blank" rel="external">这里</a></p>
 <p>##介绍<br>回忆下第10部分中的客户端5.1版。客户端使用一个Deferred来管理所有的回调链，其中包括一个格式转换引擎的调用。在那个版本中，这个引擎的实现是同步的。（即等待其执行再切到其它函数或任务中）<br>现在我们想实现一个新的客户端，其使用我们在第十二部分实现的格式服务器提供的格式转换服务。但这里有一个问题需要说清楚：由于格式转换服务是通过网络获取的，因此我们需要使用异步I/O。这也就意味着我们获取格式转换服务的API必须是异步实现的。换句话说，try_to_cummingsify回调将会在新客户端中返回一个 deferred。</p>
 <p>如果在一个deferred的回调链中的一个回函数又返回了一个 deferred会发生什么现象呢？我们规定前一个deferred为外层deferred，而后者则为内层deferred。假设回调N在外层deferred中返回一个内层的deferred。意味着这个回调宣称“我是一个异步函数，结果不会立即出现！”。由于外层的deferred需要调用回调链中下一个callback或errback并将回调N的结果传下去，因此，其必须等待直到内层deferred被激活。当然了，外层的deferred不可能处于阻塞状态，因为控制权此时已经转交给了reactor并且阻塞了。</p>
 <p>那么外层的deferred如何知晓何时恢复执行呢？很简单，在内层deferred上添加callback或errback即可（即激活内层的deferred）。因此，当内层deferrd被激活时，外层的deferred恢复其回调链的执行。当内层deferred回调执行成功，那么外层deferred会调用第N+1个callback回调。相反，如果内层deferred执行失败，那么外层deferred会调用第N+1个errback回调。</p>
@@ -640,48 +1121,147 @@ return d
 </code></pre><p>##结束语<br>这一部分我们学习了关于deferred如何透明地完成了回调链内部再次处理deferred。并由此，我们可以无需考虑内部实现细节并放心地在外部deferred上添加回调。</p>
 <p>在第十四部分，我们将讲解deferred的另外一个特性。</p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/30/第十三部分-使用Deferred新功能实现新客户端/" data-id="cj64upq6i00ejlraesl3wfk81" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-第十二部分-改进诗歌下载服务器" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/01/30/第十二部分-改进诗歌下载服务器/" class="article-date">
-  <time datetime="2015-01-30T14:00:48.000Z" itemprop="datePublished">2015-01-30</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/twisted/">twisted</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第十二部分-改进诗歌下载服务器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/30/第十二部分-改进诗歌下载服务器/">第十二部分 改进诗歌下载服务器</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/30/第十二部分-改进诗歌下载服务器/" itemprop="url">第十二部分 改进诗歌下载服务器</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T22:00:48+08:00">
+                2015-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/twisted/" itemprop="url" rel="index">
+                    <span itemprop="name">twisted</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>#第十二部分 改进诗歌下载服务器<br>原文在<a href="http://krondo.com/?p=2101" target="_blank" rel="external">这里</a><br>新的服务器实现<br>这里我们要新写一个Twisted版的服务器。然后，再来讨论一些Deferred的新功能。</p>
+      
+
+      
+        
+          
+            <p>#第十二部分 改进诗歌下载服务器<br>原文在<a href="http://krondo.com/?p=2101" target="_blank" rel="external">这里</a><br>新的服务器实现<br>这里我们要新写一个Twisted版的服务器。然后，再来讨论一些Deferred的新功能。</p>
 <p>在第九、十部分，我们提出了诗歌转换引擎这个概念。由于其实现太过简单，因此我们用随机选择来模拟了可能会出现转换失败的情景。但如果转换引擎位于服务器端，那么当服务器宕机就会出现真实的转换失败的情景了。<br>因此，在这部分我们要实现一个诗歌样式转换服务器，然后在一个部分，我们会重写我们的诗歌下载客户端来使用这一服务并且学习Deferred的新功能。</p>
 <p>##设计协议<br>到目前为止，服务器端与客户端之间的交互都是单向的。但样式转换服务需要两者进行双向交互-客户端将原始式样的诗歌发送给乳服务器，然后服务器将转换格式并将其发送给对应的客户端。因此，我们需要使用、或自己实现一个协议来实现这种交互。<br>我们设计服务器端可以提供若干种转换服务，而让客户端来进行选择。因此客户端需要向服务器端发送两部分信息：转换方式名与诗歌原始内容。服务器只是将转换格式之后的诗歌发送给客户端。这里使用到了简单的运程调用。</p>
 <p>Twisted支持需要种协议来解决这个问题：XML-RPC,Perspective Broker,AMP。<br>但介绍使用其中任何一种都需要大量的时间，因此我们使用自己实现的协议。我们约定客户端发送内容格式如下：</p>
@@ -744,48 +1324,147 @@ return d
 <p><img src="/img/提供两种协议支持的格式转换服务器.png" alt="图27 提供两种协议支持的格式转换服务器"></p>
 <p>虽然在图27中使用了两种协议，但他们也许是只有几个协议属性不同。factory共享相同的服务。这样实现了代码的复用。</p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/30/第十二部分-改进诗歌下载服务器/" data-id="cj64upq6k00emlrae7ms94bgv" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-第十一部分：改进诗歌下载服务器" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/01/30/第十一部分：改进诗歌下载服务器/" class="article-date">
-  <time datetime="2015-01-30T13:59:42.000Z" itemprop="datePublished">2015-01-30</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/twisted/">twisted</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第十一部分：改进诗歌下载服务器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/30/第十一部分：改进诗歌下载服务器/">第十一部分：改进诗歌下载服务器</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/30/第十一部分：改进诗歌下载服务器/" itemprop="url">第十一部分：改进诗歌下载服务器</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T21:59:42+08:00">
+                2015-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/twisted/" itemprop="url" rel="index">
+                    <span itemprop="name">twisted</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>#第十一部分：改进诗歌下载服务器<br>原文在<a href="http://krondo.com/?p=2048" target="_blank" rel="external">这里</a></p>
+      
+
+      
+        
+          
+            <p>#第十一部分：改进诗歌下载服务器<br>原文在<a href="http://krondo.com/?p=2048" target="_blank" rel="external">这里</a></p>
 <p>##诗歌下载服务器<br>到目前为止，我们已经学习了大量关于诗歌下载客户端的Twisted的知识，接下来，我们使用Twisted重新实现我们的服务器端。利益于Twisted的抽象机制，接下来你会发现我们前面已经几乎全部学习到这部分知识了。其实现源码在<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-server-1/fastpoetry.py#L1" target="_blank" rel="external">twisted-server-1/fastpoetry.py</a>中。之所以称其为fastpoetry是因为其并没有任何延迟的传输诗歌。注意到，其代码量比客户端少多了。</p>
 <p>让我们一部分一部分地来看服务端的实现，首先是poetryProtocol：</p>
 <pre><code>class PoetryProtocol(Protocol):
@@ -818,48 +1497,147 @@ return d
 <p>并且Twisted在监听端口的数量上亦无限制。实际上，一个单一的Twisted线程可以监听数个端口并为其提供不同的服务（通过使用不同的factory作为listenTCP的参数即可）。并且经过精心的设计，使用一个Twisted线程来提供多个服务还是使用多个Twisted线程来实现可以推迟到部署阶段来做决定。</p>
 <p>我们这个版本的服务器有些功能是没有的。首先，它无法产生任何日志来帮助我们调试和分析网络出现的问题。另外，服务器也不是做为一个守护进程来运行，很容易通过ctrl+c来中止其执行。我们将会在第十二部分来分析这部分内容。</p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/30/第十一部分：改进诗歌下载服务器/" data-id="cj64upq6g00eglraec8uhdksh" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-第十部分：增强defer功能的客户端" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/01/30/第十部分：增强defer功能的客户端/" class="article-date">
-  <time datetime="2015-01-30T13:58:07.000Z" itemprop="datePublished">2015-01-30</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/twisted/">twisted</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第十部分：增强defer功能的客户端/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/30/第十部分：增强defer功能的客户端/">第十部分：增强defer功能的客户端</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/30/第十部分：增强defer功能的客户端/" itemprop="url">第十部分：增强defer功能的客户端</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T21:58:07+08:00">
+                2015-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/twisted/" itemprop="url" rel="index">
+                    <span itemprop="name">twisted</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>原文在<a href="http://krondo.com/?p=1956" target="_blank" rel="external">这里</a></p>
+      
+
+      
+        
+          
+            <p>原文在<a href="http://krondo.com/?p=1956" target="_blank" rel="external">这里</a></p>
 <p>##版本5.0<br>现在我们将要向诗歌下载客户端添加一些新的处理逻辑，包括在第九部分提到要添加的功能。不过，首先我要说明一点：我并不知道如何实现Byronification引擎。那超出了我的编程能力范围。取而代之的，我想实现一个简单的功能，即Cummingsifier。其只是将诗歌内容转换成小写字母：</p>
 <pre><code>def cummingsify(poem)
     return poem.lower()
@@ -976,48 +1754,147 @@ r None r None
 </code></pre></li>
 </ol>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/30/第十部分：增强defer功能的客户端/" data-id="cj64upq6p00eslrae661rhqj5" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-第九部分：第二个小插曲，Deferred" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/01/30/第九部分：第二个小插曲，Deferred/" class="article-date">
-  <time datetime="2015-01-30T13:56:42.000Z" itemprop="datePublished">2015-01-30</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/twisted/">twisted</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第九部分：第二个小插曲，Deferred/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/30/第九部分：第二个小插曲，Deferred/">第九部分：第二个小插曲，Deferred</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/30/第九部分：第二个小插曲，Deferred/" itemprop="url">第九部分：第二个小插曲，Deferred</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T21:56:42+08:00">
+                2015-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/twisted/" itemprop="url" rel="index">
+                    <span itemprop="name">twisted</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>原文在<a href="http://krondo.com/?p=1825" target="_blank" rel="external">这里</a></p>
+      
+
+      
+        
+          
+            <p>原文在<a href="http://krondo.com/?p=1825" target="_blank" rel="external">这里</a></p>
 <p>##更多关于回调的知识<br>稍微停下来再思考一下回调的机制。尽管对于以Twisted方式使用Deferred写一个简单的异步程序已经非常了解了，但Deferred提供更多的是只有在比较复杂环境下才会用到的功能。因此，下面我们自己想出一些复杂的环境，以此来观察当使用回调编程时会遇到哪些问题。然后，再来看看deferred是如何解决这些问题的。</p>
 <p>因此，我们为诗歌下载客户端添加了一个假想的功能。设想一些计算机科学家发明了一种新诗歌关联算法，<br>Byronification引擎。这个漂亮的算法根据一首诗歌生成一首使用Lord Byron式的同样的诗歌。另外，专家们提供了其Python的接口，即：</p>
 <pre><code>class IByronificationEngine(Interface): 
@@ -1140,48 +2017,147 @@ exceptions.Exception: oops
 deferred.addErrback(my_errback)
 </code></pre><p>Recall that the last two methods add implicit pass-through functions as one member of the pair.</p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/30/第九部分：第二个小插曲，Deferred/" data-id="cj64upq6300dxlraeq86txj55" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-如何重命名scrapy下载的图片" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/01/30/如何重命名scrapy下载的图片/" class="article-date">
-  <time datetime="2015-01-30T09:07:32.000Z" itemprop="datePublished">2015-01-30</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/scrapy/">scrapy</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/如何重命名scrapy下载的图片/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/30/如何重命名scrapy下载的图片/">如何重命名scrapy下载的图片</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/30/如何重命名scrapy下载的图片/" itemprop="url">如何重命名scrapy下载的图片</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T17:07:32+08:00">
+                2015-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>默认情况下，使用ImagePipeline组件下载图片的时候，图片名称是以图片URL的SHA1值进行保存的。</p>
+      
+
+      
+        
+          
+            <p>默认情况下，使用ImagePipeline组件下载图片的时候，图片名称是以图片URL的SHA1值进行保存的。</p>
 <p>如：<br>图片URL:<a href="http://www.example.com/image.jpg" target="_blank" rel="external">http://www.example.com/image.jpg</a></p>
 <p>SHA1结果：3afec3b4765f8f0a07b78f98c07b83f013567a0a</p>
 <p>则图片名称：3afec3b4765f8f0a07b78f98c07b83f013567a0a.jpg</p>
@@ -1224,48 +2200,147 @@ class MyImagesPipeline(ImagesPipeline):
 <p>可以参考stackoverflow上<a href="http://stackoverflow.com/questions/6194041/scrapy-image-download-how-to-use-custom-filename/22263951#22263951" target="_blank" rel="external">此问题的讨论</a></p>
 <p>原文地址在<a href="http://www.it165.net/pro/html/201402/9615.html" target="_blank" rel="external">这里</a>，本文做了一些删除和修改</p>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/30/如何重命名scrapy下载的图片/" data-id="cj64upq4p00bblraerhi4g3ej" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scrapy/">scrapy</a></li></ul>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-第八部分：使用Deferred的诗歌下载客户端" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/01/30/第八部分：使用Deferred的诗歌下载客户端/" class="article-date">
-  <time datetime="2015-01-30T06:52:49.000Z" itemprop="datePublished">2015-01-30</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/twisted/">twisted</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第八部分：使用Deferred的诗歌下载客户端/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/30/第八部分：使用Deferred的诗歌下载客户端/">第八部分：使用Deferred的诗歌下载客户端</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/30/第八部分：使用Deferred的诗歌下载客户端/" itemprop="url">第八部分：使用Deferred的诗歌下载客户端</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T14:52:49+08:00">
+                2015-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/twisted/" itemprop="url" rel="index">
+                    <span itemprop="name">twisted</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>原文点<a href="http://krondo.com/?p=1778" target="_blank" rel="external">这里</a></p>
+      
+
+      
+        
+          
+            <p>原文点<a href="http://krondo.com/?p=1778" target="_blank" rel="external">这里</a></p>
 <p>##客户端4.0<br>我们已经对deferreds有些理解了，现在我们可以使用它重写我们的客户端。你可以在twisted-client-4/get-poetry.py中看到它的实现。</p>
 <p>这里的get_poetry已经再也不需要callback与errback参数了。相反，返回了一个用户可能根据需要添加callbacks和errbacks的新deferred。</p>
 <pre><code>def get_poetry(host, port):
@@ -1380,48 +2455,147 @@ traceback.print_stack()
 <li>Update client 4.0 to print out the appropriate server address when a poem download fails, so the user can tell which server is the culprit. Don’t forget you can add extra positional- and keyword-arguments when you attach callbacks and errbacks.</li>
 </ol>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/30/第八部分：使用Deferred的诗歌下载客户端/" data-id="cj64upq6900e8lraezg3ovrkb" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+      
 
   
-    <article id="post-第七部分：小插曲，Deferred" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/01/30/第七部分：小插曲，Deferred/" class="article-date">
-  <time datetime="2015-01-30T06:32:17.000Z" itemprop="datePublished">2015-01-30</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/twisted/">twisted</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第七部分：小插曲，Deferred/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
     
-    
-      <header class="article-header">
+      <header class="post-header">
+
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/30/第七部分：小插曲，Deferred/">第七部分：小插曲，Deferred</a>
-    </h1>
-  
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/30/第七部分：小插曲，Deferred/" itemprop="url">第七部分：小插曲，Deferred</a></h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T14:32:17+08:00">
+                2015-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/twisted/" itemprop="url" rel="index">
+                    <span itemprop="name">twisted</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>原文点<a href="http://krondo.com/?p=1682" target="_blank" rel="external">这里</a></p>
+      
+
+      
+        
+          
+            <p>原文点<a href="http://krondo.com/?p=1682" target="_blank" rel="external">这里</a></p>
 <p>##回调函数的后序发展</p>
 <p>在第六部分我们认识这样一个情况：回调是Twisted异步编程中的基础。除了与reactor交互外，回调可以安插在任何我们写的Twisted结构内。因此在使用Twisted或其它基于reactor的异步编程体系时，都意味需要将我们的代码组织成一系列由reactor循环可以激活的回调函数链。</p>
 <p>即使一个简单的get_poetry函数都需要回调，两个回调函数中一个用于处理正常结果而另一个用于处理错误。作为一个Twisted程序员，我们必须充分利用这一点。应该花点时间思考一下如何更好地使用回调及使用过程中会遇到什么困难。</p>
@@ -1644,131 +2818,312 @@ reactor.run()
 <li>Read the docstrings for the <a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/defer.py#L189" target="_blank" rel="external">addCallback</a> and <a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/defer.py#L192" target="_blank" rel="external">addErrback</a> methods on Deferred.</li>
 </ol>
 
+          
+        
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/30/第七部分：小插曲，Deferred/" data-id="cj64upq6000dplrae4uex7w9g" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
     </footer>
   </div>
   
-</article>
+  
+  
+  </article>
 
+
+    
+  </section>
 
   
-
-
-  <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/16/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/18/">__('next') &raquo;</a>
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/16/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/18/"><i class="fa fa-angle-right"></i></a>
   </nav>
-</section>
+
+
+
+          </div>
+          
+
+
+          
+
+        </div>
         
-          <aside id="sidebar">
+          
   
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Django/">Django</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jQuery/">jQuery</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/scrapy/">scrapy</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/twisted/">twisted</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix网络编程/">unix网络编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译原理/">编译原理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/长知识/">长知识</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul>
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
     </div>
   </div>
 
-
-  
+  <aside id="sidebar" class="sidebar">
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/">bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jQuery/">jQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrapy/">scrapy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unicode/">unicode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/urllib/">urllib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异步编程/">异步编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/排序/">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/操作系统/">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络基础/">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li></ul>
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="You Wangqiu" />
+          <p class="site-author-name" itemprop="name">You Wangqiu</p>
+           
+              <p class="site-description motion-element" itemprop="description">世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">206</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
     </div>
-  </div>
+  </aside>
 
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/c/" style="font-size: 19px;">c</a> <a href="/tags/http/" style="font-size: 14px;">http</a> <a href="/tags/jQuery/" style="font-size: 10px;">jQuery</a> <a href="/tags/linux/" style="font-size: 17px;">linux</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/openstack/" style="font-size: 10px;">openstack</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/scrapy/" style="font-size: 16px;">scrapy</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/socket/" style="font-size: 11px;">socket</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tcp-ip/" style="font-size: 13px;">tcp/ip</a> <a href="/tags/ubuntu/" style="font-size: 10px;">ubuntu</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/urllib/" style="font-size: 10px;">urllib</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/异步编程/" style="font-size: 18px;">异步编程</a> <a href="/tags/排序/" style="font-size: 10px;">排序</a> <a href="/tags/操作系统/" style="font-size: 11px;">操作系统</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/网络基础/" style="font-size: 10px;">网络基础</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
-          </li>
-        
-          <li>
-            <a href="/2016/11/03/Django-redis如何支持存取整型和布尔值/">Django-redis如何支持存取整型和布尔值</a>
-          </li>
-        
-          <li>
-            <a href="/2016/10/17/Django-model去掉unique_together报错/">Django model去掉unique_together报错</a>
-          </li>
-        
-          <li>
-            <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
-          </li>
-        
-          <li>
-            <a href="/2016/06/05/Python-面试题集锦-转载/">Python 面试题集锦[转载]</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
         
       </div>
-      <footer id="footer">
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
   
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2017 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">You Wangqiu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
     
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
-
   </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
 </body>
 </html>
