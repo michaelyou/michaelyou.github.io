@@ -61,121 +61,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-面试题总结3" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/01/27/面试题总结3/" class="article-date">
-  <time datetime="2015-01-27T07:08:28.000Z" itemprop="datePublished">2015-01-27</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/面试/">面试</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/27/面试题总结3/">笔试题总结3</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>下列关于线程说法错误的是（B）</p>
-<p>A.耗时的操作使用线程，提高程序响应</p>
-<p>B.耗内存的操作使用线程，提高内存利用率</p>
-<p>C.多CPU的系统使用线程，提高CPU利用率</p>
-<p>D.并行操作使用线程，如c/s架构中服务端程序为每个客户端请求创建一个线程来响应</p>
-</blockquote>
-<p>解释：多线程可以提高CPU利用率，不能提高内存利用率</p>
-<hr>
-<blockquote>
-<p>个数约为 50k 的数列需要从小到大排序， 数列特征是基本逆序 （多数数字从大到小，个别乱序） ，以下哪种排序算法在事先不了解数列特征的情况下性能大概率最优（不考虑空间限制）_E__.</p>
-<p>A.冒泡排序</p>
-<p>B.改进冒泡排序</p>
-<p>C.选择排序</p>
-<p>D.快速排序</p>
-<p>E.堆排序</p>
-<p>F.插入排序</p>
-</blockquote>
-<p>解释：个数约为50K，基本可以秒杀一般的<code>冒泡</code>，<code>改进冒泡</code>，<code>选择</code>，<code>插入</code>等基本的排序。加上数列的特征是基本逆序，而快速排序的worst case就是基本逆序或者基本有序的情况。综上所述，堆排序应该是大概率最优的。</p>
-<hr>
-<blockquote>
-<p>下列方法中，<em>B__</em>不可以用来程序调优？</p>
-<p>A.改善数据访问方式以提升缓存命中率</p>
-<p>B.使用多线程的方式提高 I/O 密集型操作的效率</p>
-<p>C.利用数据库连接池替代直接的数据库访问</p>
-<p>C.利用迭代替代递归</p>
-<p>E.合并多个远程调用批量发送</p>
-<p>F.共享冗余数据提高访问效率</p>
-</blockquote>
-<p>解释：</p>
-<p>A缓存命中率提高，减少访问存储器的开销</p>
-<p>B多线程并不能使IO操作并行化。可以通过异步读写、合并读写、计算代替读写等方式优化。 I/O密集型问题一般是硬件层面的问题，比如硬盘，它的I/O就摆在那里，无论你在怎么多线程，瓶颈就在硬盘那，所以B的说法是不可行的。对于“I/O密集型”的应用程序可以采用I/O效率较高的SCSI硬盘，或者采用集群的方式。</p>
-<p>C可以减少连接和断开数据库的开销</p>
-<p>D可以减少运行时对程序栈进行操作的开销</p>
-<p>E减少远程调用的次数</p>
-<hr>
-<blockquote>
-<p>最小堆[0,3,2,5,7,4,6,8],在删除堆顶元素0之后，其结果是（C）</p>
-<p>A.[3，2，5，7，4，6，8]</p>
-<p>B.[2，3，5，7，4，6，8]</p>
-<p>C.[2，3，4，5，7，8，6]</p>
-<p>D.[2，3，4，5，6，7，8]</p>
-</blockquote>
-<p>解释：删除0之后，末尾8代替0的位置</p>
-<hr>
-<blockquote>
-<p>在CPU内存之间进行地址转换时，（B）将地址从虚拟（逻辑）地址空间映射到物理地址空间。</p>
-<p>A.TCB</p>
-<p>B.MMU</p>
-<p>C.CACHE</p>
-<p>D.DMA</p>
-</blockquote>
-<p>解释：MMU是Memory Management Unit的缩写，中文名是内存管理单元，它是中央处理器（CPU）中用来管理虚拟存储器、物理存储器的控制线路，同时也负责虚拟地址映射为物理地址，以及提供硬件机制的内存访问授权，多用户多进程操作系统。</p>
-<hr>
-<blockquote>
-<pre><code>#include&lt;stdio.h&gt;
-int main()                                                                    
-{
-    unsigned int a = 6;
-    int b = -20;
-    (a + b &gt; 6) ? printf(&quot;&gt;6\n&quot;) : printf(&quot;&lt;=6\n&quot;);
-    printf(&quot;%d\n&quot;, (a + b));
-    return 0;
-} 
-</code></pre><p>输出为：&gt;6<br>解释：执行a+b的时候会将b转换成无符号数，所得的结果也是无符号数，将会是一个很大的正数，自然是大于6的</p>
-</blockquote>
-<hr>
-<p>程序的局部变量存放在<code>栈区</code>，全局变量存放在<code>全局静态区</code>，动态申请的数据存放在<code>堆区</code></p>
-<hr>
-<blockquote>
-<p>用希尔(Shell)方法排序时,若关键字的初始排序杂乱无序,则排序效率就低(错)</p>
-</blockquote>
-<p>解释：希尔排序又称“缩小增量排序”，即每趟只对相同增量距离的关键字进行比较，这与关键字序列初始有序或无序无关</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/27/面试题总结3/" data-id="cj64upqa800gtlraeztuk41ub" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/">c</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
     <article id="post-笔试题总结2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/01/26/笔试题总结2/" class="article-date">
@@ -1081,6 +966,78 @@ int main(int argc, char **argv)
 
 
   
+    <article id="post-free函数解析" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/22/free函数解析/" class="article-date">
+  <time datetime="2015-01-22T13:29:18.000Z" itemprop="datePublished">2015-01-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/c/">c</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/22/free函数解析/">free函数解析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##代码</p>
+<pre><code>#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+#include&lt;string.h&gt;
+void GetMemory(char **p,int num)
+{
+    *p = malloc(num);
+}
+int main()
+{
+    char *str = NULL;   
+    GetMemory(&amp;str, 100);   
+
+    strcpy(str, &quot;hello&quot;);   
+    free(str);
+
+    if (str != NULL)
+    {
+        strcpy(str, &quot;world&quot;);
+    }   
+    printf(&quot;\n str is %s&quot;, str);
+    getchar();
+}
+</code></pre><p>打印出来的结果是：str is world</p>
+<p>##解释<br>本题主要考察了对free的理解，总结一下就是3点</p>
+<ul>
+<li>free只是释放了malloc所申请的内存，并不改变指针的值</li>
+<li>由于指针所指向的内存已经被释放，所以其它代码有机会改写其中的内容，相当于该指针从此指向了自己无法控制的地方，也称为野指针</li>
+<li>为了避免失误，最好在free之后，将指针指向NULL</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/22/free函数解析/" data-id="cj64upq0m0055lraeab2aosx5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/">c</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
 
 
   <nav id="page-nav">
@@ -1123,7 +1080,7 @@ int main(int argc, char **argv)
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
     </div>
   </div>
 
@@ -1134,10 +1091,6 @@ int main(int argc, char **argv)
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2017/08/09/hello-world/">Hello World</a>
-          </li>
         
           <li>
             <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
@@ -1153,6 +1106,10 @@ int main(int argc, char **argv)
         
           <li>
             <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+          <li>
+            <a href="/2016/06/05/Python-面试题集锦-转载/">Python 面试题集锦[转载]</a>
           </li>
         
       </ul>

@@ -61,149 +61,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-mongodb分布式集群架构" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/02/03/mongodb分布式集群架构/" class="article-date">
-  <time datetime="2015-02-03T08:47:08.000Z" itemprop="datePublished">2015-02-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/数据库/">数据库</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/02/03/mongodb分布式集群架构/">mongodb分布式集群架构</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本文转载自<a href="mongodb分布式集群架构">这里</a></p>
-<p>##关于mongodb</p>
-<blockquote>
-<p>MongoDB是一个基于分布式文件存储的数据库。由C++语言编写。旨在为WEB应用提供可扩展的高性能数据存储解决方案。 MongoDB是一个介于关系数据库和非关系数据库之间的产品，是非关系数据库当中功能最丰富，最像关系数据库的。他支持的数据结构非常松散，是类似json的bjson格式，因此可以存储比较复杂的数据类型。Mongo最大的特点是他支持的查询语言非常强大，其语法有点类似于面向对象的查询语言，几乎可以实现类似关系数据库单表查询的绝大部分功能，而且还支持对数据建立索引。</p>
-</blockquote>
-<p>##mongodb分布式应用原理<br>&gt;<br>MongoDB集群包括一定数量的mongod（分片存储数据）、mongos（路由处理）、config server（配置节点）、clients（客户端）、arbiter（仲裁节点：为了选举某个分片存储数据节点那台为主节点）。</p>
-<p><img src="161802143.png" alt=""></p>
-<ol>
-<li>shards：一个shard为一组mongod，通常一组为两台，主从或互为主从，这一组mongod中的数据时相同的，具体可见《mongodb分布式之数据复制》。数据分割按有序分割方式，每个分片上的数据为某一范围的数据块，故可支持指定分片的范围查询，这同google的BigTable 类似。数据块有指定的最大容量，一旦某个数据块的容量增长到最大容量时，这个数据块会切分成为两块；当分片的数据过多时，数据块将被迁移到系统的其他分片中。另外，新的分片加入时，数据块也会迁移。</li>
-<li>mongos：可以有多个，相当于一个控制中心，负责路由和协调操作，使得集群像一个整体的系统。mongos可以运行在任何一台服务器上，有些选择放在shards服务器上，也有放在client 服务器上的。mongos启动时需要从config servers上获取基本信息，然后接受client端的请求，路由到shards服务器上，然后整理返回的结果发回给client服务器。</li>
-<li>config server：存储集群的信息，包括分片和块数据信息。主要存储块数据信息，每个config server上都有一份所有块数据信息的拷贝，以保证每台config server上的数据的一致性。</li>
-<li>shard key：为了分割数据集，需要制定分片key的格式，类似于用于索引的key格式，通常由一个或多个字段组成以分发数据，比如：{ name : 1 }{ _id : 1 }{ lastname : 1, firstname : 1 }{ tag : 1, timestamp : -1 }mongoDB的分片为有序存储(1为升序，-1为降序)，shard key相邻的数据通常会存在同一台服务（数据块）上。</li>
-</ol>
-<p>##mongodb分布式部署方式<br>服务器部署可以有多种方式。首先，每台config server、mongos、mongod都可以是单独的服务器，但这样会导致某些服务器的浪费，比如config server。下图为物理机共享的集群部署，不需要额外加机器。</p>
-<p><img src="162121526.png" alt=""></p>
-<p>当然也有其他的方案，比如把mongos部署在所有的mongod（server1-6）上，又或者在每个运用服务器（server7）上部署mongos。这样部署有个好处在于，appserver和mongos之间的通信建立在localhost interface上，减少了通信成本。当然，此乃官方说法，但本人有想法，尽管减少了appserver和mongos之间的通信成本，但mongos与mongod之间的通信成本却增加了，而且把mongos部署在appserver上并不是很利于sa管理，mongoDB应该是一个相对独立的系统，与应用的耦合度应该尽量降到最低，万一应用想要换数据库，也能多少减少些工作量。</p>
-<p>##mongodb分布式的安装</p>
-<ul>
-<li><p>下载</p>
-<pre><code>wget http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.0.4.tgz
-</code></pre></li>
-<li><p>安装</p>
-<pre><code>tar zxvf mongodb-linux-2.0.4.tgz
-cp -fr mongodb-linux-*2.0.4/* /data/mongodb/
-mkdir -p /data/mongodb/data/      #创建数据存储目录                      
-mkdir -p /data/mongodb/log/       #创建日志存储目录
-mkdir -p /data/mongodb/config/    #创建配置存储目录
-mkdir -p /data/mongodb/arbiter/   #创建仲裁节点存储目录
-</code></pre></li>
-<li><p>单机模式以及个参数说明</p>
-<pre><code>mongod --fork --bind_ip 127.0.0.1 --port 11811 --dbpath /data/mongodb/data --directoryperdb --logpath /data/mongodb/log/db1.log --logappend  --nohttpinterface
-netstat -ntlp|grep mongod
-</code></pre></li>
-</ul>
-<p>简单的参数说明：</p>
-<blockquote>
-<ul>
-<li>–logpath 日志文件路径 </li>
-<li>–master 指定为主机器  </li>
-<li>–slave 指定为从机器   </li>
-<li>–source 指定主机器的IP地址</li>
-<li>–pologSize 指定日志文件大小不超过64M.因为resync是非常操作量大且耗时，最好通过设置一个足够大的oplogSize来避免resync(默认的 oplog大小是空闲磁盘大小的5%)。</li>
-<li>–logappend 日志文件末尾添加</li>
-<li>–port 启用端口号</li>
-<li>–fork 在后台运行</li>
-<li>–only 指定只复制哪一个数据库</li>
-<li>–slavedelay 指从复制检测的时间间隔</li>
-<li>–auth 是否需要验证权限登录(用户名和密码)</li>
-<li>–noauth 不需要验证权限登录(用户名和密码)</li>
-</ul>
-</blockquote>
-<p>##集群模式mongos,mongod,configsvr<br>    1.Shard分片–第一组分片  192.168.200.226:<br>    /data/mongodb/bin/mongod –replSet rep1 –fork –port 11813 –maxConns 65535 –dbpath /data/mongodb/data –directoryperdb –logpath /data/mongodb/log/db.log –logappend –nohttpinterface</p>
-<pre><code>#启动rep1分片的一个数据节点
-/data/mongodb/bin/mongos --configdb 192.168.201.226:11812 --port 11811 --fork --chunkSize 256 --logpath /data/mongodb/log/ms.log   
-#启动路由节点，读取201.226上的配置节点的配置文件，（在配置节点启动后启动）
-/data/mongodb/bin/mongod --replSet rep1 --fork --port 11814 --dbpath /data/mongodb/arbiter --directoryperdb --logpath /data/mongodb/log/arbiter.log --logappend --nohttpinterface
-#启动分片的仲裁节点192.168.201.226:    
-/data/mongodb/bin/mongod --replSet rep1 --fork --port 11813 --maxConns 65535 --dbpath /data/mongodb/data --directoryperdb --logpath /data/mongodb/log/db.log --logappend --nohttpinterface
-#启动rep1分片的第二个数据节点
-/data/mongodb/bin/mongos --configdb 192.168.201.226:11812 --port 11811 --fork --chunkSize 256 --logpath /data/mongodb/log/ms.log
-#启动第二个路由节点 （在配置节点启动后启动）
-2.ConfigServer---   #启动config server     192.168.201.226:          
-/data/mongodb/bin/mongod --configsvr --dbpath /data/mongodb/config --port 11812 --fork --logpath /data/mongodb/log/mc.log
-#启动配置节点，注意配置节点应该优先启动，不然路由节点读取不到配置节点信息则会启动失败。
-3.Mongos路由---   #启动mongos，指定config server, chunkSize 256M   192.168.201.226:      
-/data/mongodb/bin/mongos --configdb 192.168.201.226:11812 --port 11811 --fork --chunkSize 256 --logpath /data/mongodb/log/ms.log
-#启动路由节点
-
-#由于机器有限，只配置了一个shard分片，该分片里有2个节点，新增加分片只需对应改replSet 名称即可。
-
-4.配置replSet: 连接任一mongod membersmongo 192.168.201.226:11813 config = {_id: &apos;rep1&apos;, members: [{_id: 0, host: &apos;192.168.200.226:11813&apos;, priority: 2},                     
-#priority 为定义优先级，默认为1，高优先级会被认为是主节点优先启用。{_id: 1, host: &apos;192.168.201.226:11813&apos;},{_id: 2, host: &apos;192.168.200.226:11814&apos;, arbiterOnly: true}]}   rs.initiate(config);   rs.status()
-
-5.连接mongos增加shard 80G   
-   mongo 192.168.201.226:11811/admin   show dbs   use admin   db.runCommand({addshard:&apos;rep1/192.168.201.226:11813,192.168.200.226:11813&apos;,maxsize:81920})   
-   db.runCommand({listshards:1})
-6.连接mongos增加创建test库和c1集合，并测试
-   mongo 192.168.201.226:11811/admin
-   db.runCommand({enablesharding:&apos;test&apos;})
-   printShardingStatus()
-   db.runCommand({shardcollection:&apos;test.auto_increment_id&apos;, key:{_id:1}, unique : true})
-   db.runCommand({shardcollection:&apos;test.c1&apos;, key:{_id:1}, unique : true})
-   for (var i = 1; i &lt;= 100; i++)db.c1.save({id:i,value1:&quot;1234567890&quot;,value2:&quot;1234567890&quot;,value3:&quot;1234567890&quot;,value4:&quot;1234567890&quot;})
-   db.c1.stats()
-   db.createCollection(&quot;cap_coll&quot;, {capped:true, size:100000, max:100});
-   db.mycoll.validate();
-
-7.检查： db.printCollectionStats()
-
-8.管理: mongo 127.0.0.1:11811
-    show dbs
-    use admin
-    show collections
-    db.serverStatus()
-    db.shutdownServer()
-    exit
-9.索引：db.product_data.ensureIndex({data_id: 1}, {unique: true,dropDups: true}); #创建索引
-       db.product_data.dropIndexes();#删除索引 
-</code></pre><blockquote>
-<p>至此，mongodb的分布式架构就架起来了，并且通过测试和log的分析，可看服务是否正常，下面就需要php客户端的支持，和程序的运行，之后加到监控里，就可以在线上部署使用了。                                      </p>
-</blockquote>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/02/03/mongodb分布式集群架构/" data-id="cj64upq1t006elraeyr721cko" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
     <article id="post-python的-classmethod-修饰符" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/02/03/python的-classmethod-修饰符/" class="article-date">
@@ -1091,6 +948,151 @@ reactor.run()
 
 
   
+    <article id="post-python试题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/01/python试题/" class="article-date">
+  <time datetime="2015-02-01T06:19:48.000Z" itemprop="datePublished">2015-02-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/01/python试题/">python试题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##list与tuple的区别 ？dictionary与set的区别？<br>对于list与tupel的区别，在《Python核心编程2》中讲解的很清楚，可以总体概括为，可变与不可变、他们本质相同，但是就因为可变性就延伸了很多不同点。如list类型可以进行相应更改和方法操作，但tupel就没有这个功能。</p>
+<p>对于dict和set，一个是Python唯一的映射类型，一个是Python集合。python中集合对象（set）是一组无序排列的可哈希的值，包含两种类型：可变集合（set）和不可变集合（frozenset），所以set不是可哈希的，frozenset是可哈希的，能当作字典的键。字典和集合的详细区别可以点<a href="http://codingnow.cn/language/353.html" target="_blank" rel="external">这里</a></p>
+<p>##python中String类型和unicode什么关系?<br>string是字节串，而unicode是一个统一的字符集，utf-8是它的一种存储实现形式，string可为utf-8编码，也可编码为GBK等各种编码格式</p>
+<p>##输出从1加到100的和<br>    sum = 0<br>    for i in range(1, 101):<br>        sum += i<br>    print sum </p>
+<pre><code>#注意点：range的右范围是取不到的
+</code></pre><p>##如何在一个函数内修改一个全局变量？<br>在函数中使用global关键字声明全局变量，然后修改。如： </p>
+<pre><code>a = 10
+
+def add1():
+    global a
+    print a + 1
+
+add1()
+</code></pre><p>##except的用法和作用<br>Python的except用来捕获所有异常， 因为Python里面的每次错误都会抛出 一个异常，所以每个程序的错误都被当作一个运行时错误。</p>
+<p>以下是使用except的一个例子：</p>
+<pre><code>try:    
+    foo = opne(“file”) #open被错写为opne    
+except: 
+    sys.exit(“could not open file!”)
+</code></pre><p>因为这个错误是由于open被拼写成opne而造成的，然后被except捕获，所以debug程序的时候很容易不知道出了什么问题</p>
+<p>下面这个例子更好点：</p>
+<pre><code>try:
+    foo = opne(“file”) # 这时候except只捕获IOError
+except IOError:
+    sys.exit(“could not open file”)
+</code></pre><p>##如何反序的迭代一个序列?how do I iterate over a sequence in reverse order</p>
+<p>如果是一个list, 最快的解决方案是：</p>
+<pre><code>list.reverse()
+try:
+    for x in list:
+        “do something with x”
+finally:
+list.reverse()
+</code></pre><p>如果不是list, 最通用但是稍慢的解决方案是：</p>
+<pre><code>#range函数的参数
+#第一个：从这个数开始迭代
+#第二个：迭代到这个数
+#第三个：步长，为负表示倒序
+for i in range(len(sequence)-1, -1, -1):
+    x = sequence[i]
+</code></pre><p>##判断当前用户是否是root<br>    import os<br>    if os.geteuid() != 0:<br>        print “This program must be run as root. Aborting.”<br>    sys.exit(1)</p>
+<p>##什么是lambda函数?<br>Python允许你定义一种单行的小函数。定义lambda函数的形式如下：labmda 参数：表达式lambda函数默认返回表达式的值。你也可以将其赋值给一个变量。lambda函数可以接受任意个参数，包括可选参数，但是表达式只有一个：</p>
+<pre><code>&gt;&gt;&gt; g = lambda x, y: x*y
+&gt;&gt;&gt; g(3,4)
+12
+&gt;&gt;&gt; g = lambda x, y=0, z=0: x+y+z
+&gt;&gt;&gt; g(1)
+1
+&gt;&gt;&gt; g(3, 4, 7)
+14
+</code></pre><p>也能够直接使用lambda函数，不把它赋值给变量：</p>
+<pre><code>&gt;&gt;&gt; (lambda x,y=0,z=0:x+y+z)(3,5,6)
+14
+</code></pre><p>如果你的函数非常简单，只有一个表达式，不包含命令，可以考虑lambda函数。否则，你还是定义函数才对，毕竟函数没有这么多限制。</p>
+<p>##Python是如何进行内存管理的?<br>Python的内存管理是由Python得解释器负责的，开发人员可以从内存管理事务中解放出来，致力于应用程序的开发，这样就使得开发的程序错误更少，程序更健壮，开发周期更短</p>
+<p>##如何用Python来发送邮件?<br>以下代码可以在支持SMTP监听器的服务器上执行。</p>
+<pre><code>import sys, smtplib
+
+fromaddr = raw_input(“From: “)
+toaddrs = raw_input(“To: “).split(‘,’)
+print “Enter message, end with ^D:”
+msg = &quot;&quot;
+while 1:
+    line = sys.stdin.readline()
+    if not line:
+        break
+    msg = msg + line
+
+# 发送邮件部分
+server = smtplib.SMTP(‘localhost’)
+server.sendmail(fromaddr, toaddrs, msg)
+server.quit()
+</code></pre><p>##Python输出一个Fibonacci数列?</p>
+<p>方法一：</p>
+<pre><code>a,b = 0, 1
+while b&lt;100:
+    print (b),
+    a, b = b, a+b
+</code></pre><p>方法二：递归</p>
+<pre><code>def fibonacci2(n):  
+    if n == 1 or n == 2:  
+        return 1  
+    else:  
+        return fibonacci2(n-1) + fibonacci2(n-2)
+</code></pre><p>方法三：迭代</p>
+<pre><code>def fibonacci(n):  
+    if n == 1 or n == 2:  
+        return 1  
+
+    nPre = 1  
+    nLast = 1  
+    nResult = 0  
+    i = 2  
+    while i &lt; n:  
+        nResult = nPre + nLast  
+        nPre = nLast  
+        nLast = nResult  
+        i += 1  
+
+    return nResult  
+</code></pre><p>##Python里面如何生成随机数?<br>标准库random实现了一个随机数生成器，实例代码如下：</p>
+<pre><code>import random
+
+random.random()
+</code></pre><p>它会返回一个随机的0和1之间的浮点数</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/01/python试题/" data-id="cj64upq2j007ulrae874iv3mw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
 
 
   <nav id="page-nav">
@@ -1133,7 +1135,7 @@ reactor.run()
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
     </div>
   </div>
 
@@ -1144,10 +1146,6 @@ reactor.run()
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2017/08/09/hello-world/">Hello World</a>
-          </li>
         
           <li>
             <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
@@ -1163,6 +1161,10 @@ reactor.run()
         
           <li>
             <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+          <li>
+            <a href="/2016/06/05/Python-面试题集锦-转载/">Python 面试题集锦[转载]</a>
           </li>
         
       </ul>

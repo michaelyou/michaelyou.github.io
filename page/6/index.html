@@ -61,127 +61,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-python-对象的拷贝" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/04/27/python-对象的拷贝/" class="article-date">
-  <time datetime="2015-04-27T11:12:42.000Z" itemprop="datePublished">2015-04-27</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/python/">python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/04/27/python-对象的拷贝/">python 对象的拷贝</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>##小例子</p>
-<pre><code>&gt;&gt;&gt; a = [1, 2, &apos;a&apos;]
-&gt;&gt;&gt; b = a
-&gt;&gt;&gt; a
-[1, 2, &apos;a&apos;]
-&gt;&gt;&gt; b
-[1, 2, &apos;a&apos;]
-&gt;&gt;&gt; a.append(&apos;b&apos;)
-&gt;&gt;&gt; a
-[1, 2, &apos;a&apos;, &apos;b&apos;]
-&gt;&gt;&gt; b
-[1, 2, &apos;a&apos;, &apos;b&apos;]
-</code></pre><p>可以看出，赋值号“=”是引用，即a 和 b 是指向一个对象。</p>
-<p>如何实现对象的拷贝呢，python 有 copy模块。</p>
-<p>##用法</p>
-<pre><code>import copy
-对象2 = copy.copy(对象1)
-</code></pre><p>##例子</p>
-<pre><code>&gt;&gt;&gt; a = [1, 2, &apos;a&apos;]
-&gt;&gt;&gt; b = copy.copy(a)
-&gt;&gt;&gt; a
-[1, 2, &apos;a&apos;]
-&gt;&gt;&gt; b
-[1, 2, &apos;a&apos;]
-&gt;&gt;&gt; a.append(&apos;b&apos;)
-&gt;&gt;&gt; a
-[1, 2, &apos;a&apos;, &apos;b&apos;]
-&gt;&gt;&gt; b
-[1, 2, &apos;a&apos;]
-</code></pre><p>##问题</p>
-<pre><code>&gt;&gt;&gt; a = [[1, 2], [&apos;a&apos;, &apos;b&apos;]]
-&gt;&gt;&gt; b = copy.copy(a)
-&gt;&gt;&gt; a
-[[1, 2], [&apos;a&apos;, &apos;b&apos;]]
-&gt;&gt;&gt; b
-[[1, 2], [&apos;a&apos;, &apos;b&apos;]]
-&gt;&gt;&gt; a[1].append(&apos;c&apos;)
-&gt;&gt;&gt; a
-[[1, 2], [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;]]
-&gt;&gt;&gt; b
-[[1, 2], [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;]]
-&gt;&gt;&gt; a.append((3,4,5))
-&gt;&gt;&gt; a
-[[1, 2], [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;], (3, 4, 5)]
-&gt;&gt;&gt; b
-[[1, 2], [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;]]
-</code></pre><p> 可以看出：copy 可以实现浅层拷贝，可以通过copy.deepcoppy(）来实现深层拷贝。</p>
-<p>##深拷贝</p>
-<pre><code>&gt;&gt;&gt; a = [[1, 2], [&apos;a&apos;, &apos;b&apos;]]
-&gt;&gt;&gt; b = copy.deepcopy(a)
-&gt;&gt;&gt; a
-[[1, 2], [&apos;a&apos;, &apos;b&apos;]]
-&gt;&gt;&gt; b
-[[1, 2], [&apos;a&apos;, &apos;b&apos;]]
-&gt;&gt;&gt; a[1].append(&apos;hello&apos;)
-&gt;&gt;&gt; a
-[[1, 2], [&apos;a&apos;, &apos;b&apos;, &apos;hello&apos;]]
-&gt;&gt;&gt; b
-[[1, 2], [&apos;a&apos;, &apos;b&apos;]]
-</code></pre><p>##对象三要素</p>
-<p>python中的对象包含三要素:id, type, value</p>
-<ol>
-<li>id 用来标识唯一一个对象</li>
-<li>type标识对象的类型</li>
-<li>value用来设置对象的值。</li>
-</ol>
-<p><code>is</code> 判断是否是一个对象，是使用id来判断的。</p>
-<p><code>==</code> 是判断a对象的值是否是b对象的值，默认调用它的<code>__eq__</code>方法。</p>
-<p>###例子</p>
-<pre><code>&gt;&gt;&gt; a = [1, 2, &apos;a&apos;]
-&gt;&gt;&gt; b = a
-&gt;&gt;&gt; c = copy.copy(a)
-&gt;&gt;&gt; a is b
-True
-&gt;&gt;&gt; a is c
-False
-</code></pre><p><code>&quot;b  = a&quot;</code> 是引用 指向的一个对象，所以<code>a is b</code> 返回 True</p>
-<p><code>&quot;c = copy.copy(a)&quot;</code>  c是a的拷贝，不是指向一个对象，返回False </p>
-<pre><code>&gt;&gt;&gt; a == c
-True
-</code></pre><p>但是他们的值确实是相同的</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/04/27/python-对象的拷贝/" data-id="cj64upq240071lraew78wwlf8" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
     <article id="post-CGI和WSGI" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/04/27/CGI和WSGI/" class="article-date">
@@ -807,6 +686,52 @@ else:
 
 
   
+    <article id="post-django-project和app的区别" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/15/django-project和app的区别/" class="article-date">
+  <time datetime="2015-04-15T12:24:21.000Z" itemprop="datePublished">2015-04-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Django/">Django</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/04/15/django-project和app的区别/">Django--project和app的区别</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>一个project包含很多个Django app以及对它们的配置。</p>
+<p>技术上，project的作用是提供配置文件，比方说哪里定义数据库连接信息, 安装的app列表， TEMPLATE_DIRS ，等等。</p>
+<p>一个app是一套Django功能的集合，通常包括模型和视图，按Python的包结构的方式存在。</p>
+<p>例如，Django本身内建有一些app，例如注释系统和自动管理界面。 app的一个关键点是它们是很容易移植到其他project和被多个project复用。</p>
+<p>你不一定要创建一个app，不创建也可以搭建简单的web</p>
+<p>但是，系统对app有一个约定： 如果你使用了Django的数据库层（模型），你 必须创建一个Django app。 模型必须存放在apps中。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/04/15/django-project和app的区别/" data-id="cj64uppz4003ulrae2hlemid6" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
 
 
   <nav id="page-nav">
@@ -849,7 +774,7 @@ else:
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
     </div>
   </div>
 
@@ -860,10 +785,6 @@ else:
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2017/08/09/hello-world/">Hello World</a>
-          </li>
         
           <li>
             <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
@@ -879,6 +800,10 @@ else:
         
           <li>
             <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+          <li>
+            <a href="/2016/06/05/Python-面试题集锦-转载/">Python 面试题集锦[转载]</a>
           </li>
         
       </ul>

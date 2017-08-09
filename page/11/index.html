@@ -61,52 +61,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-linux系统性能调试-uptime命令" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/03/12/linux系统性能调试-uptime命令/" class="article-date">
-  <time datetime="2015-03-12T02:38:38.000Z" itemprop="datePublished">2015-03-12</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/linux/">linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/03/12/linux系统性能调试-uptime命令/">linux系统性能调试-uptime命令</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>我们可以使用uptime命令来监视Linux系统性能和状态， 这是一种非常有效的简单方法。uptime命令会显示在一定时间间隔内系统运行队列中进程的信息。通过这些信息可以大致地分析系统的工作负载。所以当系统性能下降时，首先应使用uptime命令来观察系统运行队列中进程的情况。</p>
-<pre><code>$ uptime 
-
-2:07pm up 11 days, 4:54, 9 users, load average: 1.90, 1.98, 2.01
-</code></pre><p>在上面显示内容其中有用的信息是三个负载的平均值：1.90、1.98和2.01分别是前1分钟、5分钟和15分钟内的负载平均值。  </p>
-<p> 系统管理员需要定期运行uptime命令以观察系统的平均负载值及其变化趋势。系统的问题往往通过上述数据反映出来。当系统负载增大时，说明多条命令被阻塞在内存和I/O系统中。这时需要检查系统的有关信息。一般Linux系统，负载为2和3 表示轻载，5和6表示中等程度负载，10 以上为过载。不同系统的划分标准是不同的。系统管理员应根据实际情况确定自己系统中划分轻载和过载的界限。-</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/12/linux系统性能调试-uptime命令/" data-id="cj64upq1d0061lrae6s3frs6u" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
     <article id="post-linux系统性能调试-free命令" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/03/12/linux系统性能调试-free命令/" class="article-date">
@@ -678,6 +632,53 @@ main()
 
 
   
+    <article id="post-keepalive机制" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/06/keepalive机制/" class="article-date">
+  <time datetime="2015-03-06T12:51:39.000Z" itemprop="datePublished">2015-03-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/TCP-IP/">TCP/IP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/06/keepalive机制/">keepalive机制 </a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p> keepalive 是 TCP 协议内的心跳机制，用来维护链接的状态，默认不开启。服务器端每隔一段事件会向空闲两小时以上的链接的对端发送一个 keepalive 包，有以下情形：</p>
+<ol>
+<li>对端回复 ACK，链接保活，再次空闲两小时后重新探测；</li>
+<li>对端的应用程序已经退出，TCP 回复一个 RST包，链接关闭；</li>
+<li>对端的应用程序卡死/无反应，TCP 回复一个 FIN包，来终止链接；</li>
+<li>对端机器无任何反应，服务器端将持续发送 keepalive 包，超时则关闭链接。时间范围半小时到两小时。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/06/keepalive机制/" data-id="cj64upq0y005mlraeo35ift5u" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
 
 
   <nav id="page-nav">
@@ -720,7 +721,7 @@ main()
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
     </div>
   </div>
 
@@ -731,10 +732,6 @@ main()
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2017/08/09/hello-world/">Hello World</a>
-          </li>
         
           <li>
             <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
@@ -750,6 +747,10 @@ main()
         
           <li>
             <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+          <li>
+            <a href="/2016/06/05/Python-面试题集锦-转载/">Python 面试题集锦[转载]</a>
           </li>
         
       </ul>

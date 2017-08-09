@@ -61,270 +61,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-第七部分：小插曲，Deferred" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/01/30/第七部分：小插曲，Deferred/" class="article-date">
-  <time datetime="2015-01-30T06:32:17.000Z" itemprop="datePublished">2015-01-30</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/twisted/">twisted</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/30/第七部分：小插曲，Deferred/">第七部分：小插曲，Deferred</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>原文点<a href="http://krondo.com/?p=1682" target="_blank" rel="external">这里</a></p>
-<p>##回调函数的后序发展</p>
-<p>在第六部分我们认识这样一个情况：回调是Twisted异步编程中的基础。除了与reactor交互外，回调可以安插在任何我们写的Twisted结构内。因此在使用Twisted或其它基于reactor的异步编程体系时，都意味需要将我们的代码组织成一系列由reactor循环可以激活的回调函数链。</p>
-<p>即使一个简单的get_poetry函数都需要回调，两个回调函数中一个用于处理正常结果而另一个用于处理错误。作为一个Twisted程序员，我们必须充分利用这一点。应该花点时间思考一下如何更好地使用回调及使用过程中会遇到什么困难。</p>
-<p>分析下3.1版本中的get_poetry函数：</p>
-<pre><code>...
-def got_poem(poem):
-    print poem
-    reactor.stop()
-def poem_failed(err):
-    print &gt;&gt;sys.stderr, &apos;poem download failed&apos;
-    print &gt;&gt;sys.stderr, &apos;I am terribly sorry&apos;
-    print &gt;&gt;sys.stderr, &apos;try again later?&apos;
-    reactor.stop()
-
-get_poetry(host, port, got_poem, poem_failed)
-
-reactor.run()
-</code></pre><p>我们想法很简单：</p>
-<ol>
-<li>如果完成诗歌下载，那么就打印它</li>
-<li>如果没有下载到诗歌，那就打印出错误信息</li>
-<li>上面任何一种情况出现，都要停止程序继续运行</li>
-</ol>
-<p>同步程序中处理上面的情况会采用如下方式：</p>
-<pre><code>...
-try:
-    poem = get_poetry(host, port) # the synchronous version of get_poetry
-except Exception, err:
-    print &gt;&gt;sys.stderr, &apos;poem download failed&apos;
-    print &gt;&gt;sys.stderr, &apos;I am terribly sorry&apos;
-    print &gt;&gt;sys.stderr, &apos;try again later?&apos;
-    sys.exit()
-else:
-    print poem
-    sys.exit()
-</code></pre><p>即callback类似else处理路径，而errback类似except处理路径。这意味着激活errback回调函数类似于同步程序中抛出一个异常，而激活一个callback意味着同步程序中的正常执行路径。</p>
-<p>两个版本有什么不同之外吗？可以明确的是，在同步版本中，Python解释器可以确保只要get_poetry抛出何种类型的异步都会执行except块。即只要我们相信Python解释器能够正确的解释执行Python程序，那么就可以相信异常处理块会在恰当的时间点被执行。</p>
-<p>不异步版本相反的是：poem_failed错误回调是由我们自己的代码激活并调用的，即<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-3/get-poetry-1.py#L66" target="_blank" rel="external">PeotryClientFactory</a>的<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-3/get-poetry-1.py#L77" target="_blank" rel="external">clientConnectFailed</a>函数。是我们自己而不是Python来确保当出错时错误处理代码能够执行。因此我们必须保证通过调用携带Failure对象的errback来处理任何可能的错误。</p>
-<p>否则，我们的程序就会因为等待一个永远不会出现的回调而止步不前。</p>
-<p>这里显示出了同步与异步版本的又一个不同之处。如果我们在同步版本中没有使用try/except捕获异步，那么Python解释器会为我们捕获然后关掉我们的程序并打印出错误信息。但是如果我们忘记抛出我们的异步异常（在本程序中是在PoetryClientFactory调用errback），我们的程序会一直运行下去，还开心地以为什么事都没有呢。</p>
-<p>显而易见，在异步程序中处理错误是相当重要的，甚至有些严峻。也可以说在异步程序中处理错误信息比处理正常的信息要重要的多，这是因为错误会以多种方式出现，而正确的结果出现的方式是唯一的。当使用Twisted编程时忘记处理异常是一个常犯的错误。</p>
-<p>关于上面同步程序代码的另一个默认实事是：else与except块两者只能是运行其中一个（假设我们的get_poetry没有在一个无限循环中运行）。Python解释器不会突然决定两者都运行或突发奇想来运行else块27次。对于通过Python来实现那样的动作是不可能的。</p>
-<p>但在异步程序中，我们要负责callback和errback的运行。因此，我们可能就会犯这样的错误：同时调用了callback与errback或激活callback27次。这对于使用get_poetry的用户来说是不幸的。虽然在描述文档中没有明确地说明，像try/except块中的else与except一样，对于每次调用get_poetry时callback与errback只能运行其中一个，不管是我们是否成功得下载完诗歌。</p>
-<p>设想一下，我们在调试某个程序时，我们提出了三次诗歌下载请求，但是得到有7次callback被激活和2次errback被激活。可能这时，你会下来检查一下，什么时候get_poetry激活了两次callback并且还抛出一个错误出来。</p>
-<p>从另一个视角来看，两个版本都有代码重复。异步的版本中含有两次reactor.stop，同步版本中含有两次sys.exit调用。我们可以重构同步版本如下：</p>
-<pre><code>...
-try:
-    poem = get_poetry(host, port) # the synchronous version of get_poetry
-except Exception, err:
-    print &gt;&gt;sys.stderr, &apos;poem download failed&apos;
-    print &gt;&gt;sys.stderr, &apos;I am terribly sorry&apos;
-    print &gt;&gt;sys.stderr, &apos;try again later?&apos;
-else:
-    print poem
-
-sys.exit()
-</code></pre><p>我们可以以同样的方式来重构异步版本吗？说实话，确实不太可能，因为callback与errback是两个不同的函数。难道要我们回到使用单一回调来实现重构吗？</p>
-<p>好下面是我们在讨论使用回调编程时的一些观点：</p>
-<ol>
-<li>激活errback是非常重要的。由于errback的功能与except块相同，因此用户需要确保它们的存在。他们并不可选项，而是必选项。</li>
-<li>不在错误的时间点激活回调与在正确的时间点激活回调同等重要。典型的用法是，callback与errback是互斥的即只能运行其中一个。</li>
-<li>使用回调函数的代码重构起来有些困难。<br>来下面的部分，我们还会讨论回调，但是已经可以明白为什么Twisted引入了deferred抽象机制来管理回调了。</li>
-</ol>
-<p>##Deferred<br>由于架设在异步程序中大量被使用，并且我们也看到了，正确的使用这一机制需要一些技巧。因此，Twisted开发者设计了一种抽象机制-Deferred-以让程序员在使用回调时更简便。</p>
-<p>一个Deferred有一对回调链，一个是为针对正确结果，另一个针对错误结果。新创建的Deferred的这两条链是空的。我们可以向两条链里分别添加callback与errback。其后，就可以用正确的结果或异常来激活Deferred。激活Deferred意味着以我们添加的顺序激活callback或errback。图12展示了一个拥有callback/errback链的Deferred对象：</p>
-<p><img src="/img/Deferred.png" alt="图12： Deferred"></p>
-<p>由于defered中不使用reactor，所以我们可以不用在事件循环中使用它。也许你在Deferred中发现一个seTimeout的函数中使用了reactor。放心，它将来将来的版本中删掉。</p>
-<p>下面是我们第一人使用deferred的例子<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/defer-1.py" target="_blank" rel="external">twisted-deferred/defer-1.py</a>:</p>
-<pre><code>from twisted.internet.defer import Deferred
-
-def got_poem(res):
-    print &apos;Your poem is served:&apos;
-    print res
-
-def poem_failed(err):
-    print &apos;No poetry for you.&apos;
-
-d = Deferred()
-
-# add a callback/errback pair to the chain
-d.addCallbacks(got_poem, poem_failed)
-
-# fire the chain with a normal result
-d.callback(&apos;This poem is short.&apos;)
-
-print &quot;Finished&quot;
-</code></pre><p>代码开始创建了一个新deferred，然后使用addCallbacks添加了callback/errback对，然后使用callback函数激活了其正常结果处理回调链。当然了，由于只含有一个回调函数还算不上链，但不要紧，运行它：</p>
-<pre><code>Your poem is served:
-This poem is short.
-Finished
-</code></pre><p>有几个问题需要注意：</p>
-<ol>
-<li>正如3.1版本中我们使用的callback/errback对，添加到deferred中的回调函数只携带一个参数，正确的结果或出错信息。其实，deferred支持回调函数可以有多个参数，但至少得有一个参数并且第一个只能是正确的结果或错误信息。</li>
-<li>我们向deferred添加的是回调函数对</li>
-<li>callbac函数携带仅有的一个参数即正确的结果来激活deferred</li>
-<li>从打印结果顺序可以看出，激活的deferred立即调用了回调。没有任何异步的痕迹。这是因为没有reactor参与导致的。</li>
-</ol>
-<p>好了，让我们来试试另外一种情况，<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/defer-2.py" target="_blank" rel="external">twisted-deferred/defer-2.py</a>激活了错误处理回调：</p>
-<pre><code>from twisted.internet.defer import Deferred
-from twisted.python.failure import Failure
-
-def got_poem(res):
-    print &apos;Your poem is served:&apos;
-    print res
-
-def poem_failed(err):
-    print &apos;No poetry for you.&apos;
-
-d = Deferred()
-
-# add a callback/errback pair to the chain
-d.addCallbacks(got_poem, poem_failed)
-
-# fire the chain with an error result
-d.errback(Failure(Exception(&apos;I have failed.&apos;)))
-
-print &quot;Finished&quot;
-</code></pre><p>运行它打印出的结果为：</p>
-<pre><code>No poetry for you.
-Finished
-</code></pre><p>激活errback链就调用errback函数而不是callback，并且传进的参数也是错误信息。正如上面那样，errback在deferred激活就被调用。<br>在前面的例子中，我们将一个Failure对象传给了errback。deferred会将一个Exception对象转换成Failure，因此我们可以这样写：</p>
-<pre><code>from twisted.internet.defer import Deferred
-
-def got_poem(res):
-    print &apos;Your poem is served:&apos;
-    print res
-
-def poem_failed(err):
-    print err.__class__
-    print err
-    print &apos;No poetry for you.&apos;
-
-d = Deferred()
-
-# add a callback/errback pair to the chain
-d.addCallbacks(got_poem, poem_failed)
-
-# fire the chain with an error result
-d.errback(Exception(&apos;I have failed.&apos;))
-</code></pre><p>运行结果如下：</p>
-<pre><code>twisted.python.failure.Failure [Failure instance: Traceback (failure with no frames): : I have failed. ]
-No poetry for you.
-</code></pre><p>这意味着在使用deferred时，我们可以正常地使用Exception。其中deferred会为我们完成向Failure的转换。</p>
-<p>下面我们来运行下面的代码看看会出现什么结果：</p>
-<pre><code>from twisted.internet.defer import Deferred
-def out(s): print s
-d = Deferred()
-d.addCallbacks(out, out)
-d.callback(&apos;First result&apos;)
-d.callback(&apos;Second result&apos;)
-print &apos;Finished&apos;
-</code></pre><p>输出结果：</p>
-<pre><code>First result Traceback (most recent call last): ... twisted.internet.defer.AlreadyCalledError
-</code></pre><p>很意外吧，也就是说deferred不允许别人激活它两次。这也就解决了上面出现的那个问题：一个激活会导致多个回调同时出现。而deferred设计机制控制住了这种可能，如果你非要在一个deferred上要激活多个回调，那么正如上面那样，会报异常错。<br>那deferred能帮助我们重构异步代码吗？考虑下面这个<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/defer-8.py" target="_blank" rel="external">例子twisted-deferred/defer-8.py</a>：</p>
-<pre><code>import sys
-
-from twisted.internet.defer import Deferred
-
-def got_poem(poem):
-    print poem
-    from twisted.internet import reactor
-    reactor.stop()
-
-def poem_failed(err):
-    print &gt;&gt;sys.stderr, &apos;poem download failed&apos;
-    print &gt;&gt;sys.stderr, &apos;I am terribly sorry&apos;
-    print &gt;&gt;sys.stderr, &apos;try again later?&apos;
-    from twisted.internet import reactor
-    reactor.stop()
-
-d = Deferred()
-
-d.addCallbacks(got_poem, poem_failed)
-
-from twisted.internet import reactor
-
-reactor.callWhenRunning(d.callback, &apos;Another short poem.&apos;)
-
-reactor.run()
-</code></pre><p>这基本上与我们上面的代码相同，唯一不同的是加进了reactor。我们在启动reactor后调用了<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/interfaces.py#L766" target="_blank" rel="external">callWhenRunning</a>函数来激活deferred。我们利用了callWhenRunning函数可以接收一个额外的参数给回调函数。多数Twisted的API都以这样的方式注册回调函数，包括向deferred添加callback的API。下面我们给deferred回调链添加第二个回调,<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/defer-9.py" target="_blank" rel="external">twisted-deferred/defer-9.py</a>：</p>
-<pre><code>import sys
-
-from twisted.internet.defer import Deferred
-
-def got_poem(poem):
-    print poem
-
-def poem_failed(err):
-    print &gt;&gt;sys.stderr, &apos;poem download failed&apos;
-    print &gt;&gt;sys.stderr, &apos;I am terribly sorry&apos;
-    print &gt;&gt;sys.stderr, &apos;try again later?&apos;
-
-def poem_done(_):
-    from twisted.internet import reactor
-    reactor.stop()
-
-d = Deferred()
-
-d.addCallbacks(got_poem, poem_failed)
-d.addBoth(poem_done)
-
-from twisted.internet import reactor
-
-reactor.callWhenRunning(d.callback, &apos;Another short poem.&apos;)
-
-reactor.run()
-</code></pre><p>addBoth函数向callback与errback链中添加了相同的回调函数。在这种方式下，deferred有可能也会执行errback链中的回调。这将在下面的部分讨论，只要记住后面我们还会深入讨论deferred。</p>
-<p>##总结：</p>
-<p>在这部分我们分析了回调编程与其中潜藏的问题。我们也认识到了deferred是如何帮我们解决这些问题的：</p>
-<ol>
-<li>我们不能忽视errback，在任何异步编程的API中都需要它。Deferred支持errbacks。</li>
-<li>激活回调多次可能会导致很严重的问题。Deferred只能被激活一次，这就类似于同步编程中的try/except的处理方法。</li>
-<li>含有回调的程序在重构时相当困难。有了deferred，我们就通过修改回调链来重构程序。</li>
-</ol>
-<p>关于deferred的故事还没有结束，后面还有大量的细节来讲。但对于使用它来重构我们的客户端已经够用的了，在第八部分将讲述这部分内容。</p>
-<p>##练习</p>
-<ol>
-<li>The last example ignores the argument to poem_done. Print it out instead. Make got_poem return a value and see how that changes the argument to poem_done.</li>
-<li>Modify the last two deferred examples to fire the errback chains. Make sure to fire the errback with an Exception.</li>
-<li>Read the docstrings for the <a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/defer.py#L189" target="_blank" rel="external">addCallback</a> and <a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/defer.py#L192" target="_blank" rel="external">addErrback</a> methods on Deferred.</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/30/第七部分：小插曲，Deferred/" data-id="cj64upq6000dplrae4uex7w9g" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步编程/">异步编程</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
     <article id="post-第六部分：抽象地利用Twisted" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/01/30/第六部分：抽象地利用Twisted/" class="article-date">
@@ -1447,6 +1183,121 @@ void F() {
 
 
   
+    <article id="post-面试题总结3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/27/面试题总结3/" class="article-date">
+  <time datetime="2015-01-27T07:08:28.000Z" itemprop="datePublished">2015-01-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/面试/">面试</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/27/面试题总结3/">笔试题总结3</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>下列关于线程说法错误的是（B）</p>
+<p>A.耗时的操作使用线程，提高程序响应</p>
+<p>B.耗内存的操作使用线程，提高内存利用率</p>
+<p>C.多CPU的系统使用线程，提高CPU利用率</p>
+<p>D.并行操作使用线程，如c/s架构中服务端程序为每个客户端请求创建一个线程来响应</p>
+</blockquote>
+<p>解释：多线程可以提高CPU利用率，不能提高内存利用率</p>
+<hr>
+<blockquote>
+<p>个数约为 50k 的数列需要从小到大排序， 数列特征是基本逆序 （多数数字从大到小，个别乱序） ，以下哪种排序算法在事先不了解数列特征的情况下性能大概率最优（不考虑空间限制）_E__.</p>
+<p>A.冒泡排序</p>
+<p>B.改进冒泡排序</p>
+<p>C.选择排序</p>
+<p>D.快速排序</p>
+<p>E.堆排序</p>
+<p>F.插入排序</p>
+</blockquote>
+<p>解释：个数约为50K，基本可以秒杀一般的<code>冒泡</code>，<code>改进冒泡</code>，<code>选择</code>，<code>插入</code>等基本的排序。加上数列的特征是基本逆序，而快速排序的worst case就是基本逆序或者基本有序的情况。综上所述，堆排序应该是大概率最优的。</p>
+<hr>
+<blockquote>
+<p>下列方法中，<em>B__</em>不可以用来程序调优？</p>
+<p>A.改善数据访问方式以提升缓存命中率</p>
+<p>B.使用多线程的方式提高 I/O 密集型操作的效率</p>
+<p>C.利用数据库连接池替代直接的数据库访问</p>
+<p>C.利用迭代替代递归</p>
+<p>E.合并多个远程调用批量发送</p>
+<p>F.共享冗余数据提高访问效率</p>
+</blockquote>
+<p>解释：</p>
+<p>A缓存命中率提高，减少访问存储器的开销</p>
+<p>B多线程并不能使IO操作并行化。可以通过异步读写、合并读写、计算代替读写等方式优化。 I/O密集型问题一般是硬件层面的问题，比如硬盘，它的I/O就摆在那里，无论你在怎么多线程，瓶颈就在硬盘那，所以B的说法是不可行的。对于“I/O密集型”的应用程序可以采用I/O效率较高的SCSI硬盘，或者采用集群的方式。</p>
+<p>C可以减少连接和断开数据库的开销</p>
+<p>D可以减少运行时对程序栈进行操作的开销</p>
+<p>E减少远程调用的次数</p>
+<hr>
+<blockquote>
+<p>最小堆[0,3,2,5,7,4,6,8],在删除堆顶元素0之后，其结果是（C）</p>
+<p>A.[3，2，5，7，4，6，8]</p>
+<p>B.[2，3，5，7，4，6，8]</p>
+<p>C.[2，3，4，5，7，8，6]</p>
+<p>D.[2，3，4，5，6，7，8]</p>
+</blockquote>
+<p>解释：删除0之后，末尾8代替0的位置</p>
+<hr>
+<blockquote>
+<p>在CPU内存之间进行地址转换时，（B）将地址从虚拟（逻辑）地址空间映射到物理地址空间。</p>
+<p>A.TCB</p>
+<p>B.MMU</p>
+<p>C.CACHE</p>
+<p>D.DMA</p>
+</blockquote>
+<p>解释：MMU是Memory Management Unit的缩写，中文名是内存管理单元，它是中央处理器（CPU）中用来管理虚拟存储器、物理存储器的控制线路，同时也负责虚拟地址映射为物理地址，以及提供硬件机制的内存访问授权，多用户多进程操作系统。</p>
+<hr>
+<blockquote>
+<pre><code>#include&lt;stdio.h&gt;
+int main()                                                                    
+{
+    unsigned int a = 6;
+    int b = -20;
+    (a + b &gt; 6) ? printf(&quot;&gt;6\n&quot;) : printf(&quot;&lt;=6\n&quot;);
+    printf(&quot;%d\n&quot;, (a + b));
+    return 0;
+} 
+</code></pre><p>输出为：&gt;6<br>解释：执行a+b的时候会将b转换成无符号数，所得的结果也是无符号数，将会是一个很大的正数，自然是大于6的</p>
+</blockquote>
+<hr>
+<p>程序的局部变量存放在<code>栈区</code>，全局变量存放在<code>全局静态区</code>，动态申请的数据存放在<code>堆区</code></p>
+<hr>
+<blockquote>
+<p>用希尔(Shell)方法排序时,若关键字的初始排序杂乱无序,则排序效率就低(错)</p>
+</blockquote>
+<p>解释：希尔排序又称“缩小增量排序”，即每趟只对相同增量距离的关键字进行比较，这与关键字序列初始有序或无序无关</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/27/面试题总结3/" data-id="cj64upqa800gtlraeztuk41ub" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/">c</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
 
 
   <nav id="page-nav">
@@ -1489,7 +1340,7 @@ void F() {
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li></ul>
     </div>
   </div>
 
@@ -1500,10 +1351,6 @@ void F() {
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2017/08/09/hello-world/">Hello World</a>
-          </li>
         
           <li>
             <a href="/2016/12/19/Django外键赋值/">Django外键赋值</a>
@@ -1519,6 +1366,10 @@ void F() {
         
           <li>
             <a href="/2016/07/10/python-string-intern/">python_string_intern</a>
+          </li>
+        
+          <li>
+            <a href="/2016/06/05/Python-面试题集锦-转载/">Python 面试题集锦[转载]</a>
           </li>
         
       </ul>
