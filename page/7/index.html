@@ -286,6 +286,154 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/16/django-admin账号/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/16/django-admin账号/" itemprop="url">Django--admin账号</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-16T17:28:55+08:00">
+                2015-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>要使用Django的后台管理界面，需要在Django的INSTALLED_APPS中注册Django提供的一些app。</p>
+<p>当你把’django.contrib.auth’加进INSTALLED_APPS后，运行</p>
+<pre><code>python manage.py syncdb
+</code></pre><p>命令时, 系统会请你创建一个超级用户。 如果你不这么作，你需要运行python manage.py createsuperuser来另外创建一个admin的用户帐号，否则你将不能登入admin (提醒一句: 只有当INSTALLED_APPS包含’django.contrib.auth’时，python manage.py createsuperuser这个命令才可用.)</p>
+<p>注意：</p>
+<p>在Django 1.8中，syncdb这个命令已经可用，所以你将需要手动运行python manage.py createsuperuser 命令</p>
+<p>–《the Django book 2.0》</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/16/django的unicode对象/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1662,222 +1810,6 @@ TEMPLATE_DIRS = (
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django-动态url/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/15/django-动态url/" itemprop="url">Django--动态url</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T17:05:59+08:00">
-                2015-04-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在 大多数动态web应用程序，URL通常都包含有相关的参数。 举个例子，一家在线书店会为每一本书提供一个URL，如：<code>/books/243/</code>、<code>/books/81196/</code>。</p>
-<p>让我们创建第三个视图来显示当前时间和加上时间偏差量的时间，设计是这样的： <code>/time/plus/1/</code> 显示当前时间＋1个小时的页面, <code>/time/plus/2/</code> 显示当前时间＋2个小时的页面, <code>/time/plus/3/</code> 显示当前时间＋3个小时的页面，以此类推。</p>
-<p>新手可能会考虑写不同的视图函数来处理每个时间偏差量，URL配置看起来就象这样：</p>
-<pre><code>urlpatterns = patterns(&apos;&apos;,
-    (&apos;^time/$&apos;, current_datetime),
-    (&apos;^time/plus/1/$&apos;, one_hour_ahead),
-    (&apos;^time/plus/2/$&apos;, two_hours_ahead),
-    (&apos;^time/plus/3/$&apos;, three_hours_ahead),
-    (&apos;^time/plus/4/$&apos;, four_hours_ahead),
-)
-</code></pre><p>很明显，这样处理是不太妥当的。 不但有很多冗余的视图函数，而且整个应用也被限制了只支持 预先定义好的时间段，2小时，3小时，或者4小时。 如果哪天我们要实现 5 小时，我们就 不得不再单独创建新的视图函数和配置URL，既重复又混乱。 我们需要在这里做一点抽象，提取 一些共同的东西出来。</p>
-<p>##关于漂亮URL的一点建议</p>
-<p>如果你有其它web平台的开发经验（如PHP或Java），你可能会想：嘿！让我们用查询字符串参数吧！ 就像<code>/time/plus?hours=3</code>里面的小时应该在查询字符串中被参数hours指定（问号后面的是参数）。</p>
-<p>你 可以 在Django里也这样做 (如果你真的想要这样做，我们稍后会告诉你怎么做）， 但是Django的一个核心理念就是URL必须看起来漂亮。 <code>URL /time/plus/3/</code> 更加清晰， 更简单，也更有可读性，可以很容易的大声念出来，因为它是纯文本，没有查询字符串那么 复杂。 漂亮的URL就像是高质量的Web应用的一个标志。</p>
-<p>Django的URL配置系统可以使你很容易的设置漂亮的URL，而尽量不要考虑它的 反面 。</p>
-<hr>
-<p>那么，我们如何设计程序来处理任意数量的时差？ 答案是：使用通配符（wildcard URLpatterns）。正如我们之前提到过，一个URL模式就是一个正则表达式。因此，这里可以使用d+来匹配1个以上的数字。</p>
-<pre><code>urlpatterns = patterns(&apos;&apos;,
-    # ...
-    (r&apos;^time/plus/\d+/$&apos;, hours_ahead),
-    # ...
-)
-</code></pre><p>这里使用# …来表示省略了其它可能存在的URL模式定义。 （见上）</p>
-<p>这个URL模式将匹配类似 <code>/time/plus/2/</code> , <code>/time/plus/25/</code> ,甚至 <code>/time/plus/100000000000/</code> 的任何URL。 更进一步，让我们把它限制在最大允许99个小时， 这样我们就只允许一个或两个数字，正则表达式的语法就是 <code>\d{1,2}</code> :</p>
-<pre><code>(r&apos;^time/plus/\d{1,2}/$&apos;, hours_ahead),
-</code></pre><p>备注:</p>
-<p>在建造Web应用的时候，尽可能多考虑可能的数据输入是很重要的，然后决定哪些我们可以接受。 在这里我们就设置了99个小时的时间段限制。</p>
-<p>另外一个重点，正则表达式字符串的开头字母“r”。 它告诉Python这是个原始字符串，不需要处理里面的反斜杠（转义字符）。 在普通Python字符串中，反斜杠用于特殊字符的转义。比如\n转义成一个换行符。 当你用r把它标示为一个原始字符串后，Python不再视其中的反斜杠为转义字符。也就是说，“\n”是两个字符串：“\”和“n”。由于反斜杠在Python代码和正则表达式中有冲突，因此建议你在Python定义正则表达式时都使用原始字符串。 从现在开始，本文所有URL模式都用原始字符串。</p>
-<p>现在我们已经设计了一个带通配符的URL，我们需要一个方法把它传递到视图函数里去，这样 我们只用一个视图函数就可以处理所有的时间段了。 我们使用圆括号把参数在URL模式里标识 出来。 在这个例子中，我们想要把这些数字作为参数，用圆括号把 <code>\d{1,2}</code> 包围起来：</p>
-<pre><code>(r&apos;^time/plus/(\d{1,2})/$&apos;, hours_ahead),
-</code></pre><p><strong>如果你熟悉正则表达式，那么你应该已经了解，正则表达式也是用圆括号来从文本里 提取 数据的。</strong></p>
-<p>最终的URLconf包含上面两个视图，如：</p>
-<pre><code>from django.conf.urls.defaults import *
-from mysite.views import hello, current_datetime, hours_ahead
-
-urlpatterns = patterns(&apos;&apos;,
-    (r&apos;^hello/$&apos;, hello),
-    (r&apos;^time/$&apos;, current_datetime),
-    (r&apos;^time/plus/(\d{1,2})/$&apos;, hours_ahead),
-)
-</code></pre><p>现在开始写 <code>hours_ahead</code> 视图。</p>
-<p>###编码次序</p>
-<p>这个例子中，我们先写了URLpattern ，然后是视图，但是在前面的例子中， 我们先写了视图，然后是URLpattern 。 哪一种方式比较好？</p>
-<p>嗯，怎么说呢，每个开发者是不一样的。</p>
-<p>如果你是喜欢从总体上来把握事物（注： 或译为“大局观”）类型的人，你应该会想在项目开始 的时候就写下所有的URL配置。</p>
-<p>如果你从更像是一个自底向上的开发者，你可能更喜欢先写视图， 然后把它们挂接到URL上。 这同样是可以的。</p>
-<p>最后，取决与你喜欢哪种技术，两种方法都是可以的。 (见上)</p>
-<p>hours_ahead 和我们以前写的 current_datetime 很象，关键的区别在于： 它多了一个额外参数，时间差。 以下是view代码：</p>
-<pre><code>from django.http import Http404, HttpResponse
-import datetime
-
-def hours_ahead(request, offset):
-    try:
-        offset = int(offset)
-    except ValueError:
-        raise Http404()
-    dt = datetime.datetime.now() + datetime.timedelta(hours=offset)
-    html = &quot;&lt;html&gt;&lt;body&gt;In %s hour(s), it will be %s.&lt;/body&gt;&lt;/html&gt;&quot; % (offset, dt)
-    return HttpResponse(html)
-</code></pre><p>让我们逐行分析一下代码：</p>
-<blockquote>
-<p>视图函数, hours_ahead , 有 两个 参数: request 和 offset . (见上)</p>
-<p>request 是一个 HttpRequest 对象, 就像在 current_datetime 中一样. 再说一次好了: 每一个视图 总是 以一个 HttpRequest 对象作为 它的第一个参数。 (见上)</p>
-<p>offset 是从匹配的URL里提取出来的。 例如：如果请求URL是/time/plus/3/，那么offset将会是3；如果请求URL是/time/plus/21/，那么offset将会是21。请注意：捕获值永远都是字符串（string）类型，而不会是整数（integer）类型，即使这个字符串全由数字构成（如：“21”）。</p>
-<p>（从技术上来说，捕获值总是Unicode objects，而不是简单的Python字节串，但目前不需要担心这些差别。）</p>
-<p>在这里我们命名变量为 offset ，你也可以任意命名它，只要符合Python 的语法。 变量名是无关紧要的，重要的是它的位置，它是这个函数的第二个 参数 (在 request 的后面）。 你还可以使用关键字来定义它，而不是用 位置。</p>
-<p>我们在这个函数中要做的第一件事情就是在 offset 上调用 int() . 这会把这个字符串值转换为整数。</p>
-<p>请留意：如果你在一个不能转换成整数类型的值上调用int()，Python将抛出一个ValueError异常。如：int(‘foo’)。在这个例子中，如果我们遇到ValueError异常，我们将转为抛出django.http.Http404异常——正如你想象的那样：最终显示404页面（提示信息：页面不存在）。</p>
-<p>机灵的读者可能会问： 我们在URL模式中用正则表达式(d{1,2})约束它，仅接受数字怎么样？这样无论如何，offset都是由数字构成的。 答案是：我们不会这么做，因为URLpattern提供的是“适度但有用”级别的输入校验。万一这个视图函数被其它方式调用，我们仍需自行检查ValueError。 实践证明，在实现视图函数时，不臆测参数值的做法是比较好的。 松散耦合，还记得么？</p>
-<p>下一行，计算当前日期/时间，然后加上适当的小时数。 在current_datetime视图中，我们已经见过datetime.datetime.now()。这里新的概念是执行日期/时间的算术操作。我们需要创建一个datetime.timedelta对象和增加一个datetime.datetime对象。 结果保存在变量dt中。</p>
-<p>这一行还说明了，我们为什么在offset上调用int()——datetime.timedelta函数要求hours参数必须为整数类型。</p>
-<p>这行和前面的那行的的一个微小差别就是，它使用带有两个值的Python的格式化字符串功能， 而不仅仅是一个值。 因此，在字符串中有两个 %s 符号和一个以进行插入的值的元组： (offset, dt) 。</p>
-<p>最终，返回一个HTML的HttpResponse。 如今，这种方式已经过时了。(这里的意思是这样使用url的传值的方式已经过时了，目前，动态url仍然是使用这样的设计方法)</p>
-</blockquote>
-<p>–《django book 2.0》</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1928,7 +1860,7 @@ def hours_ahead(request, offset):
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">208</span>
+                <span class="site-state-item-count">209</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

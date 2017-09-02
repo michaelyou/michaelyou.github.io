@@ -286,6 +286,174 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/02/每天一个python小程序-1/" itemprop="url">每天一个python小程序(1)-修改QQ头像</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-02T22:38:43+08:00">
+                2015-02-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>将你的 QQ 头像（或者微博头像）右上角加上红色的数字，类似于微信未读信息数量那种提示效果。 类似于图中效果</p>
+</blockquote>
+<p><img src="/img/question1.png" alt="头像"></p>
+<p>本题用到的知识点主要是python的PIL模块，PIL是python中最常用的图像处理库</p>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
+
+from PIL import Image, ImageDraw, ImageFont
+
+def write_num_on_img(filePath, num):
+    img = Image.open(filePath)
+    #img.size返回一个元组(width, height)
+    size = img.size
+    draw = ImageDraw.Draw(img)
+    #colour设置数字的颜色，这里是红色
+    colour = (255, 0, 0)
+    ttfont = ImageFont.truetype(&apos;ahronbd.ttf&apos;, 50)
+    #关键函数，参数包括，文字的位置，内容，颜色，字体
+    draw.text((size[0]-30, 0), str(num), fill=colour, font=ttfont)
+    #显示一幅已载入的图像
+    img.show()
+    img.save(&apos;changed.jpg&apos;)
+
+if __name__ == &apos;__main__&apos;:
+    write_num_on_img(&quot;test.jpg&quot;, 4)
+</code></pre><p>代码可以在<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.0" target="_blank" rel="external">这里</a>下载</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/01/纯代码学习twisted/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2692,189 +2860,6 @@ deferred.addErrback(my_errback)
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/如何重命名scrapy下载的图片/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/如何重命名scrapy下载的图片/" itemprop="url">如何重命名scrapy下载的图片</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T17:07:32+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/scrapy/" itemprop="url" rel="index">
-                    <span itemprop="name">scrapy</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>默认情况下，使用ImagePipeline组件下载图片的时候，图片名称是以图片URL的SHA1值进行保存的。</p>
-<p>如：<br>图片URL:<a href="http://www.example.com/image.jpg" target="_blank" rel="external">http://www.example.com/image.jpg</a></p>
-<p>SHA1结果：3afec3b4765f8f0a07b78f98c07b83f013567a0a</p>
-<p>则图片名称：3afec3b4765f8f0a07b78f98c07b83f013567a0a.jpg</p>
-<p>但是，我想要以原来的图片名称进行保存，比如上面例子中的图片保存到本地的话，图片名称就应该是：image.jpg</p>
-<p>stackoverflow上说是可以重写<code>image_key</code>函数，不过我试了下，结果发现不行，重写的image_key函数没被调用。其实不是stackoverflow上的回答是错误的，在<code>scrapy 0.12</code>之前，确实应该这样来解决此问题，现在scrapy的版本已经更新了很多，这个方法不适用了，下面是ImagePipeline的源码中的提醒：</p>
-<blockquote>
-<p>ImagesPipeline.image_key(url) and file_key(url) methods are deprecated, please use file_path(request, response=None, info=None) instead</p>
-</blockquote>
-<p>也就是说，在最新版本的Scrapy中（0.24.4），使用<code>file_path</code>代替<code>image_key</code>函数。</p>
-<p>下面是新版本的解决方法，在<code>scrapy 0.24.4</code>中测试通过</p>
-<ul>
-<li><p>在pipelines.py中自定义ImagePipeline类，并重写file_path函数</p>
-<pre><code>from scrapy.contrib.pipeline.images import ImagesPipeline
-from scrapy.http import Request
-from scrapy.exceptions import DropItem
-
-class MyImagesPipeline(ImagesPipeline):
-    def file_path(self, request, response=None, info=None):
-        image_guid = request.url.split(&apos;/&apos;)[-1]
-        return &apos;full/%s&apos; % (image_guid)
-
-    #item[&apos;image_urls&apos;]是我们在item.py中定义的存放图片url的变量，如果定义了别的变量名，注意更换
-    def get_media_requests(self, item, info):
-        for image_url in item[&apos;image_urls&apos;]:
-            yield Request(image_url)
-
-    def item_completed(self, results, item, info):
-        image_paths = [x[&apos;path&apos;] for ok, x in results if ok]
-        if not image_paths:
-            raise DropItem(&quot;Item contains no images&quot;)
-        return item
-</code></pre></li>
-<li><p>修改setting.py</p>
-<pre><code>ITEM_PIPELINES = {
-    # &apos;scrapy.contrib.pipeline.images.ImagesPipeline&apos;: 1
-    &apos;sis.pipelines.MyImagesPipeline&apos;
-    }
-</code></pre></li>
-</ul>
-<p>可以参考stackoverflow上<a href="http://stackoverflow.com/questions/6194041/scrapy-image-download-how-to-use-custom-filename/22263951#22263951" target="_blank" rel="external">此问题的讨论</a></p>
-<p>原文地址在<a href="http://www.it165.net/pro/html/201402/9615.html" target="_blank" rel="external">这里</a>，本文做了一些删除和修改</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2925,7 +2910,7 @@ class MyImagesPipeline(ImagesPipeline):
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">208</span>
+                <span class="site-state-item-count">209</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

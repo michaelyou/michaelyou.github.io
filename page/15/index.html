@@ -286,6 +286,281 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/25/Linux进阶：让效率翻倍的Bash技巧（一）-历史命令操作篇/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/25/Linux进阶：让效率翻倍的Bash技巧（一）-历史命令操作篇/" itemprop="url">Linux进阶：让效率翻倍的Bash技巧（一）--历史命令操作篇</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-25T10:43:16+08:00">
+                2015-02-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>#Linux进阶：让效率翻倍的Bash技巧（一）–历史命令操作篇</p>
+<p>许多使用过Linux一段时间的人通过一些基础操作已经能够把Linux各方面基本玩转，但是如果没有经过系统学习的话就容易缺乏一些实战技巧。这系列文章介绍一些关于bash的能够提高效率的技巧，主要是关于历史命令操作和一些快捷键，让你在命令行下工作效率翻倍。</p>
+<p>##历史命令</p>
+<ul>
+<li><p>最基本的查看历史命令 history</p>
+<pre><code>[root@pc105 data_stucture]# history
+
+1009  ping www.baidu.com
+1010  ssh 192.168.1.225
+1011  who
+1012  ping www.github.com
+1013  history
+1014  ls
+1015  cd data_stucture/
+1016  ls
+1017  g++ example_list.c 
+1018  ls
+1019  ./a.out
+1020  ls
+</code></pre></li>
+<li><p>!n 编号为n的历史命令</p>
+</li>
+</ul>
+<p>不用再复制粘贴，或者照着历史记录敲了。执行历史命令记录里面的某个命令，只需要 ! + <code>这条命令记录前的序号</code>，比如</p>
+<pre><code>[root@pc105 data_stucture]# 1012
+</code></pre><p>这样就可以执行1012序号对应的命令 ping www.github.com</p>
+<pre><code>[root@pc105 data_stucture]# !1012
+ping www.github.com
+PING github.com (192.30.252.129) 56(84) bytes of data.
+64 bytes from github.com (192.30.252.129): icmp_seq=1 ttl=49 time=384 ms
+64 bytes from github.com (192.30.252.129): icmp_seq=2 ttl=49 time=397 ms
+</code></pre><ul>
+<li>!-n  倒数第n个历史命令</li>
+</ul>
+<p>你也可以用 <code>!  - （倒数第几个命令）</code>来执行历史命令，比如<code>!-1</code>就是倒数第一个命令，<code>!-3</code>就是倒数第三个命令</p>
+<pre><code>[root@pc105 michael]# du -sh data_stucture
+2.9M    data_stucture
+[root@pc105 michael]# cp -r data_stucture/ data_stucture_bak
+[root@pc105 michael]# clear
+[root@pc105 michael]# !-3
+du -sh data_stucture
+2.9M    data_stucture
+[root@pc105 michael]# 
+</code></pre><ul>
+<li>!!  上一条命令</li>
+</ul>
+<p>!! 表示上一条命令，相当于 !-1 。</p>
+<p>这是一个极为方便实用的命令，比如一条很长的命令而且需要管理员权限，但是好不容易敲完但忘记加sudo，这里就可以直接用 sudo !!来完成刚刚的那条复杂的命令加sudo</p>
+<ul>
+<li>!keyword  查找包含该keyword的历史命令</li>
+</ul>
+<p>如果想查找包含某个关键字的历史命令，可以这样做</p>
+<pre><code>!keyword
+</code></pre><p>查找包含keyword的历史命令，然后回车就能执行这条历史命令</p>
+<pre><code>[root@pc105 michael]# !ping
+ping www.github.com
+PING github.com (192.30.252.128) 56(84) bytes of data.
+64 bytes from github.com (192.30.252.128): icmp_seq=1 ttl=49 time=390 ms
+</code></pre><p><strong>但是其实这个操作是很危险的，假如你看错或者记混了历史命令，在回车前你其实不知道要查找出的是哪条历史命令，而回车后这条命令就执行了，没有机会给你看一下查找出的命令具体是什么就执行了。很危险，不推荐这样做，可以使用 MagicSpace（见下文） 或者使用Ctrl + R 反向查找 （推荐）</strong></p>
+<ul>
+<li>Ctrl + R  反向查找命令</li>
+</ul>
+<p>快捷键Ctrl + R ，然后输入要查找的关键字，输入的同时，bash就会动态地增量搜索，找到想要的历史命令后可以按回车执行，或者esc把这条提取命令出来但是不执行。再按Ctrl + R 则继续往后查找符合条件的命令。</p>
+<pre><code>[root@pc105 michael]# ^C
+(reverse-i-search)`ping&apos;: ^Cng www.github.com
+</code></pre><ul>
+<li>history | grep keyword  列出所有符合条件的命令</li>
+</ul>
+<p>Ctrl + R 无疑是最方便常用的历史记录搜索方式，但是当然也可以用 history | grep keyword 来查找所有的符合条件的记录，然后再结合刚刚的! 方法完成命令。</p>
+<p>注意，以上所说的包含 ! 的技巧都是可以与别的命令拼接在一起的， 比如</p>
+<p>sudo  !-3  , time  !472， sudo  !apt</p>
+<p>##关于历史记录的参数的技巧：</p>
+<ul>
+<li>!$  上一条命令的最后一条参数</li>
+</ul>
+<p>如果说你只想用上条命令的参数，一个个打出来又太繁复，就可以这样</p>
+<pre><code>[root@pc105 michael]# ls /root/michael/data_stucture
+a.out                 example_ev.c      example_tree.c  polynomial.h     stack.h
+balance_sign.c        example_list.c    hanoi.c         proc_self_exe.c  threaded_binary_tree.c
+binaryheap.c          example_poly.c    hash.c          queue.c          tmp_tree.c
+binaryheap.h          example_queue.c   hash.h          queue.h          tree.c
+core.25191            example_search.c  list.c          search.c         tree.h
+crumble_test.c        example_sort.c    list.h          sort.c           -v
+example_binaryheap.c  example_stack.c   polynomial.c    stack.c          yanghui_triangle.c
+[root@pc105 michael]# cd !$
+cd /root/michael/data_stucture
+[root@pc105 data_stucture]#
+</code></pre><p>当然这种情形下也有更简单的方法，等讲到快捷键部分再说</p>
+<ul>
+<li>!^  上一条命令的第一个参数</li>
+</ul>
+<p>$ 表示最后一个参数，而 ^就表示的是第一个参数</p>
+<p>!^ 在这样的一个应用场景里十分方便：你刚备份了一个配置文件，然后想编辑这个配置文件</p>
+<pre><code>[root@pc105 home]# cp nginx.conf nginx.conf.bak
+[root@pc105 home]# vim !^
+vim nginx.conf
+</code></pre><ul>
+<li>:n  第n个参数</li>
+</ul>
+<p>^与$表示第一个参数和最后一个参数，而 :n 就表示第n个参数，比如 !:2就表示上一条命令的第2个参数</p>
+<pre><code>[root@pc105 home]# cp -r tmp tmp-bak
+[root@pc105 home]# cd !:2
+cd tmp
+[root@pc105 tmp]# 
+</code></pre><p>注意，参数符号不仅是可以 !$、!^、!:n 这样用，这些关于参数的符号都是可以和!表达式任意组合使用的，比如</p>
+<p>cd  !762:2 （表示762号历史命令的第2个参数）</p>
+<p>ls  !-3^ （表示倒数第3个命令的第一个参数）</p>
+<p>dpkg  -L  !apt$  (表示搜索含apt的命令的最后一个参数）</p>
+<ul>
+<li>magic-space  让历史记录表达式和参数符号立即显出原形</li>
+</ul>
+<p>虽然历史记录表达式和参数符号使用起来简易方便，但是在包含这些表达式和符号的命令回车执行之前，你是并不知道这些表达式和符号到底代表的什么。为了解决这个问题，我们可以使用Magic-Space</p>
+<pre><code>bind Space:magic-space
+</code></pre><p>使用了这个设置后，在bash中输入历史记录表达式和参数符号后，按一下空格，这些表达式和符号就立即变成它们所代表的历史命令和参数，简称magic space。</p>
+<p>可以把这句放到.bashrc中，让设置持久生效（Mac是在.bash_profile）。</p>
+<ul>
+<li>命令前加空格，使之不计入history<ol>
+<li>$ vim /etc/.bashrc # 挑個喜歡的位置加入下述  <code>export HISTCONTROL=ignorespace</code></li>
+<li>$ source .bashrc # 或 重新登入</li>
+<li>$  mysql -u root -pPASSWORD # mysql 前面有一個空白, 那此行指令就不會被紀錄進 history</li>
+</ol>
+</li>
+</ul>
+<p>臨時要用的話, 直接執行 HISTCONTROL=ignorespace, 也是可以達到同樣效果.</p>
+<p>在命令前加空格，就可以避免改该命令计入history，小伙伴们就可以在不用清空history的前提下干一些坏事了。</p>
+<ul>
+<li>HISTSIZE=0  不记录命令</li>
+</ul>
+<p>如果不想记录命令，可以设置HISTSIZE=0。如果想恢复，可以在设置HISTSIZE为一个大于零的值（默认为500或者1000）</p>
+<ul>
+<li>HISTCONTROL=ignoredups  去除重复命令</li>
+</ul>
+<p>这样设置后，多次的同样的命令连续执行就会只记录一次。</p>
+<p>历史记录篇就暂时介绍到这，下篇快捷键篇会介绍更多Bash的技巧。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/12/cookie-和session-的区别/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2263,338 +2538,6 @@ lambda x: ‘big’ if x &gt; 100 else ‘small’
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/05/十个我希望早点知道的python方法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/05/十个我希望早点知道的python方法/" itemprop="url">十个我希望早点知道的python方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-05T14:38:37+08:00">
-                2015-02-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文在<a href="http://nbviewer.ipython.org/github/Prooffreader/Misc_ipynb/blob/master/top_10_python_idioms.ipynb" target="_blank" rel="external">这里</a></p>
-<p>##在Python 2中使用Python 3式的输出<br>Python 2与Python 3不兼容，这让我不知道该选择哪个版本的Python。最终我选择了Python 2，因为当时许多我需要用的库都与Python 3不兼容。</p>
-<p>但实际上，日常使用中最大的版本差异是输出（print）和除法行为。现在我在Python 2的代码中都用import from future来导入Python 3的输出和除法。现在我用到的几乎所有库都支持Python 3，因此会很快迁移到Python 3中。</p>
-<pre><code>mynumber = 5
-
-print &quot;Python 2:&quot;
-print &quot;The number is %d&quot; % (mynumber)
-print mynumber / 2,
-print mynumber // 2
-
-from __future__ import print_function
-from __future__ import division
-
-print(&apos;nPython 3:&apos;)
-print(&quot;The number is {}&quot;.format(mynumber))
-print(mynumber / 2, end=&apos; &apos;)
-print(mynumber // 2)
-
-输出：
-Python 2:
-The number is 5
-2 2
-
-Python 3:
-The number is 5
-2.5 2
-</code></pre><p>##enumerate(list)<br>很明显，迭代列表时，应该同时迭代其中的元素及其索引，但在很长一段时间内，我都尴尬的使用计数变量或切片。</p>
-<pre><code>mylist = [&quot;It&apos;s&quot;, &apos;only&apos;, &apos;a&apos;, &apos;model&apos;]
-
-for index, item in enumerate(mylist):
-    print(index, item)
-
-输出：
-0 It&apos;s
-1 only
-2 a
-3 model
-</code></pre><p>##链式比较操作符<br>由于我以前使用的是静态语言（在这些语言中该用法有二义性），从来没有将两个比较操作符放在一个表达式中。在许多语言中，4 &gt; 3 &gt; 2会返回False，因为4 &gt; 3的结果是布尔值，而True &gt; 2将得出False。</p>
-<pre><code>mynumber = 3
-
-if 4 &gt; mynumber &gt; 2:
-    print(&quot;Chained comparison operators work! n&quot; * 3)
-
-输出：
-Chained comparison operators work!
-Chained comparison operators work!
-Chained comparison operators work!
-</code></pre><p>##collections.Counter<br>Python的集合库看上去是最好的。在计算需要集合中元素的个数时，StackOverflow找到的答案是创建有序字典，但我坚持使用一个代码片段来创建字典，计算结果中元素出现的频率。直到有一天，我发现可以用collections.deque。</p>
-<pre><code>from collections import Counter
-from random import randrange
-import pprint
-
-mycounter = Counter()
-
-for i in range(100):
-    random_number = randrange(10)
-    mycounter[random_number] += 1
-
-for i in range(10):
-    print(i, mycounter[i])
-
-输出：
-0 10
-1 10
-2 13
-3 6
-4 6
-5 11
-6 10
-7 14
-8 12
-9 8
-</code></pre><p>##字典推导</p>
-<p>Python开发者的一个重要标志就是理解列表推导，但最终我发现字典推导也很有用，特别是在交换字典的键和值的时候。</p>
-<pre><code>my_phrase = [&quot;No&quot;, &quot;one&quot;, &quot;expects&quot;, &quot;the&quot;, &quot;Spanish&quot;, &quot;Inquisition&quot;]
-my_dict = {key: value for value, key in enumerate(my_phrase)}
-print(my_dict)
-reversed_dict = {value: key for key, value in my_dict.items()}
-print(reversed_dict)
-
-输出：
-{&apos;Inquisition&apos;: 5, &apos;No&apos;: 0, &apos;expects&apos;: 2, &apos;one&apos;: 1, &apos;Spanish&apos;: 4, &apos;the&apos;: 3}
-{0: &apos;No&apos;, 1: &apos;one&apos;, 2: &apos;expects&apos;, 3: &apos;the&apos;, 4: &apos;Spanish&apos;, 5: &apos;Inquisition&apos;}
-</code></pre><p>##用subprocess执行shell命令</p>
-<pre><code>import subprocess
-output = subprocess.check_output(&apos;dir&apos;, shell=True)
-print(output)
-</code></pre><p>注意，用os库完成这个特定命令比用subprocess更好。我只想有一个大家都熟悉的命令。同时，一般来说，在subprocess中使用shell=True参数是非常糟糕的主意，在这里使用这个参数仅仅是为了能在一个IPython notebook单元中放置命令的输出。不要自己使用这个参数！下面是用os模块执行shell命令</p>
-<pre><code>import os
-os.system(&apos;dir&apos;)
-</code></pre><p>注意，这里的<code>dir</code>命令会立刻在shell中输出，不能够保存到文件(变量)中，如果想要保存到变量中，可以使用popen：</p>
-<pre><code>import os
-output = os.popen(&apos;dir&apos;)
-print output.read()
-</code></pre><p>##字典的.get()和.iteritems()方法<br>字典的get()方法可以设置默认值，当用get()查找的键不存在时，返回方法中的默认值参数是很有用的。与列表中的enumerate()相同，可以用键值元组迭代字典中的元素。<br>    my_dict = {‘name’: ‘Lancelot’, ‘quest’: ‘Holy Grail’, ‘favourite_color’: ‘blue’}</p>
-<pre><code>print(my_dict.get(&apos;airspeed velocity of an unladen swallow&apos;, &apos;African or European?n&apos;))
-
-for key, value in my_dict.iteritems():
-    print(key, value, sep=&quot;: &quot;)
-
-输出：
-African or European?
-
-quest: Holy Grail
-name: Lancelot
-favourite_color: blue
-</code></pre><p>如果要用for迭代输出字典，就要用到字典的<code>iteritems()</code>方法，这个方法在python3.x中已经废除了，取代的是<code>items()</code>方法，<code>items()</code>方法在python2.x中也存在</p>
-<p>##用于交换元素的元组解包<br>在VB中，每当需要交换两个变量时，都要用要一个愚蠢的临时变量：c = a; a = b; b = c</p>
-<pre><code>a = &apos;Spam&apos;
-b = &apos;Eggs&apos;
-
-print(a, b)
-
-a, b = b, a
-print(a, b)
-
-输出：
-Spam Eggs
-Eggs Spam
-</code></pre><p>##内省工具Introspection tools<br>我知道dir()方法，我本以为help()方法和IPython中的?魔法命令是一样的，但help()的功能更强大。</p>
-<pre><code>my_dict = {&apos;That&apos;: &apos;an ex-parrot!&apos;}
-
-help(my_dict)
-
-输出：
-Help on dict object:
-
-class dict(object)
- | dict() -&gt; new empty dictionary
- | dict(mapping) -&gt; new dictionary initialized from a mapping object&apos;s
- | (key, value) pairs
- | dict(iterable) -&gt; new dictionary initialized as if via:
- | d = {}
- | for k, v in iterable:
- | d[k] = v
- | dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
- | in the keyword argument list. For example: dict(one=1, two=2)
- |
- | Methods defined here:
- |
- | __cmp__(...)
- | x.__cmp__(y) &lt;==&gt; cmp(x,y)
- |
- | __contains__(...)
- | D.__contains__(k) -&gt; True if D has a key k, else False
- |
- | __delitem__(...)
- | x.__delitem__(y) &lt;==&gt; del x[y]
- |
- | __eq__(...)
- | x.__eq__(y) &lt;==&gt; x==y
- |
-
-[TRUNCATED FOR SPACE]
-
- | 
- | update(...)
- | D.update([E, ]**F) -&gt; None. Update D from dict/iterable E and F.
- | If E present and has a .keys() method, does: for k in E: D[k] = E[k]
- | If E present and lacks .keys() method, does: for (k, v) in E: D[k] = v
- | In either case, this is followed by: for k in F: D[k] = F[k]
- |
- | values(...)
- | D.values() -&gt; list of D&apos;s values
- |
- | viewitems(...)
- | D.viewitems() -&gt; a set-like object providing a view on D&apos;s items
- |
- | viewkeys(...)
- | D.viewkeys() -&gt; a set-like object providing a view on D&apos;s keys
- |
- | viewvalues(...)
- | D.viewvalues() -&gt; an object providing a view on D&apos;s values
- |
- | ----------------------------------------------------------------------
- | Data and other attributes defined here:
- |
- | __hash__ = None
- |
- | __new__ =
- | T.__new__(S, ...) -&gt; a new object with type S, a subtype of T
-</code></pre><p>##PEP-8兼容的字符串连接<br>PEP8是Python编码样式指南。撇开其他的不看，PEP8要求每行不能超过80个字符，超过的部分要换行并缩进。</p>
-<p>可以通过反斜杠、带逗号“,”的圆括号“()”、或者额外的加号“+”来完成换行。但对于多行字符串，这些解决方案都不够优雅。Python有个多行字符串记号，即三个引号，但这样无法换行后保持缩进。</p>
-<p>还有一个方法，那就是不带逗号的圆括号。我不知道为什么这种方式能工作，但能用就行。</p>
-<pre><code>my_long_text = (&quot;We are no longer the knights who say Ni! &quot;
-                &quot;We are now the knights who say ekki-ekki-&quot;
-                &quot;ekki-p&apos;tang-zoom-boing-z&apos;nourrwringmm!&quot;)
-print(my_long_text)
-
-输出：
-We are no longer the knights who say Ni! We are now the knights who say ekki-ekki-ekki-p&apos;tang-zoom-boing-z&apos;nourrwringmm!
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2645,7 +2588,7 @@ We are no longer the knights who say Ni! We are now the knights who say ekki-ekk
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">208</span>
+                <span class="site-state-item-count">209</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

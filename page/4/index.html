@@ -286,6 +286,159 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/26/解决-mac删除系统自带python后一些软件崩溃/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/26/解决-mac删除系统自带python后一些软件崩溃/" itemprop="url">[解决]mac删除系统自带python后一些软件崩溃</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-26T13:14:56+08:00">
+                2015-05-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mac/" itemprop="url" rel="index">
+                    <span itemprop="name">mac</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><code>mac 10.10.3</code>自带的python版本是<code>2.6</code>，而<code>2.0</code>版本现在已经不再更新，最终版是<code>2.7.9</code>。很多同学都会给mac装上最新版本来代替系统自带版本。有一些教程还好，会让你保存<code>2.6</code>。有一些就糟糕了，它会让你直接用<code>2.7</code>(或者<code>3.4</code>)来覆盖<code>2.6</code>。这样在终端中是没有问题的，但是有一些应用程序，比如<code>iPhoto</code>和<code>sublime</code>，它们依赖于系统的<code>2.6</code>，一旦找不到<code>2.6</code>的版本，打开软件就会崩溃。其实问题是很简单的，网上有一些答案，这里讲一下我的解决方法。</p>
+<p>首先，你需要找到你的新版的python的安装路径<br>系统默认的是在</p>
+<pre><code>/System/Library/Frameworks/Python.framework/Versions/2.7
+</code></pre><p>如果你是用homebrew安装的python，那么应该在</p>
+<pre><code>/usr/local/Cellar/python/2.7.9/Frameworks/Python.framework/Versions/2.7/
+</code></pre><p>我们不需要再安装2.6的版本，只需要创建一个软链接即可：</p>
+<pre><code>sudo ln -s /usr/local/Cellar/python/2.7.9/Frameworks/Python.framework/Versions/2.7/ /System/Library/Frameworks/Python.framework/Versions/2.6
+</code></pre><p>第一个路径即是你的python的安装路径</p>
+<p>PS1：<br>如果你打开软件显示<code>*** import error</code>，那是说明你的这个版本没有安装这个模块，<code>pip</code>安装即可。</p>
+<p>PS2：<br>如果需要使用新版的python，还是建议大家使用<a href="https://github.com/yyuu/pyenv" target="_blank" rel="external">pyenv</a>，既能安装多个版本又不会搞乱系统，非常NB。</p>
+<p>##参考资料</p>
+<p><a href="https://apple.stackexchange.com/questions/114195/iphoto-and-python-2-6/140941#140941?newreg=cb8af983a6f248868b5043d1ec14d418" target="_blank" rel="external">Ask Different –Iphoto and Python2.6</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/25/使用traceback追踪异常/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2123,163 +2276,6 @@ def horizon_nav(context):
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/15/终端和finder的切换/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/15/终端和finder的切换/" itemprop="url">终端和finder的切换</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-15T08:57:13+08:00">
-                2015-05-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mac/" itemprop="url" rel="index">
-                    <span itemprop="name">mac</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>我们很多人习惯了在终端中操作，使用命令行很方便，但有时候我们可能需要打开当前终端所在路径的finder（比如你的程序生成了一个pdf文档或者网页），更多时候我们需要在打开的finder中打开终端，本文介绍具体怎么做。</p>
-<p>##在终端中打开finder<br>这个非常简单，一条命令即可。</p>
-<pre><code>open .
-</code></pre><p>在终端中敲入这条命令，就可以打开当前路径的finder</p>
-<p>##在当前finder中启动终端</p>
-<p>###方法一：mac自带</p>
-<p>依次打开System Preferences &gt; Keyboard &gt; Services &gt; Files and Folders 下面找到New Terminal Tab at Folder(我的系统设置是英文，大家凑合看吧）</p>
-<blockquote>
-<p>Files and Folders 下面有 <code>New Terminal at Folder</code> 和 <code>New Terminal Tab at Folder</code>两个选项，其实差不多，只是<code>New Terminal Tab at Folder</code>会在已经存在一个终端的情况下以标签形式出现在之前的终端里面</p>
-</blockquote>
-<p>然后在Finder右键一个文件夹，右键菜单里面 Services 选择 New Terminal Tab at Folder 就打开了当前位置的终端了。</p>
-<p>###方法二：go2shell</p>
-<p>这个方法需要借助mac里的软件，但是相比方法一更简单也更人性化。</p>
-<p><a href="https://itunes.apple.com/us/app/go2shell/id445770608?mt=12" target="_blank" rel="external">go2shell</a>是mac上的一款免费软件，下载之后将其拖动到finder的头部即可，<a href="https://itunes.apple.com/us/app/go2shell/id445770608?mt=12" target="_blank" rel="external">安装页面</a>有详细介绍。</p>
-<p><img src="http://a2.mzstatic.com/us/r30/Purple1/v4/ce/0b/39/ce0b39ea-42a1-c6b0-25d6-33043945804c/screen800x500.jpeg" alt=""></p>
-<p><strong>Note: 拖动go2shell的时候直接拖是没有用的，需要按住command键</strong></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2330,7 +2326,7 @@ def horizon_nav(context):
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">208</span>
+                <span class="site-state-item-count">209</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
