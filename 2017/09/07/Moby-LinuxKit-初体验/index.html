@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/img/lufei.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="docker的开源部分被改名成了Moby，同时docker公司还开源了一个LinuxKit的项目，大家可以先去看一下readme。 Moby是一个组装容器系统的框架。它包含一个容器化组件库和一个将这些组件组装成独立的容器系统的框架。目前，docker正在被拆分成模块化的组件，将来，docker会从这些被Moby打包的组件中被组装出来。 LinuxKit是一个用来构造最小Linux发行版的工具集。它">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Moby &amp; LinuxKit 初体验">
+<meta property="og:url" content="http://yoursite.com/2017/09/07/Moby-LinuxKit-初体验/index.html">
+<meta property="og:site_name" content="Youmai の Blog">
+<meta property="og:description" content="docker的开源部分被改名成了Moby，同时docker公司还开源了一个LinuxKit的项目，大家可以先去看一下readme。 Moby是一个组装容器系统的框架。它包含一个容器化组件库和一个将这些组件组装成独立的容器系统的框架。目前，docker正在被拆分成模块化的组件，将来，docker会从这些被Moby打包的组件中被组装出来。 LinuxKit是一个用来构造最小Linux发行版的工具集。它">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-09-07T13:14:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Moby &amp; LinuxKit 初体验">
+<meta name="twitter:description" content="docker的开源部分被改名成了Moby，同时docker公司还开源了一个LinuxKit的项目，大家可以先去看一下readme。 Moby是一个组装容器系统的框架。它包含一个容器化组件库和一个将这些组件组装成独立的容器系统的框架。目前，docker正在被拆分成模块化的组件，将来，docker会从这些被Moby打包的组件中被组装出来。 LinuxKit是一个用来构造最小Linux发行版的工具集。它">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/07/Moby-LinuxKit-初体验/"/>
+
+
+
+
+
+  <title>Moby & LinuxKit 初体验 | Youmai の Blog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-63551049-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youmai の Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/07/Moby-LinuxKit-初体验/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Moby & LinuxKit 初体验</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-07T21:14:16+08:00">
+                2017-09-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>docker的开源部分被改名成了<a href="https://github.com/moby/moby" target="_blank" rel="external">Moby</a>，同时docker公司还开源了一个<a href="https://github.com/linuxkit/linuxkit" target="_blank" rel="external">LinuxKit</a>的项目，大家可以先去看一下readme。</p>
+<p>Moby是一个组装容器系统的框架。它包含一个容器化组件库和一个将这些组件组装成独立的容器系统的框架。目前，docker正在被拆分成模块化的组件，将来，docker会从这些被Moby打包的组件中被组装出来。</p>
+<p>LinuxKit是一个用来构造最小Linux发行版的工具集。它通过Moby来创建镜像（image），使用LinuxKit工具来运行这些镜像。</p>
+<p>下面我们来体验一下，首先确保你已经安装了<a href="https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#recommended-extra-packages-for-trusty-1404" target="_blank" rel="external">Docker</a>和<a href="https://golang.org/doc/install" target="_blank" rel="external">Golang</a>。</p>
+<h3 id="构建Moby"><a href="#构建Moby" class="headerlink" title="构建Moby"></a>构建Moby</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">➜  git clone https://github.com/linuxkit/linuxkit.git</div><div class="line">➜  cd linuxkit</div><div class="line">➜  make &amp;&amp; sudo make install</div><div class="line">➜  moby version</div><div class="line">moby version 0.0</div><div class="line">commit: 1ff0e3beeeb1e741b9c5a54574f01ac5eee525a5</div></pre></td></tr></table></figure>
+<h3 id="构建linux镜像"><a href="#构建linux镜像" class="headerlink" title="构建linux镜像"></a>构建linux镜像</h3><p>构建镜像是通过yaml文件（格式可以参考官方文档 <a href="https://github.com/moby/tool/blob/master/docs/yaml.md" target="_blank" rel="external">LinuxKit YAML</a>），linuxkit目录下有一个<code>linuxkit.yml</code>可以用，examples目录下也有很多可用的yaml文件，我们可以任选一个来构建，这里直接使用<code>linuxkit.yml</code>文件。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">➜  linuxkit git:(master) moby build linuxkit.yml</div><div class="line">最后在当前目录下输出了3个文件</div><div class="line">Create outputs:</div><div class="line">  linuxkit-kernel linuxkit-initrd.img linuxkit-cmdline</div></pre></td></tr></table></figure>
+<h3 id="运行LinuxKit镜像"><a href="#运行LinuxKit镜像" class="headerlink" title="运行LinuxKit镜像"></a>运行LinuxKit镜像</h3><p>运行通过linuxkit自带的linuxkit命令，命令在linuxkit/bin目录下，我们只是体验，也没必要写PATH，就直接写全路径吧。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">➜  linuxkit git:(master) bin/linuxkit run linuxkit</div><div class="line">...满屏满屏的输出，最后是熟悉的🐳</div><div class="line">Welcome to LinuxKit</div><div class="line"></div><div class="line">                        ##         .</div><div class="line">                  ## ## ##        ==</div><div class="line">               ## ## ## ## ##    ===</div><div class="line">           /"""""""""""""""""\___/ ===</div><div class="line">          &#123;                       /  ===-</div><div class="line">           \______ O           __/</div><div class="line">             \    \         __/</div><div class="line">              \____\_______/</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>现在我们就是在我们自己构建的linux最小发行版里面了，敲几个命令试试吧，退出是<code>halt</code>。</p>
+<p>这个镜像只有54M，可以说是非常小了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">➜  linuxkit git:(master) ls -alh | grep linuxkit</div><div class="line">-rw-r--r--  1 vagrant vagrant   42 Sep  7 11:52 linuxkit-cmdline</div><div class="line">-rw-r--r--  1 vagrant vagrant  54M Sep  7 11:52 linuxkit-initrd.img</div><div class="line">-rw-r--r--  1 vagrant vagrant 6.3M Sep  7 11:52 linuxkit-kernel</div><div class="line">drwxr-xr-x  2 vagrant vagrant 4.0K Sep  7 12:11 linuxkit-state</div><div class="line">-rw-rw-r--  1 vagrant vagrant 1.7K Sep  7 10:33 linuxkit.yml</div></pre></td></tr></table></figure>
+<p>Moby和LinuxKit是非常不错的工具，但一般来说我们是用不上的。如果你需要构建定制的linux发行版，那他们可以节约很多时间。但如果你只是想将应用放在容器里跑起来，那还是直接用Docker吧！</p>
+<p>另外，Moby和LinuxKit应该还没有成熟，命令一天一个变化（夸张了），如果你发现上面的命令失效了，建议google一下，或者联系我（知乎 or whaterver）</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/07/浙江大学SEL实验室docker系列文章目录/" rel="next" title="浙江大学SEL实验室docker系列文章目录">
+                <i class="fa fa-chevron-left"></i> 浙江大学SEL实验室docker系列文章目录
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/lufei.jpeg"
+               alt="You Wangqiu" />
+          <p class="site-author-name" itemprop="name">You Wangqiu</p>
+           
+              <p class="site-description motion-element" itemprop="description">世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">211</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/michaelyou" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhi-yu-65-2" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      知乎
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#构建Moby"><span class="nav-number">1.</span> <span class="nav-text">构建Moby</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建linux镜像"><span class="nav-number">2.</span> <span class="nav-text">构建linux镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行LinuxKit镜像"><span class="nav-number">3.</span> <span class="nav-text">运行LinuxKit镜像</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">You Wangqiu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

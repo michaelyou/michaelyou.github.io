@@ -286,6 +286,187 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/06/02/丢失私有密钥时连接到虚拟机/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/06/02/丢失私有密钥时连接到虚拟机/" itemprop="url">丢失私有密钥时连接到虚拟机(1)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-06-02T15:01:22+08:00">
+                2015-06-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/openstack/" itemprop="url" rel="index">
+                    <span itemprop="name">openstack</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>有一些镜像制作的时候，只允许使用ssh登陆。所以一般创建虚拟机时，我们会将自己的公钥通过ec2的meta服务写入虚拟机，而后在本地通过和公钥一起生成的私钥登陆。</p>
+<p>但是，既然是钥匙，就具备了<code>“丢“</code>的属性，如果我们丢失了本地的私钥，那不就不能登陆虚拟机了？其实倒也不至于不能登陆，只是费事一点罢了。</p>
+<p>原理是这样:你需要将本虚拟机的云硬盘(volume)断开，将云硬盘作为数据卷挂载到另一台虚拟机上，然后修改 authorized_keys 文件，将云硬盘挂载回原虚拟机，重启虚拟机即可。</p>
+<p><strong>Note</strong>：本教程适用的虚拟机必须是从云硬盘创建的，从<strong>镜像或者快照</strong>创建的请参考<a href="http://michaelyou.github.io/2015/06/05/%E4%B8%A2%E5%A4%B1%E7%A7%81%E6%9C%89%E5%AF%86%E9%92%A5%E6%97%B6%E8%BF%9E%E6%8E%A5%E5%88%B0%E8%99%9A%E6%8B%9F%E6%9C%BA-2/" target="_blank" rel="external">丢失私有密钥时连接到虚拟机(2)</a></p>
+<p><img src="http://7xj6cl.com1.z0.glb.clouddn.com/launch.png" alt=""></p>
+<p>###具体步骤</p>
+<ul>
+<li>暂停虚拟机，点击左侧导航栏的<strong>云硬盘</strong>，选择本机A的云硬盘，将其从本机断开</li>
+<li>还是在<strong>云硬盘</strong>的目录，将此<strong>云硬盘</strong>挂载到另一台虚拟机B</li>
+</ul>
+<p><img src="http://7xj6cl.com1.z0.glb.clouddn.com/volume.png" alt=""></p>
+<ul>
+<li><p>登陆到虚拟机B，执行<code>lsblk</code>,命令确定volume是否已分区</p>
+<pre><code>ubuntu@key-test1:~$ lsblk
+NAME   MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
+vda    253:0    0  10G  0 disk 
+└─vda1 253:1    0  10G  0 part /
+vdb    253:16   0  10G  0 disk 
+└─vdb1 253:17   0  10G  0 part
+</code></pre><p>截图中已经说明，<code>在设备/dev/vdb上连接到key_test1</code>，所以最后一行的<code>vdb1</code>就是我们挂载过来的云硬盘。</p>
+</li>
+<li><p>创建临时目录以安装volume</p>
+</li>
+</ul>
+<pre><code>ubuntu@key-test1:~$ sudo mkdir /mnt/tempvol
+</code></pre><ul>
+<li><p>使用之前确定的volume名称或设备名称在临时安装点安装volume（或分区）</p>
+<pre><code>ubuntu@key-test1:~$ sudo mount /dev/vdb1 /mnt/tempvol
+</code></pre></li>
+<li><p>这样你进入<code>/mnt/tempvol</code>目录就是进入了挂载的云硬盘，修改<code>authorized_keys</code>文件，删除失效的<code>public_key</code>，添加新的<code>public_key</code></p>
+<pre><code>ubuntu@key-test1:~$ vim /mnt/tempvol/home/ubuntu/.ssh/authorized_keys
+</code></pre></li>
+<li><p>修改完成后，卸载已连接的volume，以将其重新连接至原始实例</p>
+<pre><code>ubuntu@key-test1:~$ sudo umount /mnt/tempvol
+</code></pre></li>
+</ul>
+<p><strong>Note</strong>：卸载时可能会出现设备忙的告警，多试几次即可</p>
+<p>回到<code>openstack</code>的控制面，将云硬盘重新挂载到机器A，启动机器A即可从拥有私钥的那台机器上登陆</p>
+<p>##参考<br><a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html" target="_blank" rel="external">Amazon EC2 Key Pairs</a></p>
+<p><a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html" target="_blank" rel="external">Instance Metadata and User Data</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/06/01/翻译-python中的关键字yield/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2169,161 +2350,11 @@ AVAILABLE_REGIONS = [
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/19/让mac的终端实现克隆会话功能/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/19/让mac的终端实现克隆会话功能/" itemprop="url">让mac的终端实现克隆会话功能</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-19T10:34:12+08:00">
-                2015-05-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mac/" itemprop="url" rel="index">
-                    <span itemprop="name">mac</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>win上的securecrt和xshell都支持克隆回话，这样ssh到别的主机就不需要每次都输入密码。mac版的securecrt非常难用，网上找到方法可以让mac自带的终端实现克隆会话的功能，如下。</p>
-<pre><code>cd ~/.ssh
-touch config
-</code></pre><p>在config文件中写入下面的内容：</p>
-<pre><code>Host *
-    ControlMaster auto
-    ControlPath ~/.ssh/%h-%p-%r
-    ControlPersist yes
-</code></pre><p>第一次登陆输入密码后，第二次登陆就不需要密码了。每次登陆，会在~/.ssh中建立一个soket文件，下次用相同用户名，端口，主机名进行连接就会自动复用</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2369,7 +2400,7 @@ touch config
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">210</span>
+                <span class="site-state-item-count">211</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

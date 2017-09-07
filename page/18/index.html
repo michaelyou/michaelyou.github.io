@@ -286,6 +286,263 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第十部分：增强defer功能的客户端/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/30/第十部分：增强defer功能的客户端/" itemprop="url">第十部分：增强defer功能的客户端</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T21:58:07+08:00">
+                2015-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/twisted/" itemprop="url" rel="index">
+                    <span itemprop="name">twisted</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>原文在<a href="http://krondo.com/?p=1956" target="_blank" rel="external">这里</a></p>
+<p>##版本5.0<br>现在我们将要向诗歌下载客户端添加一些新的处理逻辑，包括在第九部分提到要添加的功能。不过，首先我要说明一点：我并不知道如何实现Byronification引擎。那超出了我的编程能力范围。取而代之的，我想实现一个简单的功能，即Cummingsifier。其只是将诗歌内容转换成小写字母：</p>
+<pre><code>def cummingsify(poem)
+    return poem.lower()
+</code></pre><p>这个方法如此之简单以至于它永远不会出错。版本5.0的实现代码在<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-5/get-poetry.py#L1" target="_blank" rel="external">twisted-client-5/get-poetry.py</a>文件中。我们使用了修改后的 cummingsify，其会随机地选择以下行为：</p>
+<ol>
+<li>返回诗歌的小写版本</li>
+<li>抛出一个GibberishError异常</li>
+<li>抛出一个ValueError</li>
+</ol>
+<p>这样，我们便模拟出来一个会因为各种意料不到的问题而执行失败的复杂算法。其它部分的仅有的改变在方法<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-5/get-poetry.py#L119" target="_blank" rel="external">poetry_main</a>中：</p>
+<pre><code>def poetry_main():
+    addresses = parse_args()
+    from twisted.internet import reactor
+    poems = []
+    errors = []
+    def try_to_cummingsify(poem):
+        try:
+            return cummingsify(poem)
+        except GibberishError:
+            raise
+        except:
+            print &apos;Cummingsify failed!&apos;
+            return poem
+    def got_poem(poem):
+        print poem
+        poems.append(poem)
+    def poem_failed(err):
+        print &gt;&gt;sys.stderr, &apos;The poem download failed.&apos;
+        errors.append(err)
+    def poem_done(_):
+        if len(poems) + len(errors) == len(addresses):
+            reactor.stop()
+    for address in addresses:
+        host, port = address
+        d = get_poetry(host, port)
+        d.addCallback(try_to_cummingsify)
+        d.addCallbacks(got_poem, poem_failed)
+        d.addBoth(poem_done)
+    reactor.run()
+</code></pre><p>因此，当从服务器上下载一首诗歌时，可能会出现如下情况：</p>
+<ol>
+<li>打印诗歌的小写版本</li>
+<li>打印 ”Cummingsify failed“并附上原始形式的诗歌</li>
+<li>打印”The peom download failed”。</li>
+</ol>
+<p>为了实现下面内容的效果，你可以打开多个服务器或开一个服务器而打开此程序次，直到你观察到所有不同的结果，当然也尝试一下去连接一个没有服务器值守的端口。</p>
+<p>图19是我们给deferred添加回调后形成的callback/errback链：</p>
+<p><img src="/img/deferred中的回调链.png" alt="图19 deferred中的回调链"></p>
+<p>注意到，”pass-throug”errback通过addCallback添加到链中。它会将任何其接收到的Failure传递给下一个errback（即poem_failed函数）。因此poem_failed函数可以处理来自get_poetry与try_to_commingsify两者的failure。下面让我们来分析下deferred可能会出现的激活情况，图20说明了我们能够下载到诗歌并且try_to_commingsify成功执行的路线图：</p>
+<p><img src="/img/成功下载到诗歌并且成功变换其格式.png" alt="图20 成功下载到诗歌并且成功变换其格式"></p>
+<p>在这种情况中，没有回调执行失败，因此控制权一直在callback中流动。注意到poem_done收到的结果是None，这是因为它并没有返回任何值。如果我们想让后续的回调都能触及到诗歌内容，只要显式地让got_poem返回诗歌即可。</p>
+<p>图21说明了我们在成功下载到诗歌后，但在try_to_cummingsify中抛出了GibberishError：</p>
+<p><img src="/img/成功下载到诗歌但出现了GibberishError.png" alt="图21 成功下载到诗歌但出现了GibberishError"></p>
+<p>由于try_to_cummingsify回调抛出了GibberishError，所以控制权转移到了errback链，即poem_fail回调被调用并传入的捕获的异常作为其参数。</p>
+<p>由于poem_failed并没有抛出获异常或返回一个Failure，因此在它执行完后，控制权又回到了callback链中。如果我们想让poem_fail完全处理好传进来的错误，那么返回一个None是再好不过的做法了。相反，如果我们只想让poem_failed采取一部分行动，但继续传递这个错误，那么我们需要改写poem_failed，即将参数err作为返回值返回。如此一来，控制权交给了下一个errback回调。</p>
+<p>注意到，迄今为止，got_poem与poem_failed都不可能出现执行失败的情况，因此errback链上的poem_done是不可能被激活的。但在任何情况下这样做都是安全的，这体现了“防御式”编程的思想。比如在got_poem或poem_failed出现了bugs，那么这样做就不会让这个bugs的影响进入Twisted的核心代码区。鉴于上面的描述，可以看出addBoth类型于try/except中的finally语句。</p>
+<p>下面我们再来看看第三种可能情况，即成功下载到诗歌但try_to_cummingsify抛出了VauleError，如图22：</p>
+<p><img src="/img/成功下载到诗歌当cummingsify执行失败.png" alt="图22：成功下载到诗歌当cummingsify执行失败"></p>
+<p>除了got_poem得到是原始式样的诗歌而不是小写版的外，与图20描述的情况完全相同。当然，控制权还是在try_to_cummingsif中进行了转移，即使用了try/except捕获了ValueError并返回了原始式样的诗歌。而这一切deferred并不知晓。<br>最后，我们来看看当试图连接一个无服务器值守的端口会出现什么情况，如图23所示：</p>
+<p><img src="/img/连接服务器失败.png" alt="图23 连接服务器失败"></p>
+<p>由于poem_failed返回了一个None，因此控权又回到了callback链中。</p>
+<p>##版本5.1<br>在版本5.0中我们使用普通的try/except来捕获try_to_cummingsify中的异常，而没有让deferred来捕获这个异常。这其实并没有什么错误，但下面我们将采取一种新的方式来处理异常。</p>
+<p>设想一下，我们让deferred来捕获 GibberishError 与ValueError 异常，并将其传递到errback链中进行处理。如果要保留原有的行为，那么需要下面的errback来判断错误类型是否为Valuerror，如果是，那么返回原始式样的诗歌，这样一来，控制权再次回到callback链中并将原始式样的诗歌打印出来。</p>
+<p>但有一个问题：errback并不会得到原始诗歌内容 。它只会得到由cummingsify抛出的vauleError异常。为了让errback处理这个错误，我们需要重新设计它来接收到原始式样的诗歌。</p>
+<p>一种方法是改变cummingsify以让异常信息中包含原始式样的诗歌。这也正是我们在5.1版本中做的，其代码实现在<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-5/get-poetry-1.py#L1" target="_blank" rel="external">twisted-client-5/get-poetry-1.py</a>中。我们改写ValueError异常为CannotCummingsify异常，其能将诗歌作为其第一个参数来传递。</p>
+<p>如果cummingsify中外部模块中一个真实存在的函数，那么其最好是通过另一个函数来捕获非GibberishError并抛出一个CannotCummingsify异常。这样，我们的poetry_main就成为：</p>
+<pre><code>def poetry_main():
+    addresses = parse_args()
+    from twisted.internet import reactor
+    poems = []
+    errors = []
+    def cummingsify_failed(err):
+        if err.check(CannotCummingsify):
+            print &apos;Cummingsify failed!&apos;
+            return err.value.args[0]
+        return err
+    def got_poem(poem):
+        print poem
+        poems.append(poem)
+    def poem_failed(err):
+        print &gt;&gt;sys.stderr, &apos;The poem download failed.&apos;
+        errors.append(err)
+    def poem_done(_):
+        if len(poems) + len(errors) == len(addresses):
+            reactor.stop()
+    for address in addresses:
+        host, port = address
+        d = get_poetry(host, port)
+        d.addCallback(cummingsify)
+        d.addErrback(cummingsify_failed)
+        d.addCallbacks(got_poem, poem_failed)
+        d.addBoth(poem_done)
+</code></pre><p>而新的deferred结构如图24所示：</p>
+<p><img src="/img/版本5.1的deferrd调用链结构.png" alt="图24：版本5.1的deferrd调用链结构"></p>
+<p>来看看cummingsify_failed的errback回调：</p>
+<pre><code>def cummingsify_failed(err):
+    if err.check(CannotCummingsify):
+        print &apos;Cummingsify failed!&apos;
+        return err.value.args[0]
+    return err
+</code></pre><p>我们使用了Failure中的<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/python/failure.py#L305" target="_blank" rel="external">check</a>方法来确认嵌入在Failure中的异常是否是CannotCummingsify的实例。如果是，我们返回异常的第一个参数（即原始式样诗歌）。因此，这样一来返回值就不是一个Failure了，控制权也就又回到callback链中了。否则（即异常不是CannotCummingsify的实例），我们返回一个Failure，即将错误传递到下一个errback中。</p>
+<p>图25说明了当我们捕获一个CannotCummingsify时的调用过程：</p>
+<p><img src="/img/捕获一个CannotCummingsify异常.png" alt="图25：捕获一个CannotCummingsify异常"></p>
+<p>因此，当我们使用deferrd时，可以选择使用try/except来捕获异常，也可以让deferred来将异常传递到errback回调链中进行处理。</p>
+<p>##总结：<br>在这个部分，我们增强了客户端的Deferred的功能，实现了异常与结果在callback/errback链中“路由”。（你可以将各个回调看作成路由器，然后根据传入参数的情况来决定其返回值进入下一个stage的哪条链，或者说控制权进入下一个stage的哪个类型的回调）。虽然示例程序是虚构出来的，但它揭示了控制权在deferred的回调链中交错传递具体方向依赖于返回值的类型。</p>
+<p>那我们是不是已经对deferred无所不知了？不，我们还会在下面的部分继续讲解deferred的更多的功能。但在第十一部分，我们先不讲这部分内容，而是实现我们的Twisted版本的诗歌下载服务器。</p>
+<p>##练习</p>
+<ol>
+<li>Figure 25 shows one of the four possible ways the deferreds in client 5.1 can fire. Draw the other three.</li>
+<li><p>Use the <a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/deferred-simulator.py#L1" target="_blank" rel="external">deferred simulator</a> to simulate all possible firings for clients 5.0 and 5.1. To get you started, this simulator program can represent the case where the try_to_cummingsify function succeeds in client 5.0:</p>
+<pre><code>r poem p
+r None r None
+r None r None
+</code></pre></li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第九部分：第二个小插曲，Deferred/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2631,180 +2888,11 @@ python blocking-server/slowpoetry.py --port 10002 poetry/science.txt
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第一部分：Twisted理论基础/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/第一部分：Twisted理论基础/" itemprop="url">第一部分：Twisted理论基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T10:53:40+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##前言:<br>最近有人在Twisted邮件列表中提出诸如”为任务紧急的人提供一份Twisted介绍”的的需求。值得提前透露的是，这个序列并不会如他们所愿.尤其是介绍Twisted框架和基于Python 的异步编程而言，可能短时间无法讲清楚。因此,如果你时间紧急，这恐怕不是你想找的资料。</p>
-<p>我相信如果对异步编程模型一无所知，快速的介绍同样无法让你对其有所理解，至少你得稍微懂点基础知识吧。我已经用Twisted框架几年了，因此思考过我当初是怎么学习它(学得很慢)并发现学习它的最大难度并不在Twisted本身,而在于对其模型的理解，只有理解了这个模型，你才能更好去写和理解异步程序的代码。大部分Twisted的代码写得很清晰，其在线文档也非常棒（至少在开源软件这个层次上可以这么说）。但如果不理解这个模型，不管是读Twisted源码还是使用Twisted的代码更或者是相关文档，你都会感到非常的伤脑筋。</p>
-<p>因此，我会用前面几个部分来介绍这个模型以让你掌握它的机制，稍后会介绍一下Twisted的特点。实际上，一开始，我们并不会使用Twisted，相反，会使用简单的Python来说明一个异步模型是如何工作的。我们在初次学习Twisted的时，会从你平常都不会直接使用的底层的实现讲起。Twisted是一个高度抽象的体系，因此在使用它时，你会体会到其多层次性。但当你去学习尤其是尝试着理解它是如何工作时，这种为抽像而带来的多层次性会给你带来极大的理解难度。所以，我们准备来个从内到外，从低层开始学习它。</p>
-<p>##模型：<br>为了更好的理解异步编程模型的特点，我们来回顾一下两个大家都熟悉的模型。在阐述过程中，我们假设一个包含三个相互独立任务的程序。在此，除了规定这些任务都要完成自己工作外，我们先不作具体的解释，后面我们会慢慢具体了解它们。请注意：在此我用“任务”这个词，这意味着它需要完成一些事情。</p>
-<p>第一个模型是单线程的同步模型，如图1所示：</p>
-<p><img src="/img/同步模型.png" alt="图1 同步模型"></p>
-<p>这是最简单的编程方式。在一个时刻，只能有一个任务在执行，并且前一个任务结束后一个任务才能开始。如果任务都能按照事先规定好的顺序执行，最后一个任务的完成意味着前面所有的任务都已无任何差错地完成并输出其可用的结果—这是多么简单的逻辑。</p>
-<p>下面我们来呈现第二个模型，如图2所示：</p>
-<p><img src="/img/线程模型.png" alt="图2 线程模型"></p>
-<p>在这个模型中，每个任务都在单独的线程中完成。这些线程都是由操作系统来管理，若在多处理机、多核处理机的系统中可能会相互独立的运行，若在单处理机上，则会交错运行。关键点在于，在线程模式中，具体哪个任务执行由操作系统来处理。但编程人员则只需简单地认为：它们的指令流是相互独立且可以并行执行。虽然，从图示看起来很简单，实际上多线程编程是很麻烦的，你想啊，任务之间的要通信就要是线程之间的通信。线程间的通信那不是一般的复杂。什么邮箱、通道、共享内存、、、 唉：（<br>一些程序用多处理机而不是多线程来实现并行运算。虽然具体的编程细节是不同的，但对于我们要研究的模型来说是一样的。</p>
-<p>下面我们来介绍一下异步编程模型，如图3所示</p>
-<p><img src="/img/异步模型.png" alt="图3 异步模型"></p>
-<p>在这个模型中，任务是交错完成，值得注意的是：这是在单线程的控制下。这要比多线程模型简单多了，因为编程人员总可以认为只有一个任务在执行，而其它的在停止状态。虽然在单处理机系统中，线程也是像图3那样交替进行。但作为程序员在使用多线程时，仍然需要使用图2而不是图3的来思考问题，以防止程序在挪到多处理机的系统上无法正常运行（考虑到兼容性）。间单线程的异步程序不管是在单处理机还是在多处理机上都 能很好的运行。</p>
-<p>在异步编程模型与多线程模型之间还有一个不同：在多线程程序中，对于停止某个线程启动另外一个线程，其决定权并不在程序员手里而在操作系统那里，因此，程序员在编写程序过程中必须要假设在任何时候一个线程都有可能被停止而启动另外一个线程。相反，在异步模型中，一个任务要想运行必须显式放弃当前运行的任务的控制权。这也是相比多线程模型来说，最简洁的地方。<br>值得注意的是：将异步编程模型与同步模型混合在同一个系统中是可以的。但在介绍中的绝大多数时候，我们只研究在单个线程中的异步编程模型。</p>
-<p>##动机<br>我们已经看到异步编程模型之所以比多线程模型简单在于其单令流与显式地放弃对任务的控制权而不是被操作系统随机地停止。但是异步模型要比同步模型复杂得多。程序员必须将任务组织成序列来交替的小步完成。因此，若其中一个任务用到另外一个任务的输出，则依赖的任务（即接收输出的任务）需要被设计成为要接收系列比特或分片而不是一下全部接收。由于没有实质上的并行，从我们的图中可以看出，一个异步程序会花费一个同步程序所需要的时间，可能会由于异步程序的性能问题而花费更长的时间。</p>
-<p>因此，就要问了，为什么还要使用异步模型呢？ 在这儿，我们至少有两个原因。首先，如果有一到两个任务需要完成面向人的接口，如果交替执行这些任务，系统在保持对用户响应的同时在后台执行其它的任务。因此，虽然后台的任务可能不会运行的更快，但这样的系统可能会欢迎的多。<br>然而，有一种情况下，异步模型的性能会高于同步模型，有时甚至会非常突出，即在比较短的时间内完成所有的任务。这种情况就是任务被强行等待或阻塞，如图4所示：</p>
-<p><img src="/img/同步模型中出现阻塞.png" alt="图4 同步模型中出现阻塞"></p>
-<p>在图4中，灰色的部分代表这段时间某个任务被阻塞。为什么要阻塞一个任务呢？最直接的原因就是等待I/O的完成：传输数据或来自某个外部设备。一个典型的CPU处理数据的能力是硬盘或网络的几个数量级的倍数。因此，一个需要进行大I/O操作的同步程序需要花费大量的时间等待硬盘或网络将数据准备好。正是由于这个原因，同步程序也被称作为阻塞程序。</p>
-<p>从图4中可以看出，一个可阻塞的程序，看起来与图3描述的异步程序有点像。这不是个巧合。异步程序背后的最主要的特点就在于，当出现一个任务像在同步程序一样出现阻塞时，会让其它可以执行的任务继续执行，而不会像同步程序中那样全部阻塞掉。因此一个异步程序只有在没有任务可执行时才会出现“阻塞”，这也是为什么异步程序被称为非阻塞程序的原因。<br>任务之间的切换要不是此任务完成，要不就是它被阻塞。由于大量任务可能会被阻塞，异步程序等待的时间少于同步程序而将这些时间用于其它实时工作的处理（如与人打交道的接口），这样一来，前者的性能必然要高很多。</p>
-<p>与同步模型相比，异步模型的优势在如下情况下会得到发挥：</p>
-<ol>
-<li><p>有大量的任务，因此在一个时刻至少有一个任务要运行</p>
-</li>
-<li><p>任务执行大量的I/O操作，这样同步模型就会在因为任务阻塞而浪费大量的时间</p>
-</li>
-<li>任务之间相互独立，以至于任务内部的交互很少。</li>
-</ol>
-<p>这些条件大多在CS模式中的网络比较繁忙服务器端出现（如WEB服务器）。每个任务代表一个客户端进行接收请求并回复的I/O操作。客户的请求（相当于读操作）都是相互独立的。因此一个网络服务是异步模型的典型代表，这也是为什么twisted是第一个也是最棒的网络库。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/17/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/19/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/17/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/19/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2850,7 +2938,7 @@ python blocking-server/slowpoetry.py --port 10002 poetry/science.txt
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">210</span>
+                <span class="site-state-item-count">211</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

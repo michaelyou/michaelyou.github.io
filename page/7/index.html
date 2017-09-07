@@ -286,6 +286,183 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/16/django-admin设置字段可选/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/16/django-admin设置字段可选/" itemprop="url">Django--admin设置字段可选</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-16T21:39:50+08:00">
+                2015-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>你或许会发现管理工具有个限制：编辑表单需要你填写每一个字段，然而在有些情况下，你想要某些字段是可选的。 举个例子，我们想要Author模块中的email字段成为可选，即<strong>允许不填</strong>。 在现实世界中，你可能没有为每个作者登记邮箱地址。</p>
+<p>为了指定email字段为可选，你只要编辑Book模块（回想第五章，它在mysite/books/models.py文件里），在email字段上加上blank=True。代码如下：</p>
+<pre><code>class Author(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=40)
+    email = models.EmailField(**blank=True** )
+</code></pre><p>这些代码告诉Django，作者的邮箱地址允许输入一个空值。 所有字段都默认blank=False，这使得它们不允许输入空值。</p>
+<p>这里会发生一些有趣的事情。 直到现在，除了<strong>unicode</strong>()方法，我们的模块充当数据库中表定义的角色，即本质上是用Python的语法来写CREATE TABLE语句。 在添加blank=True过程中，我们已经开始在简单的定义数据表上扩展我们的模块了。 现在，我们的模块类开始成为一个富含Author对象属性和行为的集合了。 email不但展现为一个数据库中的VARCHAR类型的字段，它还是页面中可选的字段，就像在管理工具中看到的那样。</p>
+<p>当你添加blank=True以后，刷新页面<code>Add author edit form (http://127.0.0.1:8000/admin/books/author/add/ )</code>，将会发现Email的标签不再是粗体了。 这意味它不是一个必填字段。 现在你可以添加一个作者而不必输入邮箱地址，即使你为这个字段提交了一个空值，也再不会得到那刺眼的红色信息<code>“This field is required”</code>。</p>
+<p>##设置日期型和数字型字段可选</p>
+<p>虽然<code>blank=True</code>同样适用于日期型和数字型字段，但是这里需要详细讲解一些背景知识。</p>
+<blockquote>
+<p>SQL有指定空值的独特方式，它把空值叫做NULL。NULL可以表示为未知的、非法的、或其它程序指定的含义。</p>
+<p>在SQL中， NULL的值不同于空字符串，就像Python中None不同于空字符串（””）一样。这意味着某个字符型字段（如VARCHAR）的值不可能同时包含NULL和空字符串。</p>
+<p>这会引起不必要的歧义或疑惑。 为什么这条记录有个NULL，而那条记录却有个空字符串？ 它们之间有区别，还是数据输入不一致？ 还有： 我怎样才能得到全部拥有空值的记录，应该按NULL和空字符串查找么？还是仅按字符串查找？</p>
+</blockquote>
+<p>为了消除歧义，Django生成CREATE TABLE语句自动为每个字段显式加上NOT NULL。 这里有个第五章中生成Author模块的例子：</p>
+<pre><code>CREATE TABLE &quot;books_author&quot; (
+    &quot;id&quot; serial NOT NULL PRIMARY KEY,
+    &quot;first_name&quot; varchar(30) NOT NULL,
+    &quot;last_name&quot; varchar(40) NOT NULL,
+    &quot;email&quot; varchar(75) NOT NULL
+)
+</code></pre><p>在大多数情况下，这种默认的行为对你的应用程序来说是最佳的，因为它可以使你不再因数据一致性而头痛。 而且它可以和Django的其它部分工作得很好。如在管理工具中，如果你留空一个字符型字段，它会为此插入一个空字符串（而<code>&#39;&#39;</code>不是<code>NULL</code>）。</p>
+<p><strong>但是</strong>，其它数据类型有例外：日期型、时间型和数字型字段不接受空字符串。 如果你尝试将一个空字符串插入日期型或整数型字段，你可能会得到数据库返回的错误，这取决于那个数据库的类型。 （PostgreSQL比较严禁，会抛出一个异常；MySQL可能会也可能不会接受，这取决于你使用的版本和运气了。）在这种情况下，NULL是唯一指定空值的方法。 在Django模块中，<strong>你可以通过添加null=True来指定一个字段允许为NULL</strong>。</p>
+<p>因此，这说起来有点复杂： <strong>如果你想允许一个日期型（DateField、TimeField、DateTimeField）或数字型（IntegerField、DecimalField、FloatField）字段为空，你需要使用null=True 和 blank=True。</strong></p>
+<p>为了举例说明，让我们把Book模块修改成允许 publication_date为空。修改后的代码如下：</p>
+<pre><code>class Book(models.Model):
+    title = models.CharField(max_length=100)
+    authors = models.ManyToManyField(Author)
+    publisher = models.ForeignKey(Publisher)
+    publication_date = models.DateField(blank=True, null=True )
+</code></pre><p>添加<code>null=True</code>比添加<code>blank=True</code>复杂。因为<code>null=True</code>改变了数据的语义，即改变了<code>CREATE TABLE</code>语句，把<code>publication_date</code>字段上的<code>NOT NULL</code>删除了。 要完成这些改动，我们还需要更新数据库。</p>
+<p>出于某种原因，Django不会尝试自动更新数据库结构。所以你必须执行ALTER TABLE语句将模块的改动更新至数据库。 像先前那样，你可以使用manage.py dbshell进入数据库服务环境。 以下是在这个特殊情况下如何删除NOT NULL:</p>
+<pre><code>ALTER TABLE books_book ALTER COLUMN publication_date DROP NOT NULL;
+</code></pre><p>– 《the Django book 第六章 admin》</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/16/一些pythonic代码的例子/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1765,156 +1942,11 @@ TEMPLATE_DIRS = (
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django-启动web/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/15/django-启动web/" itemprop="url">Django--启动web</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T17:18:49+08:00">
-                2015-04-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>runserver 命令在 8000 端口启动开发服务器，且仅监听本地连接。 要想要更改服务器端口的话，可将端口作为命令行参数传入：</p>
-<pre><code>python manage.py runserver 8080
-</code></pre><p>通过指定一个 IP 地址，你可以告诉服务器–允许非本地连接访问。 如果你想和其他开发人员共享同一开发站点的话，该功能特别有用。 <code>0.0.0.0</code> 这个 IP 地址，告诉服务器去侦听任意的网络接口。</p>
-<pre><code>python manage.py runserver 0.0.0.0:8000
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1960,7 +1992,7 @@ TEMPLATE_DIRS = (
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">210</span>
+                <span class="site-state-item-count">211</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

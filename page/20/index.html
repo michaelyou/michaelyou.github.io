@@ -286,6 +286,207 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/25/为什么求斐波拉切数列用递归不是一个好方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/25/为什么求斐波拉切数列用递归不是一个好方法/" itemprop="url">为什么求斐波拉切数列用递归不是一个好方法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-25T15:14:32+08:00">
+                2015-01-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##递归解法<br>教课书上一般都是用斐波拉切数列来说明递归，但是用递归的方法来求解斐波拉切数列并不是一个好的方法，这主要是效率的问题。</p>
+<pre><code>long fibonacci(unsigned int n)
+{
+    if(n &lt;= 0)
+        return 0;
+
+    if(n == 1)
+        return 1;
+
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+</code></pre><p>这个方法的低效体现在哪里呢？我们不妨来分析一下fibnacci(8)的求解过程：</p>
+<p><img src="/img/fibonacci.png" alt="fibonacci"></p>
+<p>我们不难发现在这棵树中很多结点是重复的，而且重复的结点数会随着n的增大而急剧增加，这意味着计算量会随着n的睁大而急剧增大。事实上，用递归计算的时间复杂度是以n的指数的方式递增的。</p>
+<p>##循环解法<br>在这里，递归的缺陷在于重复计算了很多项，为了避免重复计算，我们可以使用循环：</p>
+<pre><code>long fibonacci_iterator(unsigned int n)
+{
+    int result[2] = {0, 1};
+    if(n &lt; 2)
+        return result[n];
+
+    long fib_one = 0;
+    long fib_two = 1;
+
+    long fib_num = 0;
+    int i;
+    for(i = 2; i &lt;= n; i++) {
+        fib_num = fib_one + fib_two;
+        fib_one = fib_two;
+        fib_two = fib_num;
+    }
+
+    return fib_num;
+}
+</code></pre><p>##测试程序</p>
+<pre><code>#define n 50
+int main(int argc, char **argv)
+{
+    clock_t start, end;
+    double times = 0;
+
+    start = clock();
+    printf(&quot;fibonacci(%d) = %d\n&quot;, n, fibonacci(n));
+    end = clock();
+    times = (double)(end - start) / CLOCKS_PER_SEC;
+    printf(&quot;The fibonacci took %fs\n&quot;, times);
+    start = clock();
+    printf(&quot;fibonacci(%d) = %d\n&quot;, n, fibonacci_iterator(n));
+    end = clock();
+    times = (double)(end - start) / CLOCKS_PER_SEC;
+    printf(&quot;The fibonacci_iterator took %fs\n&quot;, times);
+}
+</code></pre><p>输出为:</p>
+<blockquote>
+<p>fibonacci(50) = 12586269025</p>
+<p>The fibonacci took 203.040000s</p>
+<p>fibonacci(50) = 12586269025</p>
+<p>The fibonacci_iterator took 0.000000s</p>
+</blockquote>
+<p>所以说，在这里用递归的话真是脑子被门夹了</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/24/重建二叉树/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1765,157 +1966,11 @@ int main()
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/21/找出N个整数中最大的K个数/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/21/找出N个整数中最大的K个数/" itemprop="url">找出N个整数中最大的K个数</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-21T21:02:50+08:00">
-                2015-01-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>顺序读取数组中的前K个元素，构建小根堆。</p>
-<p>小根堆的特点是根元素最小，并且一次调整（deleteMin）操作的时间复杂度为log(2,K)。</p>
-<p>接下来从数组中取下一个元素，如果该元素不比堆顶元素大，则丢弃；否则用它替换堆顶元素，然后调整小根堆。<br>当把数组中的元素全部读出来后，小根堆中保留的就是前K大的元素。</p>
-<p>初始建堆操作需要<code>K * log(2, k)</code>–这是最多的操作次数，从数组中读取后<code>N-K</code>个元素和堆顶元素一一比较，最坏的情况是每次都要替换堆顶元素，都要调整小根堆，复杂度为<code>(N-K) * log(2,K)</code>。总的复杂度为<code>O(N*log(2,K))</code>。</p>
-<p>###找出最小的k个数呢？<br>和最大的k个数的思想是相同的，只是这里建立的是是大根堆   </p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/19/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/21/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/19/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/21/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1961,7 +2016,7 @@ int main()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">210</span>
+                <span class="site-state-item-count">211</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
