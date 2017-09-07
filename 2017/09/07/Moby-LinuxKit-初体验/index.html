@@ -94,17 +94,17 @@
 
 
 
-<meta name="description" content="docker的开源部分被改名成了Moby，同时docker公司还开源了一个LinuxKit的项目，大家可以先去看一下readme。 Moby是一个组装容器系统的框架。它包含一个容器化组件库和一个将这些组件组装成独立的容器系统的框架。目前，docker正在被拆分成模块化的组件，将来，docker会从这些被Moby打包的组件中被组装出来。 LinuxKit是一个用来构造最小Linux发行版的工具集。它">
+<meta name="description" content="Docker的开源部分被改名成了Moby，同时Docker公司还开源了一个LinuxKit的项目，大家可以先去看一下readme。 Moby是一个组装容器系统的框架。它包含一个容器化组件库和一个将这些组件组装成独立的容器系统的框架。目前，Docker正在被拆分成模块化的组件，将来，Docker会从这些被Moby打包的组件中被组装出来。 LinuxKit是一个用来构造最小Linux发行版的工具集。它">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Moby &amp; LinuxKit 初体验">
 <meta property="og:url" content="http://yoursite.com/2017/09/07/Moby-LinuxKit-初体验/index.html">
 <meta property="og:site_name" content="Youmai の Blog">
-<meta property="og:description" content="docker的开源部分被改名成了Moby，同时docker公司还开源了一个LinuxKit的项目，大家可以先去看一下readme。 Moby是一个组装容器系统的框架。它包含一个容器化组件库和一个将这些组件组装成独立的容器系统的框架。目前，docker正在被拆分成模块化的组件，将来，docker会从这些被Moby打包的组件中被组装出来。 LinuxKit是一个用来构造最小Linux发行版的工具集。它">
+<meta property="og:description" content="Docker的开源部分被改名成了Moby，同时Docker公司还开源了一个LinuxKit的项目，大家可以先去看一下readme。 Moby是一个组装容器系统的框架。它包含一个容器化组件库和一个将这些组件组装成独立的容器系统的框架。目前，Docker正在被拆分成模块化的组件，将来，Docker会从这些被Moby打包的组件中被组装出来。 LinuxKit是一个用来构造最小Linux发行版的工具集。它">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-09-07T13:14:59.000Z">
+<meta property="og:updated_time" content="2017-09-07T13:18:08.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Moby &amp; LinuxKit 初体验">
-<meta name="twitter:description" content="docker的开源部分被改名成了Moby，同时docker公司还开源了一个LinuxKit的项目，大家可以先去看一下readme。 Moby是一个组装容器系统的框架。它包含一个容器化组件库和一个将这些组件组装成独立的容器系统的框架。目前，docker正在被拆分成模块化的组件，将来，docker会从这些被Moby打包的组件中被组装出来。 LinuxKit是一个用来构造最小Linux发行版的工具集。它">
+<meta name="twitter:description" content="Docker的开源部分被改名成了Moby，同时Docker公司还开源了一个LinuxKit的项目，大家可以先去看一下readme。 Moby是一个组装容器系统的框架。它包含一个容器化组件库和一个将这些组件组装成独立的容器系统的框架。目前，Docker正在被拆分成模块化的组件，将来，Docker会从这些被Moby打包的组件中被组装出来。 LinuxKit是一个用来构造最小Linux发行版的工具集。它">
 
 
 
@@ -337,8 +337,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
                   </a>
                 </span>
 
@@ -374,10 +374,10 @@
       
 
       
-        <p>docker的开源部分被改名成了<a href="https://github.com/moby/moby" target="_blank" rel="external">Moby</a>，同时docker公司还开源了一个<a href="https://github.com/linuxkit/linuxkit" target="_blank" rel="external">LinuxKit</a>的项目，大家可以先去看一下readme。</p>
-<p>Moby是一个组装容器系统的框架。它包含一个容器化组件库和一个将这些组件组装成独立的容器系统的框架。目前，docker正在被拆分成模块化的组件，将来，docker会从这些被Moby打包的组件中被组装出来。</p>
+        <p>Docker的开源部分被改名成了<a href="https://github.com/moby/moby" target="_blank" rel="external">Moby</a>，同时Docker公司还开源了一个<a href="https://github.com/linuxkit/linuxkit" target="_blank" rel="external">LinuxKit</a>的项目，大家可以先去看一下readme。</p>
+<p>Moby是一个组装容器系统的框架。它包含一个容器化组件库和一个将这些组件组装成独立的容器系统的框架。目前，Docker正在被拆分成模块化的组件，将来，Docker会从这些被Moby打包的组件中被组装出来。</p>
 <p>LinuxKit是一个用来构造最小Linux发行版的工具集。它通过Moby来创建镜像（image），使用LinuxKit工具来运行这些镜像。</p>
-<p>下面我们来体验一下，首先确保你已经安装了<a href="https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#recommended-extra-packages-for-trusty-1404" target="_blank" rel="external">Docker</a>和<a href="https://golang.org/doc/install" target="_blank" rel="external">Golang</a>。</p>
+<p>下面我们来体验一下，首先确保你已经安装了<a href="https://docs.Docker.com/engine/installation/linux/docker-ce/ubuntu/#recommended-extra-packages-for-trusty-1404" target="_blank" rel="external">Docker</a>和<a href="https://golang.org/doc/install" target="_blank" rel="external">Golang</a>。</p>
 <h3 id="构建Moby"><a href="#构建Moby" class="headerlink" title="构建Moby"></a>构建Moby</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">➜  git clone https://github.com/linuxkit/linuxkit.git</div><div class="line">➜  cd linuxkit</div><div class="line">➜  make &amp;&amp; sudo make install</div><div class="line">➜  moby version</div><div class="line">moby version 0.0</div><div class="line">commit: 1ff0e3beeeb1e741b9c5a54574f01ac5eee525a5</div></pre></td></tr></table></figure>
 <h3 id="构建linux镜像"><a href="#构建linux镜像" class="headerlink" title="构建linux镜像"></a>构建linux镜像</h3><p>构建镜像是通过yaml文件（格式可以参考官方文档 <a href="https://github.com/moby/tool/blob/master/docs/yaml.md" target="_blank" rel="external">LinuxKit YAML</a>），linuxkit目录下有一个<code>linuxkit.yml</code>可以用，examples目录下也有很多可用的yaml文件，我们可以任选一个来构建，这里直接使用<code>linuxkit.yml</code>文件。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">➜  linuxkit git:(master) moby build linuxkit.yml</div><div class="line">最后在当前目录下输出了3个文件</div><div class="line">Create outputs:</div><div class="line">  linuxkit-kernel linuxkit-initrd.img linuxkit-cmdline</div></pre></td></tr></table></figure>
@@ -412,8 +412,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/09/07/浙江大学SEL实验室docker系列文章目录/" rel="next" title="浙江大学SEL实验室docker系列文章目录">
-                <i class="fa fa-chevron-left"></i> 浙江大学SEL实验室docker系列文章目录
+              <a href="/2017/09/07/浙江大学SEL实验室docker系列文章目录/" rel="next" title="浙江大学SEL实验室Docker系列文章目录">
+                <i class="fa fa-chevron-left"></i> 浙江大学SEL实验室Docker系列文章目录
               </a>
             
           </div>
@@ -508,7 +508,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">25</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
