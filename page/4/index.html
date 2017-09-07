@@ -286,6 +286,339 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/06/01/翻译-python中的关键字yield/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/06/01/翻译-python中的关键字yield/" itemprop="url">[翻译]python中的关键字yield</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-06-01T14:09:34+08:00">
+                2015-06-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这是<a href="http://stackoverflow.com/questions/231767/what-does-the-yield-keyword-do-in-python/231855#231855" target="_blank" rel="external">stackoverflow上的一个问题</a>，这里翻译的是它得票最多的一个答案</p>
+<p>#问题<br>Python关键字yield的作用是什么？用来干什么的？</p>
+<p>比如，我正在试图理解下面的代码:</p>
+<pre><code>def node._get_child_candidates(self, distance, min_dist, max_dist):
+    if self._leftchild and distance - max_dist &lt; self._median:
+        yield self._leftchild
+    if self._rightchild and distance + max_dist &gt;= self._median:
+        yield self._rightchild  
+</code></pre><p>下面是这个函数的调用：</p>
+<pre><code>result, candidates = list(), [self]
+while candidates:
+    node = candidates.pop()
+    distance = node._get_dist(obj)
+    if distance &lt;= max_dist and distance &gt;= min_dist:
+        result.extend(node._values)
+    candidates.extend(node._get_child_candidates(distance, min_dist, max_dist))
+return result
+</code></pre><p>当调用 <code>_get_child_candidates</code>的时候发生了什么？返回了一个列表？返回了一个元素？被重复调用了么？ 什么时候这个调用结束呢？</p>
+<p>#回答<br>为了理解什么是 yield,你必须理解什么是生成器。在理解生成器之前，我们需要先理解迭代。</p>
+<p>##可迭代对象<br>当你建立了一个列表，你可以逐项地读取这个列表，这叫做一个可迭代对象:</p>
+<pre><code>&gt;&gt;&gt; mylist = [1, 2, 3]
+&gt;&gt;&gt; for i in mylist :
+...    print(i)
+1
+2
+3
+</code></pre><p>mylist 是一个可迭代的对象。当你使用一个列表生成式来建立一个列表的时候，就建立了一个可迭代的对象:</p>
+<pre><code>&gt;&gt;&gt; mylist = [x*x for x in range(3)]
+&gt;&gt;&gt; for i in mylist :
+...    print(i)
+0
+1
+4
+</code></pre><p>所有你可以应用 <code>for .. in ..</code>语法的叫做一个迭代器：列表，字符串，文件对象……这些可迭代对象易于操作，你可以如你所愿的读取其中的元素。但是你把所有的值都存储到了内存中，如果你有大量数据的话这个方式并不是你想要的。</p>
+<p>##生成器<br><strong>生成器是可以迭代的，但是你只可以读取它一次</strong>，因为它并不把所有的值放在内存中，它是<strong>实时地生成数据</strong>:</p>
+<pre><code>&gt;&gt;&gt; mygenerator = (x*x for x in range(3))
+&gt;&gt;&gt; for i in mygenerator :
+...    print(i)
+0
+1
+4
+</code></pre><p>看起来除了把 <code>[]</code> 换成 <code>()</code> 外没什么不同。但是，你不可以再次运行 <code>for i in mygenerator</code> , 因为生成器只能被迭代一次：先计算出0，然后继续计算1，然后计算4，一个接一个。</p>
+<p>##yield关键字<br><code>yield</code> 是一个类似 <code>return</code> 的关键字，只是这个函数返回的是个生成器。</p>
+<pre><code>&gt;&gt;&gt; def createGenerator() :
+...    mylist = range(3)
+...    for i in mylist :
+...        yield i*i
+...
+&gt;&gt;&gt; mygenerator = createGenerator() # create a generator
+&gt;&gt;&gt; print(mygenerator) # mygenerator is an object!
+&lt;generator object createGenerator at 0xb7555c34&gt;
+&gt;&gt;&gt; for i in mygenerator:
+...     print(i)
+0
+1
+4
+</code></pre><p>这个例子没什么用途，但是它让你知道，这个函数会返回一大批你只需要读一次的值.</p>
+<p>为了精通 <code>yield</code> ,你必须要理解：<strong>当你调用这个函数的时候，函数内部的代码并不立马执行</strong>。这个函数只是返回一个生成器对象，这有点蹊跷不是吗。</p>
+<p>那么，函数内的代码什么时候执行呢？当你使用<code>for</code>进行迭代的时候.</p>
+<p>现在到了关键点了！</p>
+<p>第一次迭代中你的函数会执行，从开始到达 <code>yield</code> 关键字，然后返回 <code>yield</code> 后的值作为第一次迭代的返回值. 然后，每次执行这个函数都会继续执行你在函数内部定义的那个循环的下一次，再返回那个值，直到没有可以返回的。</p>
+<p>如果生成器内部没有定义 <code>yield</code> 关键字，那么这个生成器被认为成空的。这种情况可能因为是循环进行没了，或者是没有满足 <code>if/else</code> 条件。</p>
+<p>##解释你的代码</p>
+<p>生成器:</p>
+<pre><code># 在这里定义node对象的方法来返回生成器
+def node._get_child_candidates(self, distance, min_dist, max_dist):
+
+  # 每一次你使用生成器对象都会调用这里的代码:
+
+  # 如果node对象仍然有一个左孩子
+  # 并且距离合理，返回这个左孩子
+  if self._leftchild and distance - max_dist &lt; self._median:
+      yield self._leftchild
+
+  # 如果node对象仍然有一个右孩子
+  # 并且距离合理，返回这个右孩子
+  if self._rightchild and distance + max_dist &gt;= self._median:
+      yield self._rightchild
+
+  # 如果函数运行到了这里，生成器就是空的
+  # 不可能有除了“左孩子”和“右孩子”之外的值
+</code></pre><p>调用者:</p>
+<pre><code># 建立一个空列表和一个元素是当前对象引用的列表
+result, candidates = list(), [self]
+
+# candidates循环 (一开始只拥有一个元素)
+while candidates:
+
+    # 获取最后一个candidate并将其从列表中删除
+    node = candidates.pop()
+
+    # 获取obj和这个candidate之间的距离        
+    distance = node._get_dist(obj)
+
+    # 如果距离ok，追加到result
+    if distance &lt;= max_dist and distance &gt;= min_dist:
+        result.extend(node._values)
+
+    # 将candidate的孩子添加到candidate列表中
+    # 循环会一直进行下去，知道遍历了孩子节点的孩子节点的孩子
+    candidates.extend(node._get_child_candidates(distance, min_dist, max_dist))
+
+return result
+</code></pre><p>这个代码包含了几个小部分：</p>
+<ul>
+<li>我们对一个列表进行迭代，但是迭代中列表还在不断的扩展。它是一个迭代这些嵌套的数据的简洁方式，即使这样有点危险，因为可能导致无限迭代。 <code>candidates.extend(node._get_child_candidates(distance, min_dist, max_dist))</code> 穷尽了生成器的所有值，但 <code>while</code> 不断地在产生新的生成器，它们会产生和上一次不一样的值，既然没有作用到同一个节点上.</li>
+<li><code>extend()</code> 是一个迭代器方法，作用于迭代器，并把参数追加到迭代器的后面。</li>
+</ul>
+<p>通常我们传给它一个列表参数:</p>
+<pre><code>&gt;&gt;&gt; a = [1, 2]
+&gt;&gt;&gt; b = [3, 4]
+&gt;&gt;&gt; a.extend(b)
+&gt;&gt;&gt; print(a)
+[1, 2, 3, 4]
+</code></pre><p>但是在你的代码中的是一个生成器，这样做很好，因为：</p>
+<ol>
+<li>你不必读两次所有的值</li>
+<li>你可以有很多子对象，但不必叫他们都存储在内存里面。</li>
+</ol>
+<p>并且这很奏效，因为Python不关心一个方法的参数是不是个列表。Python只希望它是可以迭代的，所以这个参数可以是列表，元组，字符串，生成器… 这叫做 <code>duck typing</code>,这也是为何Python如此棒的原因之一，但这已经是另外一个故事了…</p>
+<p>你可以在这里停下，或者来看看生成器的一些高级用法:</p>
+<p>##控制生成器的穷尽</p>
+<pre><code>&gt;&gt;&gt; class Bank(): # let&apos;s create a bank, building ATMs
+...    crisis = False
+...    def create_atm(self) :
+...        while not self.crisis :
+...            yield &quot;$100&quot;
+&gt;&gt;&gt; hsbc = Bank() # when everything&apos;s ok the ATM gives you as much as you want
+&gt;&gt;&gt; corner_street_atm = hsbc.create_atm()
+&gt;&gt;&gt; print(corner_street_atm.next())
+$100
+&gt;&gt;&gt; print(corner_street_atm.next())
+$100
+&gt;&gt;&gt; print([corner_street_atm.next() for cash in range(5)])
+[&apos;$100&apos;, &apos;$100&apos;, &apos;$100&apos;, &apos;$100&apos;, &apos;$100&apos;]
+&gt;&gt;&gt; hsbc.crisis = True # crisis is coming, no more money!
+&gt;&gt;&gt; print(corner_street_atm.next())
+&lt;type &apos;exceptions.StopIteration&apos;&gt;
+&gt;&gt;&gt; wall_street_atm = hsbc.create_atm() # it&apos;s even true for new ATMs
+&gt;&gt;&gt; print(wall_street_atm.next())
+&lt;type &apos;exceptions.StopIteration&apos;&gt;
+&gt;&gt;&gt; hsbc.crisis = False # trouble is, even post-crisis the ATM remains empty
+&gt;&gt;&gt; print(corner_street_atm.next())
+&lt;type &apos;exceptions.StopIteration&apos;&gt;
+&gt;&gt;&gt; brand_new_atm = hsbc.create_atm() # build a new one to get back in business
+&gt;&gt;&gt; for cash in brand_new_atm :
+...    print cash
+$100
+$100
+$100
+$100
+$100
+$100
+$100
+$100
+$100
+...
+</code></pre><p>对于控制一些资源的访问来说这很有用。</p>
+<p>##Itertools,你最好的朋友<br>itertools包含了很多特殊的迭代方法。是不是曾想过复制一个迭代器?串联两个迭代器？把嵌套的列表分组？不用创造一个新的列表的 zip/map?</p>
+<p>只要 <code>import itertools</code></p>
+<p>需要个例子？让我们看看比赛中4匹马可能到达终点的先后顺序的可能情况:</p>
+<pre><code>&gt;&gt;&gt; horses = [1, 2, 3, 4]
+&gt;&gt;&gt; races = itertools.permutations(horses)
+&gt;&gt;&gt; print(races)
+&lt;itertools.permutations object at 0xb754f1dc&gt;
+&gt;&gt;&gt; print(list(itertools.permutations(horses)))
+[(1, 2, 3, 4),
+ (1, 2, 4, 3),
+ (1, 3, 2, 4),
+ (1, 3, 4, 2),
+ (1, 4, 2, 3),
+ (1, 4, 3, 2),
+ (2, 1, 3, 4),
+ (2, 1, 4, 3),
+ (2, 3, 1, 4),
+ (2, 3, 4, 1),
+ (2, 4, 1, 3),
+ (2, 4, 3, 1),
+ (3, 1, 2, 4),
+ (3, 1, 4, 2),
+ (3, 2, 1, 4),
+ (3, 2, 4, 1),
+ (3, 4, 1, 2),
+ (3, 4, 2, 1),
+ (4, 1, 2, 3),
+ (4, 1, 3, 2),
+ (4, 2, 1, 3),
+ (4, 2, 3, 1),
+ (4, 3, 1, 2),
+ (4, 3, 2, 1)]
+</code></pre><p>##迭代器的内部机理<br>迭代是一个实现可迭代对象(实现的是 <code>__iter__()</code> 方法)和迭代器(实现的是 <code>__next__()</code>方法)的过程。可迭代对象是你可以从其获取到一个迭代器的任一对象。迭代器是那些允许你迭代可迭代对象的对象。</p>
+<p>更多见这个文章 <a href="http://effbot.org/zone/python-for-statement.htm" target="_blank" rel="external">for循环是怎么工作的</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/26/解决-mac删除系统自带python后一些软件崩溃/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1986,296 +2319,6 @@ touch config
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/15/openstack-horizon管理页面屏蔽/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/15/openstack-horizon管理页面屏蔽/" itemprop="url">openstack-horizon管理页面屏蔽</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-15T14:50:52+08:00">
-                2015-05-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/openstack/" itemprop="url" rel="index">
-                    <span itemprop="name">openstack</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>openstack的用户有role的属性，horizon根据用户的role不同展示不同的页面，如果role为admin，除了项目页面外，还会展示管理员页面。</p>
-<p><img src="/img/管理员.png" alt=""></p>
-<p>这是很正常的逻辑，一个项目一个管理员，其他人的role都是member。但是实际开发中可能遇到这样的问题：horizon提供的功能很简单，可能不能满足你的要求，于是你使用了<a href="http://www.opencontrail.org/" target="_blank" rel="external">opencontrail</a>来补充，但是，登录opencontrail的时候要求用户具有admin权限，我们必须要给所有人都加上admin权限，而opencontrail又缺乏管理项目和用户的功能，还是需要使用openstack，这样诸多拥有admin权限的人都能看到管理员界面，如果对系统不了解，误删了一些项目或者用户，会让你排查到抓狂。</p>
-<p>怎么解决这个问题呢？我的想法是，只有用户名和role均为admin的用户才能看到管理页面，role满足但是用户名不满足的用户只能看到project。据此得到的解决方案有两种，下面分别叙述。</p>
-<p>##方法一：openstack_auth的permission</p>
-<p>horizon左侧显示的导航栏是一个个dashboard，这些dashboard里面的子项目称为panel，代码中判断显示或者不显示一个dashboard取决于用户的permission，那permission在哪里定义呢？在openstack_auth这个模块中。</p>
-<pre><code>/usr/lib/python2.7/dist-packages/openstack_auth/backend.py
-</code></pre><p>backend.py文件中的类<code>KeystoneBackend</code>中的函数<code>get_all_permissions</code>中定义了用户的权限：</p>
-<pre><code>def get_all_permissions(self, user, obj=None):
-    &quot;&quot;&quot;Returns a set of permission strings that this user has through
-       his/her Keystone &quot;roles&quot;.
-
-       The permissions are returned as ``&quot;openstack.{{ role.name }}&quot;``.
-    &quot;&quot;&quot;
-    if user.is_anonymous() or obj is not None:
-        return set()
-    # TODO(gabrielhurley): Integrate policy-driven RBAC
-    #                      when supported by Keystone.
-    #print user.username
-    role_perms = set([&quot;openstack.roles.%s&quot; % role[&apos;name&apos;].lower()
-                      for role in user.roles])
-    service_perms = set([&quot;openstack.services.%s&quot; % service[&apos;type&apos;].lower()
-                      for service in user.service_catalog])
-    return role_perms | service_perms
-</code></pre><p>可以看到我们有的权限是<code>role_perms</code>和<code>service_perms</code>，不妨将它们打印出来看一下，倒数第二行加个打印：</p>
-<pre><code>print role_perms | service_perms
-</code></pre><p>内容为：</p>
-<pre><code>set([u&apos;openstack.services.compute&apos;,  u&apos;openstack.services.orchestration&apos;, u&apos;openstack.services.identity&apos;, u&apos;openstack.roles
-.keystoneserviceadmin&apos;, u&apos;openstack.services.network&apos;, u&apos;openstack.roles.keystoneadmin&apos;, u&apos;openstack.services.volume&apos;, u&apos;openstack.services.ec2&apos;, u&apos;openstack.roles.admin&apos;, u&apos;openstack.services.image&apos;])
-</code></pre><p>如果我们想通过用户名来限制dashboard和panel的显示，那就要增加name_perm这个字段，修改后的函数如下：</p>
-<pre><code>def get_all_permissions(self, user, obj=None):
-    &quot;&quot;&quot;Returns a set of permission strings that this user has through
-       his/her Keystone &quot;roles&quot;.
-
-       The permissions are returned as ``&quot;openstack.{{ role.name }}&quot;``.
-    &quot;&quot;&quot;
-    if user.is_anonymous() or obj is not None:
-        return set()
-    # TODO(gabrielhurley): Integrate policy-driven RBAC
-    #                      when supported by Keystone.
-    #print user.username
-    role_perms = set([&quot;openstack.roles.%s&quot; % role[&apos;name&apos;].lower()
-                      for role in user.roles])
-    service_perms = set([&quot;openstack.services.%s&quot; % service[&apos;type&apos;].lower()
-                      for service in user.service_catalog])
-    name_perms = set([&quot;openstack.username.%s&quot; % user.username.lower()])
-    return role_perms | service_perms | name_perms
-</code></pre><p>这样就增加了name_perms，打印出来如下：</p>
-<pre><code>set([u&apos;openstack.services.compute&apos;, u&apos;openstack.username.youwangqiu&apos;, u&apos;openstack.services.orchestration&apos;, u&apos;openstack.services.identity&apos;, u&apos;openstack.roles
-.keystoneserviceadmin&apos;, u&apos;openstack.services.network&apos;, u&apos;openstack.roles.keystoneadmin&apos;, u&apos;openstack.services.volume&apos;, u&apos;openstack.services.ec2&apos;, u&apos;openstack.roles.admin&apos;, u&apos;openstack.services.image&apos;])
-</code></pre><p>这样只是让用户有了这个权限字段，怎么让dashboard和panel知道呢？这就要到</p>
-<pre><code>/usr/share/openstack-dashboard/openstack_dashboard/dashboards
-</code></pre><p>这个目录下来看。</p>
-<pre><code>root@contrail-you:/usr/share/openstack-dashboard/openstack_dashboard/dashboards# ls
-admin  __init__.py  __init__.pyc  project  router  settings
-</code></pre><p>这里的admin，project，router和setting就是4个独立的dashboard，因为是限制管理员界面，很明显，应该是<code>admin</code>这个dashboard。</p>
-<p>这个dashboard的类似于config文件在dashboard.py文件中</p>
-<pre><code>import horizon
-
-
-class SystemPanels(horizon.PanelGroup):
-    slug = &quot;admin&quot;
-    name = _(&quot;System Panel&quot;)
-    panels = (&apos;overview&apos;, &apos;metering&apos;, &apos;hypervisors&apos;, &apos;aggregates&apos;,
-              &apos;instances&apos;, &apos;volumes&apos;, &apos;flavors&apos;, &apos;images&apos;,
-              &apos;networks&apos;, &apos;routers&apos;, &apos;info&apos;)
-
-class IdentityPanels(horizon.PanelGroup):
-    slug = &quot;identity&quot;
-    name = _(&quot;Identity Panel&quot;)
-    panels = (&apos;domains&apos;, &apos;projects&apos;, &apos;users&apos;, &apos;groups&apos;, &apos;roles&apos;)        
-
-class Admin(horizon.Dashboard):
-    name = _(&quot;Admin&quot;)
-    slug = &quot;admin&quot;
-    panels = (SystemPanels, IdentityPanels)
-
-    default_panel = &apos;overview&apos;
-    permissions = (&apos;openstack.roles.admin&apos;,)
-
-
-horizon.register(Admin)
-</code></pre><p>可以看到显示admin这个dashboard的权限是roles为admin(<code>permissions = (&#39;openstack.roles.admin&#39;,)</code>)，非常容易想到我们把permission这么改不就行了：</p>
-<pre><code>permissions = (&apos;openstack.username.admin&apos;,&apos;openstack.roles.admin&apos;,)
-</code></pre><p>非常遗憾，如果这么修改，<code>SystemPanels</code>和<code>IdentityPanels</code>对于非admin用户名的用户都不会显示，会导致用户无法访问。那能不能单独给IdentityPanels增加permission呢？答案也是否定的，IdentityPanels继承的类并不支持permission字段，如果你硬是要给他加上支持，那应该会有很大的工作量。</p>
-<blockquote>
-<p>其实2014版的dashboard已经解决了这个问题，在2014版里，identity是作为一个单独的dashboard存在的，这样我们就可以增加permission的内容而无需担心影响别的用户了，笔者用的是2012版</p>
-</blockquote>
-<p>如何是好呢？我们还有一个笨方法!</p>
-<p>在dashboard层面不能限制的话我们可以在panel层面限制啊！</p>
-<p>以<strong>用户</strong>这个panel为例，修改</p>
-<pre><code>/usr/share/openstack-dashboard/openstack_dashboard/dashboards/admin/users/panel.py
-</code></pre><p>将这个文件修改为：</p>
-<pre><code>from django.utils.translation import ugettext_lazy as _
-
-import horizon
-
-from openstack_dashboard.dashboards.admin import dashboard
-
-
-class Users(horizon.Panel):
-    name = _(&quot;Users&quot;)
-    slug = &apos;users&apos;
-    permissions = (&apos;openstack.username.admin&apos;,) #增加这一行
-
-
-dashboard.Admin.register(Users)
-</code></pre><p>其实就是增加了permission这一行，现在可以登录看一下了，你会发现<strong>用户</strong>这个子项目已经不见了，大功告成，如果要把管理员这整个dashboard搞消失，只需要将这个dashboard里的所有panel都加上permission做限制就可以了。</p>
-<p>这个方法比较烦，但是应用了permission的思想，我比较倾向于这个方法。方法二比较简单，只需要改动一处。</p>
-<p>##方法二：在生成页面之前</p>
-<p>毕竟是个web，总是要生成html的，在这些html里搜索一下会发现，左边的导航栏是用<code>horizon_nav</code>这个函数生成的。路径如下：</p>
-<pre><code>/usr/lib/python2.7/dist-packages/horizon/templatetags/horizon.py
-</code></pre><p>这个函数是作为参数传入到模版中去的，只要在这里修改dashboard就能让admin栏不显示</p>
-<p>原理很简单，对非admin用户名的用户，将dashboard里的admin这个dashboard删掉，只保留project这个dashboard。当然少不了一些调试，如果你有一些django的开发经验，应该很容易搞定，修改后的<code>horizon_nav</code>函数如下：</p>
-<pre><code>@register.inclusion_tag(&apos;horizon/_accordion_nav.html&apos;, takes_context=True)
-def horizon_nav(context):
-    if &apos;request&apos; not in context:
-        return {}
-    current_dashboard = context[&apos;request&apos;].horizon.get(&apos;dashboard&apos;, None)
-    current_panel = context[&apos;request&apos;].horizon.get(&apos;panel&apos;, None)
-    dashboards = []
-    for dash in Horizon.get_dashboards():
-        panel_groups = dash.get_panel_groups()
-        non_empty_groups = []
-        for group in panel_groups.values():
-            allowed_panels = []
-            for panel in group:
-                if callable(panel.nav) and panel.nav(context):
-                    allowed_panels.append(panel)
-                elif not callable(panel.nav) and panel.nav:
-                    allowed_panels.append(panel)
-            if allowed_panels:
-                non_empty_groups.append((group.name, allowed_panels))
-        if callable(dash.nav) and dash.nav(context):
-            dashboards.append((dash, SortedDict(non_empty_groups)))
-        elif not callable(dash.nav) and dash.nav:
-            dashboards.append((dash, SortedDict(non_empty_groups)))
-    username = context[&apos;request&apos;].user.username  #**new**
-    if username != &apos;admin&apos;:  #**new**
-        dashboards = [dashboard for dashboard in dashboards if dashboards[0].slug != &apos;admin&apos;]    #**new**
-    return {&apos;components&apos;: dashboards,
-            &apos;user&apos;: context[&apos;request&apos;].user,
-            &apos;current&apos;: current_dashboard,
-            &apos;current_panel&apos;: current_panel.slug if current_panel else &apos;&apos;, 
-            &apos;request&apos;: context[&apos;request&apos;]}
-</code></pre><p><strong>NOTE:注意修改之后务必重启web</strong></p>
-<p>有不明白之处，可以联系：wq_you@163.com</p>
-<p>##参考资料</p>
-<p><a href="http://www.cnblogs.com/yuxc/p/3419102.html" target="_blank" rel="external">Horizon Is Easy, Horizon Is Complex</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2326,7 +2369,7 @@ def horizon_nav(context):
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">209</span>
+                <span class="site-state-item-count">210</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2337,7 +2380,7 @@ def horizon_nav(context):
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

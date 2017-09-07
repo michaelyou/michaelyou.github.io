@@ -286,6 +286,191 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/07/连续字数组的最大和-负数的表示形式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/07/连续字数组的最大和-负数的表示形式/" itemprop="url">连续子数组的最大和 && 负数的表示形式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-07T17:19:26+08:00">
+                2015-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>输入一个整形数组，数组里有正数也有负数。<br>数组中连续的一个或多个整数组成一个子数组，每个子数组都有一个和。<br>求所有子数组的和的最大值。要求时间复杂度为O(n)。</p>
+<p>例如输入的数组为1, -2, 3, 10, -4, 7, 2, -5，<br>和最大的子数组为3, 10, -4, 7, 2，<br>因此输出为该子数组的和18。</p>
+</blockquote>
+<pre><code>int find_greatest_sum_of_subarray(int *array, int length) {
+    if(array == NULL || length &lt;=0)
+        return -1; //返回错误
+
+    int sum = 0;
+    int greatest_sum = 0x80000000;
+
+    int i;
+    for(i = 0; i &lt; length; i++) {
+        if(sum &lt;= 0)
+            sum = array[i];
+        else
+            sum += array[i];
+
+        if(sum &gt; greatest_sum)
+            greatest_sum = sum;
+    }
+
+    return greatest_sum;
+}
+</code></pre><p>代码是很简单的，分析可以参考何海涛的《剑指offer》面试题31</p>
+<p>这里想说的是这一句</p>
+<pre><code>int greatest_sum = 0x80000000;
+</code></pre><p><code>greatest_sum</code>初始化为什么不是0呢？你可以初始化为0试一下，会发现，当输入数组的字数组的最大和是负数的时候，程序的输出是0，也就是<code>greatest_sum</code>的初始值。说到这里大家应该明白了，我们应该将<code>greatest_sum</code>初始化为32位有符号数的最小值(32位的最小负数)，那为什么是0x80000000，最小负数不是0xffffffff吗？</p>
+<p>这就要考虑到负数在计算机中的存储形式了</p>
+<p>正数在计算机中是用源码存储的，正数1就是0x00000001，正数2就是0x00000002(0000 0000 0000 0000 0000 0000 0000 0010)，但是负数是不一样的，负数在计算机中是用补码存储的</p>
+<blockquote>
+<p>补码 = 原码去反(符号位不变) + 1</p>
+</blockquote>
+<p>举例：-1</p>
+<p>#####原码：1000 0000 0000 0000 0000 0000 0000 0001</p>
+<p>#####反码：1111 1111 1111 1111 1111 1111 1111 1110</p>
+<p>#####补码：1111 1111 1111 1111 1111 1111 1111 1111</p>
+<p>举例：-2147483647(0xffffffff)</p>
+<p>#####原码：1111 1111 1111 1111 1111 1111 1111 1111</p>
+<p>#####反码：1000 0000 0000 0000 0000 0000 0000 0000</p>
+<p>#####补码：1000 0000 0000 0000 0000 0000 0000 0001（ox80000001）</p>
+<p>同理-2147483646在计算机内是0x80000002</p>
+<p>那么问题来了，0x80000000是什么呢？在计算机内它表示的是-2147483648，是有符号32位整数的最小值。</p>
+<p>32位有符号整数的表示范围为：<br>-2147483648 – 2147483647</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/06/TCP-IP的一些基础知识/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1767,162 +1952,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/05/tcp并发服务器-区分监听套接字与已连接套接字/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/05/tcp并发服务器-区分监听套接字与已连接套接字/" itemprop="url">tcp并发服务器--区分监听套接字与已连接套接字</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-05T16:43:08+08:00">
-                2015-03-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
-                    <span itemprop="name">unix网络编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>并发服务器中主服务器循环通过派生一个子进程来处理每个新的连接。如果一个子进程继续使用服务器众所周知的端口来服务一个长时间的请求，那将发生什么？让我们来看一个典型的序列。首先，在主机freebsd上启动服务器，该主机是多宿的，其IP地址为12.106.32.254和192.168.42.1。服务器在它的众所周知的端口（本例为21）上执行被动打开，从而开始等待客户的请求，如图1所示。</p>
-<p><img src="/img/TCP服务器在端口21上执行被动打开.png" alt="图1-TCP服务器在端口21上执行被动打开"></p>
-<p>我们使用记号<code>{*:21, *:*}</code>指出服务器的套接字对。服务器在任意本地接口（第一个星号）的端口21上等待连接请求。外地IP地址和外地端口都没有指定，我们用<code>&quot;*.*&quot;</code>来表示。我们称它为监听套接字（listening socket）。</p>
-<blockquote>
-<p>我们用冒号来分割IP地址和端口号，因为这是HTTP的用法，其他地方也常见。netstat程序使用点号来分割IP地址和端口号，不过如此表示有时候会让人混淆，因为点号既用于域名（如freebsd.unpbook.com.21），也用于IPv4的点分十进制数记法（如12.106.32. 254.21）。</p>
-</blockquote>
-<p>这里指定本地IP地址的星号称为通配（wildcard）符。如果运行服务器的主机是多宿的（如本例），服务器可以指定它只接受到达某个特定本地接口的外来连接。这里要么选一个接口要么选任意接口。服务器不能指定一个包含多个地址的清单。通配的本地地址表示”任意”这个选择。通配地址通过在调用bind之前把套接字地址结构中的IP地址字段设置成INADDR_ANY来指定。</p>
-<p>稍后在IP地址为206.168.112.219的主机上启动第一个客户，它对服务器的IP地址之一12.106.32.254执行主动打开。我们假设本例中客户主机的TCP为此选择的临时端口为1500，如图2-12所示。图中在该客户的下方标出了它的套接字对。</p>
-<p><img src="/img/客户对服务器的连接请求.png" alt="图2-客户对服务器的连接请求"></p>
-<p>当服务器接收并接受这个客户的连接时，它fork一个自身的副本，让子进程来处理该客户的请求，如图3所示。  </p>
-<p>至此，我们必须在服务器主机上区分监听套接字和已连接套接字（connected socket）。注意已连接套接字使用与监听套接字相同的本地端口（21）。还要注意在多宿服务器主机上，连接一旦建立，已连接套接字的本地地址（12.106.32.254）随即填入。</p>
-<p><img src="/img/并发服务器让子进程处理客户.png" alt="图3-并发服务器让子进程处理客户"></p>
-<p>下一步我们假设在客户主机上另有一个客户请求连接到同一个服务器。客户主机的TCP为这个新客户的套接字分配一个未使用的临时端口，譬如说1501，如图4所示。服务器上这两个连接是有区别的：第一个连接的套接字对和第二个连接的套接字对不一样，因为客户的TCP给第二个连接选择了一个未使用的端口（1501）。</p>
-<p><img src="/img/第二个客户与同一个服务器的连接.png" alt="图4-第二个客户与同一个服务器的连接"></p>
-<p>通过本例应注意，TCP无法仅仅通过查看目的端口号来分离外来的分节到不同的端点。它必须查看套接字对的所有4个元素才能确定由哪个端点接收某个到达的分节。图4中对于同一个本地端口（21）存在3个套接字。如果一个分节来自206.168.112.219端口1500，目的地为12.106.32.254端口21，它就被递送给第一个子进程。如果一个分节来自206.168.112.219端口1501，目的地为12.106.32.254端口21，它就被递送给第二个子进程。所有目的端口为21的其他TCP分节都被递送给拥有监听套接字的最初那个服务器（父进程）。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1973,7 +2002,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">209</span>
+                <span class="site-state-item-count">210</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1984,7 +2013,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

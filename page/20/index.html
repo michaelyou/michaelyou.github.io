@@ -286,6 +286,161 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/24/重建二叉树/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/24/重建二叉树/" itemprop="url">重建二叉树</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-24T21:31:11+08:00">
+                2015-01-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##题目</p>
+<blockquote>
+<p>输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字，例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，应该重构出如下二叉树：</p>
+<p><img src="/img/tree.png" alt="tree"></p>
+</blockquote>
+<p>##答案</p>
+<ul>
+<li>前序遍历的第一个节点是树的根结点，所以<code>1</code>是树的根结点</li>
+<li>中序遍历的规则是：1.遍历左子树；2.根结点；3.遍历右子树。既然1是根结点，那么从中序遍历的输出可知：<code>4,7,2</code>在左子树中，<code>5,3,8,6</code>在右子树中</li>
+<li>前序遍历输出的第二个值是根结点的左子树的根结点，即<code>2</code>是左子树序列<code>4,7,2</code>的根结点，而在<code>2</code>左侧的<code>4,7</code>就是根结点<code>2</code>的左子树中的值了。同理<code>3</code>是根结点的右子树的根结点，<code>5</code>是以<code>3</code>为根结点的树的左子树中的值，<code>8,6</code>是右子树中的值</li>
+<li>下面只需要判断左子树中<code>4,7</code>和右子树中<code>8,6</code>的位置就可以了，易知，<code>4</code>是<code>2</code>的左儿子，<code>7</code>是<code>4</code>的右儿子。<code>6</code>是<code>3</code>的右儿子，<code>8</code>是<code>6</code>的左儿子。</li>
+<li>这是一个递归的过程，没分析一段，就将这一段当做一个完整的树来分析就很容易了</li>
+</ul>
+<p>实现的代码在<a href="https://github.com/michaelyou/data_structure/blob/master/tree.c" target="_blank" rel="external">这里Construct</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/23/剑指offer-QUESTIONS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1756,178 +1911,6 @@ int main()
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/19/fork/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/19/fork/" itemprop="url">fork</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-19T18:46:02+08:00">
-                2015-01-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>###这是EMC的一道面试题</p>
-<pre><code>#include&lt;stdio.h&gt;
-#include&lt;unistd.h&gt;
-
-int main()
-{
-    fork() &amp;&amp; fork() || fork();  //这句话共创建几个进程？
-    return 0        
-}
-</code></pre><p>本题有两个知识点：</p>
-<ul>
-<li>对逻辑运算符的理解</li>
-<li>对fork的理解</li>
-</ul>
-<p>如果是<code>A &amp;&amp; B || C</code>这样一个表达式，运行情况是怎样的呢？</p>
-<ul>
-<li>A为0，不再判断B，直接判断C</li>
-<li>A不为0<ul>
-<li>B为0，继续判断C</li>
-<li>B为1，不再判断C</li>
-</ul>
-</li>
-</ul>
-<p>fork调用的奇妙之处在于他被调用一次，会返回两个值</p>
-<ul>
-<li>在父进程中，返回新创建进程的ID</li>
-<li>在子进程中，返回0</li>
-</ul>
-<p>下面来分析<code>fork() &amp;&amp; fork() || fork()</code>创建了几个进程</p>
-<p><img src="/img/fork.png" alt="fork"></p>
-<p>很明显，<code>fork() &amp;&amp; fork() || fork()</code>创建了<code>4</code>个进程</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1978,7 +1961,7 @@ int main()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">209</span>
+                <span class="site-state-item-count">210</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1989,7 +1972,7 @@ int main()
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

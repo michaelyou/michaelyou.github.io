@@ -286,6 +286,197 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/26/python的装饰器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/26/python的装饰器/" itemprop="url">python的装饰器</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-26T22:06:05+08:00">
+                2015-03-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>openstack的代码大量地使用了python的这个高级特性，之前看书的时候就没看明白，今天重新看了一遍，稍微懂一些了，记录一下。</p>
+<hr>
+<p>装饰器是一个很著名的设计模式，经常被用于有切面需求的场景，较为经典的有插入日志、性能测试、事务处理等。装饰器是解决这类问题的绝佳设计，有了装饰器，我们就可以抽离出大量函数中与函数功能本身无关的<strong>雷同代码</strong>并继续重用。概括的讲，装饰器的作用就是为已经存在的对象添加额外的功能。</p>
+<p>注意这一句</p>
+<blockquote>
+<p>抽离出大量函数中与函数功能本身无关的<strong>雷同代码</strong>并继续重用</p>
+</blockquote>
+<ol>
+<li>装饰器是用来装饰函数的</li>
+<li>装饰器是将很多函数都有的代码提取出来，写在装饰器里面，这样用装饰器装饰函数的时候，就赋予了函数一些新功能</li>
+</ol>
+<p>举个例子</p>
+<p>我希望在每个函数执行之前都能够将函数名打出来，大家知道函数有一个<code>__name__</code>属性是可以打印函数名的，那我每次定义函数都要这么写</p>
+<pre><code>def fun():
+    print fun.__name__
+    ...
+</code></pre><p>只有一行代码大家可能不以为然，就加上这行代码能费多大事情呢，但是在实际使用中往往不止一行代码这么简单，比如我还想知道这个函数有没有文档，那就要调用<code>__doc__</code>属性，我想在函数执行的时候捕获异常，有了异常要写入log，那你就要加上<code>try-except</code>，还需要加上写log，这样加起来就多了5,6行代码，每个函数都多这么重复代码简直是种折磨，<code>修饰器@</code>就是为了解决这个问题。</p>
+<pre><code>&gt;&gt;&gt; def deco(func):
+...     print(&quot;before myfunc() called.&quot;)
+...     func()
+...     print(&quot;after myfunc() called.&quot;)
+... 
+&gt;&gt;&gt; @deco
+... def myfunc():
+...     print(&quot;myfunc() called.&quot;)
+... 
+before myfunc() called.
+myfunc() called.
+after myfunc() called.
+</code></pre><p>只要在每个函数的定义之前加上<code>@deco</code>，就会在每次调用之前和调用之后打出代码中的字符串。</p>
+<p>这里大家有没有发现一个问题，我在这里根本没有调用函数，但是竟然有了输出，这不合理啊？</p>
+<p>这样写的话其实只是执行了初始化装饰器导致的输出，和我们对装饰器的要求是不一样的，<strong>正确的应该这么写</strong></p>
+<pre><code> 1 #!/usr/bin/python
+ 2 
+ 3 def deco(func):
+ 4     def wrapper():
+ 5         print(&quot;before myfunc() called.&quot;)
+ 6         func()
+ 7         print(&quot;after myfunc() called.&quot;)
+ 8     return wrapper
+ 9 
+10 @deco
+11 def myfunc():
+12     print(&quot;myfunc() called.&quot;)
+13 
+14 myfunc()
+</code></pre><p>我们在 deco 里面返回了一个 wrapper 函数对象。可以试着这么理解，deco的作用是给 func 进行装饰，wrapper 就是被装饰过的func。我们以后调用func就是在调用wrapper这个函数</p>
+<p>##装饰一个需要传参的函数</p>
+<p>##装饰参数列表不一样的多个函数</p>
+<p>未完待续…</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/25/fork和exec/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1793,152 +1984,6 @@ int readvrec( SOCKET s, char *buf, size_t len );
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/diff比较两个文件夹/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/20/diff比较两个文件夹/" itemprop="url">diff比较两个文件夹</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T10:47:13+08:00">
-                2015-03-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>diff -urNa dir1 dir2</p>
-<p><strong>-a</strong>： Treat  all  files  as text and compare them  line-by-line, even if they do not seem to be text.</p>
-<p><strong>-N</strong>： In  directory  comparison, if a file is found in only one directory, treat it as present but empty in the other directory.</p>
-<p><strong>-r</strong>： When comparing directories, recursively compare any subdirectories found.</p>
-<p><strong>-u</strong>： Use the unified output format.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1989,7 +2034,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">209</span>
+                <span class="site-state-item-count">210</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2000,7 +2045,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

@@ -286,6 +286,162 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/19/Django打印请求的sql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/05/19/Django打印请求的sql/" itemprop="url">Django打印请求的sql</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-19T22:50:31+08:00">
+                2016-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>我们平时都是用django的ORM来进行数据库操作，ORM会将我们的Python代码转换成sql语句。但是，有的时候我们得到的结果并不是理想中的结果，这时候一个有效的debug方法就是查看ORM生成的sql语句。下面是获取sql的方法：</p>
+<pre><code>&gt;&gt;&gt; from django.db import connection
+&gt;&gt;&gt; connection.queries
+[{&apos;sql&apos;: &apos;SELECT polls_polls.id, polls_polls.question, polls_polls.pub_date FROM polls_polls&apos;,
+&apos;time&apos;: &apos;0.002&apos;}]
+</code></pre><p>注意： 只有在DEBUG=True的情况下才能获取sql，不然拿到的是一个空list</p>
+<h2 id="Limit-21"><a href="#Limit-21" class="headerlink" title="Limit 21"></a>Limit 21</h2><p>我们拿到sql的时候经常会看到最后有一个<code>limit 21</code>，但是我们的代码里并没有给查询做限制，这个limit是哪里来的呢？下面是从django的邮件列表里找到的回答：</p>
+<blockquote>
+<p>It happens when you make queries from the shell - the LIMIT clause is added to stop your terminal filling up with thousands of records when debugging:</p>
+<p>You were printing (or, at least, trying to print) the repr() of the queryset. To avoid people accidentally trying to retrieve and print a million results, we (well, I) changed that to only retrieve and print the first 20 results and print “remainder truncated” if there were more. This is achieved by limiting the query to 21 results (if there are 21 results there are more than 20, so we print the “truncated” message). That only happens in the repr() – i.e. it’s only for diagnostic printing. No normal user code has this limit included automatically, so you happily create a queryset that iterates over a million results.</p>
+</blockquote>
+<p>简而言之，你的这个查询预期会返回很多行记录，但是为了在打印的时候不让屏幕充满这些数据（这些数据根本看不出来东西，垃圾数据），所以django在这些语句后面加了<code>limit 21</code>。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://stackoverflow.com/questions/24041448/specifying-limit-and-offset-in-django-queryset-wont-work" target="_blank" rel="external">http://stackoverflow.com/questions/24041448/specifying-limit-and-offset-in-django-queryset-wont-work</a></p>
+<p><a href="http://www.mail-archive.com/django-users@googlegroups.com/msg67486.html" target="_blank" rel="external">http://www.mail-archive.com/django-users@googlegroups.com/msg67486.html</a></p>
+<p><a href="https://docs.djangoproject.com/en/1.9/faq/models/" target="_blank" rel="external">https://docs.djangoproject.com/en/1.9/faq/models/</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/01/23/pyc文件和python程序的执行过程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2254,178 +2410,6 @@ Item.objects.values(&quot;data&quot;).annotate(Count(&quot;id&quot;))
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/07/19/python排序函数/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/07/19/python排序函数/" itemprop="url">python排序函数</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-07-19T21:38:15+08:00">
-                2015-07-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##sort和sorted<br>相比于<code>sort</code>，<code>sorted()</code>的使用更为广泛</p>
-<pre><code>sorted(iterable, cmp, key, reverse)
-s.sort(cmp, key, reverse)
-</code></pre><p><code>sorted</code>可以作用域任意迭代对象，而<code>sort()</code>一般作用于列表。</p>
-<p><code>reverse = True</code>表示按照逆序排序</p>
-<p>##sorted</p>
-<p><code>sorted</code>排序的关键是传入<code>key</code>：</p>
-<pre><code>In [35]: students = [(&apos;john&apos;, &apos;A&apos;, 15), (&apos;jane&apos;, &apos;B&apos;, 12), (&apos;dave&apos;, &apos;B&apos;, 10), (&apos;michael&apos;, &apos;A&apos;, 13), (&apos;mike&apos;, &apos;B&apos;, 12), (&apos;jessey&apos;, &apos;C&apos;, 15)]
-
-In [36]: students = sorted(students, key=lambda result: result[2], reverse=True)
-</code></pre><p>结果：</p>
-<pre><code>In [37]: students
-Out[37]:
-[(&apos;john&apos;, &apos;A&apos;, 15),
- (&apos;jessey&apos;, &apos;C&apos;, 15),
- (&apos;michael&apos;, &apos;A&apos;, 13),
- (&apos;jane&apos;, &apos;B&apos;, 12),
- (&apos;mike&apos;, &apos;B&apos;, 12),
- (&apos;dave&apos;, &apos;B&apos;, 10)]
-</code></pre><p>如果我们对排序有更高的要求，比如在本例中，在按年龄排序之后，我们还希望对年龄相同的同学按照等级进行排序。我们可以这样写<code>key</code></p>
-<pre><code>In [38]: students = sorted(students, key=lambda result: (result[2], result[1]), reverse=True)
-
-In [39]: students
-Out[39]:
-[(&apos;jessey&apos;, &apos;C&apos;, 15),
- (&apos;john&apos;, &apos;A&apos;, 15),
- (&apos;michael&apos;, &apos;A&apos;, 13),
- (&apos;jane&apos;, &apos;B&apos;, 12),
- (&apos;mike&apos;, &apos;B&apos;, 12),
- (&apos;dave&apos;, &apos;B&apos;, 10)]
-</code></pre><p><a href="http://stackoverflow.com/questions/4233476/sort-a-list-by-multiple-attributes" target="_blank" rel="external">stackoverflow: Sort a list by multiple attributes?</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2476,7 +2460,7 @@ Out[39]:
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">209</span>
+                <span class="site-state-item-count">210</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2487,7 +2471,7 @@ Out[39]:
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
