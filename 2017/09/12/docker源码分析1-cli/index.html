@@ -94,18 +94,18 @@
 
 
 
-<meta name="description" content="Docker代码更新很快，网上各位大神的源码解析很多已经是几年前的版本了。实现上有了很大改变，加之Docker项目更名为moby，其中很多组件又从moby中拆分了出来，一开始看简直是一脸懵逼啊。在这里跟大家分享了一下最近看的docker/cli的源码，抛砖引玉，欢迎大家批评指正。docker/cli 分析的docker client版本是17.06.2-ce。 docker client是Dock">
+<meta name="description" content="Docker代码更新很快，网上各位大神的源码解析很多已经是几年前的版本了。实现上有了很大改变，加之Docker项目更名为moby，其中很多组件又从moby中拆分了出来，一开始看简直是一脸懵逼啊。在这里跟大家分享了一下最近看的docker/cli的源码，抛砖引玉，欢迎大家批评指正。 分析的docker client版本是17.06.2-ce。 docker client是Docker的客户端程序，也">
 <meta property="og:type" content="article">
-<meta property="og:title" content="docker源码分析1-cli">
+<meta property="og:title" content="docker源码分析（一）-cli">
 <meta property="og:url" content="http://yoursite.com/2017/09/12/docker源码分析1-cli/index.html">
 <meta property="og:site_name" content="Youmai の Blog">
-<meta property="og:description" content="Docker代码更新很快，网上各位大神的源码解析很多已经是几年前的版本了。实现上有了很大改变，加之Docker项目更名为moby，其中很多组件又从moby中拆分了出来，一开始看简直是一脸懵逼啊。在这里跟大家分享了一下最近看的docker/cli的源码，抛砖引玉，欢迎大家批评指正。docker/cli 分析的docker client版本是17.06.2-ce。 docker client是Dock">
+<meta property="og:description" content="Docker代码更新很快，网上各位大神的源码解析很多已经是几年前的版本了。实现上有了很大改变，加之Docker项目更名为moby，其中很多组件又从moby中拆分了出来，一开始看简直是一脸懵逼啊。在这里跟大家分享了一下最近看的docker/cli的源码，抛砖引玉，欢迎大家批评指正。 分析的docker client版本是17.06.2-ce。 docker client是Docker的客户端程序，也">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/docker_deamon_socket.png">
-<meta property="og:updated_time" content="2017-09-12T12:42:06.000Z">
+<meta property="og:updated_time" content="2017-09-12T12:46:50.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="docker源码分析1-cli">
-<meta name="twitter:description" content="Docker代码更新很快，网上各位大神的源码解析很多已经是几年前的版本了。实现上有了很大改变，加之Docker项目更名为moby，其中很多组件又从moby中拆分了出来，一开始看简直是一脸懵逼啊。在这里跟大家分享了一下最近看的docker/cli的源码，抛砖引玉，欢迎大家批评指正。docker/cli 分析的docker client版本是17.06.2-ce。 docker client是Dock">
+<meta name="twitter:title" content="docker源码分析（一）-cli">
+<meta name="twitter:description" content="Docker代码更新很快，网上各位大神的源码解析很多已经是几年前的版本了。实现上有了很大改变，加之Docker项目更名为moby，其中很多组件又从moby中拆分了出来，一开始看简直是一脸懵逼啊。在这里跟大家分享了一下最近看的docker/cli的源码，抛砖引玉，欢迎大家批评指正。 分析的docker client版本是17.06.2-ce。 docker client是Docker的客户端程序，也">
 <meta name="twitter:image" content="http://yoursite.com/img/docker_deamon_socket.png">
 
 
@@ -141,7 +141,7 @@
 
 
 
-  <title>docker源码分析1-cli | Youmai の Blog</title>
+  <title>docker源码分析（一）-cli | Youmai の Blog</title>
   
 
 
@@ -304,7 +304,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">docker源码分析1-cli</h1>
+          <h1 class="post-title" itemprop="name headline">docker源码分析（一）-cli</h1>
         
 
         <div class="post-meta">
@@ -376,16 +376,15 @@
       
 
       
-        <p>Docker代码更新很快，网上各位大神的源码解析很多已经是几年前的版本了。实现上有了很大改变，加之Docker项目更名为<a href="https://github.com/moby/moby" target="_blank" rel="external">moby</a>，其中很多组件又从moby中拆分了出来，一开始看简直是一脸懵逼啊。在这里跟大家分享了一下最近看的<a href="https://github.com/docker/cli" target="_blank" rel="external">docker/cli</a>的源码，抛砖引玉，欢迎大家批评指正。<br><a href="https://github.com/docker/cli" target="_blank" rel="external">docker/cli</a></p>
+        <p>Docker代码更新很快，网上各位大神的源码解析很多已经是几年前的版本了。实现上有了很大改变，加之Docker项目更名为<a href="https://github.com/moby/moby" target="_blank" rel="external">moby</a>，其中很多组件又从moby中拆分了出来，一开始看简直是一脸懵逼啊。在这里跟大家分享了一下最近看的<a href="https://github.com/docker/cli" target="_blank" rel="external">docker/cli</a>的源码，抛砖引玉，欢迎大家批评指正。</p>
 <p>分析的<code>docker client</code>版本是<code>17.06.2-ce</code>。</p>
-<p><code>docker client</code>是Docker的客户端程序，也就是我们敲的<code>docker * *</code> 命令，我们通过他与<code>docker deamon</code>程序进行交互。我们可以将他看成一个普通的客户端程序，docker的核心<code>namespace</code>和<code>cgroup</code>等技术都不在这里。</p>
+<p><code>docker client</code>是Docker的客户端程序，也就是我们敲的<code>docker * *</code> 命令，我们通过他与<code>docker deamon</code>程序进行交互。可以将他看成一个普通的客户端程序，docker的核心<code>namespace</code>和<code>cgroup</code>等技术都不在这里。</p>
 <h2 id="搭建docker-client开发环境"><a href="#搭建docker-client开发环境" class="headerlink" title="搭建docker-client开发环境"></a>搭建docker-client开发环境</h2><p><code>docker_client</code>的开发环境也是在容器中，项目已经给我们做好了封装，具体可以参考项目Readme的<a href="https://github.com/docker/cli#development" target="_blank" rel="external">Development</a>章节。</p>
 <p>问几个问题，大家可以思考一下：</p>
-<p>####1. 开发是在容器中，可是容器里面连编辑器都没有，怎么开发？</p>
-<p>答： 准确来说应该是在容器中调试，开发还是在本地开发，容器中看到的目录是我们本地目录mount进去的</p>
+<h4 id="1-开发是在容器中，可是容器里面连编辑器都没有，怎么开发？"><a href="#1-开发是在容器中，可是容器里面连编辑器都没有，怎么开发？" class="headerlink" title="1. 开发是在容器中，可是容器里面连编辑器都没有，怎么开发？"></a>1. 开发是在容器中，可是容器里面连编辑器都没有，怎么开发？</h4><p>答： 准确来说应该是在容器中调试，开发还是在本地开发，容器中看到的目录是我们本地目录mount进去的</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> docker.Makefile文件</div><div class="line"></div><div class="line">......</div><div class="line">MOUNTS = -v "$(CURDIR)":/go/src/github.com/docker/cli</div><div class="line">......</div><div class="line"><span class="meta">#</span> start container in interactive mode for in-container development</div><div class="line">.PHONY: dev</div><div class="line">dev: build_docker_image</div><div class="line">    docker run -ti --security-opt=seccomp:unconfined $(ENVVARS) $(MOUNTS) \</div><div class="line">        -v /var/run/docker.sock:/var/run/docker.sock \</div><div class="line">        $(DEV_DOCKER_IMAGE_NAME) ash</div><div class="line"></div><div class="line">shell: dev</div><div class="line">......</div></pre></td></tr></table></figure>
 <p>从shell里面还是很容器看出来的，run的时候mount了<code>$(CURDIR)</code></p>
-<p>####2. 容器里面是不是还装了一个docker啊，为什么我在里面敲命令有响应？<br>答：不是的，里面只有你编译生成的docker client程序，是没有docker deamon程序，至于为什么能响应，还是看上面的shell脚本，<code>-v /var/run/docker.sock:/var/run/docker.sock</code>这一行将<code>docker.sock</code>文件也mount了进去，<code>docker.sock</code>是<code>docker deamon</code>默认监听的Unix套接字（Unix domain socket），容器中的进程可以通过他与docker deamon进行通信。所以这里docker client通信的是你本机的docker daemon。</p>
+<h4 id="2-容器里面是不是还装了一个docker啊，为什么我在里面敲命令有响应？"><a href="#2-容器里面是不是还装了一个docker啊，为什么我在里面敲命令有响应？" class="headerlink" title="2. 容器里面是不是还装了一个docker啊，为什么我在里面敲命令有响应？"></a>2. 容器里面是不是还装了一个docker啊，为什么我在里面敲命令有响应？</h4><p>答：不是的，里面只有你编译生成的docker client程序，是没有docker deamon程序，至于为什么能响应，还是看上面的shell脚本，<code>-v /var/run/docker.sock:/var/run/docker.sock</code>这一行将<code>docker.sock</code>文件也mount了进去，<code>docker.sock</code>是<code>docker deamon</code>默认监听的Unix套接字（Unix domain socket），容器中的进程可以通过他与docker deamon进行通信。所以这里docker client通信的是你本机的docker daemon。</p>
 <p><img src="/img/docker_deamon_socket.png" alt="docker_deamon_socket"></p>
 <p>所以我们的开发流程是：本地改代码–&gt;到container中编译–&gt;运行docker client看效果</p>
 <h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><p>是时候表演真正的技术了！</p>
@@ -610,7 +609,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建docker-client开发环境"><span class="nav-number">1.</span> <span class="nav-text">搭建docker-client开发环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码"><span class="nav-number">2.</span> <span class="nav-text">源码</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建docker-client开发环境"><span class="nav-number">1.</span> <span class="nav-text">搭建docker-client开发环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-开发是在容器中，可是容器里面连编辑器都没有，怎么开发？"><span class="nav-number">1.0.1.</span> <span class="nav-text">1. 开发是在容器中，可是容器里面连编辑器都没有，怎么开发？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-容器里面是不是还装了一个docker啊，为什么我在里面敲命令有响应？"><span class="nav-number">1.0.2.</span> <span class="nav-text">2. 容器里面是不是还装了一个docker啊，为什么我在里面敲命令有响应？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码"><span class="nav-number">2.</span> <span class="nav-text">源码</span></a></li></ol></div>
             
 
           </div>
