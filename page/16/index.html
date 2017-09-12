@@ -286,6 +286,397 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/正则表达式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/10/正则表达式/" itemprop="url">正则表达式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-10T09:44:22+08:00">
+                2015-02-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>本文转载自<a href="http://www.cnblogs.com/huxi/archive/2010/07/04/1771073.html" target="_blank" rel="external">这里</a><br>，参考<a href="http://www.jb51.net/tools/zhengze.html" target="_blank" rel="external">这篇文章</a>补充了一些内容</p>
+<p>##基础</p>
+<p>###正则表达式到底是什么东西？<br>在编写处理字符串的程序或网页时，经常会有查找符合某些复杂规则的字符串的需要。<strong>正则表达式</strong>就是用于描述这些规则的工具。换句话说，正则表达式就是记录文本规则的代码。</p>
+<p>很可能你使用过linux下的<strong>通配符(wildcard)</strong>，也就是<code>*</code>和<code>?</code>。如果你想查找某个目录下的所有的txt文档的话，你会搜索<code>*.txt</code>。在这里，<code>*</code>会被解释成任意的字符串。和通配符类似，正则表达式也是用来进行文本匹配的工具，只不过比起通配符，它能更精确地描述你的需求——当然，代价就是更复杂——比如你可以编写一个正则表达式，用来查找<em>所有以0开头，后面跟着2-3个数字，然后是一个连字号<code>&quot;-&quot;</code>，最后是7或8位数字的字符串</em>(像<em>010-12345678</em>或<em>0376-7654321</em>)。</p>
+<blockquote>
+<p>字符是计算机软件处理文字时最基本的单位，可能是字母，数字，标点符号，空格，换行符，汉字等等。字符串是0个或更多个字符的序列。文本也就是文字，字符串。说某个字符串匹配某个正则表达式，通常是指这个字符串里有一部分（或几部分分别）能满足表达式给出的条件。</p>
+</blockquote>
+<p>正则表达式并不是Python的一部分。正则表达式是用于处理字符串的强大工具，拥有自己独特的语法以及一个独立的处理引擎，效率上可能不如str自带的方法，但功能十分强大。得益于这一点，在提供了正则表达式的语言里，正则表达式的语法都是一样的，区别只在于不同的编程语言实现支持的语法数量不同；但不用担心，不被支持的语法通常是不常用的部分。如果已经在其他语言里使用过正则表达式，只需要简单看一看就可以上手了。</p>
+<p>下图展示了使用正则表达式进行匹配的流程：</p>
+<p><img src="/img/re_simple.png" alt=""></p>
+<p>正则表达式的大致匹配过程是：依次拿出表达式和文本中的字符比较，如果每一个字符都能匹配，则匹配成功；一旦有匹配不成功的字符则匹配失败。如果表达式中有量词或边界，这个过程会稍微有一些不同，但也是很好理解的，看下图中的示例以及自己多使用几次就能明白。</p>
+<p>下图列出了Python支持的正则表达式元字符和语法：</p>
+<p><img src="/img/pyre.png" alt=""></p>
+<p>###数量词的贪婪模式与非贪婪模式<br>正则表达式通常用于在文本中查找匹配的字符串。Python里数量词默认是贪婪的（在少数语言里也可能是默认非贪婪），总是尝试匹配尽可能多的字符；非贪婪的则相反，总是尝试匹配尽可能少的字符。例如：正则表达式<code>&quot;ab*&quot;</code>如果用于查找<code>&quot;abbbc&quot;</code>，将找到<code>&quot;abbb&quot;</code>。而如果使用非贪婪的数量词<code>&quot;ab*?&quot;</code>，将找到<code>&quot;a&quot;</code>。</p>
+<p>###反斜杠的困扰<br>与大多数编程语言相同，正则表达式里使用<code>&quot;\&quot;</code>作为转义字符，这就可能造成反斜杠困扰。假如你需要匹配文本中的字符<code>&quot;\\&quot;</code>，那么使用编程语言表示的正则表达式里将需要4个反斜杠<code>&quot;\\\\&quot;</code>：前两个和后两个分别用于在编程语言里转义成反斜杠，转换成两个反斜杠后再在正则表达式里转义成一个反斜杠。Python里的原生字符串很好地解决了这个问题，这个例子中的正则表达式可以使用r”\“表示。同样，匹配一个数字的”\d”可以写成r”\d”。有了原生字符串，你再也不用担心是不是漏写了反斜杠，写出来的表达式也更直观。</p>
+<p>###匹配模式<br>正则表达式提供了一些可用的匹配模式，比如忽略大小写、多行匹配等，这部分内容将在Pattern类的工厂方法<code>re.compile(pattern[, flags])</code>中一起介绍。</p>
+<p>##re模块</p>
+<p>###开始使用re<br>Python通过re模块提供对正则表达式的支持。使用re的一般步骤是先将正则表达式的字符串形式编译为Pattern实例，然后使用Pattern实例处理文本并获得匹配结果（一个Match实例），最后使用Match实例获得信息，进行其他的操作。</p>
+<pre><code># encoding: UTF-8
+import re
+
+# 将正则表达式编译成Pattern对象
+pattern = re.compile(r&apos;hello&apos;)
+
+# 使用Pattern匹配文本，获得匹配结果，无法匹配时将返回None
+match = pattern.match(&apos;hello world!&apos;)
+
+if match:
+    # 使用Match获得分组信息
+    print match.group()
+
+### 输出 ###
+# hello
+</code></pre><p><strong>re.compile(strPattern[, flag]):</strong></p>
+<p>这个方法是Pattern类的工厂方法，用于将字符串形式的正则表达式编译为Pattern对象。 第二个参数<code>flag</code>是匹配模式，取值可以使用按位或运算符’|’表示同时生效，比如re.I | re.M。另外，你也可以在regex字符串中指定模式，比如<code>re.compile(&#39;pattern&#39;, re.I | re.M)</code>与<code>re.compile(&#39;(?im)pattern&#39;)</code>是等价的。</p>
+<p>可选值有：</p>
+<ul>
+<li>I(re.IGNORECASE): 忽略大小写（括号内是完整写法，下同）</li>
+<li>M(MULTILINE): 多行模式，改变’^’和’$’的行为（参见上图）</li>
+<li>S(DOTALL): 点任意匹配模式，改变’.’的行为</li>
+<li>L(LOCALE): 使预定字符类 \w \W \b \B \s \S 取决于当前区域设定</li>
+<li>U(UNICODE): 使预定字符类 \w \W \b \B \s \S \d \D 取决于unicode定义的字符属性</li>
+<li><p>X(VERBOSE): 详细模式。这个模式下正则表达式可以是多行，忽略空白字符，并可以加入注释。以下两个正则表达式是等价的：</p>
+<pre><code>a = re.compile(r&quot;&quot;&quot;\d +  # the integral part
+                   \.    # the decimal point
+                   \d *  # some fractional digits&quot;&quot;&quot;, re.X)
+b = re.compile(r&quot;\d+\.\d*&quot;)
+</code></pre></li>
+</ul>
+<p>re提供了众多模块方法用于完成正则表达式的功能。这些方法可以使用Pattern实例的相应方法替代，唯一的好处是少写一行re.compile()代码，但同时也无法复用编译后的Pattern对象。这些方法将在Pattern类的实例方法部分一起介绍。如上面这个例子可以简写为：</p>
+<pre><code>m = re.match(r&apos;hello&apos;, &apos;hello world!&apos;)
+print m.group()
+</code></pre><p>re模块还提供了一个方法escape(string)，用于将string中的正则表达式元字符如*/+/?等之前加上转义符再返回，在需要大量匹配元字符时有那么一点用。</p>
+<h3 id="Match"><a href="#Match" class="headerlink" title="Match"></a>Match</h3><p>Match对象是一次匹配的结果，包含了很多关于此次匹配的信息，可以使用Match提供的可读属性或方法来获取这些信息。</p>
+<p>属性：</p>
+<ul>
+<li>string: 匹配时使用的文本。</li>
+<li>re: 匹配时使用的Pattern对象。</li>
+<li>pos: 文本中正则表达式开始搜索的索引。值与Pattern.match()和Pattern.seach()方法的同名参数相同。</li>
+<li>endpos: 文本中正则表达式结束搜索的索引。值与Pattern.match()和Pattern.seach()方法的同名参数相同。</li>
+<li>lastindex: 最后一个被捕获的分组在文本中的索引。如果没有被捕获的分组，将为None。</li>
+<li>lastgroup: 最后一个被捕获的分组的别名。如果这个分组没有别名或者没有被捕获的分组，将为None。</li>
+</ul>
+<p>方法：</p>
+<ul>
+<li>group([group1, …]): </li>
+</ul>
+<p>获得一个或多个分组截获的字符串；指定多个参数时将以元组形式返回。group1可以使用编号也可以使用别名；编号0代表整个匹配的子串；不填写参数时，返回group(0)；没有截获字符串的组返回None；截获了多次的组返回最后一次截获的子串。</p>
+<ul>
+<li>groups([default]): </li>
+</ul>
+<p>以元组形式返回全部分组截获的字符串。相当于调用group(1,2,…last)。default表示没有截获字符串的组以这个值替代，默认为None。</p>
+<ul>
+<li>groupdict([default]): </li>
+</ul>
+<p>返回以有别名的组的别名为键、以该组截获的子串为值的字典，没有别名的组不包含在内。default含义同上。</p>
+<ul>
+<li>start([group]): </li>
+</ul>
+<p>返回指定的组截获的子串在string中的起始索引（子串第一个字符的索引）。group默认值为0。</p>
+<ul>
+<li>end([group]): </li>
+</ul>
+<p>返回指定的组截获的子串在string中的结束索引（子串最后一个字符的索引+1）。group默认值为0。</p>
+<ul>
+<li>span([group]): </li>
+</ul>
+<p>返回(start(group), end(group))。</p>
+<ul>
+<li>expand(template): </li>
+</ul>
+<p>将匹配到的分组代入template中然后返回。template中可以使用\id或\g<id>、\g<name>引用分组，但不能使用编号0。\id与\g<id>是等价的；但\10将被认为是第10个分组，如果你想表达\1之后是字符’0’，只能使用\g<1>0。</1></id></name></id></p>
+<pre><code>import re
+m = re.match(r&apos;(\w+) (\w+)(?P&lt;sign&gt;.*)&apos;, &apos;hello world!&apos;)
+
+print &quot;m.string:&quot;, m.string
+print &quot;m.re:&quot;, m.re
+print &quot;m.pos:&quot;, m.pos
+print &quot;m.endpos:&quot;, m.endpos
+print &quot;m.lastindex:&quot;, m.lastindex
+print &quot;m.lastgroup:&quot;, m.lastgroup
+
+print &quot;m.group(1,2):&quot;, m.group(1, 2)
+print &quot;m.groups():&quot;, m.groups()
+print &quot;m.groupdict():&quot;, m.groupdict()
+print &quot;m.start(2):&quot;, m.start(2)
+print &quot;m.end(2):&quot;, m.end(2)
+print &quot;m.span(2):&quot;, m.span(2)
+print r&quot;m.expand(r&apos;\2 \1\3&apos;):&quot;, m.expand(r&apos;\2 \1\3&apos;)
+
+### output ###
+# m.string: hello world!
+# m.re: &lt;_sre.SRE_Pattern object at 0x016E1A38&gt;
+# m.pos: 0
+# m.endpos: 12
+# m.lastindex: 3
+# m.lastgroup: sign
+# m.group(1,2): (&apos;hello&apos;, &apos;world&apos;)
+# m.groups(): (&apos;hello&apos;, &apos;world&apos;, &apos;!&apos;)
+# m.groupdict(): {&apos;sign&apos;: &apos;!&apos;}
+# m.start(2): 6
+# m.end(2): 11
+# m.span(2): (6, 11)
+# m.expand(r&apos;\2 \1\3&apos;): world hello!
+</code></pre><p>###Pattern<br>Pattern对象是一个编译好的正则表达式，通过Pattern提供的一系列方法可以对文本进行匹配查找。</p>
+<p>Pattern不能直接实例化，必须使用re.compile()进行构造。</p>
+<p>Pattern提供了几个可读属性用于获取表达式的相关信息：</p>
+<ul>
+<li>pattern: 编译时用的表达式字符串。</li>
+<li>flags: 编译时用的匹配模式。数字形式。</li>
+<li>groups: 表达式中分组的数量。</li>
+<li><p>groupindex: 以表达式中有别名的组的别名为键、以该组对应的编号为值的字典，没有别名的组不包含在内。</p>
+<pre><code>import re
+p = re.compile(r&apos;(\w+) (\w+)(?P&lt;sign&gt;.*)&apos;, re.DOTALL)
+
+print &quot;p.pattern:&quot;, p.pattern
+print &quot;p.flags:&quot;, p.flags
+print &quot;p.groups:&quot;, p.groups
+print &quot;p.groupindex:&quot;, p.groupindex
+
+### output ###
+# p.pattern: (\w+) (\w+)(?P&lt;sign&gt;.*)
+# p.flags: 16
+# p.groups: 3
+# p.groupindex: {&apos;sign&apos;: 3}
+</code></pre></li>
+</ul>
+<p>实例方法[ | re模块方法]：</p>
+<ul>
+<li>match(string[, pos[, endpos]]) | re.match(pattern, string[, flags]): </li>
+</ul>
+<p>这个方法将从string的pos下标处起尝试匹配pattern；如果pattern结束时仍可匹配，则返回一个Match对象；如果匹配过程中pattern无法匹配，或者匹配未结束就已到达endpos，则返回None。</p>
+<p>pos和endpos的默认值分别为0和len(string)；re.match()无法指定这两个参数，参数flags用于编译pattern时指定匹配模式。 </p>
+<p>注意：这个方法并不是完全匹配。当pattern结束时若string还有剩余字符，仍然视为成功。想要完全匹配，可以在表达式末尾加上边界匹配符’$’。 </p>
+<p>示例参见2.1小节。</p>
+<ul>
+<li>search(string[, pos[, endpos]]) | re.search(pattern, string[, flags]): </li>
+</ul>
+<p>这个方法用于查找字符串中可以匹配成功的子串。从string的pos下标处起尝试匹配pattern，如果pattern结束时仍可匹配，则返回一个Match对象；若无法匹配，则将pos加1后重新尝试匹配；直到pos=endpos时仍无法匹配则返回None。 </p>
+<p>pos和endpos的默认值分别为0和len(string))；re.search()无法指定这两个参数，参数flags用于编译pattern时指定匹配模式。 </p>
+<pre><code># encoding: UTF-8 
+import re 
+
+# 将正则表达式编译成Pattern对象 
+pattern = re.compile(r&apos;world&apos;) 
+
+# 使用search()查找匹配的子串，不存在能匹配的子串时将返回None 
+# 这个例子中使用match()无法成功匹配 
+match = pattern.search(&apos;hello world!&apos;) 
+
+if match: 
+    # 使用Match获得分组信息 
+    print match.group() 
+
+### 输出 ### 
+# world
+</code></pre><ul>
+<li>split(string[, maxsplit]) | re.split(pattern, string[, maxsplit]): </li>
+</ul>
+<p>按照能够匹配的子串将string分割后返回列表。maxsplit用于指定最大分割次数，不指定将全部分割。 </p>
+<pre><code>import re
+
+p = re.compile(r&apos;\d+&apos;)
+print p.split(&apos;one1two2three3four4&apos;)
+
+### output ###
+# [&apos;one&apos;, &apos;two&apos;, &apos;three&apos;, &apos;four&apos;, &apos;&apos;]
+</code></pre><ul>
+<li>findall(string[, pos[, endpos]]) | re.findall(pattern, string[, flags]): </li>
+</ul>
+<p>搜索string，以列表形式返回全部能匹配的子串。 </p>
+<pre><code>import re
+
+p = re.compile(r&apos;\d+&apos;)
+print p.findall(&apos;one1two2three3four4&apos;)
+
+### output ###
+# [&apos;1&apos;, &apos;2&apos;, &apos;3&apos;, &apos;4&apos;]
+</code></pre><ul>
+<li>finditer(string[, pos[, endpos]]) | re.finditer(pattern, string[, flags]): </li>
+</ul>
+<p>搜索string，返回一个顺序访问每一个匹配结果（Match对象）的迭代器。 </p>
+<pre><code>import re
+
+p = re.compile(r&apos;\d+&apos;)
+for m in p.finditer(&apos;one1two2three3four4&apos;):
+    print m.group(),
+
+### output ###
+# 1 2 3 4
+</code></pre><ul>
+<li>sub(repl, string[, count]) | re.sub(pattern, repl, string[, count]): </li>
+</ul>
+<p>使用repl替换string中每一个匹配的子串后返回替换后的字符串。</p>
+<p>当repl是一个字符串时，可以使用\id或\g<id>、\g<name>引用分组，但不能使用编号0。 </name></id></p>
+<p>当repl是一个方法时，这个方法应当只接受一个参数（Match对象），并返回一个字符串用于替换（返回的字符串中不能再引用分组）。<br>count用于指定最多替换次数，不指定时全部替换。 </p>
+<pre><code>import re
+
+p = re.compile(r&apos;(\w+) (\w+)&apos;)
+s = &apos;i say, hello world!&apos;
+
+print p.sub(r&apos;\2 \1&apos;, s)
+
+def func(m):
+    return m.group(1).title() + &apos; &apos; + m.group(2).title()
+
+print p.sub(func, s)
+
+### output ###
+# say i, world hello!
+# I Say, Hello World!
+</code></pre><ul>
+<li>subn(repl, string[, count]) |re.sub(pattern, repl, string[, count]): </li>
+</ul>
+<p>返回 (sub(repl, string[, count]), 替换次数)。 </p>
+<pre><code>import re
+
+p = re.compile(r&apos;(\w+) (\w+)&apos;)
+s = &apos;i say, hello world!&apos;
+
+print p.subn(r&apos;\2 \1&apos;, s)
+
+def func(m):
+    return m.group(1).title() + &apos; &apos; + m.group(2).title()
+
+print p.subn(func, s)
+
+### output ###
+# (&apos;say i, world hello!&apos;, 2)
+# (&apos;I Say, Hello World!&apos;, 2)
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/05/TCP和UDP的工作过程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2249,190 +2640,6 @@ if __name__ == &apos;__main__&apos;:
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/02/每天一个python小程序-4/" itemprop="url">每天一个python小程序(4)--统计单词频数</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-02T23:08:42+08:00">
-                2015-02-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>任一个英文的纯文本文件，统计其中每个单词出现的频数。</p>
-</blockquote>
-<p>这一题使用collections模块会非常简单</p>
-<pre><code>#!/usr/bin/python
-#encoding=utf-8
-
-import collections
-import re
-
-#增加统计单词总数和最长行
-def count_word(file_name):
-    f = open(file_name)
-
-    word_counter = collections.Counter()
-
-    #文件对象使用迭代器
-    for line in f:
-        words = re.findall(&apos;\w+&apos;, line.lower())
-        word_counter.update(words)
-
-    #迭代器对象只能遍历一次，欲再次遍历需要重现构建迭代器对象
-    f = open(file_name)
-    #计算单词总数 p206
-    word_sum = len([word for line in f for word in line.split()])
-
-
-    #最长行
-    f = open(file_name)
-    longest = max(len(line.split()) for line in f)
-
-    print &quot;the longest line&apos;s length is %d&quot; % longest
-    f.close()
-
-    return word_counter, word_sum
-
-if __name__ == &apos;__main__&apos;:
-    world_counter, word_sum = count_word(&apos;test.txt&apos;)
-    print &apos;there are %d words in this article&apos; % word_sum
-    #most_common打印出现次数最多的单词，这里most_common(3)表示出现次数最多的3个单词
-    for key,count in world_counter.most_common(3):
-        print &apos;%s: %d&apos; % (key, count)
-</code></pre><p>代码在<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.4" target="_blank" rel="external">这里</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2483,7 +2690,7 @@ if __name__ == &apos;__main__&apos;:
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">211</span>
+                <span class="site-state-item-count">212</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

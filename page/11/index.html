@@ -286,6 +286,177 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/sed/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/12/sed/" itemprop="url">sed</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T20:13:45+08:00">
+                2015-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>sed是<strong>流编辑器</strong>(stream editor)的缩写。它是文本处理中不可或缺的工具，能够配合正则表达式使用，功能不同凡响。sed的一个众所周知的用法是进行文本替换</p>
+<p>##sed可以替换给定文本中的字符串<br>        sed ‘s/log/huhu/‘ ./time.sh //将log替换为huhu<br>或者</p>
+<pre><code>cat time.sh | sed &apos;s/log/huhu/&apos;  
+</code></pre><p>该命令从stdin读取输入。</p>
+<blockquote>
+<p>如果你用的是vi编辑器，你会发现它用于替换文本的命令和sed非常相似</p>
+</blockquote>
+<p>##保存被sed替换后的文件</p>
+<p>上面的命令，sed会打印出字符串被替换之后的文件，但是对于源文件，什么事情都没有发生，源文件内的字符串并没有被替换，如果想保存替换后的文件怎么办呢？</p>
+<p>这里分两个点来说</p>
+<ol>
+<li><p>想保留源文件，那么直接将输出重定向，生成新的文件即可</p>
+<pre><code>sed &apos;s/log/huhu/&apos; ./time.sh &gt; newfile
+</code></pre></li>
+<li><p>源文件不需要了，就在源文件上修改</p>
+<pre><code>sed -i &apos;s/log/huhu/&apos; ./time.sh
+</code></pre><p>加上-i参数后，就可以将替换结果保存在源文件</p>
+</li>
+</ol>
+<p>##替换全部，而不是每一行的第一个</p>
+<p>上面两个命令，细心的小伙伴会发现，它只替换每一行第一处符合模式的内容，如果要替换所有的内容，我们需要在命令的末尾加上参数g</p>
+<pre><code>sed &apos;s/log/huhu/g&apos; ./time.sh
+</code></pre><p>后缀/g意味着sed会替换每一处匹配。但是有时候我们只需要从第n处匹配开始替换，对此，我们可以使用/Ng选项。</p>
+<p>例如</p>
+<pre><code>[root@pc105 test]# echo thisthisthisthis | sed &apos;s/this/THIS/2g&apos;
+thisTHISTHISTHIS
+[root@pc105 test]# echo thisthisthisthis | sed &apos;s/this/THIS/3g&apos;
+thisthisTHISTHIS
+[root@pc105 test]# echo thisthisthisthis | sed &apos;s/this/THIS/4g&apos;
+thisthisthisTHIS
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/print0-xargs/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1717,165 +1888,6 @@ typedef union epoll_data {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/07/epoll的事件触发方式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/07/epoll的事件触发方式/" itemprop="url">epoll的事件触发方式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-07T21:34:13+08:00">
-                2015-03-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
-                    <span itemprop="name">unix网络编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>参考自<a href="http://blog.chinaunix.net/uid-24517549-id-4051156.html" target="_blank" rel="external">这里</a></p>
-<p>假如有这样一个例子：</p>
-<ol>
-<li>我们已经把一个用来从管道中读取数据的文件句柄(RFD)添加到epoll描述符</li>
-<li>这个时候从管道的另一端被写入了2KB的数据</li>
-<li>调用epoll_wait()，并且它会返回RFD，说明它已经准备好读取操作</li>
-<li>然后我们读取了1KB的数据</li>
-<li>调用epoll_wait()……</li>
-</ol>
-<p>##Edge Triggered 工作模式：<br>如果我们在第1步将RFD添加到epoll描述符的时候使用了EPOLLET标志，那么在第5步调用<code>epoll_wait()</code>之后将有可能会挂起，因为剩余的数据还存在于文件的输入缓冲区内，而且数据发出端还在等待一个针对已经发出数据的反馈信息。只有在监视的文件句柄上发生了某个事件的时候 ET 工作模式才会汇报事件。因此在第5步的时候，调用者可能会放弃等待仍在存在于文件输入缓冲区内的剩余数据。在上面的例子中，会有一个事件产生在RFD句柄上，因为在第2步执行了一个写操作，然后，事件将会在第3步被销毁。</p>
-<p>因为第4步的读取操作没有读空文件输入缓冲区内的数据，因此我们在第5步调用 <code>epoll_wait()</code>完成后，是否挂起是不确定的。epoll工作在ET模式的时候，必须使用<strong>非阻塞套接口</strong>，以避免由于一个文件句柄的阻塞读/阻塞写操作把处理多个文件描述符的任务饿死。最好以下面的方式调用ET模式的epoll接口，在后面会介绍避免可能的缺陷。</p>
-<ol>
-<li>基于非阻塞文件句柄</li>
-<li>只有当read()或者write()返回EAGAIN时才需要挂起，等待。但这并不是说每次read()时都需要循环读，直到读到产生一个EAGAIN才认为此次事件处理完成，当read()返回的读到的数据长度小于请求的数据长度时，就可以确定此时缓冲中已没有数据了，也就可以认为此事读事件已处理完成。</li>
-</ol>
-<p>##Level Triggered 工作模式<br>相反的，以LT方式调用epoll接口的时候，它就相当于一个速度比较快的poll()，并且无论后面的数据是否被使用，因此他们具有同样的职能。因为即使使用ET模式的epoll，在收到多个chunk的数据的时候仍然会产生多个事件。调用者可以设定EPOLLONESHOT标志，在 <code>epoll_wait()</code>收到事件后epoll会与事件关联的文件句柄从epoll描述符中禁止掉。因此当EPOLLONESHOT设定后，使用带有 EPOLL_CTL_MOD标志的<code>epoll_ctl()</code>处理文件句柄就成为调用者必须作的事情。</p>
-<p>##总结<br>LT(level triggered水平触发或条件触发)是epoll缺省的工作方式，并且同时支持block和no-block socket.在这种做法中，内核告诉你一个文件描述符是否就绪了，然后你可以对这个就绪的fd进行IO操作。如果你不作任何操作，内核还是会继续通知你的，所以，这种模式编程出错误可能性要小一点。传统的select/poll都是这种模型的代表．</p>
-<p>ET (edge-triggered边缘触发或事件触发)是高速工作方式，只支持no-block socket，它效率要比LT更高。ET与LT的区别在于，当一个新的事件到来时，ET模式下当然可以从<code>epoll_wait</code>调用中获取到这个事件，<strong>可是如果这次没有把这个事件对应的套接字缓冲区处理完，在这个套接字中没有新的事件再次到来时，在ET模式下是无法再次从epoll_wait调用中获取这个事件的。而LT模式正好相反，只要一个事件对应的套接字缓冲区还有数据，就总能从<code>epoll_wait</code>中获取这个事件。</strong><br>因此，LT模式下开发基于epoll的应用要简单些，不太容易出错。而在ET模式下事件发生时，如果没有彻底地将缓冲区数据处理完，则会导致缓冲区中的用户请求得不到响应。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1926,7 +1938,7 @@ typedef union epoll_data {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">211</span>
+                <span class="site-state-item-count">212</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

@@ -286,6 +286,191 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/12/docker源码分析1-cli/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/12/docker源码分析1-cli/" itemprop="url">docker源码分析1-cli</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-12T20:41:10+08:00">
+                2017-09-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Docker代码更新很快，网上各位大神的源码解析很多已经是几年前的版本了。实现上有了很大改变，加之Docker项目更名为<a href="https://github.com/moby/moby" target="_blank" rel="external">moby</a>，其中很多组件又从moby中拆分了出来，一开始看简直是一脸懵逼啊。在这里跟大家分享了一下最近看的<a href="https://github.com/docker/cli" target="_blank" rel="external">docker/cli</a>的源码，抛砖引玉，欢迎大家批评指正。<br><a href="https://github.com/docker/cli" target="_blank" rel="external">docker/cli</a></p>
+<p>分析的<code>docker client</code>版本是<code>17.06.2-ce</code>。</p>
+<p><code>docker client</code>是Docker的客户端程序，也就是我们敲的<code>docker * *</code> 命令，我们通过他与<code>docker deamon</code>程序进行交互。我们可以将他看成一个普通的客户端程序，docker的核心<code>namespace</code>和<code>cgroup</code>等技术都不在这里。</p>
+<h2 id="搭建docker-client开发环境"><a href="#搭建docker-client开发环境" class="headerlink" title="搭建docker-client开发环境"></a>搭建docker-client开发环境</h2><p><code>docker_client</code>的开发环境也是在容器中，项目已经给我们做好了封装，具体可以参考项目Readme的<a href="https://github.com/docker/cli#development" target="_blank" rel="external">Development</a>章节。</p>
+<p>问几个问题，大家可以思考一下：</p>
+<p>####1. 开发是在容器中，可是容器里面连编辑器都没有，怎么开发？</p>
+<p>答： 准确来说应该是在容器中调试，开发还是在本地开发，容器中看到的目录是我们本地目录mount进去的</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> docker.Makefile文件</div><div class="line"></div><div class="line">......</div><div class="line">MOUNTS = -v "$(CURDIR)":/go/src/github.com/docker/cli</div><div class="line">......</div><div class="line"><span class="meta">#</span> start container in interactive mode for in-container development</div><div class="line">.PHONY: dev</div><div class="line">dev: build_docker_image</div><div class="line">    docker run -ti --security-opt=seccomp:unconfined $(ENVVARS) $(MOUNTS) \</div><div class="line">        -v /var/run/docker.sock:/var/run/docker.sock \</div><div class="line">        $(DEV_DOCKER_IMAGE_NAME) ash</div><div class="line"></div><div class="line">shell: dev</div><div class="line">......</div></pre></td></tr></table></figure>
+<p>从shell里面还是很容器看出来的，run的时候mount了<code>$(CURDIR)</code></p>
+<p>####2. 容器里面是不是还装了一个docker啊，为什么我在里面敲命令有响应？<br>答：不是的，里面只有你编译生成的docker client程序，是没有docker deamon程序，至于为什么能响应，还是看上面的shell脚本，<code>-v /var/run/docker.sock:/var/run/docker.sock</code>这一行将<code>docker.sock</code>文件也mount了进去，<code>docker.sock</code>是<code>docker deamon</code>默认监听的Unix套接字（Unix domain socket），容器中的进程可以通过他与docker deamon进行通信。所以这里docker client通信的是你本机的docker daemon。</p>
+<p><img src="/img/docker_deamon_socket.png" alt="docker_deamon_socket"></p>
+<p>所以我们的开发流程是：本地改代码–&gt;到container中编译–&gt;运行docker client看效果</p>
+<h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><p>是时候表演真正的技术了！</p>
+<p>😆，开个玩笑，下面的分析如果有问题，还请大家不吝赐教！</p>
+<p>我尽量把文件路径列出来，会贴一些代码，但主要还是路径，建议大家把代码clone下来照着看。</p>
+<p>docker—client是基于<a href="https://github.com/spf13/cobra" target="_blank" rel="external">cobra</a>写的，建议大家先看一下cobra，至少写个<code>hello world</code>熟悉一下基本用法。</p>
+<p>我们开始了！</p>
+<p>入口文件在<code>cmd/docker/docker.go</code>:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="comment">// 日志输出采用了第三方库logrus</span></div><div class="line">    <span class="comment">// Set terminal emulation based on platform as required.</span></div><div class="line">    stdin, stdout, stderr := term.StdStreams()</div><div class="line">    logrus.SetOutput(stderr)</div><div class="line"></div><div class="line">    dockerCli := command.NewDockerCli(stdin, stdout, stderr)</div><div class="line">    </div><div class="line">    <span class="comment">// root命令，子命令都在这里面，重点看</span></div><div class="line">    cmd := newDockerCommand(dockerCli)</div><div class="line"></div><div class="line">    <span class="comment">// 命令执行	</span></div><div class="line">    <span class="keyword">if</span> err := cmd.Execute(); err != <span class="literal">nil</span> &#123;</div><div class="line">        <span class="keyword">if</span> sterr, ok := err.(cli.StatusError); ok &#123;</div><div class="line">            <span class="keyword">if</span> sterr.Status != <span class="string">""</span> &#123;</div><div class="line">                fmt.Fprintln(stderr, sterr.Status)</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// StatusError should only be used for errors, and all errors should</span></div><div class="line">            <span class="comment">// have a non-zero exit status, so never exit with 0</span></div><div class="line">            <span class="keyword">if</span> sterr.StatusCode == <span class="number">0</span> &#123;</div><div class="line">                os.Exit(<span class="number">1</span>)</div><div class="line">            &#125;</div><div class="line">            os.Exit(sterr.StatusCode)</div><div class="line">        &#125;</div><div class="line">        fmt.Fprintln(stderr, err)</div><div class="line">        os.Exit(<span class="number">1</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>还是这个文件，<code>newDockerCommand</code>函数调用了<code>commands.AddCommands(cmd, dockerCli)</code>来添加命令。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">newDockerCommand</span><span class="params">(dockerCli *command.DockerCli)</span> *<span class="title">cobra</span>.<span class="title">Command</span></span> &#123;</div><div class="line">        opts := cliflags.NewClientOptions()</div><div class="line">        <span class="keyword">var</span> flags *pflag.FlagSet</div><div class="line"></div><div class="line">        cmd := &amp;cobra.Command&#123;</div><div class="line">                Use:              <span class="string">"docker [OPTIONS] COMMAND [ARG...]"</span>,</div><div class="line">                Short:            <span class="string">"A self-sufficient runtime for containers"</span>,</div><div class="line">                SilenceUsage:     <span class="literal">true</span>,</div><div class="line">                SilenceErrors:    <span class="literal">true</span>,</div><div class="line">                TraverseChildren: <span class="literal">true</span>,</div><div class="line">                Args:             noArgs,</div><div class="line">                RunE: <span class="function"><span class="keyword">func</span><span class="params">(cmd *cobra.Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span> &#123;</div><div class="line">                        <span class="keyword">if</span> opts.Version &#123;</div><div class="line">                                showVersion()</div><div class="line">                                <span class="keyword">return</span> <span class="literal">nil</span></div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">return</span> command.ShowHelp(dockerCli.Err())(cmd, args)</div><div class="line">                &#125;,</div><div class="line">                PersistentPreRunE: <span class="function"><span class="keyword">func</span><span class="params">(cmd *cobra.Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span> &#123;</div><div class="line">                        <span class="comment">// daemon command is special, we redirect directly to another binary</span></div><div class="line">                        <span class="keyword">if</span> cmd.Name() == <span class="string">"daemon"</span> &#123;</div><div class="line">                                <span class="keyword">return</span> <span class="literal">nil</span></div><div class="line">                        &#125;</div><div class="line">                        <span class="comment">// flags must be the top-level command flags, not cmd.Flags()</span></div><div class="line">                        opts.Common.SetDefaultOptions(flags)</div><div class="line">                        dockerPreRun(opts)</div><div class="line">                        <span class="keyword">if</span> err := dockerCli.Initialize(opts); err != <span class="literal">nil</span> &#123;</div><div class="line">                                <span class="keyword">return</span> err</div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">return</span> isSupported(cmd, dockerCli)</div><div class="line">                &#125;,</div><div class="line">        &#125;</div><div class="line">        cli.SetupRootCommand(cmd)</div><div class="line"></div><div class="line">        flags = cmd.Flags()</div><div class="line">        flags.BoolVarP(&amp;opts.Version, <span class="string">"version"</span>, <span class="string">"v"</span>, <span class="literal">false</span>, <span class="string">"Print version information and quit"</span>)</div><div class="line">        flags.StringVar(&amp;opts.ConfigDir, <span class="string">"config"</span>, cliconfig.Dir(), <span class="string">"Location of client config files"</span>)</div><div class="line">        opts.Common.InstallFlags(flags)</div><div class="line"></div><div class="line">        setFlagErrorFunc(dockerCli, cmd, flags, opts)</div><div class="line"></div><div class="line">        setHelpFunc(dockerCli, cmd, flags, opts)</div><div class="line"></div><div class="line">        cmd.SetOutput(dockerCli.Out())</div><div class="line">        cmd.AddCommand(newDaemonCommand())</div><div class="line">        # 添加子命令，cmd里现在是root命令</div><div class="line">        commands.AddCommands(cmd, dockerCli)</div><div class="line"></div><div class="line">        setValidateArgs(dockerCli, cmd, flags, opts)</div><div class="line"></div><div class="line">        <span class="keyword">return</span> cmd</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这行上面的<code>cmd.AddCommand(newDaemonCommand())</code>是为<code>docker daemon</code>命令进行的输出，<code>newDaemonCommand</code>定义在<code>cmd/docker/daemon_none.go</code>中，从他的<code>RunE</code>方法可以看出来，是输出了不能运行的提示，<code>runtime.GOOS</code>是输出当前系统的名称，比如mac是<code>Darwin</code>， ubuntu是<code>linux</code>，完整看来就是:</p>
+<pre><code>`docker daemon` is not supported on Darwin. Please run `dockerd` directly
+</code></pre><p>让我们来到<code>commands.AddCommands</code>定义的地方，<code>cli/command/commands/commands.go</code>文件，可以看到<code>cmd.AddCommand</code>的调用，这里就是在添加我们看到的二级命令，也就是紧跟着<code>docker</code>后面的命令。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddCommands</span><span class="params">(cmd *cobra.Command, dockerCli *command.DockerCli)</span></span> &#123;</div><div class="line">        cmd.AddCommand(</div><div class="line">                ......</div><div class="line"></div><div class="line">                <span class="comment">// container</span></div><div class="line">                container.NewContainerCommand(dockerCli),</div><div class="line">                container.NewRunCommand(dockerCli),</div><div class="line">                </div><div class="line">                ......</div><div class="line">                hide(container.NewPsCommand(dockerCli)),</div><div class="line">                hide(container.NewRenameCommand(dockerCli)),</div><div class="line">                ......</div></pre></td></tr></table></figure>
+<p>我们从上看到下，整齐划一中发现最后好多命令被用hide包裹了。这些命令是一些旧命令，在新的版本中可以使用新的命令来代替，如果设置了环境变量<code>DOCKER_HIDE_LEGACY_COMMANDS</code>不为空，那么docker的提示将不会输出这些。</p>
+<p>这里的命令太多了，我们通过<code>docker ps</code>命令来了解一下大致的执行流程。</p>
+<p><code>docker ps</code>命令也是旧版的命令，<code>hide(container.NewPsCommand(dockerCli))</code>就是在处理他。在新版本中对应的是<code>docker container ls</code>命令。实现代码在<code>cli/command/container/list.go</code>.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// NewPsCommand creates a new cobra.Command for `docker ps`</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewPsCommand</span><span class="params">(dockerCli *command.DockerCli)</span> *<span class="title">cobra</span>.<span class="title">Command</span></span> &#123;</div><div class="line">        options := psOptions&#123;filter: opts.NewFilterOpt()&#125;</div><div class="line"></div><div class="line">        cmd := &amp;cobra.Command&#123;</div><div class="line">                Use:   <span class="string">"ps [OPTIONS]"</span>,</div><div class="line">                Short: <span class="string">"List containers"</span>,</div><div class="line">                Args:  cli.NoArgs,</div><div class="line">                RunE: <span class="function"><span class="keyword">func</span><span class="params">(cmd *cobra.Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span> &#123;</div><div class="line">                        <span class="keyword">return</span> runPs(dockerCli, &amp;options)</div><div class="line">                &#125;,</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        flags := cmd.Flags()</div><div class="line"></div><div class="line">        flags.BoolVarP(&amp;options.quiet, <span class="string">"quiet"</span>, <span class="string">"q"</span>, <span class="literal">false</span>, <span class="string">"Only display numeric IDs"</span>)</div><div class="line">        flags.BoolVarP(&amp;options.size, <span class="string">"size"</span>, <span class="string">"s"</span>, <span class="literal">false</span>, <span class="string">"Display total file sizes"</span>)</div><div class="line">        flags.BoolVarP(&amp;options.all, <span class="string">"all"</span>, <span class="string">"a"</span>, <span class="literal">false</span>, <span class="string">"Show all containers (default shows just running)"</span>)</div><div class="line">        flags.BoolVar(&amp;options.noTrunc, <span class="string">"no-trunc"</span>, <span class="literal">false</span>, <span class="string">"Don't truncate output"</span>)</div><div class="line">        flags.BoolVarP(&amp;options.nLatest, <span class="string">"latest"</span>, <span class="string">"l"</span>, <span class="literal">false</span>, <span class="string">"Show the latest created container (includes all states)"</span>)</div><div class="line">        flags.IntVarP(&amp;options.last, <span class="string">"last"</span>, <span class="string">"n"</span>, <span class="number">-1</span>, <span class="string">"Show n last created containers (includes all states)"</span>)</div><div class="line">        flags.StringVarP(&amp;options.format, <span class="string">"format"</span>, <span class="string">""</span>, <span class="string">""</span>, <span class="string">"Pretty-print containers using a Go template"</span>)</div><div class="line">        flags.VarP(&amp;options.filter, <span class="string">"filter"</span>, <span class="string">"f"</span>, <span class="string">"Filter output based on conditions provided"</span>)</div><div class="line"></div><div class="line">        <span class="keyword">return</span> cmd</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">newListCommand</span><span class="params">(dockerCli *command.DockerCli)</span> *<span class="title">cobra</span>.<span class="title">Command</span></span> &#123;</div><div class="line">        cmd := *NewPsCommand(dockerCli)</div><div class="line">        cmd.Aliases = []<span class="keyword">string</span>&#123;<span class="string">"ps"</span>, <span class="string">"list"</span>&#125;</div><div class="line">        cmd.Use = <span class="string">"ls [OPTIONS]"</span></div><div class="line">        <span class="keyword">return</span> &amp;cmd</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>NewPsCommand</code>对应的是<code>docker ps</code>, <code>newListCommand</code>对应的是<code>docker container ls</code>，可以看出来， <code>newListCommand</code>里的command就是<code>NewPsCommand</code>返回的，只是加了一下说明而已。</p>
+<blockquote>
+<p>这里还漏了一点，docker container ls是3个命令，我们知道docker是root命令，按照cobra的写法，container和ls应该是分开的。他们的关系是这样的，在<code>cli/command/commands/commands.go</code>文件中<code>container.NewContainerCommand(dockerCli)</code>加入了<code>container</code>命令，<code>NewContainerCommand</code>的实现在<code>cli/command/container/cmd.go</code>中，在<code>NewContainerCommand</code>函数中通过<code>newListCommand(dockerCli)</code>加入了ls命令，可以看到还添加了很多别的方法，那些都是<code>container</code>支持的子命令。这样就回到了我们上面提到的内容了，没有魔法</p>
+</blockquote>
+<p>我们继续看<code>NewPsCommand</code>:</p>
+<p>里面定义了<code>docker ps</code>（下面所有的内容对<code>docker container ls</code>都适用）支持的一些选项（flag）,选项被放在了psOptions这个结构体中，最终传给runPs函数.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">runPs</span><span class="params">(dockerCli *command.DockerCli, options *psOptions)</span> <span class="title">error</span></span> &#123;</div><div class="line">        ctx := context.Background()</div><div class="line"></div><div class="line">        listOptions, err := buildContainerListOptions(options)</div><div class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">                <span class="keyword">return</span> err</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        containers, err := dockerCli.Client().ContainerList(ctx, *listOptions)</div><div class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">                <span class="keyword">return</span> err</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        format := options.format</div><div class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(format) == <span class="number">0</span> &#123;</div><div class="line">                <span class="keyword">if</span> <span class="built_in">len</span>(dockerCli.ConfigFile().PsFormat) &gt; <span class="number">0</span> &amp;&amp; !options.quiet &#123;</div><div class="line">                        format = dockerCli.ConfigFile().PsFormat</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                        format = formatter.TableFormatKey</div><div class="line">                &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        containerCtx := formatter.Context&#123;</div><div class="line">                Output: dockerCli.Out(),</div><div class="line">                Format: formatter.NewContainerFormat(format, options.quiet, listOptions.Size),</div><div class="line">                Trunc:  !options.noTrunc,</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> formatter.ContainerWrite(containerCtx, containers)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>listOptions, err := buildContainerListOptions(options)</code>对选项进行了处理，重点在<code>dockerCli.Client().ContainerList(ctx, *listOptions)</code>，<code>ContainerList</code>是一个interface。</p>
+<p>实现在<code>vendor/github.com/docker/docker/client/container_list.go</code>（vendor在当前目录下，我是go新手，所以担心大家不知道，高手忽略）</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(cli *Client)</span> <span class="title">ContainerList</span><span class="params">(ctx context.Context, options types.ContainerListOptions)</span> <span class="params">([]types.Container, error)</span></span> &#123;</div><div class="line">        query := url.Values&#123;&#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> options.All &#123;</div><div class="line">                query.Set(<span class="string">"all"</span>, <span class="string">"1"</span>)</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> options.Limit != <span class="number">-1</span> &#123;</div><div class="line">                query.Set(<span class="string">"limit"</span>, strconv.Itoa(options.Limit))</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> options.Since != <span class="string">""</span> &#123;</div><div class="line">                query.Set(<span class="string">"since"</span>, options.Since)</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> options.Before != <span class="string">""</span> &#123;</div><div class="line">                query.Set(<span class="string">"before"</span>, options.Before)</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> options.Size &#123;</div><div class="line">                query.Set(<span class="string">"size"</span>, <span class="string">"1"</span>)</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> options.Filters.Len() &gt; <span class="number">0</span> &#123;</div><div class="line">                filterJSON, err := filters.ToParamWithVersion(cli.version, options.Filters)</div><div class="line"></div><div class="line">                <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">                        <span class="keyword">return</span> <span class="literal">nil</span>, err</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                query.Set(<span class="string">"filters"</span>, filterJSON)</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        resp, err := cli.get(ctx, <span class="string">"/containers/json"</span>, query, <span class="literal">nil</span>)</div><div class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">                <span class="keyword">return</span> <span class="literal">nil</span>, err</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">var</span> containers []types.Container</div><div class="line">        err = json.NewDecoder(resp.body).Decode(&amp;containers)</div><div class="line">        ensureReaderClosed(resp)</div><div class="line">        <span class="keyword">return</span> containers, err</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>前面是在拼请求的参数，<code>resp, err := cli.get(ctx, &quot;/containers/json&quot;, query, nil)</code>这里发起了请求，返回了container的列表。回到<code>cli/command/container/list.go</code>，接收到返回值之后，这时候还是json，下面进行了格式化输出，大家应该都做过打印<code>9*9乘法表</code>的经历，这里的格式化是同样的道理，不明白的同学可以继续往挖，我偷个懒，就不继续了。</p>
+<p>至此<code>docker ps</code>的流程就走完了，大家可以对源码做一些修改，然后进到容器中执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">make binary</div></pre></td></tr></table></figure>
+<p>就可以生产新的docker client，执行一下就能得到想要的输出啦。</p>
+<p>谢谢大家，欢迎大家指正🙂</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/07/Moby-LinuxKit-初体验/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2226,595 +2411,6 @@ True
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/05/Python-面试题集锦-转载/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/06/05/Python-面试题集锦-转载/" itemprop="url">Python 面试题集锦[转载]</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-06-05T16:59:45+08:00">
-                2016-06-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Python语言特性"><a href="#Python语言特性" class="headerlink" title="Python语言特性"></a>Python语言特性</h1><h2 id="Python的函数参数传递"><a href="#Python的函数参数传递" class="headerlink" title="Python的函数参数传递"></a>Python的函数参数传递</h2><p>看两个例子:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">a = <span class="number">1</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fun</span><span class="params">(a)</span>:</span></div><div class="line">    a = <span class="number">2</span></div><div class="line">fun(a)</div><div class="line"><span class="keyword">print</span> a  <span class="comment"># 1</span></div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">a = []</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fun</span><span class="params">(a)</span>:</span></div><div class="line">    a.append(<span class="number">1</span>)</div><div class="line">fun(a)</div><div class="line"><span class="keyword">print</span> a  <span class="comment"># [1]</span></div></pre></td></tr></table></figure>
-<p>所有的变量都可以理解是内存中一个对象的<code>“引用”</code>，或者，也可以看似<code>c</code>中<code>void*</code>的感觉。</p>
-<p>这里记住的是类型是属于对象的，而不是变量。而对象有两种,<code>“可更改”（mutable）</code>与<code>“不可更改”（immutable）</code>对象。在python中，<code>strings</code>, <code>tuples</code>, 和<code>numbers</code>是不可更改的对象，而<code>list</code>,<code>dict</code>等则是可以修改的对象。(这就是这个问题的重点)</p>
-<p>当一个引用传递给函数的时候,函数自动复制一份引用,这个函数里的引用和外边的引用没有半毛关系了.所以第一个例子里函数把引用指向了一个不可变对象,当函数返回的时候,外面的引用没半毛感觉.而第二个例子就不一样了,函数内的引用指向的是可变对象,对它的操作就和定位了指针地址一样,在内存里进行修改.</p>
-<p>如果还不明白的话,这里有更好的解释: <a href="http://stackoverflow.com/questions/986006/how-do-i-pass-a-variable-by-reference" target="_blank" rel="external">http://stackoverflow.com/questions/986006/how-do-i-pass-a-variable-by-reference</a></p>
-<h2 id="Python中的元类-metaclass"><a href="#Python中的元类-metaclass" class="headerlink" title="Python中的元类(metaclass)"></a>Python中的元类(metaclass)</h2><p>这个非常的不常用,但是像ORM这种复杂的结构还是会需要的,详情请看:<a href="http://stackoverflow.com/questions/100003/what-is-a-metaclass-in-python" target="_blank" rel="external">http://stackoverflow.com/questions/100003/what-is-a-metaclass-in-python</a></p>
-<h2 id="staticmethod和-classmethod"><a href="#staticmethod和-classmethod" class="headerlink" title="@staticmethod和@classmethod"></a>@staticmethod和@classmethod</h2><p>Python其实有3个方法,即<code>静态方法(staticmethod)</code>,<code>类方法(classmethod)</code>和<code>实例方法</code>,如下:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(x)</span>:</span></div><div class="line">    <span class="keyword">print</span> <span class="string">"executing foo(%s)"</span>%(x)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(self,x)</span>:</span></div><div class="line">        <span class="keyword">print</span> <span class="string">"executing foo(%s,%s)"</span>%(self,x)</div><div class="line"></div><div class="line"><span class="meta">    @classmethod</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">class_foo</span><span class="params">(cls,x)</span>:</span></div><div class="line">        <span class="keyword">print</span> <span class="string">"executing class_foo(%s,%s)"</span>%(cls,x)</div><div class="line"></div><div class="line"><span class="meta">    @staticmethod</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">static_foo</span><span class="params">(x)</span>:</span></div><div class="line">        <span class="keyword">print</span> <span class="string">"executing static_foo(%s)"</span>%x</div><div class="line"></div><div class="line">a=A()</div></pre></td></tr></table></figure>
-<p>这里先理解下函数参数里面的<code>self</code>和<code>cls</code>. 这个<code>self</code>和<code>cls</code>是对类或者实例的绑定,对于一般的函数来说我们可以这么调用<code>foo(x)</code>,这个函数就是最常用的,它的工作跟任何东西(类,实例)无关.对于实例方法,我们知道在类里每次定义方法的时候都需要绑定这个实例,就是<code>foo(self, x)</code>,为什么要这么做呢?因为实例方法的调用离不开实例,我们需要把实例自己传给函数,调用的时候是这样的<code>a.foo(x)</code>(其实是<code>foo(a, x)</code>).类方法一样,只不过它传递的是类而不是实例,<code>A.class_foo(x)</code>.注意这里的self和cls可以替换别的参数,但是python的约定是这俩,还是不要改的好.</p>
-<p>对于静态方法其实和普通的方法一样,不需要对谁进行绑定,唯一的区别是调用的时候需要使用<code>a.static_foo(x)</code>或者<code>A.static_foo(x)</code>来调用.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">\</th>
-<th style="text-align:left">实例方法</th>
-<th style="text-align:left">类方法</th>
-<th style="text-align:left">静态方法</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">a = A()</td>
-<td style="text-align:left">a.foo(x)</td>
-<td style="text-align:left">a.class_foo(x)</td>
-<td style="text-align:left">a.static_foo(x)</td>
-</tr>
-<tr>
-<td style="text-align:left">A</td>
-<td style="text-align:left">不可用</td>
-<td style="text-align:left">A.class_foo(x)</td>
-<td style="text-align:left">A.static_foo(x)</td>
-</tr>
-</tbody>
-</table>
-<p>更多关于这个问题:<a href="http://stackoverflow.com/questions/136097/what-is-the-difference-between-staticmethod-and-classmethod-in-python" target="_blank" rel="external">http://stackoverflow.com/questions/136097/what-is-the-difference-between-staticmethod-and-classmethod-in-python</a></p>
-<h2 id="类变量和实例变量"><a href="#类变量和实例变量" class="headerlink" title="类变量和实例变量"></a>类变量和实例变量</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span></div><div class="line">    name=<span class="string">"aaa"</span></div><div class="line"></div><div class="line">p1=Person()</div><div class="line">p2=Person()</div><div class="line">p1.name=<span class="string">"bbb"</span></div><div class="line"><span class="keyword">print</span> p1.name  <span class="comment"># bbb</span></div><div class="line"><span class="keyword">print</span> p2.name  <span class="comment"># aaa</span></div><div class="line"><span class="keyword">print</span> Person.name  <span class="comment"># aaa</span></div></pre></td></tr></table></figure>
-<p>类变量就是供类使用的变量,实例变量就是供实例使用的.</p>
-<p>这里<code>p1.name=&quot;bbb&quot;</code>是实例调用了类变量,这其实和上面第一个问题一样,就是函数传参的问题,<code>p1.name</code>一开始是指向的类变量<code>name=&quot;aaa&quot;</code>,但是在实例的作用域里把类变量的引用改变了,就变成了一个实例变量,<code>self.name</code>不再引用<code>Person</code>的类变量<code>name</code>了.</p>
-<p>可以看看下面的例子:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span></div><div class="line">    name=[]</div><div class="line"></div><div class="line">p1=Person()</div><div class="line">p2=Person()</div><div class="line">p1.name.append(<span class="number">1</span>)</div><div class="line"><span class="keyword">print</span> p1.name  <span class="comment"># [1]</span></div><div class="line"><span class="keyword">print</span> p2.name  <span class="comment"># [1]</span></div><div class="line"><span class="keyword">print</span> Person.name  <span class="comment"># [1]</span></div></pre></td></tr></table></figure>
-<p>参考:<a href="http://stackoverflow.com/questions/6470428/catch-multiple-exceptions-in-one-line-except-block" target="_blank" rel="external">http://stackoverflow.com/questions/6470428/catch-multiple-exceptions-in-one-line-except-block</a></p>
-<h2 id="Python自省"><a href="#Python自省" class="headerlink" title="Python自省"></a>Python自省</h2><p>这个也是python彪悍的特性.</p>
-<p>自省就是面向对象的语言所写的程序在运行时,所能知道对象的类型.简单一句就是运行时能够获得对象的类型.比如<code>type()</code>,<code>dir()</code>,<code>getattr()</code>,<code>hasattr()</code>,<code>isinstance()</code>.</p>
-<h2 id="字典推导式"><a href="#字典推导式" class="headerlink" title="字典推导式"></a>字典推导式</h2><p>可能你见过列表推导时,却没有见过字典推导式,在2.7中才加入的:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">d = &#123;key: value <span class="keyword">for</span> (key, value) <span class="keyword">in</span> iterable&#125;</div></pre></td></tr></table></figure>
-<h2 id="Python中单下划线和双下划线"><a href="#Python中单下划线和双下划线" class="headerlink" title="Python中单下划线和双下划线"></a>Python中单下划线和双下划线</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span><span class="params">()</span>:</span></div><div class="line"><span class="meta">... </span>    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line"><span class="meta">... </span>            self.__superprivate = <span class="string">"Hello"</span></div><div class="line"><span class="meta">... </span>            self._semiprivate = <span class="string">", world!"</span></div><div class="line">...</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>mc = MyClass()</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> mc.__superprivate</div><div class="line">Traceback (most recent call last):</div><div class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</div><div class="line">AttributeError: myClass instance has no attribute <span class="string">'__superprivate'</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> mc._semiprivate</div><div class="line">, world!</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> mc.__dict__</div><div class="line">&#123;<span class="string">'_MyClass__superprivate'</span>: <span class="string">'Hello'</span>, <span class="string">'_semiprivate'</span>: <span class="string">', world!'</span>&#125;</div></pre></td></tr></table></figure>
-<p><code>__foo__</code>: 一种约定,Python内部的名字,用来区别其他用户自定义的命名,以防冲突.</p>
-<p><code>_foo</code>: 一种约定,用来指定变量私有. 程序员用来指定私有变量的一种方式.</p>
-<p><code>__foo</code>: 这个有真正的意义: 解析器用<code>_classname__foo</code>来代替这个名字,以区别和其他类相同的命名.</p>
-<p>详情见: <a href="http://stackoverflow.com/questions/1301346/the-meaning-of-a-single-and-a-double-underscore-before-an-object-name-in-python" target="_blank" rel="external">http://stackoverflow.com/questions/1301346/the-meaning-of-a-single-and-a-double-underscore-before-an-object-name-in-python</a></p>
-<p>或者: <a href="http://www.zhihu.com/question/19754941" target="_blank" rel="external">http://www.zhihu.com/question/19754941</a></p>
-<h2 id="字符串格式化-和-format"><a href="#字符串格式化-和-format" class="headerlink" title="字符串格式化:%和.format"></a>字符串格式化:%和.format</h2><p><code>.format</code>在许多方面看起来更便利.对于<code>%</code>最烦人的是它无法同时传递一个变量和元组.你可能会想下面的代码不会有什么问题:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&quot;hi there %s&quot; % name</div></pre></td></tr></table></figure>
-<p>但是,如果name恰好是<code>(1,2,3)</code>,它将会抛出一个<code>TypeError</code>异常.为了保证它总是正确的,你必须这样做:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&quot;hi there %s&quot; % (name,)   # 提供一个单元素的数组而不是一个参数</div></pre></td></tr></table></figure>
-<p>但是有点丑. <code>.format</code>就没有这些问题. 你给的第二个问题也是这样, <code>.format</code>好看多了.</p>
-<p>你为什么不用它?</p>
-<ul>
-<li>不知道它(在读这个之前)</li>
-<li>为了和Python2.5兼容(譬如logging库建议使用<code>%</code>(<a href="https://github.com/taizilongxu/interview_python/issues/4" target="_blank" rel="external">issue #4</a>))</li>
-</ul>
-<p><a href="http://stackoverflow.com/questions/5082452/python-string-formatting-vs-format" target="_blank" rel="external">http://stackoverflow.com/questions/5082452/python-string-formatting-vs-format</a></p>
-<h2 id="迭代器和生成器"><a href="#迭代器和生成器" class="headerlink" title="迭代器和生成器"></a>迭代器和生成器</h2><p>这个是<code>stackoverflow</code>里python排名第一的问题,值得一看: <a href="http://stackoverflow.com/questions/231767/what-does-the-yield-keyword-do-in-python" target="_blank" rel="external">http://stackoverflow.com/questions/231767/what-does-the-yield-keyword-do-in-python</a></p>
-<p>这是中文版: <a href="http://taizilongxu.gitbooks.io/stackoverflow-about-python/content/1/README.html" target="_blank" rel="external">http://taizilongxu.gitbooks.io/stackoverflow-about-python/content/1/README.html</a></p>
-<h2 id="args-and-kwargs"><a href="#args-and-kwargs" class="headerlink" title="*args and **kwargs"></a><code>*args</code> and <code>**kwargs</code></h2><p>用<code>*args</code>和<code>**kwargs</code>只是为了方便并没有强制使用它们.</p>
-<p>当你不确定你的函数里将要传递多少参数时你可以用<code>*args</code>.例如,它可以传递任意数量的参数:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">print_everything</span><span class="params">(*args)</span>:</span></div><div class="line">        <span class="keyword">for</span> count, thing <span class="keyword">in</span> enumerate(args):</div><div class="line"><span class="meta">... </span>        <span class="keyword">print</span> <span class="string">'&#123;0&#125;. &#123;1&#125;'</span>.format(count, thing)</div><div class="line">...</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print_everything(<span class="string">'apple'</span>, <span class="string">'banana'</span>, <span class="string">'cabbage'</span>)</div><div class="line"><span class="number">0.</span> apple</div><div class="line"><span class="number">1.</span> banana</div><div class="line"><span class="number">2.</span> cabbage</div></pre></td></tr></table></figure>
-<p>相似的,<code>**kwargs</code>允许你使用没有事先定义的参数名:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">table_things</span><span class="params">(**kwargs)</span>:</span></div><div class="line"><span class="meta">... </span>    <span class="keyword">for</span> name, value <span class="keyword">in</span> kwargs.items():</div><div class="line"><span class="meta">... </span>        <span class="keyword">print</span> <span class="string">'&#123;0&#125; = &#123;1&#125;'</span>.format(name, value)</div><div class="line">...</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>table_things(apple = <span class="string">'fruit'</span>, cabbage = <span class="string">'vegetable'</span>)</div><div class="line">cabbage = vegetable</div><div class="line">apple = fruit</div></pre></td></tr></table></figure>
-<p>你也可以混着用.命名参数首先获得参数值然后所有的其他参数都传递给<code>*args</code>和<code>**kwargs</code>.命名参数在列表的最前端.例如:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">def table_things(titlestring, **kwargs)</div></pre></td></tr></table></figure>
-<p><code>*args</code>和<code>**kwargs</code>可以同时在函数的定义中,但是<code>*args</code>必须在<code>**kwargs</code>前面.</p>
-<p>当调用函数时你也可以用<code>*</code>和<code>**</code>语法.例如:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">print_three_things</span><span class="params">(a, b, c)</span>:</span></div><div class="line"><span class="meta">... </span>    <span class="keyword">print</span> <span class="string">'a = &#123;0&#125;, b = &#123;1&#125;, c = &#123;2&#125;'</span>.format(a,b,c)</div><div class="line">...</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>mylist = [<span class="string">'aardvark'</span>, <span class="string">'baboon'</span>, <span class="string">'cat'</span>]</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print_three_things(*mylist)</div><div class="line"></div><div class="line">a = aardvark, b = baboon, c = cat</div></pre></td></tr></table></figure>
-<p>就像你看到的一样,它可以传递列表(或者元组)的每一项并把它们解包.注意必须与它们在函数里的参数相吻合.当然,你也可以在函数定义或者函数调用时用*.</p>
-<p><a href="http://stackoverflow.com/questions/3394835/args-and-kwargs" target="_blank" rel="external">http://stackoverflow.com/questions/3394835/args-and-kwargs</a></p>
-<h2 id="面向切面编程AOP和装饰器"><a href="#面向切面编程AOP和装饰器" class="headerlink" title="面向切面编程AOP和装饰器"></a>面向切面编程AOP和装饰器</h2><p>这个AOP一听起来有点懵,同学面阿里的时候就被问懵了…</p>
-<p>装饰器是一个很著名的设计模式，经常被用于有切面需求的场景，较为经典的有<code>插入日志</code>、<code>性能测试</code>、<code>事务处理</code>等。装饰器是解决这类问题的绝佳设计，有了装饰器，我们就可以抽离出大量函数中与函数功能本身无关的雷同代码并继续重用。概括的讲，<strong>装饰器的作用就是为已经存在的对象添加额外的功能。</strong></p>
-<p>这个问题比较大,推荐: <a href="http://stackoverflow.com/questions/739654/how-can-i-make-a-chain-of-function-decorators-in-python" target="_blank" rel="external">http://stackoverflow.com/questions/739654/how-can-i-make-a-chain-of-function-decorators-in-python</a></p>
-<p>中文: <a href="http://taizilongxu.gitbooks.io/stackoverflow-about-python/content/3/README.html" target="_blank" rel="external">http://taizilongxu.gitbooks.io/stackoverflow-about-python/content/3/README.html</a></p>
-<h2 id="鸭子类型"><a href="#鸭子类型" class="headerlink" title="鸭子类型"></a>鸭子类型</h2><blockquote>
-<p>“当看到一只鸟走起来像鸭子、游泳起来像鸭子、叫起来也像鸭子，那么这只鸟就可以被称为鸭子。”</p>
-</blockquote>
-<p>我们并不关心对象是什么类型，到底是不是鸭子，只关心行为。</p>
-<p>比如在python中，有很多<code>file-like</code>的东西，比如<code>StringIO</code>, <code>GzipFile ,</code>socket`。它们有很多相同的方法，我们把它们当作文件使用。</p>
-<p>又比如<code>list.extend()</code>方法中,我们并不关心它的参数是不是<code>list</code>,只要它是可迭代的,所以它的参数可以是<code>list/tuple/dict/字符串/生成器</code>等.</p>
-<p>鸭子类型在动态语言中经常使用，非常灵活，<strong>使得python不想java那样专门去弄一大堆的设计模式</strong>。</p>
-<h2 id="Python中重载"><a href="#Python中重载" class="headerlink" title="Python中重载"></a>Python中重载</h2><p>引自知乎: <a href="http://www.zhihu.com/question/20053359" target="_blank" rel="external">http://www.zhihu.com/question/20053359</a></p>
-<p>函数重载主要是为了解决两个问题。</p>
-<ol>
-<li>可变参数类型。</li>
-<li>可变参数个数。</li>
-</ol>
-<p>另外，一个基本的设计原则是，仅仅当两个函数除了参数类型和参数个数不同以外，其功能是完全相同的，此时才使用函数重载，如果两个函数的功能其实不同，那么不应当使用重载，而应当使用一个名字不同的函数。</p>
-<p>好吧，那么对于情况 1 ，函数功能相同，但是参数类型不同，python 如何处理？答案是根本不需要处理，因为 python 可以接受任何类型的参数，如果函数的功能相同，那么不同的参数类型在 python 中很可能是相同的代码，没有必要做成两个不同函数。</p>
-<p>那么对于情况 2 ，函数功能相同，但参数个数不同，python 如何处理？大家知道，答案就是缺省参数。对那些缺少的参数设定为缺省参数即可解决问题。因为你假设函数功能相同，那么那些缺少的参数终归是需要用的。</p>
-<p>好了，鉴于情况 1 跟 情况 2 都有了解决方案，python 自然就不需要函数重载了。</p>
-<h2 id="新式类和旧式类"><a href="#新式类和旧式类" class="headerlink" title="新式类和旧式类"></a>新式类和旧式类</h2><p>这个面试官问了,我说了老半天,不知道他问的真正意图是什么.</p>
-<p><a href="http://stackoverflow.com/questions/54867/what-is-the-difference-between-old-style-and-new-style-classes-in-python" target="_blank" rel="external">http://stackoverflow.com/questions/54867/what-is-the-difference-between-old-style-and-new-style-classes-in-python</a></p>
-<p><a href="http://www.cnblogs.com/btchenguang/archive/2012/09/17/2689146.html" target="_blank" rel="external">这篇文章</a>很好的介绍了新式类的特性</p>
-<p>新式类很早在2.2就出现了,所以旧式类完全是兼容的问题, <strong>Python3里的类全部都是新式类</strong>. 这里有一个<code>MRO</code>问题可以了解下(新式类是广度优先, 旧式类是深度优先), <python核心编程>里讲的也很多.</python核心编程></p>
-<h2 id="new-和-init-的区别"><a href="#new-和-init-的区别" class="headerlink" title="__new__和__init__的区别"></a><code>__new__</code>和<code>__init__</code>的区别</h2><ol>
-<li><code>__new__</code>是一个静态方法,而<code>__init__</code>是一个实例方法.</li>
-<li><code>__new__</code>方法会返回一个创建的实例,而<code>__init__</code>什么都不返回.</li>
-<li>只有在<code>__new__</code>返回一个cls的实例时后面的<code>__init__</code>才能被调用.</li>
-<li>当创建一个新实例时调用<code>__new__</code>,初始化一个实例时用<code>__init__</code>.</li>
-</ol>
-<p><a href="http://stackoverflow.com/questions/674304/pythons-use-of-new-and-init" target="_blank" rel="external">http://stackoverflow.com/questions/674304/pythons-use-of-new-and-init</a></p>
-<p>ps: <code>__metaclass__</code>是创建类时起作用.所以我们可以分别使用<code>__metaclass__</code>,<code>__new__</code>和<code>__init__</code>来分别在类创建,实例创建和实例初始化的时候做一些小手脚.</p>
-<h2 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h2><p>这个绝对常考啊.绝对要记住1~2个方法,当时面试官是让手写的.</p>
-<h3 id="使用-new-方法"><a href="#使用-new-方法" class="headerlink" title="使用__new__方法"></a>使用<code>__new__</code>方法</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, *args, **kw)</span>:</span></div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> hasattr(cls, <span class="string">'_instance'</span>):</div><div class="line">            orig = super(Singleton, cls)</div><div class="line">            cls._instance = orig.__new__(cls, *args, **kw)</div><div class="line">        <span class="keyword">return</span> cls._instance</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span><span class="params">(Singleton)</span>:</span></div><div class="line">    a = <span class="number">1</span></div></pre></td></tr></table></figure>
-<h3 id="共享属性"><a href="#共享属性" class="headerlink" title="共享属性"></a>共享属性</h3><p>创建实例时把所有实例的<code>__dict__</code>指向同一个字典,这样它们具有相同的属性和方法.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Borg</span><span class="params">(object)</span>:</span></div><div class="line">    _state = &#123;&#125;</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, *args, **kw)</span>:</span></div><div class="line">        ob = super(Borg, cls).__new__(cls, *args, **kw)</div><div class="line">        ob.__dict__ = cls._state</div><div class="line">        <span class="keyword">return</span> ob</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass2</span><span class="params">(Borg)</span>:</span></div><div class="line">    a = <span class="number">1</span></div></pre></td></tr></table></figure>
-<h3 id="装饰器版本"><a href="#装饰器版本" class="headerlink" title="装饰器版本"></a>装饰器版本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">singleton</span><span class="params">(cls, *args, **kw)</span>:</span></div><div class="line">    instances = &#123;&#125;</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getinstance</span><span class="params">()</span>:</span></div><div class="line">        <span class="keyword">if</span> cls <span class="keyword">not</span> <span class="keyword">in</span> instances:</div><div class="line">            instances[cls] = cls(*args, **kw)</div><div class="line">        <span class="keyword">return</span> instances[cls]</div><div class="line">    <span class="keyword">return</span> getinstance</div><div class="line"></div><div class="line"><span class="meta">@singleton</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span>:</span></div><div class="line">  ...</div></pre></td></tr></table></figure>
-<h3 id="import方法"><a href="#import方法" class="headerlink" title="import方法"></a>import方法</h3><p>作为python的模块是天然的单例模式</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># mysingleton.py</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">My_Singleton</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">pass</span></div><div class="line"></div><div class="line">my_singleton = My_Singleton()</div><div class="line"></div><div class="line"><span class="comment"># to use</span></div><div class="line"><span class="keyword">from</span> mysingleton <span class="keyword">import</span> my_singleton</div><div class="line"></div><div class="line">my_singleton.foo()</div></pre></td></tr></table></figure>
-<h2 id="Python中的作用域"><a href="#Python中的作用域" class="headerlink" title="Python中的作用域"></a>Python中的作用域</h2><p>Python 中，一个变量的作用域总是由在代码中被赋值的地方所决定的。</p>
-<p>当 Python 遇到一个变量的话他会按照这样的顺序进行搜索：</p>
-<p><code>本地作用域（Local）</code>→ <code>当前作用域被嵌入的本地作用域（Enclosing locals）</code>→ <code>全局/模块作用域（Global）</code>→ <code>内置作用域（Built-in）</code></p>
-<h2 id="GIL线程全局锁"><a href="#GIL线程全局锁" class="headerlink" title="GIL线程全局锁"></a>GIL线程全局锁</h2><p>线程全局锁(Global Interpreter Lock),即Python为了保证线程安全而采取的独立线程运行的限制,说白了就是一个核只能在同一时间运行一个线程.</p>
-<p>见<a href="http://www.oschina.net/translate/pythons-hardest-problem" target="_blank" rel="external">Python 最难的问题</a></p>
-<p>解决办法就是多进程和下面的协程(协程也只是单CPU,但是能减小切换代价提升性能).</p>
-<h2 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h2><p>知乎被问到了,呵呵哒,跪了</p>
-<p>简单点说协程是进程和线程的升级版,进程和线程都面临着内核态和用户态的切换问题而耗费许多切换时间,而协程就是用户自己控制切换的时机,不再需要陷入系统的内核态.</p>
-<p>Python里最常见的yield就是协程的思想!可以查看第九个问题.</p>
-<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><p>闭包(closure)是函数式编程的重要的语法结构。闭包也是一种组织代码的结构，它同样提高了代码的可重复使用性。</p>
-<p>当一个内嵌函数引用其外部作作用域的变量,我们就会得到一个闭包. 总结一下,创建一个闭包必须满足以下几点:</p>
-<ol>
-<li>必须有一个内嵌函数</li>
-<li>内嵌函数必须引用外部函数中的变量</li>
-<li>外部函数的返回值必须是内嵌函数</li>
-</ol>
-<p>感觉闭包还是有难度的,几句话是说不明白的,还是查查相关资料.</p>
-<p>重点是函数运行后并不会被撤销,就像16题的instance字典一样,当函数运行完后,instance并不被销毁,而是继续留在内存空间里.这个功能类似类里的类变量,只不过迁移到了函数上.</p>
-<p>闭包就像个空心球一样,你知道外面和里面,但你不知道中间是什么样.</p>
-<h2 id="lambda函数"><a href="#lambda函数" class="headerlink" title="lambda函数"></a>lambda函数</h2><p>其实就是一个匿名函数,为什么叫lambda?因为和后面的函数式编程有关.</p>
-<p>推荐: <a href="http://www.zhihu.com/question/20125256" target="_blank" rel="external">知乎</a></p>
-<h2 id="Python函数式编程"><a href="#Python函数式编程" class="headerlink" title="Python函数式编程"></a>Python函数式编程</h2><p>这个需要适当的了解一下吧,毕竟函数式编程在Python中也做了引用.</p>
-<p>推荐: <a href="http://coolshell.cn/articles/10822.html" target="_blank" rel="external">酷壳</a></p>
-<p>python中函数式编程支持:</p>
-<p>filter 函数的功能相当于过滤器。调用一个布尔函数<code>bool_func</code>来迭代遍历每个seq中的元素；返回一个使<code>bool_seq</code>返回值为true的元素的序列。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt;a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>]</div><div class="line">&gt;&gt;&gt;b = filter(<span class="keyword">lambda</span> x: x &gt; <span class="number">5</span>, a)</div><div class="line">&gt;&gt;&gt;<span class="keyword">print</span> b</div><div class="line">&gt;&gt;&gt;[<span class="number">6</span>,<span class="number">7</span>]</div></pre></td></tr></table></figure>
-<p>map函数是对一个序列的每个项依次执行函数，下面是对一个序列每个项都乘以2：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>a = map(<span class="keyword">lambda</span> x:x*<span class="number">2</span>,[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>list(a)</div><div class="line">[<span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>]</div></pre></td></tr></table></figure>
-<p>reduce函数是对一个序列的每个项迭代调用函数，下面是求3的阶乘：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>reduce(<span class="keyword">lambda</span> x,y:x*y,range(<span class="number">1</span>,<span class="number">4</span>))</div><div class="line"><span class="number">6</span></div></pre></td></tr></table></figure>
-<h2 id="Python里的拷贝"><a href="#Python里的拷贝" class="headerlink" title="Python里的拷贝"></a>Python里的拷贝</h2><p>引用和copy(),deepcopy()的区别</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> copy</div><div class="line">a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, [<span class="string">'a'</span>, <span class="string">'b'</span>]]  <span class="comment">#原始对象</span></div><div class="line"></div><div class="line">b = a  <span class="comment">#赋值，传对象的引用</span></div><div class="line">c = copy.copy(a)  <span class="comment">#对象拷贝，浅拷贝</span></div><div class="line">d = copy.deepcopy(a)  <span class="comment">#对象拷贝，深拷贝</span></div><div class="line"></div><div class="line">a.append(<span class="number">5</span>)  <span class="comment">#修改对象a</span></div><div class="line">a[<span class="number">4</span>].append(<span class="string">'c'</span>)  <span class="comment">#修改对象a中的['a', 'b']数组对象</span></div><div class="line"></div><div class="line"><span class="keyword">print</span> <span class="string">'a = '</span>, a</div><div class="line"><span class="keyword">print</span> <span class="string">'b = '</span>, b</div><div class="line"><span class="keyword">print</span> <span class="string">'c = '</span>, c</div><div class="line"><span class="keyword">print</span> <span class="string">'d = '</span>, d</div><div class="line"></div><div class="line">输出结果：</div><div class="line">a =  [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>], <span class="number">5</span>]</div><div class="line">b =  [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>], <span class="number">5</span>]</div><div class="line">c =  [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>]]</div><div class="line">d =  [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, [<span class="string">'a'</span>, <span class="string">'b'</span>]]</div></pre></td></tr></table></figure>
-<h2 id="Python垃圾回收机制"><a href="#Python垃圾回收机制" class="headerlink" title="Python垃圾回收机制"></a>Python垃圾回收机制</h2><p><code>Python GC</code>主要使用引用计数（<code>reference counting</code>）来跟踪和回收垃圾。在引用计数的基础上，通过“标记-清除”（<code>mark and sweep</code>）解决容器对象可能产生的循环引用问题，通过“分代回收”（<code>generation collection</code>）以空间换时间的方法提高垃圾回收效率。</p>
-<h3 id="引用计数"><a href="#引用计数" class="headerlink" title="引用计数"></a>引用计数</h3><p>PyObject是每个对象必有的内容，其中<code>ob_refcnt</code>就是做为引用计数。当一个对象有新的引用时，它的<code>ob_refcnt</code>就会增加，当引用它的对象被删除，它的<code>ob_refcnt</code>就会减少.引用计数为0时，该对象生命就结束了。</p>
-<p>优点:</p>
-<ol>
-<li>简单</li>
-<li>实时性</li>
-</ol>
-<p>缺点:</p>
-<ol>
-<li>维护引用计数消耗资源</li>
-<li>循环引用</li>
-</ol>
-<h3 id="标记-清除机制"><a href="#标记-清除机制" class="headerlink" title="标记-清除机制"></a>标记-清除机制</h3><p>基本思路是先按需分配，等到没有空闲内存的时候从寄存器和程序栈上的引用出发，遍历以对象为节点、以引用为边构成的图，把所有可以访问到的对象打上标记，然后清扫一遍内存空间，把所有没标记的对象释放。</p>
-<h3 id="分代技术"><a href="#分代技术" class="headerlink" title="分代技术"></a>分代技术</h3><p>分代回收的整体思想是：将系统中的所有内存块根据其存活时间划分为不同的集合，每个集合就成为一个“代”，垃圾收集频率随着“代”的存活时间的增大而减小，存活时间通常利用经过几次垃圾回收来度量。</p>
-<p>Python默认定义了三代对象集合，索引数越大，对象存活时间越长。</p>
-<p>举例：<br>当某些内存块M经过了3次垃圾收集的清洗之后还存活时，我们就将内存块M划到一个集合A中去，而新分配的内存都划分到集合B中去。当垃圾收集开始工作时，大多数情况都只对集合B进行垃圾回收，而对集合A进行垃圾回收要隔相当长一段时间后才进行，这就使得垃圾收集机制需要处理的内存少了，效率自然就提高了。在这个过程中，集合B中的某些内存块由于存活时间长而会被转移到集合A中，当然，集合A中实际上也存在一些垃圾，这些垃圾的回收会因为这种分代的机制而被延迟。</p>
-<h2 id="Python的List"><a href="#Python的List" class="headerlink" title="Python的List"></a>Python的List</h2><p>推荐: <a href="http://www.jianshu.com/p/J4U6rR" target="_blank" rel="external">http://www.jianshu.com/p/J4U6rR</a></p>
-<h2 id="Python的is"><a href="#Python的is" class="headerlink" title="Python的is"></a>Python的is</h2><p><strong>is是对比地址,==是对比值</strong></p>
-<h2 id="read-readline和readlines"><a href="#read-readline和readlines" class="headerlink" title="read,readline和readlines"></a>read,readline和readlines</h2><ul>
-<li>read        读取整个文件</li>
-<li>readline    读取下一行,使用生成器方法</li>
-<li>readlines   读取整个文件到一个迭代器以供我们遍历</li>
-</ul>
-<h2 id="Python2和3的区别"><a href="#Python2和3的区别" class="headerlink" title="Python2和3的区别"></a>Python2和3的区别</h2><p>推荐：<a href="http://chenqx.github.io/2014/11/10/Key-differences-between-Python-2-7-x-and-Python-3-x/" target="_blank" rel="external">Python 2.7.x 与 Python 3.x 的主要差异</a></p>
-<h1 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h1><h2 id="select-poll和epoll"><a href="#select-poll和epoll" class="headerlink" title="select,poll和epoll"></a>select,poll和epoll</h2><p>其实所有的I/O都是轮询的方法,只不过实现的层面不同罢了.</p>
-<p>这个问题可能有点深入了,但相信能回答出这个问题是对I/O多路复用有很好的了解了.其中tornado使用的就是epoll的.</p>
-<p><a href="http://www.cnblogs.com/Anker/p/3265058.html" target="_blank" rel="external">selec,poll和epoll区别总结</a></p>
-<p>基本上select有3个缺点:</p>
-<ol>
-<li>连接数受限</li>
-<li>查找配对速度慢</li>
-<li>数据由内核拷贝到用户态</li>
-</ol>
-<p>poll改善了第一个缺点</p>
-<p>epoll改了三个缺点.</p>
-<p>关于epoll的: <a href="http://www.cnblogs.com/my_life/articles/3968782.html" target="_blank" rel="external">http://www.cnblogs.com/my_life/articles/3968782.html</a></p>
-<h2 id="调度算法"><a href="#调度算法" class="headerlink" title="调度算法"></a>调度算法</h2><ol>
-<li>先来先服务(FCFS, First Come First Serve)</li>
-<li>短作业优先(SJF, Shortest Job First)</li>
-<li>最高优先权调度(Priority Scheduling)</li>
-<li>时间片轮转(RR, Round Robin)</li>
-<li>多级反馈队列调度(multilevel feedback queue scheduling)</li>
-</ol>
-<p>实时调度算法:</p>
-<ol>
-<li>最早截至时间优先 EDF</li>
-<li>最低松弛度优先 LLF</li>
-</ol>
-<h2 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h2><p>原因:</p>
-<ol>
-<li>竞争资源</li>
-<li>程序推进顺序不当</li>
-</ol>
-<p>必要条件:</p>
-<ol>
-<li>互斥条件</li>
-<li>请求和保持条件</li>
-<li>不剥夺条件</li>
-<li>环路等待条件</li>
-</ol>
-<p>处理死锁基本方法:</p>
-<ol>
-<li>预防死锁(摒弃除1以外的条件)</li>
-<li>避免死锁(银行家算法)</li>
-<li>检测死锁(资源分配图)</li>
-<li>解除死锁<ol>
-<li>剥夺资源</li>
-<li>撤销进程</li>
-</ol>
-</li>
-</ol>
-<h2 id="程序编译与链接"><a href="#程序编译与链接" class="headerlink" title="程序编译与链接"></a>程序编译与链接</h2><p>推荐: <a href="http://www.ruanyifeng.com/blog/2014/11/compiler.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2014/11/compiler.html</a></p>
-<p>Bulid过程可以分解为4个步骤: <code>预处理(Prepressing)</code>, <code>编译(Compilation)</code>、<code>汇编(Assembly)</code>、<code>链接(Linking)</code></p>
-<p>以c语言为例:</p>
-<h3 id="预处理"><a href="#预处理" class="headerlink" title="预处理"></a>预处理</h3><p>预编译过程主要处理那些源文件中的以“#”开始的预编译指令，主要处理规则有：</p>
-<ol>
-<li>将所有的“#define”删除，并展开所用的宏定义</li>
-<li>处理所有条件预编译指令，比如“#if”、“#ifdef”、 “#elif”、“#endif”</li>
-<li>处理“#include”预编译指令，将被包含的文件插入到该编译指令的位置，注：此过程是递归进行的</li>
-<li>删除所有注释</li>
-<li>添加行号和文件名标识，以便于编译时编译器产生调试用的行号信息以及用于编译时产生编译错误或警告时可显示行号</li>
-<li>保留所有的#pragma编译器指令。</li>
-</ol>
-<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>编译过程就是把预处理完的文件进行一系列的词法分析、语法分析、语义分析及优化后生成相应的汇编代码文件。这个过程是整个程序构建的核心部分。</p>
-<h3 id="汇编"><a href="#汇编" class="headerlink" title="汇编"></a>汇编</h3><p>汇编器是将汇编代码转化成机器可以执行的指令，每一条汇编语句几乎都是一条机器指令。经过编译、链接、汇编输出的文件成为目标文件(Object File)</p>
-<h3 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h3><p>链接的主要内容就是把各个模块之间相互引用的部分处理好，使各个模块可以正确的拼接。<br>链接的主要过程包块 地址和空间的分配（Address and Storage Allocation）、符号决议(Symbol Resolution)和重定位(Relocation)等步骤。</p>
-<h2 id="静态链接和动态链接"><a href="#静态链接和动态链接" class="headerlink" title="静态链接和动态链接"></a>静态链接和动态链接</h2><p>静态链接方法：静态链接的时候，载入代码就会把程序会用到的动态代码或动态代码的地址确定下来<br>静态库的链接可以使用静态链接，动态链接库也可以使用这种方法链接导入库</p>
-<p>动态链接方法：使用这种方式的程序并不在一开始就完成动态链接，而是直到真正调用动态库代码时，载入程序才计算(被调用的那部分)动态代码的逻辑地址，然后等到某个时候，程序又需要调用另外某块动态代码时，载入程序又去计算这部分代码的逻辑地址，所以，这种方式使程序初始化时间较短，但运行期间的性能比不上静态链接的程序</p>
-<h2 id="虚拟内存技术"><a href="#虚拟内存技术" class="headerlink" title="虚拟内存技术"></a>虚拟内存技术</h2><p>虚拟存储器是值具有请求调入功能和置换功能,能从逻辑上对内存容量加以扩充的一种存储系统.</p>
-<h2 id="分页和分段"><a href="#分页和分段" class="headerlink" title="分页和分段"></a>分页和分段</h2><p>分页: 用户程序的地址空间被划分成若干固定大小的区域，称为“页”，相应地，内存空间分成若干个物理块，页和块的大小相等。可将用户程序的任一页放在内存的任一块中，实现了离散分配。</p>
-<p>分段: 将用户程序地址空间分成若干个大小不等的段，每段可以定义一组相对完整的逻辑信息。存储分配时，以段为单位，段与段在内存中可以不相邻接，也实现了离散分配。</p>
-<h3 id="分页与分段的主要区别"><a href="#分页与分段的主要区别" class="headerlink" title="分页与分段的主要区别"></a>分页与分段的主要区别</h3><ol>
-<li>页是信息的物理单位,分页是为了实现非连续分配,以便解决内存碎片问题,或者说分页是由于系统管理的需要.段是信息的逻辑单位,它含有一组意义相对完整的信息,分段的目的是为了更好地实现共享,满足用户的需要.</li>
-<li>页的大小固定,由系统确定,将逻辑地址划分为页号和页内地址是由机器硬件实现的.而段的长度却不固定,决定于用户所编写的程序,通常由编译程序在对源程序进行编译时根据信息的性质来划分.</li>
-<li>分页的作业地址空间是一维的.分段的地址空间是二维的.</li>
-</ol>
-<h2 id="页面置换算法"><a href="#页面置换算法" class="headerlink" title="页面置换算法"></a>页面置换算法</h2><ol>
-<li>最佳置换算法OPT:不可能实现</li>
-<li>先进先出FIFO</li>
-<li>最近最久未使用算法LRU:最近一段时间里最久没有使用过的页面予以置换.</li>
-<li>clock算法</li>
-</ol>
-<h2 id="边沿触发和水平触发"><a href="#边沿触发和水平触发" class="headerlink" title="边沿触发和水平触发"></a>边沿触发和水平触发</h2><p>边缘触发是指每当状态变化时发生一个 io 事件，条件触发是只要满足条件就发生一个 io 事件</p>
-<h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><p>数据库事务(<code>Database Transaction</code>) ，是指作为单个逻辑工作单元执行的一系列操作，<strong>要么完全地执行，要么完全地不执行</strong>。</p>
-<h2 id="数据库索引"><a href="#数据库索引" class="headerlink" title="数据库索引"></a>数据库索引</h2><p>推荐: <a href="http://tech.meituan.com/mysql-index.html" target="_blank" rel="external">http://tech.meituan.com/mysql-index.html</a></p>
-<p><a href="http://blog.codinglabs.org/articles/theory-of-mysql-index.html" target="_blank" rel="external">MySQL索引背后的数据结构及算法原理</a></p>
-<p><code>聚集索引</code>, <code>非聚集索引</code>, <code>B-Tree</code>, <code>B+Tree</code>, <code>最左前缀原理</code></p>
-<h2 id="Redis原理"><a href="#Redis原理" class="headerlink" title="Redis原理"></a>Redis原理</h2><h2 id="乐观锁和悲观锁"><a href="#乐观锁和悲观锁" class="headerlink" title="乐观锁和悲观锁"></a>乐观锁和悲观锁</h2><p>悲观锁：假定会发生并发冲突，屏蔽一切可能违反数据完整性的操作</p>
-<p>乐观锁：假设不会发生并发冲突，只在提交操作时检查是否违反数据完整性。</p>
-<h2 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h2><h2 id="MyISAM和InnoDB"><a href="#MyISAM和InnoDB" class="headerlink" title="MyISAM和InnoDB"></a>MyISAM和InnoDB</h2><p><code>MyISAM</code> 适合于一些需要大量查询的应用，但其对于有大量写操作并不是很好。甚至你只是需要<code>update</code>一个字段，整个表都会被锁起来，而别的进程，就算是读进程都无法操作直到读操作完成。另外，MyISAM 对于 <code>SELECT COUNT(*)</code> 这类的计算是超快无比的。</p>
-<p>InnoDB 的趋势会是一个非常复杂的存储引擎，对于一些小的应用，它会比 MyISAM 还慢。他是它支持“行锁” ，于是在写操作比较多的时候，会更优秀。并且，他还支持更多的高级应用，比如：事务。</p>
-<h1 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h1><h2 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h2><ol>
-<li>客户端通过向服务器端发送一个SYN来创建一个主动打开，作为三路握手的一部分。客户端把这段连接的序号设定为随机数 A。</li>
-<li>服务器端应当为一个合法的SYN回送一个SYN/ACK。ACK 的确认码应为 A+1，SYN/ACK 包本身又有一个随机序号 B。</li>
-<li>最后，客户端再发送一个ACK。当服务端受到这个ACK的时候，就完成了三路握手，并进入了连接创建状态。此时包序号被设定为收到的确认号 A+1，而响应则为 B+1。</li>
-</ol>
-<h2 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h2><h2 id="ARP协议"><a href="#ARP协议" class="headerlink" title="ARP协议"></a>ARP协议</h2><p>地址解析协议(<code>Address Resolution Protocol</code>): 根据IP地址获取物理地址的一个TCP/IP协议</p>
-<h2 id="urllib和urllib2的区别"><a href="#urllib和urllib2的区别" class="headerlink" title="urllib和urllib2的区别"></a>urllib和urllib2的区别</h2><p>这个面试官确实问过,当时答的urllib2可以Post而urllib不可以.</p>
-<ol>
-<li>urllib提供urlencode方法用来GET查询字符串的产生，而urllib2没有。这是为何urllib常和urllib2一起使用的原因。</li>
-<li>urllib2可以接受一个Request类的实例来设置URL请求的headers，urllib仅可以接受URL。这意味着，你不可以伪装你的User Agent字符串等。</li>
-</ol>
-<h2 id="Post和Get"><a href="#Post和Get" class="headerlink" title="Post和Get"></a>Post和Get</h2><p><a href="http://www.cnblogs.com/nankezhishi/archive/2012/06/09/getandpost.html" target="_blank" rel="external">GET和POST有什么区别？及为什么网上的多数答案都是错的</a></p>
-<p>get: <a href="http://tools.ietf.org/html/rfc2616#section-9.3" target="_blank" rel="external">RFC 2616 - Hypertext Transfer Protocol – HTTP/1.1</a><br>post: <a href="http://tools.ietf.org/html/rfc2616#section-9.5" target="_blank" rel="external">RFC 2616 - Hypertext Transfer Protocol – HTTP/1.1</a></p>
-<h2 id="Cookie和Session"><a href="#Cookie和Session" class="headerlink" title="Cookie和Session"></a>Cookie和Session</h2><table>
-<thead>
-<tr>
-<th style="text-align:left"></th>
-<th style="text-align:left">Cookie</th>
-<th style="text-align:left">Session</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">储存位置</td>
-<td style="text-align:left">客户端</td>
-<td style="text-align:left">服务器端</td>
-</tr>
-<tr>
-<td style="text-align:left">目的</td>
-<td style="text-align:left">跟踪会话，也可以保存用户偏好设置或者保存用户名密码等</td>
-<td style="text-align:left">跟踪会话</td>
-</tr>
-<tr>
-<td style="text-align:left">安全性</td>
-<td style="text-align:left">不安全</td>
-<td style="text-align:left">安全</td>
-</tr>
-</tbody>
-</table>
-<p>session技术是要使用到cookie的，之所以出现session技术，主要是为了安全。</p>
-<h2 id="apache和nginx的区别"><a href="#apache和nginx的区别" class="headerlink" title="apache和nginx的区别"></a>apache和nginx的区别</h2><p>nginx 相对 apache 的优点：</p>
-<ul>
-<li>轻量级，同样起web 服务，比apache 占用更少的内存及资源</li>
-<li>抗并发，nginx 处理请求是异步非阻塞的，支持更多的并发连接，而apache 则是阻塞型的，在高并发下nginx 能保持低资源低消耗高性能</li>
-<li>配置简洁</li>
-<li>高度模块化的设计，编写模块相对简单</li>
-<li>社区活跃</li>
-</ul>
-<p>apache 相对nginx 的优点：</p>
-<ul>
-<li>rewrite ，比nginx 的rewrite 强大</li>
-<li>模块超多，基本想到的都可以找到</li>
-<li>少bug ，nginx 的bug 相对较多</li>
-<li>超稳定</li>
-</ul>
-<h2 id="网站用户密码保存"><a href="#网站用户密码保存" class="headerlink" title="网站用户密码保存"></a>网站用户密码保存</h2><ol>
-<li>明文保存</li>
-<li>明文hash后保存,如md5</li>
-<li>MD5+Salt方式,这个salt可以随机</li>
-<li>知乎使用了Bcrypy(好像)加密</li>
-</ol>
-<h2 id="HTTP和HTTPS"><a href="#HTTP和HTTPS" class="headerlink" title="HTTP和HTTPS"></a>HTTP和HTTPS</h2><table>
-<thead>
-<tr>
-<th style="text-align:left">状态码</th>
-<th style="text-align:left">定义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">1xx 报告</td>
-<td style="text-align:left">接收到请求，继续进程</td>
-</tr>
-<tr>
-<td style="text-align:left">2xx 成功</td>
-<td style="text-align:left">步骤成功接收，被理解，并被接受</td>
-</tr>
-<tr>
-<td style="text-align:left">3xx 重定向</td>
-<td style="text-align:left">为了完成请求,必须采取进一步措施</td>
-</tr>
-<tr>
-<td style="text-align:left">4xx 客户端出错</td>
-<td style="text-align:left">请求包括错的顺序或不能完成</td>
-</tr>
-<tr>
-<td style="text-align:left">5xx 服务器出错</td>
-<td style="text-align:left">服务器无法完成显然有效的请求</td>
-</tr>
-</tbody>
-</table>
-<p><code>403: Forbidden</code><br><code>404: Not Found</code></p>
-<p>HTTPS握手,对称加密,非对称加密,TLS/SSL,RSA</p>
-<h2 id="XSRF和XSS"><a href="#XSRF和XSS" class="headerlink" title="XSRF和XSS"></a>XSRF和XSS</h2><ul>
-<li>CSRF(Cross-site request forgery)跨站请求伪造</li>
-<li>XSS(Cross Site Scripting)跨站脚本攻击</li>
-</ul>
-<p>CSRF重点在请求, XSS重点在脚本</p>
-<h2 id="幂等-Idempotence"><a href="#幂等-Idempotence" class="headerlink" title="幂等 Idempotence"></a>幂等 Idempotence</h2><p>HTTP方法的幂等性是指一次和多次请求某一个资源应该具有同样的<strong>副作用</strong>。(注意是副作用)</p>
-<p><code>GET http://www.bank.com/account/123456</code>，不会改变资源的状态，不论调用一次还是N次都没有副作用。请注意，这里强调的是一次和N次具有相同的副作用，而不是每次GET的结果相同。<code>GET http://www.news.com/latest-news</code>这个HTTP请求可能会每次得到不同的结果，但它本身并没有产生任何副作用，因而是满足幂等性的。</p>
-<p>DELETE方法用于删除资源，有副作用，但它应该满足幂等性。比如：<code>DELETE http://www.forum.com/article/4231</code>，调用一次和N次对系统产生的副作用是相同的，即删掉id为4231的帖子；因此，调用者可以多次调用或刷新页面而不必担心引起错误。</p>
-<p>POST所对应的URI并非创建的资源本身，而是资源的接收者。比如：<code>POST http://www.forum.com/articles</code>的语义是在<code>http://www.forum.com/articles</code>下创建一篇帖子，HTTP响应中应包含帖子的创建状态以及帖子的URI。两次相同的POST请求会在服务器端创建两份资源，它们具有不同的URI；所以，POST方法不具备幂等性。</p>
-<p>PUT所对应的URI是要创建或更新的资源本身。比如：<code>PUT http://www.forum/articles/4231</code>的语义是创建或更新ID为4231的帖子。对同一URI进行多次PUT的副作用和一次PUT是相同的；因此，PUT方法具有幂等性。</p>
-<h2 id="RESTful架构-SOAP-RPC"><a href="#RESTful架构-SOAP-RPC" class="headerlink" title="RESTful架构(SOAP,RPC)"></a>RESTful架构(SOAP,RPC)</h2><p>推荐: <a href="http://www.ruanyifeng.com/blog/2011/09/restful.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2011/09/restful.html</a></p>
-<h2 id="SOAP"><a href="#SOAP" class="headerlink" title="SOAP"></a>SOAP</h2><p>SOAP（原为Simple Object Access Protocol的首字母缩写，即简单对象访问协议）是交换数据的一种协议规范，使用在计算机网络Web服务（web service）中，交换带结构信息。SOAP为了简化网页服务器（Web Server）从XML数据库中提取数据时，节省去格式化页面时间，以及不同应用程序之间按照HTTP通信协议，遵从XML格式执行资料互换，使其抽象于语言实现、平台和硬件。</p>
-<h2 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h2><p>RPC（Remote Procedure Call Protocol）——远程过程调用协议，它是一种通过网络从远程计算机程序上请求服务，而不需要了解底层网络技术的协议。RPC协议假定某些传输协议的存在，如TCP或UDP，为通信程序之间携带信息数据。在OSI网络通信模型中，RPC跨越了传输层和应用层。RPC使得开发包括网络分布式多程序在内的应用程序更加容易。</p>
-<p>总结:服务提供的两大流派.传统意义以方法调用为导向通称RPC。为了企业SOA,若干厂商联合推出webservice,制定了wsdl接口定义,传输soap. 当互联网时代,臃肿SOA被简化为http+xml/json.但是简化出现各种混乱。以资源为导向,任何操作无非是对资源的增删改查，于是统一的REST出现了.</p>
-<p>进化的顺序: RPC -&gt; SOAP -&gt; RESTful</p>
-<h2 id="CGI和WSGI"><a href="#CGI和WSGI" class="headerlink" title="CGI和WSGI"></a>CGI和WSGI</h2><p>CGI是通用网关接口，是连接web服务器和应用程序的接口，用户通过CGI来获取动态数据或文件等。</p>
-<p>CGI程序是一个独立的程序，它可以用几乎所有语言来写，包括perl，c，lua，python等等。</p>
-<p>WSGI, Web Server Gateway Interface，是Python应用程序或框架和Web服务器之间的一种接口，WSGI的其中一个目的就是让用户可以用统一的语言(Python)编写前后端。</p>
-<p>官方说明：<a href="https://www.python.org/dev/peps/pep-3333/" target="_blank" rel="external">PEP-3333</a></p>
-<h2 id="中间人攻击"><a href="#中间人攻击" class="headerlink" title="中间人攻击"></a>中间人攻击</h2><p>在GFW里屡见不鲜的,呵呵.</p>
-<p>中间人攻击（Man-in-the-middle attack，通常缩写为MITM）是指攻击者与通讯的两端分别创建独立的联系，并交换其所收到的数据，使通讯的两端认为他们正在通过一个私密的连接与对方直接对话，但事实上整个会话都被攻击者完全控制。</p>
-<h2 id="c10k问题"><a href="#c10k问题" class="headerlink" title="c10k问题"></a>c10k问题</h2><p>所谓c10k问题，指的是服务器同时支持成千上万个客户端的问题，也就是concurrent 10 000 connection（这也是c10k这个名字的由来）。<br>推荐: <a href="http://www.kegel.com/c10k.html" target="_blank" rel="external">http://www.kegel.com/c10k.html</a></p>
-<h2 id="socket"><a href="#socket" class="headerlink" title="socket"></a>socket</h2><p>推荐: <a href="http://www.360doc.com/content/11/0609/15/5482098_122692444.shtml" target="_blank" rel="external">http://www.360doc.com/content/11/0609/15/5482098_122692444.shtml</a></p>
-<p>Socket = Ip address + TCP/UDP + port</p>
-<h2 id="浏览器缓存"><a href="#浏览器缓存" class="headerlink" title="浏览器缓存"></a>浏览器缓存</h2><p>推荐: <a href="http://www.cnblogs.com/skynet/archive/2012/11/28/2792503.html" target="_blank" rel="external">http://www.cnblogs.com/skynet/archive/2012/11/28/2792503.html</a></p>
-<p>304 Not Modified</p>
-<h2 id="HTTP1-0和HTTP1-1"><a href="#HTTP1-0和HTTP1-1" class="headerlink" title="HTTP1.0和HTTP1.1"></a>HTTP1.0和HTTP1.1</h2><p>推荐: <a href="http://blog.csdn.net/elifefly/article/details/3964766" target="_blank" rel="external">http://blog.csdn.net/elifefly/article/details/3964766</a></p>
-<ol>
-<li>请求头Host字段,一个服务器多个网站</li>
-<li>长链接</li>
-<li>文件断点续传</li>
-<li>身份认证,状态管理,Cache缓存</li>
-</ol>
-<h2 id="Ajax"><a href="#Ajax" class="headerlink" title="Ajax"></a>Ajax</h2><p>AJAX,Asynchronous JavaScript and XML（异步的 JavaScript 和 XML）, 是与在不重新加载整个页面的情况下，与服务器交换数据并更新部分网页的技术。</p>
-<h1 id="NIX"><a href="#NIX" class="headerlink" title="*NIX"></a>*NIX</h1><h2 id="unix进程间通信方式-IPC"><a href="#unix进程间通信方式-IPC" class="headerlink" title="unix进程间通信方式(IPC)"></a>unix进程间通信方式(IPC)</h2><ol>
-<li>管道（Pipe）：管道可用于具有亲缘关系进程间的通信，允许一个进程和另一个与它有共同祖先的进程之间进行通信。</li>
-<li>命名管道（named pipe）：命名管道克服了管道没有名字的限制，因此，除具有管道所具有的功能外，它还允许无亲缘关系进程间的通信。命名管道在文件系统中有对应的文件名。命名管道通过命令mkfifo或系统调用mkfifo来创建。</li>
-<li>信号（Signal）：信号是比较复杂的通信方式，用于通知接受进程有某种事件发生，除了用于进程间通信外，进程还可以发送信号给进程本身；linux除了支持Unix早期信号语义函数sigal外，还支持语义符合Posix.1标准的信号函数sigaction（实际上，该函数是基于BSD的，BSD为了实现可靠信号机制，又能够统一对外接口，用sigaction函数重新实现了signal函数）。</li>
-<li>消息（Message）队列：消息队列是消息的链接表，包括Posix消息队列system V消息队列。有足够权限的进程可以向队列中添加消息，被赋予读权限的进程则可以读走队列中的消息。消息队列克服了信号承载信息量少，管道只能承载无格式字节流以及缓冲区大小受限等缺</li>
-<li>共享内存：使得多个进程可以访问同一块内存空间，是最快的可用IPC形式。是针对其他通信机制运行效率较低而设计的。往往与其它通信机制，如信号量结合使用，来达到进程间的同步及互斥。</li>
-<li>内存映射（mapped memory）：内存映射允许任何多个进程间通信，每一个使用该机制的进程通过把一个共享的文件映射到自己的进程地址空间来实现它。</li>
-<li>信号量（semaphore）：主要作为进程间以及同一进程不同线程之间的同步手段。</li>
-<li>套接口（Socket）：更为一般的进程间通信机制，可用于不同机器之间的进程间通信。起初是由Unix系统的BSD分支开发出来的，但现在一般可以移植到其它类Unix系统上：Linux和System V的变种都支持套接字。</li>
-</ol>
-<h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><h2 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h2><p>红黑树与AVL的比较：</p>
-<p>AVL是严格平衡树，因此在增加或者删除节点的时候，根据不同情况，旋转的次数比红黑树要多；</p>
-<p>红黑是用非严格的平衡来换取增删节点时候旋转次数的降低；</p>
-<p>所以简单说，如果你的应用中，搜索的次数远远大于插入和删除，那么选择AVL，如果搜索，插入删除次数几乎差不多，应该选择RB。</p>
-<h1 id="编程题"><a href="#编程题" class="headerlink" title="编程题"></a>编程题</h1><h2 id="台阶问题-斐波纳挈"><a href="#台阶问题-斐波纳挈" class="headerlink" title="台阶问题/斐波纳挈"></a>台阶问题/斐波纳挈</h2><p>一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">fib = <span class="keyword">lambda</span> n: n <span class="keyword">if</span> n &lt;= <span class="number">2</span> <span class="keyword">else</span> fib(n - <span class="number">1</span>) + fib(n - <span class="number">2</span>)</div></pre></td></tr></table></figure>
-<p>第二种记忆方法</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">memo</span><span class="params">(func)</span>:</span></div><div class="line">    cache = &#123;&#125;</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrap</span><span class="params">(*args)</span>:</span></div><div class="line">        <span class="keyword">if</span> args <span class="keyword">not</span> <span class="keyword">in</span> cache:</div><div class="line">            cache[args] = func(*args)</div><div class="line">        <span class="keyword">return</span> cache[args]</div><div class="line">    <span class="keyword">return</span> wrap</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@memo</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(i)</span>:</span></div><div class="line">    <span class="keyword">if</span> i &lt; <span class="number">2</span>:</div><div class="line">        <span class="keyword">return</span> <span class="number">1</span></div><div class="line">    <span class="keyword">return</span> fib(i<span class="number">-1</span>) + fib(i<span class="number">-2</span>)</div></pre></td></tr></table></figure>
-<p>第三种方法</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(n)</span>:</span></div><div class="line">    a, b = <span class="number">0</span>, <span class="number">1</span></div><div class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> xrange(n):</div><div class="line">        a, b = b, a + b</div><div class="line">    <span class="keyword">return</span> b</div></pre></td></tr></table></figure>
-<h2 id="变态台阶问题"><a href="#变态台阶问题" class="headerlink" title="变态台阶问题"></a>变态台阶问题</h2><p>一只青蛙一次可以跳上1级台阶，也可以跳上2级……它也可以跳上n级。求该青蛙跳上一个n级的台阶总共有多少种跳法。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">fib = <span class="keyword">lambda</span> n: n <span class="keyword">if</span> n &lt; <span class="number">2</span> <span class="keyword">else</span> <span class="number">2</span> * fib(n - <span class="number">1</span>)</div></pre></td></tr></table></figure>
-<h2 id="矩形覆盖"><a href="#矩形覆盖" class="headerlink" title="矩形覆盖"></a>矩形覆盖</h2><p>我们可以用<code>2*1</code>的小矩形横着或者竖着去覆盖更大的矩形。请问用n个<code>2*1</code>的小矩形无重叠地覆盖一个<code>2*n</code>的大矩形，总共有多少种方法？</p>
-<blockquote>
-<p>第<code>2*n</code>个矩形的覆盖方法等于第<code>2*(n-1)</code>加上第<code>2*(n-2)</code>的方法。</p>
-</blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">f = <span class="keyword">lambda</span> n: <span class="number">1</span> <span class="keyword">if</span> n &lt; <span class="number">2</span> <span class="keyword">else</span> f(n - <span class="number">1</span>) + f(n - <span class="number">2</span>)</div></pre></td></tr></table></figure>
-<h2 id="杨氏矩阵查找"><a href="#杨氏矩阵查找" class="headerlink" title="杨氏矩阵查找"></a>杨氏矩阵查找</h2><p>在一个m行n列二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。</p>
-<h2 id="去除列表中的重复元素"><a href="#去除列表中的重复元素" class="headerlink" title="去除列表中的重复元素"></a>去除列表中的重复元素</h2><p>用集合</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">list(set(l))</div></pre></td></tr></table></figure>
-<p>用字典</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">l1 = [<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'a'</span>,<span class="string">'a'</span>]</div><div class="line">l2 = &#123;&#125;.fromkeys(l1).keys()</div><div class="line"><span class="keyword">print</span> l2</div></pre></td></tr></table></figure>
-<p>用字典并保持顺序</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">l1 = [<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'a'</span>,<span class="string">'a'</span>]</div><div class="line">l2 = list(set(l1))</div><div class="line">l2.sort(key=l1.index)</div><div class="line"><span class="keyword">print</span> l2</div></pre></td></tr></table></figure>
-<p>列表推导式</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">l1 = [<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'a'</span>,<span class="string">'a'</span>]</div><div class="line">l2 = []</div><div class="line">[l2.append(i) <span class="keyword">for</span> i <span class="keyword">in</span> l1 <span class="keyword">if</span> <span class="keyword">not</span> i <span class="keyword">in</span> l2]</div></pre></td></tr></table></figure>
-<p>面试官提到的,先排序然后删除.</p>
-<h2 id="链表成对调换"><a href="#链表成对调换" class="headerlink" title="链表成对调换"></a>链表成对调换</h2><p><code>1-&gt;2-&gt;3-&gt;4</code>转换成<code>2-&gt;1-&gt;4-&gt;3</code>.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ListNode</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, x)</span>:</span></div><div class="line">        self.val = x</div><div class="line">        self.next = <span class="keyword">None</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></div><div class="line">    <span class="comment"># @param a ListNode</span></div><div class="line">    <span class="comment"># @return a ListNode</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">swapPairs</span><span class="params">(self, head)</span>:</span></div><div class="line">        <span class="keyword">if</span> head != <span class="keyword">None</span> <span class="keyword">and</span> head.next != <span class="keyword">None</span>:</div><div class="line">            next = head.next</div><div class="line">            head.next = self.swapPairs(next.next)</div><div class="line">            next.next = head</div><div class="line">            <span class="keyword">return</span> next</div><div class="line">        <span class="keyword">return</span> head</div></pre></td></tr></table></figure>
-<h2 id="创建字典的方法"><a href="#创建字典的方法" class="headerlink" title="创建字典的方法"></a>创建字典的方法</h2><h3 id="直接创建"><a href="#直接创建" class="headerlink" title="直接创建"></a>直接创建</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dict = &#123;<span class="string">'name'</span>:<span class="string">'earth'</span>, <span class="string">'port'</span>:<span class="string">'80'</span>&#125;</div></pre></td></tr></table></figure>
-<h3 id="工厂方法"><a href="#工厂方法" class="headerlink" title="工厂方法"></a>工厂方法</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">items=[(<span class="string">'name'</span>,<span class="string">'earth'</span>),(<span class="string">'port'</span>,<span class="string">'80'</span>)]</div><div class="line">dict2=dict(items)</div><div class="line">dict1=dict(([<span class="string">'name'</span>,<span class="string">'earth'</span>],[<span class="string">'port'</span>,<span class="string">'80'</span>]))</div></pre></td></tr></table></figure>
-<h3 id="fromkeys-方法"><a href="#fromkeys-方法" class="headerlink" title="fromkeys()方法"></a>fromkeys()方法</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dict1=&#123;&#125;.fromkeys((<span class="string">'x'</span>,<span class="string">'y'</span>),<span class="number">-1</span>)</div><div class="line">dict=&#123;<span class="string">'x'</span>:<span class="number">-1</span>,<span class="string">'y'</span>:<span class="number">-1</span>&#125;</div><div class="line">dict2=&#123;&#125;.fromkeys((<span class="string">'x'</span>,<span class="string">'y'</span>))</div><div class="line">dict2=&#123;<span class="string">'x'</span>:<span class="keyword">None</span>, <span class="string">'y'</span>:<span class="keyword">None</span>&#125;</div></pre></td></tr></table></figure>
-<h2 id="合并两个有序列表"><a href="#合并两个有序列表" class="headerlink" title="合并两个有序列表"></a>合并两个有序列表</h2><p>知乎远程面试要求编程</p>
-<p>尾递归</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">_recursion_merge_sort2</span><span class="params">(l1, l2, tmp)</span>:</span></div><div class="line">    <span class="keyword">if</span> len(l1) == <span class="number">0</span> <span class="keyword">or</span> len(l2) == <span class="number">0</span>:</div><div class="line">        tmp.extend(l1)</div><div class="line">        tmp.extend(l2)</div><div class="line">        <span class="keyword">return</span> tmp</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        <span class="keyword">if</span> l1[<span class="number">0</span>] &lt; l2[<span class="number">0</span>]:</div><div class="line">            tmp.append(l1[<span class="number">0</span>])</div><div class="line">            <span class="keyword">del</span> l1[<span class="number">0</span>]</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            tmp.append(l2[<span class="number">0</span>])</div><div class="line">            <span class="keyword">del</span> l2[<span class="number">0</span>]</div><div class="line">        <span class="keyword">return</span> _recursion_merge_sort2(l1, l2, tmp)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">recursion_merge_sort2</span><span class="params">(l1, l2)</span>:</span></div><div class="line">    <span class="keyword">return</span> _recursion_merge_sort2(l1, l2, [])</div></pre></td></tr></table></figure>
-<p>循环算法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">def loop_merge_sort(l1, l2):</div><div class="line">    tmp = []</div><div class="line">    while len(l1) &gt; 0 and len(l2) &gt; 0:</div><div class="line">        if l1[0] &lt; l2[0]:</div><div class="line">            tmp.append(l1[0])</div><div class="line">            del l1[0]</div><div class="line">        else:</div><div class="line">            tmp.append(l2[0])</div><div class="line">            del l2[0]</div><div class="line">    tmp.extend(l1)</div><div class="line">    tmp.extend(l2)</div><div class="line">    return tmp</div></pre></td></tr></table></figure>
-<h2 id="交叉链表求交点"><a href="#交叉链表求交点" class="headerlink" title="交叉链表求交点"></a>交叉链表求交点</h2><p>去哪儿的面试,没做出来.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ListNode</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, x)</span>:</span></div><div class="line">        self.val = x</div><div class="line">        self.next = <span class="keyword">None</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">node</span><span class="params">(l1, l2)</span>:</span></div><div class="line">    length1, lenth2 = <span class="number">0</span>, <span class="number">0</span></div><div class="line">    <span class="comment"># 求两个链表长度</span></div><div class="line">    <span class="keyword">while</span> l1.next:</div><div class="line">        l1 = l1.next</div><div class="line">        length1 += <span class="number">1</span></div><div class="line">    <span class="keyword">while</span> l2.next:</div><div class="line">        l2 = l2.next</div><div class="line">        length2 += <span class="number">1</span></div><div class="line">    <span class="comment"># 长的链表先走</span></div><div class="line">    <span class="keyword">if</span> length1 &gt; lenth2:</div><div class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> range(length1 - length2):</div><div class="line">            l1 = l1.next</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> range(length2 - length1):</div><div class="line">            l2 = l2.next</div><div class="line">    <span class="keyword">while</span> l1 <span class="keyword">and</span> l2:</div><div class="line">        <span class="keyword">if</span> l1.next == l2.next:</div><div class="line">            <span class="keyword">return</span> l1.next</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            l1 = l1.next</div><div class="line">            l2 = l2.next</div></pre></td></tr></table></figure>
-<h2 id="二分查找"><a href="#二分查找" class="headerlink" title="二分查找"></a>二分查找</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">binarySearch</span><span class="params">(l, t)</span>:</span></div><div class="line">    low, high = <span class="number">0</span>, len(l) - <span class="number">1</span></div><div class="line">    <span class="keyword">while</span> low &lt; high:</div><div class="line">        <span class="keyword">print</span> low, high</div><div class="line">        mid = (low + high) / <span class="number">2</span></div><div class="line">        <span class="keyword">if</span> l[mid] &gt; t:</div><div class="line">            high = mid</div><div class="line">        <span class="keyword">elif</span> l[mid] &lt; t:</div><div class="line">            low = mid + <span class="number">1</span></div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            <span class="keyword">return</span> mid</div><div class="line">    <span class="keyword">return</span> low <span class="keyword">if</span> l[low] == t <span class="keyword">else</span> <span class="keyword">False</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    l = [<span class="number">1</span>, <span class="number">4</span>, <span class="number">12</span>, <span class="number">45</span>, <span class="number">66</span>, <span class="number">99</span>, <span class="number">120</span>, <span class="number">444</span>]</div><div class="line">    <span class="keyword">print</span> binarySearch(l, <span class="number">12</span>)</div><div class="line">    <span class="keyword">print</span> binarySearch(l, <span class="number">1</span>)</div><div class="line">    <span class="keyword">print</span> binarySearch(l, <span class="number">13</span>)</div><div class="line">    <span class="keyword">print</span> binarySearch(l, <span class="number">444</span>)</div></pre></td></tr></table></figure>
-<h2 id="快排"><a href="#快排" class="headerlink" title="快排"></a>快排</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">qsort</span><span class="params">(seq)</span>:</span></div><div class="line">    <span class="keyword">if</span> seq==[]:</div><div class="line">        <span class="keyword">return</span> []</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        pivot=seq[<span class="number">0</span>]</div><div class="line">        lesser=qsort([x <span class="keyword">for</span> x <span class="keyword">in</span> seq[<span class="number">1</span>:] <span class="keyword">if</span> x&lt;pivot])</div><div class="line">        greater=qsort([x <span class="keyword">for</span> x <span class="keyword">in</span> seq[<span class="number">1</span>:] <span class="keyword">if</span> x&gt;=pivot])</div><div class="line">        <span class="keyword">return</span> lesser+[pivot]+greater</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__==<span class="string">'__main__'</span>:</div><div class="line">    seq=[<span class="number">5</span>,<span class="number">6</span>,<span class="number">78</span>,<span class="number">9</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">-65</span>,<span class="number">12</span>]</div><div class="line">    print(qsort(seq))</div></pre></td></tr></table></figure>
-<h2 id="找零问题"><a href="#找零问题" class="headerlink" title="找零问题"></a>找零问题</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span>  <span class="title">coinChange</span><span class="params">(values, money, coinsUsed)</span>:</span></div><div class="line">    <span class="comment">#values    T[1:n]数组</span></div><div class="line">    <span class="comment">#valuesCounts   钱币对应的种类数</span></div><div class="line">    <span class="comment">#money  找出来的总钱数</span></div><div class="line">    <span class="comment">#coinsUsed   对应于目前钱币总数i所使用的硬币数目</span></div><div class="line">    <span class="keyword">for</span> cents <span class="keyword">in</span> range(<span class="number">1</span>, money+<span class="number">1</span>):</div><div class="line">        minCoins = cents     <span class="comment">#从第一个开始到money的所有情况初始</span></div><div class="line">        <span class="keyword">for</span> value <span class="keyword">in</span> values:</div><div class="line">            <span class="keyword">if</span> value &lt;= cents:</div><div class="line">                temp = coinsUsed[cents - value] + <span class="number">1</span></div><div class="line">                <span class="keyword">if</span> temp &lt; minCoins:</div><div class="line">                    minCoins = temp</div><div class="line">        coinsUsed[cents] = minCoins</div><div class="line">        print(<span class="string">'面值为：&#123;0&#125; 的最小硬币数目为：&#123;1&#125; '</span>.format(cents, coinsUsed[cents]) )</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    values = [ <span class="number">25</span>, <span class="number">21</span>, <span class="number">10</span>, <span class="number">5</span>, <span class="number">1</span>]</div><div class="line">    money = <span class="number">63</span></div><div class="line">    coinsUsed = &#123;i:<span class="number">0</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(money+<span class="number">1</span>)&#125;</div><div class="line">    coinChange(values, money, coinsUsed)</div></pre></td></tr></table></figure>
-<h2 id="广度遍历和深度遍历二叉树"><a href="#广度遍历和深度遍历二叉树" class="headerlink" title="广度遍历和深度遍历二叉树"></a>广度遍历和深度遍历二叉树</h2><p>给定一个数组，构建二叉树，并且按层次打印这个二叉树</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="comment">## 14 二叉树节点</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, data, left=None, right=None)</span>:</span></div><div class="line">        self.data = data</div><div class="line">        self.left = left</div><div class="line">        self.right = right</div><div class="line"></div><div class="line">tree = Node(<span class="number">1</span>, Node(<span class="number">3</span>, Node(<span class="number">7</span>, Node(<span class="number">0</span>)), Node(<span class="number">6</span>)), Node(<span class="number">2</span>, Node(<span class="number">5</span>), Node(<span class="number">4</span>)))</div><div class="line"></div><div class="line"><span class="comment">## 层次遍历</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">lookup</span><span class="params">(root)</span>:</span></div><div class="line">    stack = [root]</div><div class="line">    <span class="keyword">while</span> stack:</div><div class="line">        current = stack.pop(<span class="number">0</span>)</div><div class="line">        <span class="keyword">print</span> current.data</div><div class="line">        <span class="keyword">if</span> current.left:</div><div class="line">            stack.append(current.left)</div><div class="line">        <span class="keyword">if</span> current.right:</div><div class="line">            stack.append(current.right)</div><div class="line"><span class="comment">## 深度遍历</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">deep</span><span class="params">(root)</span>:</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> root:</div><div class="line">        <span class="keyword">return</span></div><div class="line">    <span class="keyword">print</span> root.data</div><div class="line">    deep(root.left)</div><div class="line">    deep(root.right)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    lookup(tree)</div><div class="line">    deep(tree)</div></pre></td></tr></table></figure>
-<h2 id="前中后序遍历"><a href="#前中后序遍历" class="headerlink" title="前中后序遍历"></a>前中后序遍历</h2><p>深度遍历改变顺序就OK了</p>
-<h2 id="求最大树深"><a href="#求最大树深" class="headerlink" title="求最大树深"></a>求最大树深</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxDepth</span><span class="params">(root)</span>:</span></div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> root:</div><div class="line">            <span class="keyword">return</span> <span class="number">0</span></div><div class="line">        <span class="keyword">return</span> max(maxDepth(root.left), maxDepth(root.right)) + <span class="number">1</span></div></pre></td></tr></table></figure>
-<h2 id="求两棵树是否相同"><a href="#求两棵树是否相同" class="headerlink" title="求两棵树是否相同"></a>求两棵树是否相同</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">isSameTree</span><span class="params">(p, q)</span>:</span></div><div class="line">    <span class="keyword">if</span> p == <span class="keyword">None</span> <span class="keyword">and</span> q == <span class="keyword">None</span>:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line">    <span class="keyword">elif</span> p <span class="keyword">and</span> q :</div><div class="line">        <span class="keyword">return</span> p.val == q.val <span class="keyword">and</span> isSameTree(p.left,q.left) <span class="keyword">and</span> isSameTree(p.right,q.right)</div><div class="line">    <span class="keyword">else</span> :</div><div class="line">        <span class="keyword">return</span> <span class="keyword">False</span></div></pre></td></tr></table></figure>
-<h2 id="前序中序求后序"><a href="#前序中序求后序" class="headerlink" title="前序中序求后序"></a>前序中序求后序</h2><p>推荐: <a href="http://blog.csdn.net/hinyunsin/article/details/6315502" target="_blank" rel="external">http://blog.csdn.net/hinyunsin/article/details/6315502</a></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">rebuild</span><span class="params">(pre, center)</span>:</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> pre:</div><div class="line">        <span class="keyword">return</span></div><div class="line">    cur = Node(pre[<span class="number">0</span>])</div><div class="line">    index = center.index(pre[<span class="number">0</span>])</div><div class="line">    cur.left = rebuild(pre[<span class="number">1</span>:index + <span class="number">1</span>], center[:index])</div><div class="line">    cur.right = rebuild(pre[index + <span class="number">1</span>:], center[index + <span class="number">1</span>:])</div><div class="line">    <span class="keyword">return</span> cur</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">deep</span><span class="params">(root)</span>:</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> root:</div><div class="line">        <span class="keyword">return</span></div><div class="line">    deep(root.left)</div><div class="line">    deep(root.right)</div><div class="line">    <span class="keyword">print</span> root.data</div></pre></td></tr></table></figure>
-<h2 id="单链表逆置"><a href="#单链表逆置" class="headerlink" title="单链表逆置"></a>单链表逆置</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, data=None, next=None)</span>:</span></div><div class="line">        self.data = data</div><div class="line">        self.next = next</div><div class="line"></div><div class="line">link = Node(<span class="number">1</span>, Node(<span class="number">2</span>, Node(<span class="number">3</span>, Node(<span class="number">4</span>, Node(<span class="number">5</span>, Node(<span class="number">6</span>, Node(<span class="number">7</span>, Node(<span class="number">8</span>, Node(<span class="number">9</span>)))))))))</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">rev</span><span class="params">(link)</span>:</span></div><div class="line">    pre = link</div><div class="line">    cur = link.next</div><div class="line">    pre.next = <span class="keyword">None</span></div><div class="line">    <span class="keyword">while</span> cur:</div><div class="line">        tmp = cur.next</div><div class="line">        cur.next = pre</div><div class="line">        pre = cur</div><div class="line">        cur = tmp</div><div class="line">    <span class="keyword">return</span> pre</div><div class="line"></div><div class="line">root = rev(link)</div><div class="line"><span class="keyword">while</span> root:</div><div class="line">    <span class="keyword">print</span> root.data</div><div class="line">    root = root.next</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2865,7 +2461,7 @@ True
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">211</span>
+                <span class="site-state-item-count">212</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

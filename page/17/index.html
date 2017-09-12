@@ -286,6 +286,190 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/02/每天一个python小程序-4/" itemprop="url">每天一个python小程序(4)--统计单词频数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-02T23:08:42+08:00">
+                2015-02-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>任一个英文的纯文本文件，统计其中每个单词出现的频数。</p>
+</blockquote>
+<p>这一题使用collections模块会非常简单</p>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
+
+import collections
+import re
+
+#增加统计单词总数和最长行
+def count_word(file_name):
+    f = open(file_name)
+
+    word_counter = collections.Counter()
+
+    #文件对象使用迭代器
+    for line in f:
+        words = re.findall(&apos;\w+&apos;, line.lower())
+        word_counter.update(words)
+
+    #迭代器对象只能遍历一次，欲再次遍历需要重现构建迭代器对象
+    f = open(file_name)
+    #计算单词总数 p206
+    word_sum = len([word for line in f for word in line.split()])
+
+
+    #最长行
+    f = open(file_name)
+    longest = max(len(line.split()) for line in f)
+
+    print &quot;the longest line&apos;s length is %d&quot; % longest
+    f.close()
+
+    return word_counter, word_sum
+
+if __name__ == &apos;__main__&apos;:
+    world_counter, word_sum = count_word(&apos;test.txt&apos;)
+    print &apos;there are %d words in this article&apos; % word_sum
+    #most_common打印出现次数最多的单词，这里most_common(3)表示出现次数最多的3个单词
+    for key,count in world_counter.most_common(3):
+        print &apos;%s: %d&apos; % (key, count)
+</code></pre><p>代码在<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.4" target="_blank" rel="external">这里</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2492,179 +2676,6 @@ return d
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第十一部分：改进诗歌下载服务器/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/第十一部分：改进诗歌下载服务器/" itemprop="url">第十一部分：改进诗歌下载服务器</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T21:59:42+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>#第十一部分：改进诗歌下载服务器<br>原文在<a href="http://krondo.com/?p=2048" target="_blank" rel="external">这里</a></p>
-<p>##诗歌下载服务器<br>到目前为止，我们已经学习了大量关于诗歌下载客户端的Twisted的知识，接下来，我们使用Twisted重新实现我们的服务器端。利益于Twisted的抽象机制，接下来你会发现我们前面已经几乎全部学习到这部分知识了。其实现源码在<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-server-1/fastpoetry.py#L1" target="_blank" rel="external">twisted-server-1/fastpoetry.py</a>中。之所以称其为fastpoetry是因为其并没有任何延迟的传输诗歌。注意到，其代码量比客户端少多了。</p>
-<p>让我们一部分一部分地来看服务端的实现，首先是poetryProtocol：</p>
-<pre><code>class PoetryProtocol(Protocol):
-    def connectionMade(self):
-        self.transport.write(self.factory.poem)
-        self.transport.loseConnection()
-</code></pre><p>如同客户端的实现，服务器端使用Protocol来管理连接（在这里，连接是由客户端发起的）。这里的Protocol实现了我们的诗歌下载逻辑的服务器端。由于我们协议逻辑处理的是单向的，服务器端的Protocol只负责发送数据。如果你访问服务器端，协议请求服务器在连接建立后立即发送诗歌，因此我实现了connectionMade方法，其会在Protocol中创建一个连接时被激活执行。</p>
-<p>这个方法告诉Transport做两件事：将整首诗歌发送出去然后关闭连接。当然，这两个动作都是同步操作。因此调用write函数也可以说成“一定要将整首诗歌发送到客户端”，调用loseConnection意味着“一旦将要求下载的诗歌发送完毕就关掉这个连接”。</p>
-<p>也许你看到了，Protocol是从Factory中获得诗歌内容的：</p>
-<pre><code>class PoetryFactory(ServerFactory):
-    protocol = PoetryProtocol
-    def __init__(self, poem):
-        self.poem = poem
-</code></pre><p>这么简单！除了创建PoetryProtocol工厂的仅有的工作是存储要发送的诗歌。<br>注意到我们继承了ServerFactory而不是ClientFactory。这是因为服务器是要被动地监听连接状态而不是像客户端一样去主动的创建。我们何以如此肯定呢？因为我们使用了listenTCP方法，其描述文档声明factory参数必须是ServerFactory类型的。</p>
-<p>我们在main函数中调用了listenTCP函数：<br>    def main():<br>        options, poetry_file = parse_args()<br>        poem = open(poetry_file).read()<br>        factory = PoetryFactory(poem)<br>        from twisted.internet import reactor<br>        port = reactor.listenTCP(options.port or 0, factory,nterface=options.iface)<br>        print ‘Serving %s on %s.’ % (poetry_file, port.getHost())<br>        reactor.run()</p>
-<p>其做了三件事：</p>
-<ol>
-<li>读取我们要发呈现的诗歌</li>
-<li>创建PoetryFactory并传入这首诗歌</li>
-<li>使用listenTCP来让Twisted监听指定的端口，并使用我们提供的factory来为每个连接创建一个protocol</li>
-</ol>
-<p>剩下的工作就是reactor来运转事件循环了。你可以使用前面任何一个客户端来测试这个服务器。</p>
-<p>##讨论<br>回忆下第五部分中的图8与图9.这两张图说明了一个协议在Twisted创建一个连接后如何创建一个协议并初始化它的。其实对于Twisted在其监听的端口处接听到一个连接之后的整个处理机制也是如此。这也是为什么connectTCP与listenTCP都需要一个factory参数的原因。</p>
-<p>我们在图9中没有展示是的，connectionMake其实也是Protocol初始化的一部分。无论在哪儿都一样（Dave是想说，connectionMade都会在Protocol初始化时执行），但我们在客户端处没有用到这个方法。并且我们在客户端的协议实现中的方法并没有在服务器处用到。因此，如果我们有这个需要，可以创建一个共享式的单一PoetryProtocol供客户端与服务器端使用。这各方式在Twisted经常见到。例如，NetstringReceiver protocol即能读从一个连接中读也能向一个连接中写netstrings。</p>
-<p>我们略去了写从低层来实现服务器端的内容，但我们仍要来思考一下下面发生的事情。首先，调用listenTCP来告诉Twisted创建一个 listening socket 并将其添加到事件循环中。在 listening socket 有事件发生并不意味有数据要读，而是说明有客户端在等待连接自己。</p>
-<p>Twisted会自动接受连接请求，并创建一个新客户端式连接来连接客户端与服务器（中间桥梁）。这个新的连接也要加入事件循环中，并且Twisted为其创建了一个Transport与一个专门为这个连接服务的PoetryProtocol。因此，Protocol实例总是连接到客户端式的socket，而不是监听式socket。<br>我们可以在图26中形象地看到这一结果：</p>
-<p><img src="/img/服务器端的网络连接.png" alt="图26：服务器端的网络连接"></p>
-<p>在图中，有三个客户端连接到服务器。每个Transport代表一个client socket，加上listening socket总共是四个被select循环监听的文件描述符（file descriptor).当一个客户端断开与其相关的transport的连接时，对应的PoetryProtocol也会被解引用并当作垃圾被回收。而PoetryFactory只要我们还在监听新的连接就会一直不停地工作（即PoetryFactory不会将PoetryProtocol会随着一个连接的断开而被销毁）。</p>
-<p>如果我们提供的诗歌很短的话，那么这些client socket与其相关的各种对象的生命期也就很短。但也有可能会是一台相当繁忙的服务器以至于同时有千百个客户端同时请求较长的诗歌。那没关系，因为Twisted并没有连接建立的限制。当然，当下载量持续的增加，在某个结点处，你会发现已经到达了OS的上限。对于那些高下载量的服务器，仔细的检测与测试是每天都必须的工作。</p>
-<p>并且Twisted在监听端口的数量上亦无限制。实际上，一个单一的Twisted线程可以监听数个端口并为其提供不同的服务（通过使用不同的factory作为listenTCP的参数即可）。并且经过精心的设计，使用一个Twisted线程来提供多个服务还是使用多个Twisted线程来实现可以推迟到部署阶段来做决定。</p>
-<p>我们这个版本的服务器有些功能是没有的。首先，它无法产生任何日志来帮助我们调试和分析网络出现的问题。另外，服务器也不是做为一个守护进程来运行，很容易通过ctrl+c来中止其执行。我们将会在第十二部分来分析这部分内容。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2715,7 +2726,7 @@ return d
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">211</span>
+                <span class="site-state-item-count">212</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

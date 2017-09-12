@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/img/lufei.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Docker代码更新很快，网上各位大神的源码解析很多已经是几年前的版本了。实现上有了很大改变，加之Docker项目更名为moby，其中很多组件又从moby中拆分了出来，一开始看简直是一脸懵逼啊。在这里跟大家分享了一下最近看的docker/cli的源码，抛砖引玉，欢迎大家批评指正。docker/cli 分析的docker client版本是17.06.2-ce。 docker client是Dock">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker源码分析1-cli">
+<meta property="og:url" content="http://yoursite.com/2017/09/12/docker源码分析1-cli/index.html">
+<meta property="og:site_name" content="Youmai の Blog">
+<meta property="og:description" content="Docker代码更新很快，网上各位大神的源码解析很多已经是几年前的版本了。实现上有了很大改变，加之Docker项目更名为moby，其中很多组件又从moby中拆分了出来，一开始看简直是一脸懵逼啊。在这里跟大家分享了一下最近看的docker/cli的源码，抛砖引玉，欢迎大家批评指正。docker/cli 分析的docker client版本是17.06.2-ce。 docker client是Dock">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/img/docker_deamon_socket.png">
+<meta property="og:updated_time" content="2017-09-12T12:42:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="docker源码分析1-cli">
+<meta name="twitter:description" content="Docker代码更新很快，网上各位大神的源码解析很多已经是几年前的版本了。实现上有了很大改变，加之Docker项目更名为moby，其中很多组件又从moby中拆分了出来，一开始看简直是一脸懵逼啊。在这里跟大家分享了一下最近看的docker/cli的源码，抛砖引玉，欢迎大家批评指正。docker/cli 分析的docker client版本是17.06.2-ce。 docker client是Dock">
+<meta name="twitter:image" content="http://yoursite.com/img/docker_deamon_socket.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/12/docker源码分析1-cli/"/>
+
+
+
+
+
+  <title>docker源码分析1-cli | Youmai の Blog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-63551049-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youmai の Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/12/docker源码分析1-cli/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">docker源码分析1-cli</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-12T20:41:10+08:00">
+                2017-09-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Docker代码更新很快，网上各位大神的源码解析很多已经是几年前的版本了。实现上有了很大改变，加之Docker项目更名为<a href="https://github.com/moby/moby" target="_blank" rel="external">moby</a>，其中很多组件又从moby中拆分了出来，一开始看简直是一脸懵逼啊。在这里跟大家分享了一下最近看的<a href="https://github.com/docker/cli" target="_blank" rel="external">docker/cli</a>的源码，抛砖引玉，欢迎大家批评指正。<br><a href="https://github.com/docker/cli" target="_blank" rel="external">docker/cli</a></p>
+<p>分析的<code>docker client</code>版本是<code>17.06.2-ce</code>。</p>
+<p><code>docker client</code>是Docker的客户端程序，也就是我们敲的<code>docker * *</code> 命令，我们通过他与<code>docker deamon</code>程序进行交互。我们可以将他看成一个普通的客户端程序，docker的核心<code>namespace</code>和<code>cgroup</code>等技术都不在这里。</p>
+<h2 id="搭建docker-client开发环境"><a href="#搭建docker-client开发环境" class="headerlink" title="搭建docker-client开发环境"></a>搭建docker-client开发环境</h2><p><code>docker_client</code>的开发环境也是在容器中，项目已经给我们做好了封装，具体可以参考项目Readme的<a href="https://github.com/docker/cli#development" target="_blank" rel="external">Development</a>章节。</p>
+<p>问几个问题，大家可以思考一下：</p>
+<p>####1. 开发是在容器中，可是容器里面连编辑器都没有，怎么开发？</p>
+<p>答： 准确来说应该是在容器中调试，开发还是在本地开发，容器中看到的目录是我们本地目录mount进去的</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> docker.Makefile文件</div><div class="line"></div><div class="line">......</div><div class="line">MOUNTS = -v "$(CURDIR)":/go/src/github.com/docker/cli</div><div class="line">......</div><div class="line"><span class="meta">#</span> start container in interactive mode for in-container development</div><div class="line">.PHONY: dev</div><div class="line">dev: build_docker_image</div><div class="line">    docker run -ti --security-opt=seccomp:unconfined $(ENVVARS) $(MOUNTS) \</div><div class="line">        -v /var/run/docker.sock:/var/run/docker.sock \</div><div class="line">        $(DEV_DOCKER_IMAGE_NAME) ash</div><div class="line"></div><div class="line">shell: dev</div><div class="line">......</div></pre></td></tr></table></figure>
+<p>从shell里面还是很容器看出来的，run的时候mount了<code>$(CURDIR)</code></p>
+<p>####2. 容器里面是不是还装了一个docker啊，为什么我在里面敲命令有响应？<br>答：不是的，里面只有你编译生成的docker client程序，是没有docker deamon程序，至于为什么能响应，还是看上面的shell脚本，<code>-v /var/run/docker.sock:/var/run/docker.sock</code>这一行将<code>docker.sock</code>文件也mount了进去，<code>docker.sock</code>是<code>docker deamon</code>默认监听的Unix套接字（Unix domain socket），容器中的进程可以通过他与docker deamon进行通信。所以这里docker client通信的是你本机的docker daemon。</p>
+<p><img src="/img/docker_deamon_socket.png" alt="docker_deamon_socket"></p>
+<p>所以我们的开发流程是：本地改代码–&gt;到container中编译–&gt;运行docker client看效果</p>
+<h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><p>是时候表演真正的技术了！</p>
+<p>😆，开个玩笑，下面的分析如果有问题，还请大家不吝赐教！</p>
+<p>我尽量把文件路径列出来，会贴一些代码，但主要还是路径，建议大家把代码clone下来照着看。</p>
+<p>docker—client是基于<a href="https://github.com/spf13/cobra" target="_blank" rel="external">cobra</a>写的，建议大家先看一下cobra，至少写个<code>hello world</code>熟悉一下基本用法。</p>
+<p>我们开始了！</p>
+<p>入口文件在<code>cmd/docker/docker.go</code>:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="comment">// 日志输出采用了第三方库logrus</span></div><div class="line">    <span class="comment">// Set terminal emulation based on platform as required.</span></div><div class="line">    stdin, stdout, stderr := term.StdStreams()</div><div class="line">    logrus.SetOutput(stderr)</div><div class="line"></div><div class="line">    dockerCli := command.NewDockerCli(stdin, stdout, stderr)</div><div class="line">    </div><div class="line">    <span class="comment">// root命令，子命令都在这里面，重点看</span></div><div class="line">    cmd := newDockerCommand(dockerCli)</div><div class="line"></div><div class="line">    <span class="comment">// 命令执行	</span></div><div class="line">    <span class="keyword">if</span> err := cmd.Execute(); err != <span class="literal">nil</span> &#123;</div><div class="line">        <span class="keyword">if</span> sterr, ok := err.(cli.StatusError); ok &#123;</div><div class="line">            <span class="keyword">if</span> sterr.Status != <span class="string">""</span> &#123;</div><div class="line">                fmt.Fprintln(stderr, sterr.Status)</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// StatusError should only be used for errors, and all errors should</span></div><div class="line">            <span class="comment">// have a non-zero exit status, so never exit with 0</span></div><div class="line">            <span class="keyword">if</span> sterr.StatusCode == <span class="number">0</span> &#123;</div><div class="line">                os.Exit(<span class="number">1</span>)</div><div class="line">            &#125;</div><div class="line">            os.Exit(sterr.StatusCode)</div><div class="line">        &#125;</div><div class="line">        fmt.Fprintln(stderr, err)</div><div class="line">        os.Exit(<span class="number">1</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>还是这个文件，<code>newDockerCommand</code>函数调用了<code>commands.AddCommands(cmd, dockerCli)</code>来添加命令。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">newDockerCommand</span><span class="params">(dockerCli *command.DockerCli)</span> *<span class="title">cobra</span>.<span class="title">Command</span></span> &#123;</div><div class="line">        opts := cliflags.NewClientOptions()</div><div class="line">        <span class="keyword">var</span> flags *pflag.FlagSet</div><div class="line"></div><div class="line">        cmd := &amp;cobra.Command&#123;</div><div class="line">                Use:              <span class="string">"docker [OPTIONS] COMMAND [ARG...]"</span>,</div><div class="line">                Short:            <span class="string">"A self-sufficient runtime for containers"</span>,</div><div class="line">                SilenceUsage:     <span class="literal">true</span>,</div><div class="line">                SilenceErrors:    <span class="literal">true</span>,</div><div class="line">                TraverseChildren: <span class="literal">true</span>,</div><div class="line">                Args:             noArgs,</div><div class="line">                RunE: <span class="function"><span class="keyword">func</span><span class="params">(cmd *cobra.Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span> &#123;</div><div class="line">                        <span class="keyword">if</span> opts.Version &#123;</div><div class="line">                                showVersion()</div><div class="line">                                <span class="keyword">return</span> <span class="literal">nil</span></div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">return</span> command.ShowHelp(dockerCli.Err())(cmd, args)</div><div class="line">                &#125;,</div><div class="line">                PersistentPreRunE: <span class="function"><span class="keyword">func</span><span class="params">(cmd *cobra.Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span> &#123;</div><div class="line">                        <span class="comment">// daemon command is special, we redirect directly to another binary</span></div><div class="line">                        <span class="keyword">if</span> cmd.Name() == <span class="string">"daemon"</span> &#123;</div><div class="line">                                <span class="keyword">return</span> <span class="literal">nil</span></div><div class="line">                        &#125;</div><div class="line">                        <span class="comment">// flags must be the top-level command flags, not cmd.Flags()</span></div><div class="line">                        opts.Common.SetDefaultOptions(flags)</div><div class="line">                        dockerPreRun(opts)</div><div class="line">                        <span class="keyword">if</span> err := dockerCli.Initialize(opts); err != <span class="literal">nil</span> &#123;</div><div class="line">                                <span class="keyword">return</span> err</div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">return</span> isSupported(cmd, dockerCli)</div><div class="line">                &#125;,</div><div class="line">        &#125;</div><div class="line">        cli.SetupRootCommand(cmd)</div><div class="line"></div><div class="line">        flags = cmd.Flags()</div><div class="line">        flags.BoolVarP(&amp;opts.Version, <span class="string">"version"</span>, <span class="string">"v"</span>, <span class="literal">false</span>, <span class="string">"Print version information and quit"</span>)</div><div class="line">        flags.StringVar(&amp;opts.ConfigDir, <span class="string">"config"</span>, cliconfig.Dir(), <span class="string">"Location of client config files"</span>)</div><div class="line">        opts.Common.InstallFlags(flags)</div><div class="line"></div><div class="line">        setFlagErrorFunc(dockerCli, cmd, flags, opts)</div><div class="line"></div><div class="line">        setHelpFunc(dockerCli, cmd, flags, opts)</div><div class="line"></div><div class="line">        cmd.SetOutput(dockerCli.Out())</div><div class="line">        cmd.AddCommand(newDaemonCommand())</div><div class="line">        # 添加子命令，cmd里现在是root命令</div><div class="line">        commands.AddCommands(cmd, dockerCli)</div><div class="line"></div><div class="line">        setValidateArgs(dockerCli, cmd, flags, opts)</div><div class="line"></div><div class="line">        <span class="keyword">return</span> cmd</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这行上面的<code>cmd.AddCommand(newDaemonCommand())</code>是为<code>docker daemon</code>命令进行的输出，<code>newDaemonCommand</code>定义在<code>cmd/docker/daemon_none.go</code>中，从他的<code>RunE</code>方法可以看出来，是输出了不能运行的提示，<code>runtime.GOOS</code>是输出当前系统的名称，比如mac是<code>Darwin</code>， ubuntu是<code>linux</code>，完整看来就是:</p>
+<pre><code>`docker daemon` is not supported on Darwin. Please run `dockerd` directly
+</code></pre><p>让我们来到<code>commands.AddCommands</code>定义的地方，<code>cli/command/commands/commands.go</code>文件，可以看到<code>cmd.AddCommand</code>的调用，这里就是在添加我们看到的二级命令，也就是紧跟着<code>docker</code>后面的命令。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddCommands</span><span class="params">(cmd *cobra.Command, dockerCli *command.DockerCli)</span></span> &#123;</div><div class="line">        cmd.AddCommand(</div><div class="line">                ......</div><div class="line"></div><div class="line">                <span class="comment">// container</span></div><div class="line">                container.NewContainerCommand(dockerCli),</div><div class="line">                container.NewRunCommand(dockerCli),</div><div class="line">                </div><div class="line">                ......</div><div class="line">                hide(container.NewPsCommand(dockerCli)),</div><div class="line">                hide(container.NewRenameCommand(dockerCli)),</div><div class="line">                ......</div></pre></td></tr></table></figure>
+<p>我们从上看到下，整齐划一中发现最后好多命令被用hide包裹了。这些命令是一些旧命令，在新的版本中可以使用新的命令来代替，如果设置了环境变量<code>DOCKER_HIDE_LEGACY_COMMANDS</code>不为空，那么docker的提示将不会输出这些。</p>
+<p>这里的命令太多了，我们通过<code>docker ps</code>命令来了解一下大致的执行流程。</p>
+<p><code>docker ps</code>命令也是旧版的命令，<code>hide(container.NewPsCommand(dockerCli))</code>就是在处理他。在新版本中对应的是<code>docker container ls</code>命令。实现代码在<code>cli/command/container/list.go</code>.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// NewPsCommand creates a new cobra.Command for `docker ps`</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewPsCommand</span><span class="params">(dockerCli *command.DockerCli)</span> *<span class="title">cobra</span>.<span class="title">Command</span></span> &#123;</div><div class="line">        options := psOptions&#123;filter: opts.NewFilterOpt()&#125;</div><div class="line"></div><div class="line">        cmd := &amp;cobra.Command&#123;</div><div class="line">                Use:   <span class="string">"ps [OPTIONS]"</span>,</div><div class="line">                Short: <span class="string">"List containers"</span>,</div><div class="line">                Args:  cli.NoArgs,</div><div class="line">                RunE: <span class="function"><span class="keyword">func</span><span class="params">(cmd *cobra.Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span> &#123;</div><div class="line">                        <span class="keyword">return</span> runPs(dockerCli, &amp;options)</div><div class="line">                &#125;,</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        flags := cmd.Flags()</div><div class="line"></div><div class="line">        flags.BoolVarP(&amp;options.quiet, <span class="string">"quiet"</span>, <span class="string">"q"</span>, <span class="literal">false</span>, <span class="string">"Only display numeric IDs"</span>)</div><div class="line">        flags.BoolVarP(&amp;options.size, <span class="string">"size"</span>, <span class="string">"s"</span>, <span class="literal">false</span>, <span class="string">"Display total file sizes"</span>)</div><div class="line">        flags.BoolVarP(&amp;options.all, <span class="string">"all"</span>, <span class="string">"a"</span>, <span class="literal">false</span>, <span class="string">"Show all containers (default shows just running)"</span>)</div><div class="line">        flags.BoolVar(&amp;options.noTrunc, <span class="string">"no-trunc"</span>, <span class="literal">false</span>, <span class="string">"Don't truncate output"</span>)</div><div class="line">        flags.BoolVarP(&amp;options.nLatest, <span class="string">"latest"</span>, <span class="string">"l"</span>, <span class="literal">false</span>, <span class="string">"Show the latest created container (includes all states)"</span>)</div><div class="line">        flags.IntVarP(&amp;options.last, <span class="string">"last"</span>, <span class="string">"n"</span>, <span class="number">-1</span>, <span class="string">"Show n last created containers (includes all states)"</span>)</div><div class="line">        flags.StringVarP(&amp;options.format, <span class="string">"format"</span>, <span class="string">""</span>, <span class="string">""</span>, <span class="string">"Pretty-print containers using a Go template"</span>)</div><div class="line">        flags.VarP(&amp;options.filter, <span class="string">"filter"</span>, <span class="string">"f"</span>, <span class="string">"Filter output based on conditions provided"</span>)</div><div class="line"></div><div class="line">        <span class="keyword">return</span> cmd</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">newListCommand</span><span class="params">(dockerCli *command.DockerCli)</span> *<span class="title">cobra</span>.<span class="title">Command</span></span> &#123;</div><div class="line">        cmd := *NewPsCommand(dockerCli)</div><div class="line">        cmd.Aliases = []<span class="keyword">string</span>&#123;<span class="string">"ps"</span>, <span class="string">"list"</span>&#125;</div><div class="line">        cmd.Use = <span class="string">"ls [OPTIONS]"</span></div><div class="line">        <span class="keyword">return</span> &amp;cmd</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>NewPsCommand</code>对应的是<code>docker ps</code>, <code>newListCommand</code>对应的是<code>docker container ls</code>，可以看出来， <code>newListCommand</code>里的command就是<code>NewPsCommand</code>返回的，只是加了一下说明而已。</p>
+<blockquote>
+<p>这里还漏了一点，docker container ls是3个命令，我们知道docker是root命令，按照cobra的写法，container和ls应该是分开的。他们的关系是这样的，在<code>cli/command/commands/commands.go</code>文件中<code>container.NewContainerCommand(dockerCli)</code>加入了<code>container</code>命令，<code>NewContainerCommand</code>的实现在<code>cli/command/container/cmd.go</code>中，在<code>NewContainerCommand</code>函数中通过<code>newListCommand(dockerCli)</code>加入了ls命令，可以看到还添加了很多别的方法，那些都是<code>container</code>支持的子命令。这样就回到了我们上面提到的内容了，没有魔法</p>
+</blockquote>
+<p>我们继续看<code>NewPsCommand</code>:</p>
+<p>里面定义了<code>docker ps</code>（下面所有的内容对<code>docker container ls</code>都适用）支持的一些选项（flag）,选项被放在了psOptions这个结构体中，最终传给runPs函数.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">runPs</span><span class="params">(dockerCli *command.DockerCli, options *psOptions)</span> <span class="title">error</span></span> &#123;</div><div class="line">        ctx := context.Background()</div><div class="line"></div><div class="line">        listOptions, err := buildContainerListOptions(options)</div><div class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">                <span class="keyword">return</span> err</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        containers, err := dockerCli.Client().ContainerList(ctx, *listOptions)</div><div class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">                <span class="keyword">return</span> err</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        format := options.format</div><div class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(format) == <span class="number">0</span> &#123;</div><div class="line">                <span class="keyword">if</span> <span class="built_in">len</span>(dockerCli.ConfigFile().PsFormat) &gt; <span class="number">0</span> &amp;&amp; !options.quiet &#123;</div><div class="line">                        format = dockerCli.ConfigFile().PsFormat</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                        format = formatter.TableFormatKey</div><div class="line">                &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        containerCtx := formatter.Context&#123;</div><div class="line">                Output: dockerCli.Out(),</div><div class="line">                Format: formatter.NewContainerFormat(format, options.quiet, listOptions.Size),</div><div class="line">                Trunc:  !options.noTrunc,</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> formatter.ContainerWrite(containerCtx, containers)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>listOptions, err := buildContainerListOptions(options)</code>对选项进行了处理，重点在<code>dockerCli.Client().ContainerList(ctx, *listOptions)</code>，<code>ContainerList</code>是一个interface。</p>
+<p>实现在<code>vendor/github.com/docker/docker/client/container_list.go</code>（vendor在当前目录下，我是go新手，所以担心大家不知道，高手忽略）</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(cli *Client)</span> <span class="title">ContainerList</span><span class="params">(ctx context.Context, options types.ContainerListOptions)</span> <span class="params">([]types.Container, error)</span></span> &#123;</div><div class="line">        query := url.Values&#123;&#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> options.All &#123;</div><div class="line">                query.Set(<span class="string">"all"</span>, <span class="string">"1"</span>)</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> options.Limit != <span class="number">-1</span> &#123;</div><div class="line">                query.Set(<span class="string">"limit"</span>, strconv.Itoa(options.Limit))</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> options.Since != <span class="string">""</span> &#123;</div><div class="line">                query.Set(<span class="string">"since"</span>, options.Since)</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> options.Before != <span class="string">""</span> &#123;</div><div class="line">                query.Set(<span class="string">"before"</span>, options.Before)</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> options.Size &#123;</div><div class="line">                query.Set(<span class="string">"size"</span>, <span class="string">"1"</span>)</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> options.Filters.Len() &gt; <span class="number">0</span> &#123;</div><div class="line">                filterJSON, err := filters.ToParamWithVersion(cli.version, options.Filters)</div><div class="line"></div><div class="line">                <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">                        <span class="keyword">return</span> <span class="literal">nil</span>, err</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                query.Set(<span class="string">"filters"</span>, filterJSON)</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        resp, err := cli.get(ctx, <span class="string">"/containers/json"</span>, query, <span class="literal">nil</span>)</div><div class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">                <span class="keyword">return</span> <span class="literal">nil</span>, err</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">var</span> containers []types.Container</div><div class="line">        err = json.NewDecoder(resp.body).Decode(&amp;containers)</div><div class="line">        ensureReaderClosed(resp)</div><div class="line">        <span class="keyword">return</span> containers, err</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>前面是在拼请求的参数，<code>resp, err := cli.get(ctx, &quot;/containers/json&quot;, query, nil)</code>这里发起了请求，返回了container的列表。回到<code>cli/command/container/list.go</code>，接收到返回值之后，这时候还是json，下面进行了格式化输出，大家应该都做过打印<code>9*9乘法表</code>的经历，这里的格式化是同样的道理，不明白的同学可以继续往挖，我偷个懒，就不继续了。</p>
+<p>至此<code>docker ps</code>的流程就走完了，大家可以对源码做一些修改，然后进到容器中执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">make binary</div></pre></td></tr></table></figure>
+<p>就可以生产新的docker client，执行一下就能得到想要的输出啦。</p>
+<p>谢谢大家，欢迎大家指正🙂</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/07/Moby-LinuxKit-初体验/" rel="next" title="Moby & LinuxKit 初体验">
+                <i class="fa fa-chevron-left"></i> Moby & LinuxKit 初体验
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/lufei.jpeg"
+               alt="You Wangqiu" />
+          <p class="site-author-name" itemprop="name">You Wangqiu</p>
+           
+              <p class="site-description motion-element" itemprop="description">世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">212</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/michaelyou" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhi-yu-65-2" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      知乎
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建docker-client开发环境"><span class="nav-number">1.</span> <span class="nav-text">搭建docker-client开发环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码"><span class="nav-number">2.</span> <span class="nav-text">源码</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">You Wangqiu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

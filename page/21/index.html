@@ -286,6 +286,168 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/21/linux-一些小面试题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/21/linux-一些小面试题/" itemprop="url">linux-一些小面试题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-21T21:03:48+08:00">
+                2015-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>创建.tar.gz的参数时c，解压的参数是x</li>
+<li><p>代码如下</p>
+<pre><code>int main 
+{
+    char *p = &quot;hello world&quot;;
+    return 0;   
+}
+</code></pre><p> p和”hello,world”存储在内存哪个区域？<br> 答：栈，只读存储区；根据C语言中的特性和定义，p是一个局部变量，而C语言中局部变量存在于栈中，”hello wrold”是一个字符串字面常量，因此存储于程序的只读存储区中，p在这里其实只是指向了”hello wrold”在只读存储区中的地址而已。</p>
+</li>
+<li>Linux中，一个端口能够接受tcp链接数量的理论上限是：无上限</li>
+<li>在OSI模型中，HTTP协议工作在第<code>6</code>层：<code>表示层</code>，交换机工作在第<code>2</code>层：<code>数据链路层</code></li>
+<li>查看linux系统运行了多长时间的命令是：uptime</li>
+<li>UNIX系统中进程由三部分组成：进程控制块，正文段和数据段。这意味着一个程序的正文与数据可以是分开的，这种分开的目的是为了<ul>
+<li>可共享内存</li>
+<li>可共享数据</li>
+<li>可重入</li>
+</ul>
+</li>
+<li>批处理操作系统的目的是：提高系统资源利用率</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/21/找出N个整数中最大的K个数/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1866,154 +2028,6 @@ find . -name &quot;*.pyc&quot; -type f -print0 | xargs -0 rm -f
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/13/在scrapy提供的shell中测试xpath/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/13/在scrapy提供的shell中测试xpath/" itemprop="url">在scrapy提供的shell中测试xpath</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-13T21:33:06+08:00">
-                2015-01-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/scrapy/" itemprop="url" rel="index">
-                    <span itemprop="name">scrapy</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>scrapy的Rule定义了从html中取url的规则，但是这些url是被自动提取，也无法打印，如果xpath有误很难调试。下面提供一种方法可以在scrapy的shell中测试LinkExtractor的xpath的正确性</p>
-<pre><code>1.scrapy shell &apos;url&apos;
-2.from scrapy.contrib.linkextractors import LinkExtractor
-3.item= LinkExtractor(allow=(&apos;***&apos;),restrict_xpaths=(&apos;***&apos;)).extract_links(response)
-4.for i in item:
-      print i.text
-</code></pre><p>这样就可以打印出从response中提取的url了，注意得到的item是一个list，所以要循环遍历</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2064,7 +2078,7 @@ find . -name &quot;*.pyc&quot; -type f -print0 | xargs -0 rm -f
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">211</span>
+                <span class="site-state-item-count">212</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
