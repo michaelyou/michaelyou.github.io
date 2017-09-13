@@ -389,6 +389,9 @@
 <p>从shell里面还是很容器看出来的，run的时候mount了<code>$(CURDIR)</code></p>
 <h4 id="2-容器里面是不是还装了一个docker啊，为什么我在里面敲命令有响应？"><a href="#2-容器里面是不是还装了一个docker啊，为什么我在里面敲命令有响应？" class="headerlink" title="2. 容器里面是不是还装了一个docker啊，为什么我在里面敲命令有响应？"></a>2. 容器里面是不是还装了一个docker啊，为什么我在里面敲命令有响应？</h4><p>答：不是的，里面只有你编译生成的docker client程序，是没有docker deamon程序，至于为什么能响应，还是看上面的shell脚本，<code>-v /var/run/docker.sock:/var/run/docker.sock</code>这一行将<code>docker.sock</code>文件也mount了进去，<code>docker.sock</code>是<code>docker deamon</code>默认监听的Unix套接字（Unix domain socket），容器中的进程可以通过他与docker deamon进行通信。所以这里docker client通信的是你本机的docker daemon。</p>
 <p><img src="/img/docker_deamon_socket.png" alt="docker_deamon_socket"></p>
+<blockquote>
+<p>Note: 关于<code>/var/run/docker.sock</code>更多内容可以看<a href="https://medium.com/lucjuggery/about-var-run-docker-sock-3bfd276e12fd" target="_blank" rel="external">这里</a></p>
+</blockquote>
 <p>所以我们的开发流程是：本地改代码–&gt;到container中编译–&gt;运行docker client看效果</p>
 <h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><p>是时候表演真正的技术了！</p>
 <p>😆，开个玩笑，下面的分析如果有问题，还请大家不吝赐教！</p>
