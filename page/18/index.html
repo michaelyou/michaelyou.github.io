@@ -286,6 +286,209 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第十二部分-改进诗歌下载服务器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/30/第十二部分-改进诗歌下载服务器/" itemprop="url">第十二部分 改进诗歌下载服务器</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T22:00:48+08:00">
+                2015-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/twisted/" itemprop="url" rel="index">
+                    <span itemprop="name">twisted</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>#第十二部分 改进诗歌下载服务器<br>原文在<a href="http://krondo.com/?p=2101" target="_blank" rel="external">这里</a><br>新的服务器实现<br>这里我们要新写一个Twisted版的服务器。然后，再来讨论一些Deferred的新功能。</p>
+<p>在第九、十部分，我们提出了诗歌转换引擎这个概念。由于其实现太过简单，因此我们用随机选择来模拟了可能会出现转换失败的情景。但如果转换引擎位于服务器端，那么当服务器宕机就会出现真实的转换失败的情景了。<br>因此，在这部分我们要实现一个诗歌样式转换服务器，然后在一个部分，我们会重写我们的诗歌下载客户端来使用这一服务并且学习Deferred的新功能。</p>
+<p>##设计协议<br>到目前为止，服务器端与客户端之间的交互都是单向的。但样式转换服务需要两者进行双向交互-客户端将原始式样的诗歌发送给乳服务器，然后服务器将转换格式并将其发送给对应的客户端。因此，我们需要使用、或自己实现一个协议来实现这种交互。<br>我们设计服务器端可以提供若干种转换服务，而让客户端来进行选择。因此客户端需要向服务器端发送两部分信息：转换方式名与诗歌原始内容。服务器只是将转换格式之后的诗歌发送给客户端。这里使用到了简单的运程调用。</p>
+<p>Twisted支持需要种协议来解决这个问题：XML-RPC,Perspective Broker,AMP。<br>但介绍使用其中任何一种都需要大量的时间，因此我们使用自己实现的协议。我们约定客户端发送内容格式如下：</p>
+<p><strong>转换名称.诗歌内容</strong></p>
+<p>我们将其以netstring格式编码，当然服务器回发的信息也是以netstring格式编码。由于netstring使用了length-encoding，因此客户端能够识别出服务器没有将完整诗歌回发的情况。如果你尝试一下前面的协议，其无法检测到中途中断传输的情况。</p>
+<p>##代码<br>新的服务器实现代码在twisted-server-1/transformedpoetry.py中。首先，我们定义了一个TransformService类：</p>
+<pre><code>class TransformService(object):
+    def cummingsify(self, poem):
+        return poem.lower()
+</code></pre><p>这里我们仅仅实现了一种转换方法，我们可以不回新格式转换方法。有一个重要的地方需要注意：格式转换服务与具体协议的实现是完全分分离的。将协议逻辑与服务逻辑分开是Twisted编程中常见的模式。这样做可以通过多种协议实现同一种服务，以增加了代码的重用性。</p>
+<p>下面看看factory的实现代码：</p>
+<pre><code>class TransformFactory(ServerFactory):
+    protocol = TransformProtocol
+    def __init__(self, service):
+        self.service = service
+    def transform(self, xform_name, poem):
+        thunk = getattr(self, &apos;xform_%s&apos; % (xform_name,), None)
+        if thunk is None: # no such transform
+            return None
+        try:
+            return thunk(poem)
+        except:
+            return None # transform failed
+    def xform_cummingsify(self, poem):
+        return self.service.cummingsify(poem)
+</code></pre><p>factory提供了一个transform的函数，protocol就是用它来代表客户端连接请求进行诗歌格式转换。</p>
+<p>如果发现没有客户端请求的转换方法或转换失败，那么返回None。和TransformService一样，factory与具体的协议逻辑实现也是相互独立的。</p>
+<p>有一个地方需要引起注意：我们通过xfomr_前缀式方法来获取服务方法。这种方法在Twisted中很常见，尽管前缀经常发生变化，并且他们经常是依赖于独立于factory的一个对象（如此处的 TransformService）这是一种防止客户端使用蓄意恶性代码来让服务器端执行的方法。这种方法也提供了实现由服务提供具体协议代理的机制。<br>下面是协议实现代码：</p>
+<pre><code>class TransformProtocol(NetstringReceiver):
+    def stringReceived(self, request):
+        if &apos;.&apos; not in request: # bad request
+            self.transport.loseConnection()
+            return
+        xform_name, poem = request.split(&apos;.&apos;, 1)
+        self.xformRequestReceived(xform_name, poem)
+    def xformRequestReceived(self, xform_name, poem):
+        new_poem = self.factory.transform(xform_name, poem)
+        if new_poem is not None:
+            self.sendString(new_poem)
+        self.transport.loseConnection()
+</code></pre><p>在这个协议的实现中，我们通过继承NetstringReceiver来利用了Twisted对netstrings的实现。基类很好的处理了编码与解码功能，我们需要做的就是实现stringReceived方法。换句话说，stringReceived接收的参数是客户端编码之后的诗歌，而无需我们再去添加额外的编码信息。而且基类同样管理着缓冲区，即当一首诗歌完整接收完再进行解码。</p>
+<p>如果一切进展正常的话，我们会使用NetstringReceiver的 sendString方法来将格式转换成功后的诗歌发送给客户端。</p>
+<p>注意我们是如何通过定义xformRequestReceived方法将收到的信息一步步推向更高的抽象层而实现了Twisted的模式。</p>
+<p>##一个简单的客户端<br>我们会在下一个部分来实现相应的客户端，这里使用一个简单的脚本来实现客户端，代码位于twisted-server-1/transform-test中。如果你运行服务器端于11000端口：</p>
+<pre><code>python twisted-server-1/transformedpoetry.py --port 11000
+</code></pre><p>相应的运行脚本为：</p>
+<pre><code>./twisted-server-1/transform-test 11000
+</code></pre><p>那么你会看到如下输出（经过netstring编码）：</p>
+<pre><code>15:here is my poem,
+</code></pre><p>##讨论<br>在这个部分介绍了如下几个方面内容：</p>
+<ol>
+<li>双向通信</li>
+<li>基于Twisted已有的协议实现新协议</li>
+<li>将协议实现与服务功能实现独立分开</li>
+</ol>
+<p>双向通信的基本机制是很简单的。我们使用前面服务器端与客户端使用的相同的技术来写与读数据，唯一不同的是我们这次两者都使用了（读与写）。当然，一个复杂的协议需要复杂的代码来处理接收到的数据流与格式化输出的信息。这也是为什么使用已经存在的协议的原因。</p>
+<p>如果你开始觉得写简单的协议已经很上手了，那么最好就开始看看Twisted对不同协议的实现。尽管写一些简单的协议有助理解Twisted的编程风格，但在一个真实的程序中，最好是复用那些已经实现并证明性能良好的协议。</p>
+<p>最后一点是将协议解析逻辑与服务实现逻辑分开，这是Twisted编程中非常重要的一个模式。我们这个服务器程序只是一个演示，你可以想象一下真实的网络服务是相当复杂的。通过将服务与协议逻辑分开，你可以通过复用已有的服务代码来运行于其它的协议实现上。</p>
+<p>图27展示了一个格式转换服务器通过两种协议提供格式转换服务（当然，我们的服务器只提供了一种协议）：</p>
+<p><img src="/img/提供两种协议支持的格式转换服务器.png" alt="图27 提供两种协议支持的格式转换服务器"></p>
+<p>虽然在图27中使用了两种协议，但他们也许是只有几个协议属性不同。factory共享相同的服务。这样实现了代码的复用。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第十一部分：改进诗歌下载服务器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2550,288 +2753,6 @@ reactor.addReader(self）
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第三部分：初步认识Twisted/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/第三部分：初步认识Twisted/" itemprop="url">第三部分：初步认识Twisted</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T12:25:59+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>可以从<a href="http://michaelyou.github.io/2015/01/30/%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%9ATwisted%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/" target="_blank" rel="external">这里</a>从头开始阅读这个系列。</p>
-<p>##用twisted的方式实现前面的内容<br>最终我们将使用<code>twisted</code>的方式来重新实现我们前面的异步模式客户端。不过，首先我们先稍微写点简单的twisted程序来认识一下<code>twisted</code>。<br>最最简单的twisted程序就是下面的代码，其在<code>twisted-intro</code>目录中的<code>basic-twisted/simple.py</code>中。</p>
-<pre><code>from twisted.internet import reactor
-reactor.run()
-</code></pre><p>可以用下面的命令来运行它：</p>
-<pre><code>python basic-twisted/simple.py
-</code></pre><p>正如在第二部分所说的那样，twisted是实现了Reactor模式的，因此它必然会有一个对象来代表这个reactor或者说是事件循环，而这正是twisted的核心。上面代码的第一行引入了reactor，第二行开始启动事件循环。</p>
-<p>这个程序什么事情也不做。除非你通过ctrl+c来终止它，否则它会一直运行下去。正常情况下，我们需要给出事件循环或者文件描述符来监视I/O（连接到某个服务器上，比如说我们那个诗歌服务器）。后面我们会来介绍这部分内容，现在这里的reactor被卡住了。值得注意的是，这里并不是一个在不停运行的简单循环。如果你在桌面上有个CPU性能查看器，可以发现这个循环体不会带来任何性能损失。实际上，这个reactor被卡住在第二部分图5的最顶端，等待永远不会到来的事件发生（更具体点说是一个调用select函数，却没有监视任何文件描述符)。</p>
-<p>下面我们会让这个程序丰富起来，不过事先要说几个结论：</p>
-<ol>
-<li>Twisted的reactor只有通过调用reactor.run()来启动。</li>
-<li>reactor循环是在其开始的进程中运行，也就是运行在主进程中。</li>
-<li>一旦启动，就会一直运行下去。reactor就会在程序的控制下（或者具体在一个启动它的线程的控制下）。</li>
-<li>reactor循环并不会消耗任何CPU的资源。</li>
-<li>并不需要显式的创建reactor，只需要引入就OK了。</li>
-</ol>
-<p>最后一条需要解释清楚。在Twisted中，reactor是Singleton（也是一种模式），即在一个程序中只能有一个reactor，并且只要你引入它就相应地创建一个。上面引入的方式这是twisted默认使用的方法，当然了，twisted还有其它可以引入reactor的方法。例如，可以使用<code>twisted.internet.pollreactor</code>中的系统调用来<code>poll</code> 来代替<code>select</code>方法。</p>
-<p>若使用其它的reactor，需要在引入<code>twisted.internet.reactor</code>前安装它。下面是安装<code>pollreactor</code>的方法：</p>
-<pre><code>from twisted.internet import pollreactor
-pollreactor.install()
-</code></pre><p>如果你没有安装其它特殊的reactor而引入了<code>twisted.internet.reactor</code>，那么Twisted会为你安装<code>selectreactor</code>。正因为如此，习惯性做法不要在最顶层的模块内引入reactor以避免安装默认reactor，而是在你要使用reactor的区域内安装。</p>
-<p>下面是使用 pollreactor重写上上面的程序，可以在basic-twisted/simple-poll.py文件中找到中找到：</p>
-<pre><code>from twited.internet import pollreactor
-pollreactor.install()
-from twisted.internet import reactor
-reactor.run()
-</code></pre><p>上面这段代码同样没有做任何事情。</p>
-<p>后面我们都会只使用默认的reactor，就单纯为了学习来说 ，所有的不同的reactor做的事情都一样。</p>
-<p>##你好，Twisted<br>我们得用Twisted来做什么吧。下面这段代码在reactor循环开始后向终端打印一条消息：</p>
-<pre><code>def hello():
-    print &apos;Hello from the reactor loop!&apos;
-    print &apos;Lately I feel like I\&apos;m stuck in a rut.&apos;
-from twisted.internet import reactor 
-reactor.callWhenRunning(hello)
-print &apos;Starting the reactor.&apos;
-reactor.run()
-</code></pre><p>这段代码可以在<code>basic-twisted/hello.py</code>中找到。运行它，会得到如下结果：</p>
-<pre><code>Starting the reactor. 
-Hello from the reactor loop!
-Lately I feel like I&apos;m stuck in a rut.
-</code></pre><p>仍然需要你手动来关掉程序，因为它在打印完毕后就又卡住了。</p>
-<p>值得注意的是，hello函数是在reactor启动后被调用的。这意味是reactor调用的它，也就是说Twisted在调用我们的函数。我们通过调用reactor的<code>callWhenRunning</code>函数，并传给它一个我们想调用函数的引用来实现hello函数的调用。当然，我们必须在启动reactor之前完成这些工作。</p>
-<p>我们使用回调来描述hello函数的引用。回调实际上就是交给Twisted（或者其它框架）的一个函数引用，这样Twisted会在合适的时间调用这个函数引用指向的函数，具体到这个程序中，是在reactor启动的时候调用。由于Twisted循环是独立于我们的代码，我们的业务代码与reactor核心代码的绝大多数交互都是通过使用Twisted的APIs回调我们的业务函数来实现的。</p>
-<p>我们可以通过下面这段代码来观察Twisted是如何调用我们代码的：</p>
-<pre><code>import traceback
-def stack():
-    print &apos;The python stack:&apos;
-    traceback.print_stack()
-from twisted.internet import reactor
-reactor.callWhenRunning(stack)
-reactor.run()
-</code></pre><p>这段代码的文件是 <code>basic-twisted/stack.py</code>。不出意外，它的输出是：</p>
-<blockquote>
-<p>The python stack: </p>
-<p>… reactor.run() &lt;– This is where we called the reactor </p>
-<p>… … &lt;– A bunch of Twisted function calls … </p>
-<p>traceback.print_stack() &lt;– The second line in the stack function</p>
-</blockquote>
-<p>不用考虑这其中的若干Twisted本身的函数。只需要关心reactor.run()与我们自己的函数调用之间的关系即可。</p>
-<p>有关回调的一些其它说明：</p>
-<p>Twisted并不是唯一使用回调的框架。许多历史悠久的框架都已在使用它。诸多GUI的框架也是基于回调来实现的，如GTK和QT。</p>
-<p>交互式程序的编程人员特别喜欢回调。也许喜欢到想嫁给它。也许已经这样做了。但下面这几点值得我们仔细考虑下：</p>
-<ol>
-<li>reactor模式是单线程的。</li>
-<li>像Twisted这种交互式模型已经实现了reactor循环，意味无需我们亲自去实现它。</li>
-<li>我们仍然需要框架来调用我们自己的代码来完成业务逻辑。</li>
-<li>因为在单线程中运行，要想跑我们自己的代码，必须在reactor循环中调用它们。</li>
-<li>reactor事先并不知道调用我们代码的哪个函数</li>
-</ol>
-<p>这样的话，回调并不仅仅是一个可选项，而是游戏规则的一部分。</p>
-<p>图6说明了回调过程中发生的一切：</p>
-<p><img src="/img/reactor启用回调.png" alt="图6 reactor启用回调"></p>
-<p>图6揭示了回调中的几个重要特性：</p>
-<ol>
-<li>我们的代码与Twisted代码运行在同一个进程中。</li>
-<li>当我们的代码运行时，Twisted代码是处于暂停状态的。</li>
-<li>同样，当Twisted代码处于运行状态时，我们的代码处于暂停状态。</li>
-<li>reactor事件循环会在我们的回调函数返回后恢复运行。</li>
-</ol>
-<p>在一个回调函数执行过程中，实际上Twisted的循环是被有效地阻塞在我们的代码上的。因此，因此我们应该确保回调函数不要浪费时间（尽快返回）。特别需要强调的是，我们应该尽量避免在回调函数中使用会阻塞I/O的函数。否则，我们将失去所有使用reactor所带来的优势。Twisted是不会采取特殊的预防措施来防止我们使用可阻塞的代码的，这需要我们自己来确保上面的情况不会发生。正如我们实际所看到的一样，对于普通网络I/O的例子，由于我们让Twisted替我们完成了异步通信，因此我们无需担心上面的事情发生。</p>
-<p>其它也可能会产生阻塞的操作是读或写一个非socket文件描述符（如管道）或者是等待一个子进程完成。</p>
-<p>如何从阻塞转换到非阻塞操作取决你具体的操作是什么，但是也有一些Twisted APIs会帮助你实现转换。值得注意的是，很多标准的Python方法没有办法转换为非阻塞方式。例如，os.system中的很多方法会在子进程完成前一直处于阻塞状态。这也就是它工作的方式。所以当你使用Twisted时，避开使用os.system。</p>
-<p>##退出Twisted<br>原来我们可以使用reactor的stop方法来停止Twisted的reactor。但是一旦reactor停止就无法再启动了。（Dave的意思是，停止就退出程序了），因此只有在你想退出程序时才执行这个操作。</p>
-<p>下面是退出代码，代码文件是<code>basic-twisted/countdown.py</code>：</p>
-<pre><code> 1 
- 2 class Countdown(object):
- 3 
- 4     counter = 5
- 5 
- 6     def count(self):
- 7         if self.counter == 0:
- 8             reactor.stop()
- 9         else:
-10             print self.counter, &apos;...&apos;
-11             self.counter -= 1
-12             reactor.callLater(1, self.count)
-13 
-14 from twisted.internet import reactor
-15 
-16 reactor.callWhenRunning(Countdown().count)
-17 
-18 print &apos;Start!&apos;
-19 reactor.run()
-20 print &apos;Stop!&apos;
-</code></pre><p>在这个程序中使用了callLater函数为Twisted注册了一个回调函数。callLater中的第二个参数是回调函数，第一个则是说明你希望在将来几秒钟时执行你的回调函数。那Twisted如何来在指定的时间执行我们安排好的的回调函数。由于程序并没有监听任何文件描述符，为什么它没有像前那些程序那样卡在select循环上？select函数，或者其它类似的函数，同样会接纳一个超时参数。如果在只提供一个超时参数值并且没有可供I/O操作的文件描述符而超时时间到时，select函数同样会返回。因此，如果设置一个0的超时参数，那么会无任何阻塞地立即检查所有的文件描述符集。<br>你可以将超时作为图5中循环等待中的一种事件来看待。并且Twisted使用超时事件来确保那些通过callLater函数注册的延时回调在指定的时间执行。或者更确切的说，在指定时间的前后会执行。如果一个回调函数执行时间过长，那么下面的延时回调函数可能会被相应的后延执行。Twisted的callLater机制并不为硬实时系统提供任何时间上的保证。</p>
-<p>下面是上面程序的输出：</p>
-<blockquote>
-<p>Start! </p>
-<p>5 … </p>
-<p>4 …</p>
-<p>3 … </p>
-<p>2 …</p>
-<p>1 … </p>
-<p>Stop!</p>
-<p>捕获它，Twisted</p>
-</blockquote>
-<p>由于Twisted经常会在回调中结束调用我们的代码，因此你可能会想，如果我们的回调函数中出现异常会发生什么状况。（Dave的意思是说，在结束我们的回调函数后会再次回到Twisted代码中，若在我们的回调中发生异常，那是不是异常会跑到Twisted代码中，而造成不可想象的后果 ）让我们来试试，在basic-twisted/exception.py中的程序会在一个回调函数中引发一个异常，但是这不会影响下一个回调：</p>
-<pre><code> 1 
- 2 def falldown():
- 3     raise Exception(&apos;I fall down.&apos;)
- 4 
- 5 def upagain():
- 6     print &apos;But I get up again.&apos;
- 7     reactor.stop()
- 8 
- 9 from twisted.internet import reactor
-10 
-11 reactor.callWhenRunning(falldown)
-12 reactor.callWhenRunning(upagain)
-13 
-14 print &apos;Starting the reactor.&apos;
-15 reactor.run()
-</code></pre><p>当你在命令行中运时，会有如下的输出：</p>
-<blockquote>
-<p>Starting the reactor. Traceback (most recent call last):</p>
-<p>… # I removed most of the traceback</p>
-<p>exceptions.Exception: I fall down.</p>
-<p>But I get up again.</p>
-</blockquote>
-<p>注意，尽管我们看到了因第一个回调函数引发异常而出现的跟踪栈，第二个回调函数依然能够执行。如果你将reactor.stop()注释掉的话，程序会继续运行下去。所以说，reactor并不会因为回调函数中出现失败（虽然它会报告异常）而停止运行。<br>网络服务器通常需要这种健壮的软件。它们通常不希望由于一个随机的Bug导致崩溃。也并不是说当我们发现自己的程序内部有问题时，就垂头丧气。只是想说Twisted能够很好的从失败的回调中返回并继续执行。</p>
-<p>##请继续讲解诗歌服务器<br>现在，我们已经准备好利用Twisted来搭建我们的诗歌服务器。在第4部分，我们会实现我们的异步模式的诗歌服务器的Twisted版。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2882,7 +2803,7 @@ reactor.run()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">212</span>
+                <span class="site-state-item-count">213</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

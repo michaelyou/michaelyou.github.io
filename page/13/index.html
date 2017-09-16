@@ -286,6 +286,165 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/06/从socket读数据时，socket缓存里的数据，可能超过用户缓存的长度，如何处理？/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/06/从socket读数据时，socket缓存里的数据，可能超过用户缓存的长度，如何处理？/" itemprop="url">从socket读数据时，socket缓存里的数据，可能超过用户缓存的长度，如何处理？</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-06T14:22:34+08:00">
+                2015-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>从socket读数据时，socket缓存里的数据，可能超过用户缓存的长度，如何处理？ 例如，socket缓存有8kB的数据，而你的缓存只有2kB空间。</p>
+</blockquote>
+<p>可以调用realloc()，扩大原有的缓存块尺寸。 </p>
+<p>但是临时申请内存的有一定性能损失。</p>
+<p>这种情况要看接收缓存的方式。</p>
+<ul>
+<li>第一种方式：  使用100k的大接收缓存为例。 </li>
+</ul>
+<p>如果要等待数据，并进行解析。可能发生缓存不够的情况。此时只能扩充缓存，或先处理100k的数据，再接收新的数据。</p>
+<ul>
+<li>第二种方式： 使用缓存队列，分成8K大小的队列。</li>
+</ul>
+<p>不存在接收缓存不够的情况。 除非用户解析已出错，使用数据接收、使用脱勾。 这种方式的代价是，可能需要将缓存队列再次拷贝、拼接成一块大的缓存，再进行解析。 而在本人的系统中，只需要将socket接收的数据再次原样分发给客户， <code>所以这种方案是最佳方案</code>。</p>
+<blockquote>
+<p>向socket发送数据时， 可能只发送了用户缓存里的一半，如何处理？例如，需要向socket发送8kB数据，返回值只有2kB发送成功。</p>
+</blockquote>
+<p>记录缓存的偏移量。 下一次socket写事件时， 再从偏移的位置接着发送。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/06/使用linux-epoll模型，水平触发模式（Level-Triggered），当socket可写时，会不停的触发socket可写的事件，如何处理？/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1816,154 +1975,6 @@ cat /proc/meminfo
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/共享内存/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/04/共享内存/" itemprop="url">共享内存</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-04T15:15:55+08:00">
-                2015-03-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>共享内存定义：共享内存是最快的可用IPC（进程间通信）形式。它允许多个不相关的进程去访问同一部分逻辑内存。共享内存是由IPC为一个进程创建的一个特殊的·地址范围，它将出现在进程的地址空间中。其他进程可以把同一段共享内存段“连接到”它们自己的地址空间里去。所有进程都可以访问共享内存中的地址。如果一个进程向这段共享内存写了数据，所做的改动会立刻被有访问同一段共享内存的其他进程看到。因此共享内存对于数据的传输是非常高效的。</p>
-<p><strong>共享内存段被映射进进程空间之后，存在于进程空间的什么位置？共享内存段最大限制是多少？</strong></p>
-<pre><code>$sysctl kern.ipc.shmmax  //可以查看共享内存的大小
-kern.ipc.shmmax: 33554432
-</code></pre><p>共享内存存在于进程数据段，最大限制为0x2000000Byte</p>
-<p><img src="/img/一个linux进程的存储器映像.png" alt="一个linux进程的存储器映像"></p>
-<p>程序内总是从虚拟地址0x08048000处开始。用户栈总是从虚拟地址0xbfffffff处开始，共享对象总是加载在从虚拟地址0x40000000处开始的区域内。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2014,7 +2025,7 @@ kern.ipc.shmmax: 33554432
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">212</span>
+                <span class="site-state-item-count">213</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

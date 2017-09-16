@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/img/lufei.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="预备知识什么是swarm一个swarm就是一组运行Docker并组成集群的机器。之后，你继续运行以前使用的Docker命令，但现在它们是由swarm manager(也是一台机器，执行docker swarm init的就是manager)在集群上执行。集群中的机器可以是物理机或虚拟机。加入集群后，它们被称为节点（node）。 swarm manager可以使用几种策略来运行容器，例如“最空的节点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker swarm部署应用">
+<meta property="og:url" content="http://yoursite.com/2017/09/16/docker-swarm部署应用/index.html">
+<meta property="og:site_name" content="Youmai の Blog">
+<meta property="og:description" content="预备知识什么是swarm一个swarm就是一组运行Docker并组成集群的机器。之后，你继续运行以前使用的Docker命令，但现在它们是由swarm manager(也是一台机器，执行docker swarm init的就是manager)在集群上执行。集群中的机器可以是物理机或虚拟机。加入集群后，它们被称为节点（node）。 swarm manager可以使用几种策略来运行容器，例如“最空的节点">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/img/ingress-routing-mesh.png">
+<meta property="og:image" content="http://yoursite.com/img/my_swarm.png">
+<meta property="og:updated_time" content="2017-09-16T13:44:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="docker swarm部署应用">
+<meta name="twitter:description" content="预备知识什么是swarm一个swarm就是一组运行Docker并组成集群的机器。之后，你继续运行以前使用的Docker命令，但现在它们是由swarm manager(也是一台机器，执行docker swarm init的就是manager)在集群上执行。集群中的机器可以是物理机或虚拟机。加入集群后，它们被称为节点（node）。 swarm manager可以使用几种策略来运行容器，例如“最空的节点">
+<meta name="twitter:image" content="http://yoursite.com/img/ingress-routing-mesh.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/16/docker-swarm部署应用/"/>
+
+
+
+
+
+  <title>docker swarm部署应用 | Youmai の Blog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-63551049-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youmai の Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/16/docker-swarm部署应用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">docker swarm部署应用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-16T21:42:58+08:00">
+                2017-09-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h2><h3 id="什么是swarm"><a href="#什么是swarm" class="headerlink" title="什么是swarm"></a>什么是swarm</h3><p>一个<code>swarm</code>就是一组运行<code>Docker</code>并组成集群的机器。之后，你继续运行以前使用的<code>Docker命令</code>，但现在它们是由<code>swarm manager</code>(也是一台机器，执行<code>docker swarm init</code>的就是<code>manager</code>)在集群上执行。集群中的机器可以是物理机或虚拟机。加入集群后，它们被称为<code>节点</code>（node）。</p>
+<p><code>swarm manager</code>可以使用几种策略来运行容器，例如“最空的节点”（<code>empties node</code>） - 将容器放到利用率最低的机器上。或者“全局”（<code>global</code>）模式，它确保每台机器只能获得指定容器的一个实例。你通过在<code>compose文件</code>来指示<code>swarm manager</code>使用这些策略。</p>
+<p><code>swarm manager</code>是集群中唯一可以执行命令的机器，也是唯一可以授权其他机器作为<code>worker</code>加入集群的机器。<code>worker</code>只提供<code>capacity</code>，它无法告诉任何其他机器它可以做什么和不能做什么。</p>
+<h3 id="什么是slack"><a href="#什么是slack" class="headerlink" title="什么是slack"></a>什么是slack</h3><p><code>stack</code>是一组相互关联的服务，可以被一起编排。<code>单个stack</code>能够定义整个应用程序的功能（尽管非常复杂的应用程序可能希望使用多个stack）。</p>
+<h2 id="Set-up-your-swarm"><a href="#Set-up-your-swarm" class="headerlink" title="Set up your swarm"></a>Set up your swarm</h2><p>一个<code>swarm</code>由很多<code>node</code>组成，<code>node</code>可以是物理机或虚拟机。基本概念很简单：运行<code>docker swarm init</code>启用集群模式，使当前的机器成为<code>manager</code>，然后在其他机器上运行<code>docker swarm join</code>，使他们以<code>worker</code>身份加入集群。</p>
+<h3 id="创建集群"><a href="#创建集群" class="headerlink" title="创建集群"></a>创建集群</h3><p>我们可以在本机创建几台虚拟机来创建我们的集群（需要安装<a href="https://www.virtualbox.org/wiki/Downloads" target="_blank" rel="external">VirtualBox</a>）</p>
+<p>首先，使用<code>docker-machine</code>命令，通过<code>VirtualBox</code>驱动创建两台虚拟机，<code>myvm1</code>和<code>myvm2</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span> docker-machine create --driver virtualbox myvm1</div><div class="line"><span class="meta">$</span> docker-machine create --driver virtualbox myvm2</div></pre></td></tr></table></figure>
+<p>我们将<code>myvm1</code>用作manager，它可以执行docker命令和授权别的worker加入swarm，<code>myvm2</code>将作为worker。</p>
+<p>登录<code>docker-machine</code>创建的虚拟机可以使用<code>docker-machine ssh命令</code>,下面我们设置<code>myvm1</code>为manager：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">➜  docker-machine ls</div><div class="line">NAME    ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER        ERRORS</div><div class="line">myvm1   -        virtualbox   Running   tcp://192.168.99.101:2376           v17.06.2-ce</div><div class="line">myvm2   -        virtualbox   Running   tcp://192.168.99.102:2376           v17.06.2-ce</div><div class="line">➜  docker-machine ssh myvm1 "docker swarm init --advertise-addr 192.168.99.101:2377"</div><div class="line"></div><div class="line">Swarm initialized: current node (u5e02o4thu4uurxm9w71kxtu5) is now a manager.</div><div class="line"></div><div class="line">To add a worker to this swarm, run the following command:</div><div class="line"></div><div class="line">    docker swarm join --token SWMTKN-1-02sp63h6alkj7sd57dkv6omkyvkb60y05delt5zvkspe0293ao-dtmm6kqjzbbe33jmo03yrml8t 192.168.99.101:2377</div><div class="line"></div><div class="line">To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.</div></pre></td></tr></table></figure>
+<p>可以看到，返回值中已经有了一个配置好的<code>docker swarm join</code>命令，复制这个命令，在myvm2上执行，使myvm2加入你的swarm作为worker：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">➜  docker-machine ssh myvm2 "docker swarm join --token SWMTKN-1-02sp63h6alkj7sd57dkv6omkyvkb60y05delt5zvkspe0293ao-dtmm6kqjzbbe33jmo03yrml8t 192.168.99.101:2377"</div><div class="line">This node joined a swarm as a worker.</div></pre></td></tr></table></figure>
+<p>🎉，我们的第一个<code>swarm</code>创建成功了。</p>
+<p>我们可以登上<code>myvm1</code>去看看现在的节点情况：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">➜  docker-machine ssh myvm1</div><div class="line">                        ##         .</div><div class="line">                  ## ## ##        ==</div><div class="line">               ## ## ## ## ##    ===</div><div class="line">           /"""""""""""""""""\___/ ===</div><div class="line">      ~~~ &#123;~~ ~~~~ ~~~ ~~~~ ~~~ ~ /  ===- ~~~</div><div class="line">           \______ o           __/</div><div class="line">             \    \         __/</div><div class="line">              \____\_______/</div><div class="line"> _                 _   ____     _            _</div><div class="line">| |__   ___   ___ | |_|___ \ __| | ___   ___| | _____ _ __</div><div class="line">| '_ \ / _ \ / _ \| __| __) / _` |/ _ \ / __| |/ / _ \ '__|</div><div class="line">| |_) | (_) | (_) | |_ / __/ (_| | (_) | (__|   &lt;  __/ |</div><div class="line">|_.__/ \___/ \___/ \__|_____\__,_|\___/ \___|_|\_\___|_|</div><div class="line">Boot2Docker version 17.06.2-ce, build HEAD : ff16afa - Wed Sep  6 00:17:25 UTC 2017</div><div class="line">Docker version 17.06.2-ce, build cec0b72</div><div class="line"></div><div class="line">docker@myvm1:~$ docker node ls</div><div class="line">ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS</div><div class="line">ggr9eji9z868qrorwerufrr45     myvm2               Ready               Active</div><div class="line">u5e02o4thu4uurxm9w71kxtu5 *   myvm1               Ready               Active              Leader</div></pre></td></tr></table></figure>
+<p>一目了然，现在有两个node，myvm1是作为leader存在</p>
+<h2 id="部署应用"><a href="#部署应用" class="headerlink" title="部署应用"></a>部署应用</h2><p>我们使用<a href="https://github.com/michaelyou/docker_swarm_deploy" target="_blank" rel="external">这个</a>简单的python应用来作为部署对象，你完全可以使用自己的应用程序(但还是建议用我使用的这个程序，这个应用打印了container的hostname，这是下面负载均衡的一个测试)。</p>
+<p>首先将<code>docker-compose.yml</code>拷贝到<code>myvm1</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker-machine scp docker-compose.yml myvm1:~</div></pre></td></tr></table></figure>
+<p>然后就是部署了：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">docker-machine ssh myvm1 "docker stack deploy -c docker-compose.yml firstswarmapp"</div><div class="line"></div><div class="line">Creating service firstswarmapp_visualizer</div><div class="line">Creating service firstswarmapp_redis</div><div class="line">Creating service firstswarmapp_web</div></pre></td></tr></table></figure>
+<p>这时候部署已经完成了，我们来看看成果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">➜  docker-machine ssh myvm1 "docker stack ls"</div><div class="line">NAME                SERVICES</div><div class="line">firstswarmapp       1</div><div class="line">➜  docker-machine ssh myvm1 "docker stack ps firstswarmapp"</div><div class="line">ID                  NAME                  IMAGE                         NODE                DESIRED STATE       CURRENT STATE                  ERROR               PORTS</div><div class="line">ID                  NAME                         IMAGE                             NODE                DESIRED STATE       CURRENT STATE                 ERROR                              PORTS</div><div class="line">6lfkdnzq27yf        firstswarmapp_redis.1        redis:latest                      myvm1               Running             Running 43 seconds ago</div><div class="line">ui2tdail0fxv        firstswarmapp_visualizer.1   dockersamples/visualizer:stable   myvm1               Running             Running 2 minutes ago</div><div class="line">901cprboy06k        firstswarmapp_web.1          michaelyou/friendlyhello:v1       myvm2               Running             Running 33 minutes ago</div><div class="line">uvju8t48sc2s        firstswarmapp_web.2          michaelyou/friendlyhello:v1       myvm2               Running             Running 33 minutes ago</div><div class="line">sk2z91e4yn9x        firstswarmapp_web.3          michaelyou/friendlyhello:v1       myvm1               Running             Running 34 minutes ago</div><div class="line">tuzdxnfyofyc        firstswarmapp_web.4          michaelyou/friendlyhello:v1       myvm2               Running             Running 33 minutes ago</div><div class="line">715at7211p8k        firstswarmapp_web.5          michaelyou/friendlyhello:v1       myvm1               Running             Running 34 minutes ago</div></pre></td></tr></table></figure>
+<p>可以看到，我们一共有7个<code>container</code>。<code>web</code>5个，分布在两台机器上，<code>redis</code>和<code>visualizer</code>各一个，在<code>manager节点</code>上。这和我们在<code>docker-compose.yml</code>中定义的一样。</p>
+<p><code>myvm1</code>和<code>myvm2</code>的地址都可以访问我们的应用。你创建的网络在它们之间是共享，并且负载平衡的。运行<code>docker-machine ls</code>来获取你的虚拟机的IP地址，并在浏览器上访问它们，并刷新。你会看到五个可能的容器ID，它们随机循环，显示了负载平衡的存在。</p>
+<p>两个IP地址都能工作的原因是群集中的节点加入了一个入口路由网格（routing mesh）。这样可以确保在集群中某个端口部署的服务始终将该端口保留给其自己，无论实际运行容器的是哪个节点。以下是在一个三节点集群的8080端口上部署的名为my-web的服务的路由网格示意图：</p>
+<p><img src="/img/ingress-routing-mesh.png" alt="ingress-routing-mesh"></p>
+<p>如果想要增加容器个数，只要修改<code>docker-compose.yml</code>文件中的replicas的数量，然后重新执行deploy就可以了。</p>
+<p>如果要加入新的node，只要在新的机器上执行我们在<code>myvm2</code>上执行的<code>docker swarm join</code>命令就可以了，加入新的节点后，重新执行deploy，我们就能用上新的机器了（注意要重新执行deploy，不会自动deploy，这一点和elasticsearch等软件不一样）。</p>
+<p>因为我们部署了visualizer，可以通过网页来看看我们集群现在的情况：</p>
+<p><img src="/img/my_swarm.png" alt="my swarm"></p>
+<p>跟<code>docker stack ps</code>输出是一致的。</p>
+<h2 id="清理"><a href="#清理" class="headerlink" title="清理"></a>清理</h2><p>清理stack</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker-machine ssh myvm1 "docker stack rm firstswarmapp"</div></pre></td></tr></table></figure>
+<p>这时候swarm还是在的，清理swarm：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker-machine ssh myvm1 "docker swarm leave --force"</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/12/docker源码分析1-cli/" rel="next" title="docker源码分析（一）-cli">
+                <i class="fa fa-chevron-left"></i> docker源码分析（一）-cli
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/lufei.jpeg"
+               alt="You Wangqiu" />
+          <p class="site-author-name" itemprop="name">You Wangqiu</p>
+           
+              <p class="site-description motion-element" itemprop="description">世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">213</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/michaelyou" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhi-yu-65-2" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      知乎
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#预备知识"><span class="nav-number">1.</span> <span class="nav-text">预备知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是swarm"><span class="nav-number">1.1.</span> <span class="nav-text">什么是swarm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是slack"><span class="nav-number">1.2.</span> <span class="nav-text">什么是slack</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Set-up-your-swarm"><span class="nav-number">2.</span> <span class="nav-text">Set up your swarm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建集群"><span class="nav-number">2.1.</span> <span class="nav-text">创建集群</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署应用"><span class="nav-number">3.</span> <span class="nav-text">部署应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#清理"><span class="nav-number">4.</span> <span class="nav-text">清理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">You Wangqiu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

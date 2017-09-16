@@ -286,6 +286,200 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/03/python-double-star-and-star/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/08/03/python-double-star-and-star/" itemprop="url">python (double star) and (star)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-03T19:43:55+08:00">
+                2015-08-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这个东西我开始根本不知道该怎么搜，找了很久才在stackoverflow上得到了指点，如果你需要搜一些别的答案，可以尝试搜索(double star in python)， 下面是一个非常棒的回答。</p>
+<p>原文<a href="http://stackoverflow.com/questions/2921847/what-does-the-star-operator-mean-in-python" target="_blank" rel="external">在此</a></p>
+<p>The single star <code>*</code> unpacks the sequence/collection into positional arguments, so you can do this:</p>
+<pre><code>def sum(a, b):
+    return a + b
+
+values = (1, 2)
+
+s = sum(*values)
+</code></pre><p>This will unpack the tuple so that it actually executes as:</p>
+<pre><code>s = sum(1, 2)
+</code></pre><p>The double star <code>**</code> does the same, only using a dictionary and thus named arguments:</p>
+<pre><code>values = { &apos;a&apos;: 1, &apos;b&apos;: 2 }
+s = sum(**values)
+</code></pre><p>You can also combine:</p>
+<pre><code>def sum(a, b, c, d):
+    return a + b + c + d
+
+values1 = (1, 2)
+values2 = { &apos;c&apos;: 10, &apos;d&apos;: 15 }
+s = sum(*values1, **values2)
+</code></pre><p>will execute as:</p>
+<pre><code>s = sum(1, 2, c=10, d=15)
+</code></pre><p>Also see section <a href="http://docs.python.org/tutorial/controlflow.html#unpacking-argument-lists" target="_blank" rel="external">4.7.4 - Unpacking Argument Lists</a> of the Python documentation.</p>
+<hr>
+<p>Additionally you can define functions to take <code>*x</code> and <code>**y</code> arguments, this allows a function to accept any number of positional and/or named arguments that aren’t specifically named in the declaration.</p>
+<p>Example:</p>
+<pre><code>def sum(*values):
+    s = 0
+    for v in values:
+        s = s + v
+    return s
+
+s = sum(1, 2, 3, 4, 5)
+</code></pre><p>or with <code>**</code>:</p>
+<pre><code>def get_a(**values):
+    return values[&apos;a&apos;]
+
+s = get_a(a=1, b=2)      # returns 1
+</code></pre><p>this can allow you to specify a large number of optional parameters without having to declare them.</p>
+<p>And again, you can combine:</p>
+<pre><code>def sum(*values, **options):
+    s = 0
+    for i in values:
+        s = s + i
+    if &quot;neg&quot; in options:
+        if options[&quot;neg&quot;]:
+            s = -s
+    return s
+
+s = sum(1, 2, 3, 4, 5)            # returns 15
+s = sum(1, 2, 3, 4, 5, neg=True)  # returns -15
+s = sum(1, 2, 3, 4, 5, neg=False) # returns 15
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/07/28/上传文件到阿里云OSS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1924,176 +2118,6 @@ Out[2]:
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/06/05/django-高效更新数据库/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/06/05/django-高效更新数据库/" itemprop="url">Django-高效更新数据库</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-06-05T17:58:54+08:00">
-                2015-06-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>模型的<code>save()</code>方法，这个方法会更新一行里的所有列。 而某些情况下，我们只需要更新行里的某几列。</p>
-<p>例如说我们现在想要将<code>Apress Publisher</code>的名称由原来的<code>”Apress”</code>更改为<code>”Apress Publishing”</code>。若使用<code>save()</code>方法，如：</p>
-<pre><code>&gt;&gt;&gt; p = Publisher.objects.get(name=&apos;Apress&apos;)
-&gt;&gt;&gt; p.name = &apos;Apress Publishing&apos;
-&gt;&gt;&gt; p.save()
-</code></pre><p>这等同于如下SQL语句：</p>
-<pre><code>SELECT id, name, address, city, state_province, country, website
-FROM books_publisher
-WHERE name = &apos;Apress&apos;;
-
-UPDATE books_publisher SET
-    name = &apos;Apress Publishing&apos;,
-    address = &apos;2855 Telegraph Ave.&apos;,
-    city = &apos;Berkeley&apos;,
-    state_province = &apos;CA&apos;,
-    country = &apos;U.S.A.&apos;,
-    website = &apos;http://www.apress.com&apos;
-WHERE id = 52;
-（注意在这里我们假设Apress的ID为52）
-</code></pre><p>在这个例子里我们可以看到<strong>Django的save()方法更新了不仅仅是name列的值，还有更新了所有的列</strong>。 若name以外的列有可能会被其他的进程所改动的情况下，只更改name列显然是更加明智的。 更改某一指定的列，我们可以调用结果集（QuerySet）对象的update()方法： 示例如下：</p>
-<pre><code>&gt;&gt;&gt; Publisher.objects.filter(id=52).update(name=&apos;Apress Publishing&apos;)
-</code></pre><p>与之等同的SQL语句变得更高效，并且不会引起竞态条件。</p>
-<pre><code>UPDATE books_publisher
-SET name = &apos;Apress Publishing&apos;
-WHERE id = 52;
-</code></pre><p><code>update()</code>方法对于任何结果集（<code>QuerySet</code>）均有效，这意味着你可以同时更新多条记录。 以下示例演示如何将所有<code>Publisher</code>的<code>country</code>字段值由<code>’U.S.A’</code>更改为<code>’USA’</code>：</p>
-<pre><code>&gt;&gt;&gt; Publisher.objects.all().update(country=&apos;USA&apos;)
-2
-</code></pre><p>update()方法会返回一个整型数值，表示受影响的记录条数。 在上面的例子中，这个值是2。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2144,7 +2168,7 @@ WHERE id = 52;
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">212</span>
+                <span class="site-state-item-count">213</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

@@ -286,6 +286,289 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/19/翻译-7个经典python面试题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/19/翻译-7个经典python面试题/" itemprop="url">[翻译]7个经典python面试题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-19T17:30:02+08:00">
+                2015-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>原文在<a href="http://www.toptal.com/python/interview-questions" target="_blank" rel="external">这里toptal</a></p>
+<p>##下面的代码输出什么？</p>
+<pre><code>list = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;]
+print list[10:]
+</code></pre><p>上面的代码输出<code>[]</code>，并且不会导致<code>IndexError</code>错误</p>
+<p>跟你想的一样，当取列表元素的时候，如果索引值超过了元素的个数(例如在上面的列表中，取list[10])将会导致<code>IndexError</code>错误。但是，取一个列表的切片的时候，如果起始索引超过了元素个数，将不会引起<code>IndexError</code>错误，仅返回一个空列表。</p>
+<p>这一特性将会导致一些非常难于追踪的bug，因为在运行时根本没有错误产生。</p>
+<p>##下面的代码在Python2中的输出是什么？解释你的答案</p>
+<pre><code>def div1(x,y):
+    print &quot;%s/%s = %s&quot; % (x, y, x/y)
+
+def div2(x,y):
+    print &quot;%s//%s = %s&quot; % (x, y, x//y)
+
+div1(5,2)
+div1(5.,2)
+div2(5,2)
+div2(5.,2.)
+</code></pre><p>另外，在Python3中上面的代码的输出有何不同(假设代码中的print语句都转化成了Python3中的语法结构)？</p>
+<p>在<strong>Python2</strong>中，代码的输出是：</p>
+<pre><code>5/2 = 2
+5.0/2 = 2.5
+5//2 = 2
+5.0//2.0 = 2.0
+</code></pre><p>默认情况下，如果两个操作数都是整数，Python2默认执行整数运算。所以，<code>5/2</code> 结果是<code>2</code>，而<code>5./2</code>结果是<code>2.5</code></p>
+<p>注意你可以通过下面的import语句来覆盖Python2中的这一行为</p>
+<pre><code>from __future__ import division 
+</code></pre><p>还要注意“双斜杠”(<code>//</code>)操作符将会一直执行整除，忽略操作数的类型。这就是为什么5.0//2.0即使在Python2中结果也是2.0</p>
+<p>但是在Python3并没有这一行为。两个操作数都是整数时，也不执行整数运算。在Python3中，输出如下：</p>
+<pre><code>5/2 = 2.5
+5.0/2 = 2.5
+5//2 = 2
+5.0//2.0 = 2.0
+</code></pre><p>##下面代码的输出是什么？请解释你的答案</p>
+<pre><code>def extendList(val, list=[]):
+    list.append(val)
+    return list
+
+list1 = extendList(10)
+list2 = extendList(123,[])
+list3 = extendList(&apos;a&apos;)
+
+print &quot;list1 = %s&quot; % list1
+print &quot;list2 = %s&quot; % list2
+print &quot;list3 = %s&quot; % list3
+</code></pre><p>如何修改函数<code>ExtendList</code>的定义才能产生我们希望的行为？</p>
+<p>输出为：</p>
+<pre><code>list1 = [10, &apos;a&apos;]
+list2 = [123]
+list3 = [10, &apos;a&apos;]
+</code></pre><p>很多人会错误地预计<code>list1</code>等于<code>［10］</code>，<code>list3</code>等于<code>[&#39;a&#39;]</code>，认为<code>extendList</code>函数的<code>list</code>参数在每一次函数被调用时都会被设置为默认值<code>[]</code></p>
+<p>但是，真实的情况是，默认的<code>list</code>只在函数定义的时候被创建一次。之后不指定<code>list</code>参数地调用<code>extendList</code>函数时，使用的都是同一个<code>list</code>。这是因为带默认参数的表达式是在函数定义的时候被计算的，而不是在函数调用时。</p>
+<p>所以，<code>list1</code>和<code>list3</code>都是在操作同一个默认<code>list</code>，而<code>list2</code>是在操作它自己创建的一个独立的<code>list</code>(将自己的空<code>list</code>作为参数传递过去)</p>
+<p><code>extendlist</code>的定义可以这样定义来达到我们预期的效果：</p>
+<pre><code>def extendList(val, list=None):
+    if list is None:
+        list = []
+    list.append(val)
+    return list
+</code></pre><p>调用修改后的函数，输出是：</p>
+<pre><code>list1 = [10]
+list2 = [123]
+list3 = [&apos;a&apos;]
+</code></pre><p>##下面代码的输出是什么？请解释你的答案</p>
+<pre><code>class Parent(object):
+    x = 1
+
+class Child1(Parent):
+    pass
+
+class Child2(Parent):
+    pass
+
+print Parent.x, Child1.x, Child2.x
+Child1.x = 2
+print Parent.x, Child1.x, Child2.x
+Parent.x = 3
+print Parent.x, Child1.x, Child2.x
+</code></pre><p>输出为：</p>
+<pre><code>1 1 1
+1 2 1
+3 2 3
+</code></pre><p>让很多人感到疑惑和惊讶的是，最后一行的输出竟然不是<code>3 2 1</code>而是<code>3 2 3</code>. 为什么修改了Parent.X的值会影响到<code>Child2.x</code>，但是同时又没有改变<code>Child1.x</code>的值呢？        </p>
+<p>这个问题的关键在于，在python中，类中的变量在内部被当作字典处理。如果一个变量名在当前类的字典中没有被发现，系统将会在这个类的祖先(例如，它的父类)中继续寻找，直到找到为止(如果一个变量名在这个类和这个类的祖先中都没有，那么将会引发一个<code>AttributeError</code>错误)</p>
+<p>因此，在父类中将变量x赋值为1，那么x变量将可以被当前类和所有这个类的子类引用。这就是为什么第一个print语句输出为<code>1 1 1</code>.</p>
+<p>接下来，如果它的子类覆盖了这个值(例如， 当我们执行<code>Child1.x = 2</code>)，那么这个变量的值仅仅在这个子类中发生了改变。这就是为什么第二个print语句输出<code>1 2 1</code></p>
+<p>最后，如果父类改变了这个变量的值(例如，我们执行<code>Parent.x = 3</code>)，所有没有覆盖这个参数值的子类(在这个例子中覆盖了参数的就是<code>Child2</code>)都会受到影响，这就是为什么第三个print语句的输出为<code>3 2 3</code></p>
+<p>##下面代码的输出是什么？请解释你的答案</p>
+<pre><code>def multipliers():
+    return [lambda x : i * x for i in range(4)]
+
+print [m(2) for m in multipliers()]
+</code></pre><p>怎么修改multipliers的定义才能达到期望的效果？</p>
+<p>上面代码的输出是<code>[6, 6, 6, 6]</code>(不是<code>[0, 2, 4, 6]</code>).</p>
+<p>原因是Python的闭包是延迟绑定(<code>late binding</code>)的。这表明在闭包中使用的变量直到内层函数被调用的时候才会被查找。结果是，当调用<code>multipliers()</code>返回的函数时，<code>i</code>参数的值会在这时被在调用环境中查找。所以，无论调用返回的哪个函数，<code>for</code>循环此时已经结束，<code>i</code>等于它最终的值<code>3</code>。因此，所有返回的函数都要乘以传递过来的<code>3</code>，因为上面的代码传递了<code>2</code>作为参数，所以他们都返回了<code>6</code>（即，<code>3 * 2</code>）</p>
+<p>(顺便提一句，正如在书<a href="http://docs.python-guide.org/en/latest/" target="_blank" rel="external">《The Hitchhiker’s Guide to Python》</a>中提出来的一样, 有一种广泛传播的误解认为这个问题和lambda表达式有关，事实并非如此。通过labda表达式产生的函数并没有什么特别之处，使用普通的<code>def</code>定义的函数的行为和lambda表达式产生的函数的行为是一样的.)</p>
+<p>下面是一些可以绕过这个问题的方法。</p>
+<p>方法一是像下面一样使用Python的生成器(generator)</p>
+<pre><code>def multipliers():
+     for i in range(4): yield lambda x : i * x 
+</code></pre><p>另一个方法是创造一个闭包，通过使用一个默认参数来立即绑定它的参数</p>
+<pre><code>def multipliers():
+    return [lambda x, i=i : i * x for i in range(4)]
+</code></pre><p>或者，你也可以使用functools.partial函数：</p>
+<pre><code>from functools import partial
+from operator import mul
+
+def multipliers():
+    return [partial(mul, i) for i in range(4)]
+</code></pre><p>##考虑下面的代码片段:</p>
+<pre><code>1. list = [ [ ] ] * 5
+2. list  # output?
+3. list[0].append(10)
+4. list  # output?
+5. list[1].append(20)
+6. list  # output?
+7. list.append(30)
+8. list  # output?
+</code></pre><p>第2，4，6，8行的输出是什么？解释你的答案.</p>
+<p>输出如下:</p>
+<pre><code>[[], [], [], [], []]
+[[10], [10], [10], [10], [10]]
+[[10, 20], [10, 20], [10, 20], [10, 20], [10, 20]]
+[[10, 20], [10, 20], [10, 20], [10, 20], [10, 20], 30]
+</code></pre><p>下面是解释:</p>
+<p>第一行的输出凭直觉就能知道，很容易理解。即：<code>list = [ [ ] ] * 5</code>创建了一个元素是5个列表的列表。</p>
+<p>但是，这里要理解的关键是，<code>list = [ [ ] ] * 5</code>并没有创建一个包含5个不同列表的列表。创建的这个列表里的5个列表，是对同一个列表的引用（a a list of 5 references to the same list）。理解了这些，你就能更好地理解余下的输出。</p>
+<p><code>list[0].append(10)</code>将数字10添加到第一个列表。但是由于5个列表是对同一个列表的引用，所以输出是<code>[[10], [10], [10], [10], [10]]</code>。</p>
+<p>同样的，<code>list[1].append(20)</code>将20追加到第二个列表。但是同样，由于这5个列表引用同一个列表，所以输出：<code>[[10, 20], [10, 20], [10, 20], [10, 20], [10, 20]]</code>.</p>
+<p>相比之下， <code>list.append(30)</code>是将一个全新的元素追加到“外层”的列表，所以产生了这样的输出：<code>[[10, 20], [10, 20], [10, 20], [10, 20], [10, 20], 30]</code>.</p>
+<p>##有一个拥有N个元素的列表，用一个列表解析式生成一个新的列表，元素的值同时满足以下条件:</p>
+<pre><code>(a) 偶数，以及
+(b) 在原列表中，索引为偶数
+</code></pre><p>例如，如果list[2]的值是偶数，那么这个元素应该也被包含在新列表中，因为它在原列表中的索引也是偶数(即 2). 但是， 如果list[3]是偶数，那这个值不应该被包含在新列表中，因为它在原列表中的索引是一个奇数。</p>
+<p>一个简单的解法如下：</p>
+<pre><code>[x for x in list[::2] if x%2 == 0]
+</code></pre><p>例如，给出下面的列表:</p>
+<pre><code>#        0   1   2   3    4    5    6    7    8
+list = [ 1 , 3 , 5 , 8 , 10 , 13 , 18 , 36 , 78 ]
+</code></pre><p>列表解析式<code>[x for x in list[::2] if x%2 == 0]</code> 会生成:</p>
+<pre><code>[10, 18, 78]
+</code></pre><p>这个表达式首先取列表中索引是偶数的数字，然后过滤掉所有的奇数.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/19/部署multi-region-openstack环境/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2311,244 +2594,6 @@ class Bar(object):
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/06/python的logging模块/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/06/python的logging模块/" itemprop="url">python的logging模块</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-06T17:17:09+08:00">
-                2015-05-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>官方文档在<a href="https://docs.python.org/2/library/logging.html#logging.Handler.createLock" target="_blank" rel="external">这里</a></p>
-<p>举一个栗子：代码既要把日志输出到控制台，还要写入日志文件</p>
-<pre><code>import logging
-
-# 创建一个logger
-logger = logging.getLogger(&apos;mylogger&apos;)
-logger.setLevel(logging.DEBUG)
-
-# 创建一个handler，用于写入日志文件
-fh = logging.FileHandler(&apos;test.log&apos;)
-fh.setLevel(logging.DEBUG)
-
-# 再创建一个handler，用于输出到控制台
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-
-# 定义handler的输出格式
-formatter = logging.Formatter(&apos;%(asctime)s - %(name)s - %(levelname)s - %(message)s&apos;)
-fh.setFormatter(formatter)
-ch.setFormatter(formatter)
-
-# 给logger添加handler
-logger.addHandler(fh)
-logger.addHandler(ch)
-
-# 记录一条日志
-logger.info(&apos;foorbar&apos;)  
-</code></pre><p>在控制台和当前目录下的test.log文件中都有下面这行输出：</p>
-<pre><code>2015-05-6 17:10:29,816 - mylogger - INFO - foorbar 
-</code></pre><p>##logging模块的API</p>
-<p>###logging.getLogger([name])<br>返回一个logger实例，如果没有指定name，返回<code>root logger</code>。</p>
-<p>只要name相同，返回的logger实例都是同一个而且只有一个，即name和logger实例是一一对应的。这意味着，无需把logger实例在各个模块中传递。只要知道name，就能得到 同一个logger实例</p>
-<p>###Logger.setLevel(lvl)</p>
-<p>设置logger的level， level有以下几个级别：</p>
-<p>NOTSET &lt; DEBUG &lt; INFO &lt; WARNING &lt; ERROR &lt; CRITICAL</p>
-<p>如果把looger的级别设置为INFO， 那么小于INFO级别的日志都不输出， 大于等于INFO级别的日志都输出</p>
-<pre><code>logger.debug(&quot;foobar&quot;)     # 不输出 
-logger.info(&quot;foobar&quot;)      # 输出
-logger.warning(&quot;foobar&quot;)   # 输出
-logger.error(&quot;foobar&quot;)     # 输出
-logger.critical(&quot;foobar&quot;)  # 输出 
-</code></pre><p>###Logger.addHandler(hdlr)<br>logger可以雇佣handler来帮它处理日志， handler主要有以下几种：</p>
-<ol>
-<li>StreamHandler: 输出到控制台</li>
-<li>FileHandler:   输出到文件</li>
-</ol>
-<p><strong>handler还可以设置自己的level以及输出格式。</strong></p>
-<p>##logging.basicConfig([**kwargs])</p>
-<ul>
-<li>这个函数用来配置root logger， 为root logger创建一个StreamHandler，<br> 设置默认的格式。</li>
-<li>这些函数： logging.debug()、logging.info()、logging.warning()、<br> logging.error()、logging.critical() 如果调用的时候发现root logger没有任何<br> handler， 会自动调用basicConfig添加一个handler</li>
-<li>如果root logger已有handler， 这个函数不做任何事情</li>
-</ul>
-<p>使用basicConfig来配置root logger的输出格式和level：</p>
-<pre><code>import logging
-logging.basicConfig(format=&apos;%(levelname)s:%(message)s&apos;, level=logging.DEBUG)
-logging.debug(&apos;This message should appear on the console&apos;)
-</code></pre><p>##关于root logger以及logger的父子关系<br>前面多次提到root logger， 实际上logger实例之间还有父子关系， root logger就是处于<br>最顶层的logger， 它是所有logger的祖先。如下图:<br><img src="http://cupic.img168.net/bbsfile/forum/month_1109/11090116387b8f480c8f5ec3b2.png" alt=""> </p>
-<p>####root logger是默认的logger</p>
-<p>如果不创建logger实例， 直接调用logging.debug()、logging.info()logging.warning()、logging.error()、logging.critical()这些函数，<br>那么使用的logger就是 root logger， 它可以自动创建，也是单实例的。</p>
-<p>####如何得到root logger</p>
-<p>通过logging.getLogger()或者logging.getLogger(“”)得到root logger实例。</p>
-<p>####默认的level</p>
-<p>root logger默认的level是logging.WARNING</p>
-<p>####如何表示父子关系</p>
-<p>logger的name的命名方式可以表示logger之间的父子关系. 比如：<br>parent_logger = logging.getLogger(‘foo’)<br>child_logger = logging.getLogger(‘foo.bar’)</p>
-<p>####什么是effective level</p>
-<p>logger有一个概念，叫effective level。 如果一个logger没有显示地设置level，那么它就<br>用父亲的level。如果父亲也没有显示地设置level， 就用父亲的父亲的level，以此推….</p>
-<p>最后到达root logger，一定设置过level。默认为logging.WARNING</p>
-<p>child loggers得到消息后，既把消息分发给它的handler处理，也会传递给所有祖先logger处理。</p>
-<p>又一个<strong>栗子</strong>：</p>
-<pre><code>import logging
-
-# 设置root logger
-r = logging.getLogger()
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter(&apos;%(asctime)s - %(levelname)s - %(message)s&apos;)
-ch.setFormatter(formatter)
-r.addHandler(ch)
-
-# 创建一个logger作为父亲
-p = logging.getLogger(&apos;foo&apos;)
-p.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter(&apos;%(asctime)s - %(message)s&apos;)
-ch.setFormatter(formatter)
-p.addHandler(ch)
-
-# 创建一个孩子logger
-c = logging.getLogger(&apos;foo.bar&apos;)
-c.debug(&apos;foo_test&apos;)  
-</code></pre><p>输出如下：</p>
-<pre><code>2015-05-06 17:14:22,677 - foo_test
-2015-05-06 17:14:22,677 - DEBUG - foo_test
-</code></pre><p>可见， 孩子logger没有任何handler，所以对消息不做处理。但是它把消息转发给了它的父亲以及root logger。最后输出两条日志。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2599,7 +2644,7 @@ c.debug(&apos;foo_test&apos;)
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">212</span>
+                <span class="site-state-item-count">213</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

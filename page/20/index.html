@@ -286,6 +286,203 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/25/在O-1-时间删除链表结点/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/25/在O-1-时间删除链表结点/" itemprop="url">在O(1)时间删除链表结点</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-25T21:13:55+08:00">
+                2015-01-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##QUESTION<br>给定单项链表的头指针和一个结点指针，定义一个函数在O(1)时间删除该节点。</p>
+<p>##O(n)解法<br>O(n)解法就是常规的删除链表结点的做法。从链表的头结点开始，顺序遍历查找要删除的结点，并在链表中删除该结点。这种思路由于要顺序查找，时间复杂度自然就是O(n)了。</p>
+<p>之所以要从头开始查找，是因为我们需要得到将被删除的结点的前面一个结点。在单向链表中，结点中没有指向前一个结点的指针，所以只好从链表的头结点开始顺序查找。</p>
+<p>##O(1)解法<br>那是不是一定要得到被删除结点的前一个节点呢？答案是否定的。我们可以这样来删除一个结点，例子如下，别删除的结点为i，i的下一个结点为j：</p>
+<ul>
+<li>把j结点的内容复制到i结点，覆盖i结点的内容</li>
+<li>将i结点的next指向j结点的next</li>
+<li>删除j结点</li>
+</ul>
+<p>这里我们删除的虽然是j结点，但是得到的效果却是删除了i结点。</p>
+<p>还有一个问题，当我们删除的结点是尾结点时，尾结点的next是NULL，上述解法就不再适用，我们还是要顺序遍历后删除尾结点。</p>
+<p>代码如下：</p>
+<pre><code>typedef struct Node
+{
+    int data;
+    struct Node *next;
+}*node;
+
+/*在O(1)时间删除结点*/
+void DeleteNode(node &amp;pListHead, node pToBeDeleted)
+{
+    if(!pListHead || !pToBeDeleted)
+        return;
+
+    // 要删除的结点不是尾结点
+    if(pToBeDeleted-&gt;next!= NULL)
+    {
+        node pNext = pToBeDeleted-&gt;next;
+        pToBeDeleted-&gt;data= pNext-&gt;data;
+        pToBeDeleted-&gt;next = pNext-&gt;next;
+
+        delete pNext;
+        pNext = NULL;
+    }
+    // 链表只有一个结点，删除头结点（也是尾结点）
+    else if(pListHead == pToBeDeleted)
+    {
+        delete pToBeDeleted;
+        pToBeDeleted = NULL;
+        pListHead = NULL;
+    }
+    // 链表中有多个结点，删除尾结点
+    else
+    {
+        node pNode = pListHead;
+        while(pNode-&gt;next != pToBeDeleted)
+        {
+            pNode = pNode-&gt;next;            
+        }
+
+        pNode-&gt;next = NULL;
+        delete pToBeDeleted;
+        pToBeDeleted = NULL;
+    }
+}
+</code></pre><p>我们分析一下这个思路的时间复杂度。对于n-1个非尾结点而言，我们可以在O(1)时把下一个结点的内存复制覆盖要删除的结点，并删除下一个结点；对于尾结点而言，由于仍需要顺序查找，时间复杂度为O(n).因此总的时间复杂度为<code>[(n-1)*O(1)+O(n)]/n</code>,结果仍然是O(1),符合要求。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/25/二进制中1的个数/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1826,182 +2023,6 @@ int main()
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/21/网络基础-一些小面试题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/21/网络基础-一些小面试题/" itemprop="url">网络基础-一些小面试题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-21T21:05:12+08:00">
-                2015-01-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/面试/" itemprop="url" rel="index">
-                    <span itemprop="name">面试</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ol>
-<li>get和post的区别<ul>
-<li>GET用于信息获取，而且应该是安全的和幂等的，POST表示可能修改变服务器上的资源的请求</li>
-<li>GET方式提交的数据最多只能是1024字节，理论上POST没有限制，可传较大量的数据</li>
-<li>POST提交，把提交的数据放置在是HTTP包的包体中，GET提交的数据会在地址栏中显示出来</li>
-</ul>
-</li>
-<li>一个广域网和一个局域网相连，需要的设备是<code>路由器</code>，<code>网关</code></li>
-<li>在Web开发中，如何实现会话的跟踪<ul>
-<li>隐藏表单域</li>
-<li>保存cookie</li>
-<li>URL复写</li>
-<li>session 机制</li>
-</ul>
-</li>
-<li>cookie和session<ul>
-<li>cookie数据存放在客户的浏览器上，session数据放在服务器上。</li>
-<li>session是针对每一个用户的，变量的值保存在服务器上，用一个sessionID来区分是哪个用户session变量</li>
-<li>保存这个session id的方式可以采用cookie</li>
-</ul>
-</li>
-<li>cookie 属性的一些描述：<ul>
-<li>expires: cookie的过期时间</li>
-<li>domain属性可以使多个web服务器共享cookie</li>
-<li>path属性指定与cookie关联在一起的网页</li>
-<li>secure: 如果secure 这个词被作为Set-Cookie 头的一部分，那么cookie 只能通过安全通道传输</li>
-</ul>
-</li>
-<li>dns域名劫持<ul>
-<li>如果dns把你想要解析的地方，解析为错误的另一个地方，这种现象叫做dns劫持</li>
-<li>如果知道该域名的真实IP地址，则可以直接用此IP代替域名后进行访问</li>
-<li>可以通过更换其它DNS解决域名劫持问题</li>
-</ul>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2052,7 +2073,7 @@ int main()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">212</span>
+                <span class="site-state-item-count">213</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
