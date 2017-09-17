@@ -286,6 +286,153 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/为什么malloc时需要指定size，对应的free时不需要指定size/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/20/为什么malloc时需要指定size，对应的free时不需要指定size/" itemprop="url">为什么malloc时需要指定size，对应的free时不需要指定size</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T16:59:18+08:00">
+                2015-03-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>当调用malloc(size)时，实际分配的内存大小大于size字节，这是因为在分配的内存区域头部有类似于</p>
+<pre><code>struct control_block {
+    unsigned size;
+    int used;
+};
+</code></pre><p>这样的一个结构，如果malloc函数内部得到的内存区域的首地址为<code>void *p</code>,那么它返回给你的就是<code>p + sizeof(control_block)</code>，而调用<code>free(q)</code>的时候，该函数把p减去<code>sizeof(control_block)</code>，然后就可以根据<br><code>((control_blcok*)q)-&gt;size</code>得到要释放的内存区域的大小。这也就是为什么free只能用来释放malloc分配的内存，如果用于释放其他的内存，会发生未知的错误。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/进程的状态及转换/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1812,190 +1959,6 @@ print l2
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/一些阿里面试题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/12/一些阿里面试题/" itemprop="url">一些阿里面试题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T20:17:38+08:00">
-                2015-03-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/面试/" itemprop="url" rel="index">
-                    <span itemprop="name">面试</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##内存泄露最终的结果在操作系统中的表现是什么？<br>内存泄漏形象的比喻是“操作系统可提供给所有进程的存储空间正在被某个进程榨干”，最终结果是<strong>程序运行时间越长，占用存储空间越来越多，最终用尽全部存储空间，整个系统崩溃。</strong>所以“内存泄漏”是从操作系统的角度来看的。这里的存储空间并不是指物理内存，而是指虚拟内存大小，这个虚拟内存大小取决于磁盘交换区设定的大小。由程序申请的一块内存，如果没有任何一个指针指向它，那么这块内存就泄漏了。</p>
-<p>从用户使用程序的角度来看，内存泄漏本身不会产生什么危害，作为一般的用户，根本感觉不到内存泄漏的存在。<strong>真正有危害的是内存泄漏的堆积，这会最终消耗尽系统所有的内存。</strong>从这个角度来说，一次性内存泄漏并没有什么危害，因为它不会堆积，而隐式内存泄漏危害性则非常大，因为较之于常发性和偶发性内存泄漏它更难被检测到。</p>
-<p>##malloc-free和new-delete的区别</p>
-<p>malloc-free是c/c++中的函数，new-delete是c++中的运算符</p>
-<p>##怎么知道http首部结束了？</p>
-<p>http首部由一个空行结束，也就是<code>\r\n\r\n</code>，表明了首部的结束和实体主体的开始。</p>
-<p>实体的主体部分包含一个由任意数据组成的数据块。并不是所有的报文都包含实体的主体部分。如<code>GET请求就不包含实体</code>。</p>
-<p>##tcpdump抓包是在哪一层？</p>
-<p>Linux下抓取报文的位置，是在链路层处理报文之后，交给网络层之前的位置。</p>
-<p>##同一端口可否同时被两个应用监听？<br>不可以，但是fork的子进程用netstat看确实和父进程监听在同一端口，但是这和两个独立的进程应该是有所区别的</p>
-<p>同一机器上的应用如果监听在同一端口，那socket的四元组就是一样的了，这是不可能的</p>
-<p>##查看命令的帮助文档的命令</p>
-<ul>
-<li>man是查看本地      </li>
-<li>info是查看在线</li>
-</ul>
-<p>##谁在决定是使用Big-endian，还是Little-endian？</p>
-<p>在计算存储中是CPU，也就是CPU的体系结构，还是有点抽象啊。比如x86的是小端，power-pc的是大端。</p>
-<p>##线性表的顺序结构和链表结构各有什么优缺点</p>
-<ul>
-<li><p>顺序结构：</p>
-<ul>
-<li>优点：易于查询，索引快 list[n]这样的操作，O(1)复杂度</li>
-<li>缺点：扩展性弱，不易删除、添加。</li>
-</ul>
-</li>
-<li><p>链表结构：</p>
-<ul>
-<li>优点：扩展性强，易于删除、添加</li>
-<li>缺点：不易于查询，索引慢，list[n]这样的操作，复杂度为O(n)</li>
-</ul>
-</li>
-</ul>
-<p>##shell的if和for语句</p>
-<p>if语句</p>
-<pre><code>if condition;
-then
-    commands
-fi
-</code></pre><p>for语句</p>
-<pre><code>for i in ***; do
-commands
-done
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2046,7 +2009,7 @@ done
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">213</span>
+                <span class="site-state-item-count">214</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

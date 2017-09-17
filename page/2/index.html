@@ -286,6 +286,191 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/17/Django-model去掉unique_together报错/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/10/17/Django-model去掉unique_together报错/" itemprop="url">Django model去掉unique_together报错</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-17T08:46:48+08:00">
+                2016-10-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>事情是这样的，我有一个存储考试的表</p>
+<pre><code>class Exam(models.Model):
+    category = models.ForiegnKey(Category)
+    name = models.CharField(max_length=128)
+    date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = (&apos;category&apos;, &apos;date&apos;)
+</code></pre><p>category表示考试的类型，date表示考试的日期。建表的时候考虑到一个类型的考试在同一个应该只有一个考试，所以就加了一个<code>unique_together</code>。但是由于业务需要，这个unique_together不需要了。</p>
+<p>用过django的人都知道，这不是个大问题，删掉<code>unique_together</code>的代码，然后makemigrations呗，确实，我就这么做了。但是当我migrate的时候却报错了，错误如下：</p>
+<pre><code>django.db.utils.OperationalError: (1553, &quot;Cannot drop index &apos;insurance_exam_category_id_a430e581_uniq&apos;: needed in a foreign key constraint&quot;)
+</code></pre><p>数据库不让我删除这个index，并且告诉我有一个外键约束用到了这个它。我就奇怪了，category是外键没错，但是我这个是<code>unique_together</code>啊，怎么可能有哪个外键用到了它呢？</p>
+<p>没办法，我只能到数据库里寻找答案，<code>show create table exam</code>，输出如下：</p>
+<pre><code>| insurance_exam | CREATE TABLE `insurance_exam` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL,
+  `date` date NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `category_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `insurance_exam_category_id_a430e581_uniq` (`category_id`,`date`),
+  CONSTRAINT `insurance_exam_category_id_a2238260_fk_insurance_category_id` FOREIGN KEY (`category_id`) REFERENCES `insurance_category` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1062 DEFAULT CHARSET=utf8mb4 |
+</code></pre><p>可以看到UNIQUE KEY那一行就是<code>unique_together</code>，下面一行是category外键。没有其他东西了啊，到底哪个外键用到了我们的<code>unique_together</code>？</p>
+<p>外键只能是category了，也没有别的外键啊。到底是怎么回事呢？</p>
+<p>原因是这样的：在Mysql中外键会自动在表上添加一个index，也就说如果没有unique_together，我们的表应该是这样的：</p>
+<pre><code>| insurance_exam | CREATE TABLE `insurance_exam` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL,
+  `date` date NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `category_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `category_id` (`category_id`),
+  CONSTRAINT `insurance_exam_category_id_a2238260_fk_insurance_category_id` FOREIGN KEY (`category_id`) REFERENCES `insurance_category` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1062 DEFAULT CHARSET=utf8mb4 |
+</code></pre><p>但是因为有了<code>unique_together</code>的<code>unique_key</code>，并且category在联合索引的左边，根据最左前缀原则，category的索引就有了，所以就不会另外建索引，这个时候category的外键约束就依赖了这个<code>unique_key</code>，所以删除的时候会出现那样的报错。</p>
+<p>机智的小伙伴应该想到了，如果我们要去掉<code>unique_together</code>，我们可以将category的KEY加回去，这样就可以将<code>unique_together</code>删掉了。sql如下：</p>
+<pre><code>alter table exam add index(category_id);
+</code></pre><p>这样，migrate就能成功了。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/10/python-string-intern/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3094,173 +3279,6 @@ session.get(&apos;order_id&apos;, False)
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/10/Django的F-表达式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/08/10/Django的F-表达式/" itemprop="url">Django的F()表达式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-10T23:00:20+08:00">
-                2015-08-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>算是一些基本的高级用法吧，在Django文档的<a href="https://docs.djangoproject.com/en/1.7/ref/models/queries/" target="_blank" rel="external">Query-related classes</a>这一章中。主要讲了三个类，<code>F()</code>,<code>Q()</code>和<code>prefetch()</code>。我们下面讲一讲<code>F()</code>。</p>
-<blockquote>
-<p>class F()<br>F()是代表模型字段的值，也就是说对于一些特殊的字段的操作，我们不需要用python把数据先取到内存中，然后操作，在存储到db中了。</p>
-</blockquote>
-<p>##常见的使用场景</p>
-<p>###字段加1(加减乘除运算)</p>
-<p>例如我们有个统计点击量的字段，每次更新的操作其实就是把字段的值加1.</p>
-<p>一般我们的做法是把这条记录取出来，把相应字段加+1，然后在save，类似下面的代码</p>
-<pre><code># Tintin filed a news story!
-reporter = Reporters.objects.get(name=&apos;Tintin&apos;)
-reporter.stories_filed += 1
-reporter.save()
-</code></pre><p>当我们使用了<code>F()</code>之后呢？ 只需要一行代码</p>
-<pre><code>Reporters.objects.filter(name=&apos;Tintin&apos;).update(stories_filed=F(&apos;stories_filed&apos;) + 1)
-</code></pre><p>不仅代码量少了，而且这是直接在数据中操作，效率也变高了，特别是并发的情况，减少了多线程同时操作带来的隐患。 但是<strong>不支持字符串相加的操作</strong></p>
-<p>###字段比较<br>例如一个合同有两个日期，一个叫做终止日期，一个叫做结束日期，现在要筛选出终止日期小于结束日期的合同。</p>
-<pre><code>from django.db.models import F
-from contracts.models import Contracts
-contracts = Contracts.objects.filter(contract_stop_time__lt=F(&apos;end_time&apos;))
-</code></pre><p>如果没有F对象，就没法直接使用rom来查询。</p>
-<p>###补充–通过F()避免竞态条件</p>
-<blockquote>
-<p>Another useful benefit of <code>F()</code> is that having the database - rather than Python - update a field’s value avoids a race condition.</p>
-<p>If two Python threads execute the code in the first example above, one thread could retrieve, increment, and save a field’s value after the other has retrieved it from the database. The value that the second thread saves will be based on the original value; the work of the first thread will simply be lost.</p>
-<p>If the database is responsible for updating the field, the process is more robust: it will only ever update the field based on the value of the field in the database when the <code>save()</code> or <code>update()</code> is executed, rather than based on its value when the instance was retrieved.</p>
-</blockquote>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3311,7 +3329,7 @@ contracts = Contracts.objects.filter(contract_stop_time__lt=F(&apos;end_time&apo
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">213</span>
+                <span class="site-state-item-count">214</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

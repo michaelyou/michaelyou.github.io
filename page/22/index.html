@@ -286,6 +286,243 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/14/scrapy防止被ban的策略/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/14/scrapy防止被ban的策略/" itemprop="url">scrapy防止被ban的策略</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-14T10:37:02+08:00">
+                2015-01-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>转载自<a href="http://blog.csdn.net/u012150179/article/details/35774323" target="_blank" rel="external">这里</a></p>
+<p>#1. 设置download_delay</p>
+<p>   他的作用主要是设置下载的等待时间，大规模集中的访问对服务器的影响最大，相当于短时间中增大服务器负载。下载等待时间长，不能满足短时间大规模抓取的要求，太短则大大增加了被ban的几率。如果你的爬虫工作的好好的，突然掉线了，并且得到了类似下面的错误：</p>
+<pre><code>twisted.internet.error.ConnectionRefusedError
+</code></pre><p>不妨试着将download_delay设置的大一点。</p>
+<p>使用注意：</p>
+<p>download_delay可以设置在settings.py中，也可以在spider中设置</p>
+<p>#2. 禁止cookies</p>
+<p>所谓cookies，是指某些网站为了辨别用户身份而储存在用户本地终端（Client Side）上的数据（通常经过加密），禁止cookies也就防止了可能使用cookies识别爬虫轨迹的网站得逞。</p>
+<p>使用：</p>
+<p>在settings.py中设置COOKIES_ENABLES=False。也就是不启用cookies middleware，不向web server发送cookies</p>
+<p>#3. 使用user agent池<br>所谓的user agent，是指包含浏览器信息、操作系统信息等的一个字符串，也称之为一种特殊的网络协议。服务器通过它判断当前访问对象是浏览器、邮件客户端还是网络爬虫。在request.headers可以查看user agent。如下，使用scrapy shell查看：</p>
+<pre><code>scrapy shell http://michaelyou.github.io
+</code></pre><p>输出request.headers可以得到如下信息</p>
+<pre><code>In [1]: request.headers
+Out[1]: 
+{&apos;Accept&apos;: &apos;text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&apos;,
+&apos;Accept-Encoding&apos;: &apos;gzip,deflate&apos;,
+&apos;Accept-Language&apos;: &apos;en&apos;,
+&apos;User-Agent&apos;: &apos;Scrapy/0.24.4 (+http://scrapy.org)&apos;}
+</code></pre><p>由此得到,scrapy本身是使用Scrapy/0.24.4来表明自己身份的。这也就暴露了自己是爬虫的信息。解决方法如下：</p>
+<p>首先编写自己的UserAgentMiddle中间件，在spider目录下新建rotate_useragent.py,代码如下：</p>
+<pre><code># -*-coding:utf-8-*-
+
+from scrapy import log
+
+&quot;&quot;&quot;避免被ban策略之一：使用useragent池。
+
+使用注意：需在settings.py中进行相应的设置。
+&quot;&quot;&quot;
+
+import random
+from scrapy.contrib.downloadermiddleware.useragent import UserAgentMiddleware
+
+class RotateUserAgentMiddleware(UserAgentMiddleware):
+
+    def __init__(self, user_agent=&apos;&apos;):
+        self.user_agent = user_agent
+
+    def process_request(self, request, spider):
+        ua = random.choice(self.user_agent_list)
+        if ua:
+            #显示当前使用的useragent
+            print &quot;********Current UserAgent:%s************&quot; %ua
+
+            #记录
+            log.msg(&apos;Current UserAgent: &apos;+ua, level=&apos;INFO&apos;)
+            request.headers.setdefault(&apos;User-Agent&apos;, ua)
+
+    #the default user_agent_list composes chrome,I E,firefox,Mozilla,opera,netscape
+    #for more user agent strings,you can find it in http://www.useragentstring.com/pages/useragentstring.php
+    user_agent_list = [\
+        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 &quot;
+        &quot;(KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1&quot;,
+        &quot;Mozilla/5.0 (X11; CrOS i686 2268.111.0) AppleWebKit/536.11 &quot;
+        &quot;(KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 &quot;
+        &quot;(KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 &quot;
+        &quot;(KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.1 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.77.34.5 Safari/537.1&quot;,
+        &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1084.9 Safari/536.5&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.0) AppleWebKit/536.5 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1084.36 Safari/536.5&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (Windows NT 5.1) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_0) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1061.0 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.24 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24&quot;
+       ]
+</code></pre><p>建立user agent池（user_agent_list）并在每次发送request之前从agent池中随机选取一项设置request的User_Agent。编写的UserAgent中间件的基类为UserAgentMiddle。</p>
+<p>除此之外，要在settings.py(配置文件)中禁用默认的useragent并启用重新实现的User Agent。配置方法如下：</p>
+<p>#取消默认的useragent,使用新的useragent<br>    DOWNLOADER_MIDDLEWARES = {<br>            ‘scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware’ : None,<br>            ‘CSDNBlogCrawlSpider.spiders.rotate_useragent.RotateUserAgentMiddleware’ :400<br>        }</p>
+<p>#4. 使用IP池<br>web server应对爬虫的策略之一就是直接将你的IP或者是整个IP段都封掉禁止访问，这时候，当IP封掉后，转换到其他的IP继续访问即可。</p>
+<p>可以使用Scrapy+Tor+polipo</p>
+<p>配置方法与使用教程请点<a href="http://pkmishra.github.io/blog/2013/03/18/how-to-run-scrapy-with-TOR-and-multiple-browser-agents-part-1-mac/" target="_blank" rel="external">这里</a>。</p>
+<p>#5. 分布式爬取<br>有时间再补充</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/14/一些常用的shell和vim命令/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -810,7 +1047,7 @@ print response.read()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">213</span>
+                <span class="site-state-item-count">214</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

@@ -286,6 +286,173 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/10/Django的F-表达式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/08/10/Django的F-表达式/" itemprop="url">Django的F()表达式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-10T23:00:20+08:00">
+                2015-08-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>算是一些基本的高级用法吧，在Django文档的<a href="https://docs.djangoproject.com/en/1.7/ref/models/queries/" target="_blank" rel="external">Query-related classes</a>这一章中。主要讲了三个类，<code>F()</code>,<code>Q()</code>和<code>prefetch()</code>。我们下面讲一讲<code>F()</code>。</p>
+<blockquote>
+<p>class F()<br>F()是代表模型字段的值，也就是说对于一些特殊的字段的操作，我们不需要用python把数据先取到内存中，然后操作，在存储到db中了。</p>
+</blockquote>
+<p>##常见的使用场景</p>
+<p>###字段加1(加减乘除运算)</p>
+<p>例如我们有个统计点击量的字段，每次更新的操作其实就是把字段的值加1.</p>
+<p>一般我们的做法是把这条记录取出来，把相应字段加+1，然后在save，类似下面的代码</p>
+<pre><code># Tintin filed a news story!
+reporter = Reporters.objects.get(name=&apos;Tintin&apos;)
+reporter.stories_filed += 1
+reporter.save()
+</code></pre><p>当我们使用了<code>F()</code>之后呢？ 只需要一行代码</p>
+<pre><code>Reporters.objects.filter(name=&apos;Tintin&apos;).update(stories_filed=F(&apos;stories_filed&apos;) + 1)
+</code></pre><p>不仅代码量少了，而且这是直接在数据中操作，效率也变高了，特别是并发的情况，减少了多线程同时操作带来的隐患。 但是<strong>不支持字符串相加的操作</strong></p>
+<p>###字段比较<br>例如一个合同有两个日期，一个叫做终止日期，一个叫做结束日期，现在要筛选出终止日期小于结束日期的合同。</p>
+<pre><code>from django.db.models import F
+from contracts.models import Contracts
+contracts = Contracts.objects.filter(contract_stop_time__lt=F(&apos;end_time&apos;))
+</code></pre><p>如果没有F对象，就没法直接使用rom来查询。</p>
+<p>###补充–通过F()避免竞态条件</p>
+<blockquote>
+<p>Another useful benefit of <code>F()</code> is that having the database - rather than Python - update a field’s value avoids a race condition.</p>
+<p>If two Python threads execute the code in the first example above, one thread could retrieve, increment, and save a field’s value after the other has retrieved it from the database. The value that the second thread saves will be based on the original value; the work of the first thread will simply be lost.</p>
+<p>If the database is responsible for updating the field, the process is more robust: it will only ever update the field based on the value of the field in the database when the <code>save()</code> or <code>update()</code> is executed, rather than based on its value when the instance was retrieved.</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/03/python-double-star-and-star/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1944,180 +2111,6 @@ register = template.Library()
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/06/09/no-module-named-xxx/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/06/09/no-module-named-xxx/" itemprop="url">no module named xxx</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-06-09T09:17:52+08:00">
-                2015-06-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>python的常见错误，意思非常明确，这个模块找不到了。导致的原因也很确定：</p>
-<ol>
-<li>确实没有安装这个模块</li>
-<li>路径不对</li>
-</ol>
-<p>第一个把模块安装上就完事了，第二个往往是导致这个错误最常见的原因。</p>
-<p>如果你能确定你已经安装了这个模块，那肯定是import的路径有问题。import导入时，搜索的路径是有顺序的，查看当前python导入模块的搜索路径，可以在交互命令行中执行下面的命令：</p>
-<pre><code>In [1]: import sys
-
-In [2]: sys.path
-Out[2]:
-[&apos;&apos;,
- &apos;/System/Library/Frameworks/Python.framework/Versions/2.7/bin&apos;,
- &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python27.zip&apos;,
- &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7&apos;,
- &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-darwin&apos;,
- &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-mac&apos;,
- &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-mac/lib-scriptpackages&apos;,
- &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk&apos;,
- &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-old&apos;,
- &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-dynload&apos;,
- &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages&apos;,
- &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/PIL&apos;,
- &apos;/Library/Python/2.7/site-packages&apos;,
- &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/IPython/extensions&apos;,
- &apos;/Users/youwangqiu/.ipython&apos;]
-</code></pre><p>可以看到，我使用的python是现在当前路径(<code>&#39; &#39;</code>)下搜索，然后去系统的各个路径下搜索。而这个机制将<strong>导致一个很大的问题</strong>。</p>
-<p>##不要乱给你的<code>.py</code>文件命名<br>你写了一个比较大的应用，多个<code>.py</code>文件，相互之间有<code>import</code>。给这些.py文件取名是件麻烦事，一般都是根据文件的功能来取名的嘛。所以你就将一个进行http请求的文件命名成了<code>requests.py</code>（同时，你的应用需要系统的<code>requests</code>模块）。调试整个应用的时候，你发现，这个<code>requests</code>模块怎么和教程上的不一样啊，怎么该有的函数都没有啊，要你有什么卵用！</p>
-<p><code>requests</code>模块说：怪我喽…</p>
-<p>大哥，你导入的不是系统的<code>requests</code>模块啊，你导入的是你的<code>requests.py</code>啊，当然什么都没有了。</p>
-<p>这里虽然没有报<code>no module named</code>的错误，但是这个错误更难调试，和<code>no module named xxx</code>师出同源，如果你导入的requests模块下的一个函数或类的话，<code>no module named xxx</code>就出现了。</p>
-<p>所以说给文件命名之前先考虑清楚，不要潇洒地随便写，不然你就是自己挖坑自己跳。</p>
-<p>如果你发现自己确实犯了这个错误，并且改了文件名，请千万记住，还要<strong>把当前目录下相应的<code>.pyc</code>删除掉</strong>，不然还是没用，至于为什么，请自行参考任何一本python教程。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2168,7 +2161,7 @@ Out[2]:
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">213</span>
+                <span class="site-state-item-count">214</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
