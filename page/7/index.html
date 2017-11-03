@@ -286,6 +286,209 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/26/django的QuerySets/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/26/django的QuerySets/" itemprop="url">Django的QuerySets</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-26T18:53:25+08:00">
+                2015-04-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>对象关系映射 (ORM) 使得与SQL数据库交互更为简单，不过也被认为效率不高，比原始的SQL要慢。<br>要有效的使用ORM，意味着需要多少要明白它是如何查询数据库的。本文我将重点介绍如何有效使用 <a href="https://docs.djangoproject.com/en/dev/topics/db/models/" target="_blank" rel="external">Django ORM</a>系统访问中到大型的数据集。</p>
+<p>##Django的queryset是惰性的</p>
+<p><strong>Django的queryset对应于数据库的若干记录（row）</strong>，通过可选的查询来过滤。例如，下面的代码会得到数据库中名字为‘Dave’的所有的人:<br>?</p>
+<pre><code>person_set = Person.objects.filter(first_name=&quot;Dave&quot;)
+</code></pre><p>上面的代码并没有运行任何的数据库查询。你可以使用person_set，给它加上一些过滤条件，或者将它传给某个函数，这些操作都不会发送给数据库。这是对的，因为数据库查询是显著影响web应用性能的因素之一。<br>要真正从数据库获得数据，你需要遍历queryset:<br>?</p>
+<pre><code>for person in person_set:
+    print(person.last_name)
+</code></pre><p>##Django的queryset是具有cache的</p>
+<p>当你遍历queryset时，所有匹配的记录会从数据库获取，然后转换成Django的model。这被称为<code>执行</code>（evaluation）。这些model会保存在queryset内置的cache中，这样如果你再次遍历这个queryset，你不需要重复运行通用的查询。<br>例如，下面的代码只会执行一次数据库查询：</p>
+<pre><code>pet_set = Pet.objects.filter(species=&quot;Dog&quot;)
+# The query is executed and cached.
+for pet in pet_set:
+    print(pet.first_name)
+# The cache is used for subsequent iteration.
+for pet in pet_set:
+    print(pet.last_name)
+</code></pre><p>##if语句会触发queryset的执行</p>
+<p>queryset的cache最有用的地方是可以有效的测试queryset是否包含数据，只有有数据时才会去遍历：</p>
+<pre><code>restaurant_set = Restaurant.objects.filter(cuisine=&quot;Indian&quot;)
+# `if`语句会触发queryset的执行。
+if restaurant_set:
+    # 遍历时用的是cache中的数据
+    for restaurant in restaurant_set:
+        print(restaurant.name)
+</code></pre><p>##QuerySet的常用API</p>
+<p>###去重<br>distinct方法的作用和SQL的distinct的作用是一样的，这里就不多说了</p>
+<pre><code>Author.objects.distinct()
+</code></pre><p>###序列化为JSON<br>和前端进行交互的时候，序列化成XML的情况还是比较少的，但是序列化成JSON格式的字符串的情况就比较多了，Django的ORM框架提供了values的方法来把实体序列化成json</p>
+<pre><code>Blog.objects.values()
+</code></pre><p>###序列化成数组<br>把对象序列化成数组元素的情况还真的是用的比较少</p>
+<pre><code>Entry.objects.values_list(&apos;id&apos;, &apos;headline&apos;)
+</code></pre><p>###从主表获取外键表的对象<br>在主表的实体上使用filter，然后再通过主表的实体获取外键的时候，Django会把主表的实体一并查询出来。但是有时候我们只希望从主表开始取数，但是只取外键表实体的信息，这个时候就可以用select_related方法了。第一个参数是主表的外键字段名称，第二个字段嘛。。。照抄就是了</p>
+<pre><code>g = Group.objects.select_related(&apos;room&apos;, &apos;subject&apos;)
+</code></pre><p>当然，也会有只希望拿主表信息，不想把外键字段取回来的情况，把参数设置为none就好了</p>
+<pre><code>without_relations = queryset.select_related(None)
+</code></pre><p>###处理从表对象<br>对于外键表来说，我们可以采用select_related的方法来进行处理。但是对于从表属性来说，就要用到另外一种方法了。（toppings是多对多的属性）</p>
+<pre><code>Pizza.objects.all().prefetch_related(&apos;toppings&apos;)
+</code></pre><p>同样的，不获取外键对象的话把参数设置为none就好了</p>
+<pre><code>non_prefetched = qs.prefetch_related(None)
+</code></pre><p>###ORM和SQL的混合：Extra方法<br>先看看Extra方法的一些例子</p>
+<p>####selec参数<br>    Entry.objects.extra(select={‘is_recent’: “pub_date &gt; ‘2006-01-01’”})</p>
+<p>####where参数<br>    Entry.objects.extra(where=[“foo=’a’ OR bar = ‘a’”, “baz = ‘a’”])</p>
+<p>####order_by参数<br>    q = q.extra(order_by = [‘-is_recent’])</p>
+<p>####paramas参数<br>    Entry.objects.extra(where=[‘headline=%s’], params=[‘Lennon’])<br>其实从官方给的例子看起来，Extra方法主要就是用于在ORM生成SQL的过程中内嵌SQL语句。例如希望在select 背后加入一句sql，例如select …,(select a from …)这种情况下的时候，用Extra方法就很好解决了</p>
+<p>###使用Defer和Only来过滤字段<br>select_related和prefetch_related方法分别用来过滤实体的外键属性和多对多属性，对于主表的字段属性过滤可以采用defer方法来少查询一些字段</p>
+<pre><code>Entry.objects.defer(&quot;headline&quot;, &quot;body&quot;)
+</code></pre><p>defer是排除哪些字段，而only是只查询哪些字段</p>
+<pre><code>Person.objects.only(&quot;name&quot;)
+</code></pre><p>###使用select_for_update来简化更新的过程<br>一般更新实体的时候，我们需要先把实体先查询出来，然后做出相应的更新，再做一次save操作</p>
+<pre><code>entity=Entry.objects.filter(...)[0]
+entity.name=xx
+entity.save()
+</code></pre><p>这个过程显得稍微有点繁琐，所以可以采用一种select_for_update来进行一些简化</p>
+<pre><code>entries = Entry.objects.select_for_update().filter(author=request.user)
+</code></pre><p>###使用get_or_create来简化创建对象的过程<br>同样的，有时候我们会需要先查询对象在不在数据库里面存储，假如没有的话就创建，有的话就取出</p>
+<pre><code>obj, created = Person.objects.get_or_create(first_name=&apos;John&apos;, last_name=&apos;Lennon&apos;,
+              defaults={&apos;birthday&apos;: date(1940, 10, 9)})
+</code></pre><p>不过个人觉得这个方法用到的情况很少。。。。</p>
+<p>###批量插入数据<br>    Entry.objects.bulk_create([<br>        Entry(headline=”Django 1.0 Released”),<br>        Entry(headline=”Django 1.1 Announced”),<br>        Entry(headline=”Breaking: Django is awesome”)<br>      ])<br>这玩意真的挺有用，具体的就不细说了</p>
+<p>###使用Count方法来进行统计<br>虽然做统计的话可以先把过滤完的对象查询出来，然后再len(xx)一下，但是这种做法会把数据库里面一堆一堆的暑假都查出来的(￣◇￣;)，所以当需要做count操作的时候还是老老实实的用sql的count语句，在Django里面的话做法如下</p>
+<pre><code>Entry.objects.filter(headline__contains=&apos;Lennon&apos;).count()
+</code></pre><p>###判断数据是否存在:exists<br>    rs=some_queryset.filter(pk=entry.pk).exists()</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/22/No-handlers-could-be-found-for-logger-keystoneclient-httpclient/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1773,158 +1976,6 @@ else:
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django-locals-技巧/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/15/django-locals-技巧/" itemprop="url">django-locals()技巧</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T19:54:43+08:00">
-                2015-04-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>思考一下我们对 current_datetime 的最后一次赋值:</p>
-<pre><code>def current_datetime(request):
-    now = datetime.datetime.now()
-    return render_to_response(&apos;current_datetime.html&apos;, {&apos;current_date&apos;: now})
-</code></pre><p>很多时候，就像在这个范例中那样，你发现自己一直在计算某个变量，保存结果到变量中（比如前面代码中的 now ），然后将这些变量发送给模板。 尤其喜欢偷懒的程序员应该注意到了，不断地为临时变量和临时模板命名有那么一点点多余。 不仅多余，而且需要额外的输入。</p>
-<p>如果你是个喜欢偷懒的程序员并想让代码看起来更加简明，可以利用 Python 的内建函数 locals() 。它返回的字典对所有局部变量的名称与值进行映射。 因此，前面的视图可以重写成下面这个样子：</p>
-<pre><code>def current_datetime(request):
-    current_date = datetime.datetime.now()
-    return render_to_response(&apos;current_datetime.html&apos;, locals())
-</code></pre><p>在此，我们没有像之前那样手工指定 context 字典，而是传入了 locals() 的值，<strong>它囊括了函数执行到该时间点时所定义的一切变量</strong>。 因此，我们将 now 变量重命名为 current_date ，因为那才是模板所预期的变量名称。 在本例中， locals() 并没有带来多 大 的改进，但是如果有多个模板变量要界定而你又想偷懒，这种技术可以减少一些键盘输入。</p>
-<p><strong>使用 locals() 时要注意是它将包括 所有 的局部变量，它们可能比你想让模板访问的要多。 在前例中， locals() 还包含了 request 。对此如何取舍取决你的应用程序。</strong></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1975,7 +2026,7 @@ else:
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">214</span>
+                <span class="site-state-item-count">215</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

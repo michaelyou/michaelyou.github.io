@@ -286,6 +286,202 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/03/write的写停止问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/03/write的写停止问题/" itemprop="url">write的写停止问题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-03T10:05:53+08:00">
+                2015-03-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##例程</p>
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include&lt;unistd.h&gt;
+
+int main()
+{
+    char buf[100];
+    strcpy(buf, &quot;hello\nworld&quot;);
+    write(STDOUT_FILENO, buf, strlen(buf));
+}
+</code></pre><p>输出为</p>
+<pre><code>hello
+world（光标在这里）
+</code></pre><hr>
+<pre><code>int main()
+{
+    char buf[100];
+    strcpy(buf, &quot;hel\0lo\nworld&quot;);
+    write(STDOUT_FILENO, buf, strlen(buf));
+}
+</code></pre><p>输出为</p>
+<pre><code>hel（光标在这里）
+</code></pre><hr>
+<pre><code>int main()
+{
+    char buf[100];
+    strcpy(buf, &quot;hello\nworld&quot;);
+    fputs(buf, stdout);
+}
+</code></pre><p>输出为：</p>
+<pre><code>hello
+world
+</code></pre><hr>
+<pre><code>int main()
+{
+    char buf[100];
+    strcpy(buf, &quot;hel\0lo\nworld&quot;);
+    fputs(buf, stdout);
+}
+</code></pre><p>输出为：</p>
+<pre><code>hel（光标在这里）
+</code></pre><hr>
+<pre><code>int main()
+{
+    char buf[100];
+    strcpy(buf, &quot;hello\nworld&quot;);
+    write(STDOUT_FILENO, buf, strlen(buf));
+}
+</code></pre><p>输出：</p>
+<pre><code>hello
+world(光标在这里)
+</code></pre><p>##总结<br>其余socket的数据传输函数也是如此，只以\0作为字符串的结尾，而不是\n，\n将被认为是字符进行传输，并且后面的字符也会传输，直到遇到\0为止</p>
+<p>如果只要打印某一部分字符，则在此字符串之后一定要加\0，因为\0才被认为是一个字符串的结束符</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/02/TCP和udp的一些特性/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2542,160 +2738,6 @@ Fd.writelines(content) : 把content的内容全部写到文件中,原样写入�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/在浏览器输入url回车，和直接按F5刷新有什么区别/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/10/在浏览器输入url回车，和直接按F5刷新有什么区别/" itemprop="url">在浏览器输入url回车，和直接按F5刷新有什么区别</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-10T16:12:03+08:00">
-                2015-02-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/http/" itemprop="url" rel="index">
-                    <span itemprop="name">http</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>按F5刷新浏览器和在地址栏里输入网址然后回车。 这两个行为是不一样的。</p>
-<p>按F5刷新浏览器， 浏览器会去Web服务器验证缓存。</p>
-<p>如果是在地址栏输入网址然后回车，浏览器会”直接使用有效的缓存”, 而不会发http request 去服务器验证缓存，这种情况叫做缓存命中，如下图</p>
-<p><img src="/img/缓存命中.png" alt=""></p>
-<p>实例： 比较第一次访问博客园主页和第二次博客园主页</p>
-<ol>
-<li><p>启动Fiddler, 用firefox打开博客园主页， 发现有50多个session。</p>
-</li>
-<li><p>按CTRL+X将Fiddler中的所有session删除。 关闭firefox,重新打开一个firefox，打开博客园主页。   发现只有30多个session.</p>
-</li>
-</ol>
-<p>分析；  少了的session是因为firefox直接用了缓存，而没有发http request。</p>
-<p><img src="/img/第一次访问.png" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2746,7 +2788,7 @@ Fd.writelines(content) : 把content的内容全部写到文件中,原样写入�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">214</span>
+                <span class="site-state-item-count">215</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

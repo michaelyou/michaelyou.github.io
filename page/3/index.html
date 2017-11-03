@@ -286,6 +286,271 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/23/Django-Interview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/08/23/Django-Interview/" itemprop="url">Django Interview</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-23T10:46:48+08:00">
+                2015-08-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##Django的Model的继承有几种形式，分别是什么？</p>
+<p>###抽象继承：</p>
+<p>顺便复习OOP思想，继承是面向对象的大前提。抽象类之所以被创建是用来被继承的；一个类如果包含任何一种抽象方法，那么它就是抽象类；抽象方法一定要在子类中被复写；在继承关系中，抽象类永远在树枝节点上，而且对于Python来说，已经没有这么多约束了。</p>
+<p>回到Django的<code>Model</code>也一样，当我们需要某些公共方法字段时，就需要一个父类为其他子类服务，这个父类没有<code>manager</code>，Django也不为这个类创建表，这种继承的定义方法如下：</p>
+<pre><code>class Animal(models.Model):
+    name = models.CharField(max_length=50)
+    age = models.PositiveIntegerField()
+
+    # 下面这句决定了Animal是一个抽象类/Model
+    class Meta:
+        abstract = True
+
+
+class Human(Animal):
+    kind_hearted = models.BooleanField()
+    sex = models.CharField(&apos;sex&apos;, choices=((&apos;m&apos;,&apos;male&apos;), (&apos;f&apos;, &apos;female&apos;)), max_length=1)
+    #...
+</code></pre><p>上例中，<code>Human</code>的子<code>model</code>中，自然包含了<code>name</code>和<code>age</code>的字段，但是Animal不能作为正常model使用，由于没有manager，所以也不能实例化、保存。在子类中，不可以建立与这个抽象父类中的相同的字段，Django表示对报错负责。</p>
+<p>###正常的继承，多重继承，Joined映射<br>和抽象继承的主要区别是父类这时也可以拥有数据库表了，并且不在身为存储公共信息的抽象类了，父类也可以进行实例化，查询等操作了。</p>
+<pre><code>class Country(models.Model):
+    name = models.CharField(max_length=10)
+    #...
+
+
+class Province(Country):
+    return = models.BooleanField()
+    #...
+</code></pre><p>###代理<br>即在子类中只能增加方法，而不能增加属性，在不影响父类数据存储的前提下，使子类继承父类，此时子类称为父类的<code>“代理”</code>。例如：</p>
+<pre><code>from django.contrib.auth.models import User
+
+class Person(User):
+    # this makes a class proxy
+    proxy = True
+
+    def can_dance(self):
+        return True
+
+
+# both Yellow and Black can_dance :)
+class Yellow(Person):
+    hometown = models.CharField(max_length=30)
+
+
+class Black(Person)
+    tribe_name = models.CharField(max_length=100)
+</code></pre><p>我们为<code>Person</code>类增加了一个方法，可以跳舞，并且保持了<code>User</code>的数据字段的不变。</p>
+<p>##Django的Queryset是什么，objects是什么，objects在哪里可以定义</p>
+<p><code>query + set</code>，已经能猜出大概，它对应着数据库中的若干条记录。</p>
+<p>例如有一个叫做<code>Order</code>的模型，在project的根目录下进入shell进行操作：</p>
+<pre><code>$python manage.py shell
+&gt;&gt;&gt;from app.order.models import Order
+&gt;&gt;&gt;type(Order.objects)
+&lt;class &apos;django.db.models.models.manager.Manager&apos;&gt;
+&gt;&gt;&gt;
+&gt;&gt;&gt;order = Order.objects.all()
+&gt;&gt;&gt;type(order)
+&lt;class &apos;django.db.models.query.QuerySet&apos;&gt;
+</code></pre><p>上述方法很常用，看继承关系去理解<code>Queryset</code>和<code>objets</code>。<code>objects</code>是每个<code>Model</code>默认的<code>manager</code>类，通过manager的方法(也可通过<code>QuerySet</code>的方法得到，当然<code>QuerySet</code>也来自于<code>manager</code>)，得到相应的<code>Queryset</code>，用以对数据库模型字段进行更多的操作。</p>
+<p><code>objects(manager)</code>方法可以自定义添加，也可以直接赋值覆盖掉默认的管理方法。</p>
+<p>试着添加一个新的管理器的步骤是这样，首先定义一个<code>manager</code>类继承自<code>models.Manager</code>，并在其中对self进行操作，如下：</p>
+<pre><code># new manager
+class OrderManager(models.Manager):
+    def title_count(self, keyword):
+        return self.filter(title__icontains=keyword).count()
+
+
+class Order(models.Models):
+    title = models.CharField(max_length=100)
+    # ...
+    #objects = models.Manager()
+    objects = OrderManager()
+
+    def __unicode__(self):
+        return self.title
+</code></pre><p>上述例子中我们把<code>OrderManager</code>赋值给了<code>objects</code>，替换了默认的管理器。</p>
+<p><strong>tips</strong>:如果增加了新的管理器，且没有替换掉默认管理器，那么默认管理器需要显式的声明出来才可以使用。</p>
+<p>##Django中查询queryset时什么情况下用Q?</p>
+<p>在进行相对复杂的查询时，使用<code>django.db.models.Q</code>对象。</p>
+<p>例如需要进行复合条件的查询的SQL语句如下：</p>
+<pre><code>SELECT * FROM order WHERE id BETWEEN 20 ADN 100 AND(num &lt;= &apos;20&apos; or num &gt;= &apos;30&apos;);
+</code></pre><p>使用Q就可以写成：</p>
+<pre><code>from django.db.models import Q
+from login.models import Order
+#...
+Order.objects.get(
+Q(id &gt;= 20) &amp; (id &lt;= 100),
+Q(num &lt;= 20) | (num &gt;= 30)
+)
+</code></pre><p>##Django中想验证表单提交是否格式正确需要用到Form中的哪个函数？</p>
+<p><code>is_valid()</code>函数方法，用于检查表单提交是否正确。</p>
+<p>##Django取消级联删除</p>
+<p>这个文档写的比较清楚：</p>
+<pre><code>user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
+</code></pre><p>并且<code>SET_NULL</code>只有在<code>null</code>为<code>True</code>的时候，才可以使用。</p>
+<p>##Django中如何在Model保存前做一定的固定操作，比如写一句日志？</p>
+<p>关键词: <strong>信号</strong></p>
+<p>利用<code>Django</code>的<code>Model</code>的<code>Signal Dispatcher</code>, 通过<code>django.db.models.signals.pre_save()</code>方法，在事件发生前，发射触发信号，这一切都被调度中的<code>receiver</code>方法深藏功与名的保存了。<br>信号的处理一般都写在<code>Model</code>中，举个例子：</p>
+<pre><code>import logging
+from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+
+class Order(models.Model):
+    # ...
+
+
+logger = logging.getLogger(__name__)
+
+@receiver(pre_save, sender=Order)
+def pre_save_handler(sender, **kwargs):
+
+    # 我们可以在Order这个Model保存之前尽情玩耍
+    logger.debug(&quot;{},{}&quot;.format(sender, **kwargs))
+    print &apos;fuck universe&apos;
+</code></pre><p>这样应该就实现了题中的要求，类似的方法还有比如<code>pre_init</code>是在<code>Model</code>实例之前会触发，<code>post_init</code>在实例之后触发，同理就是<code>pre_save</code>和<code>post_save</code>了。</p>
+<p>##Django中如何读取和保存session，整个session的运行机制是什么。</p>
+<p>说到<code>session</code>的运行机制，就一定要先说一下<code>cookie</code>这一段信息。一般情况下<code>cookies</code>都是我们的浏览器生成的（显然可以人为修改），用于服务器对户进行筛选和维护，但是这个听上去很好吃的东西，能存的东西有点少而且容易被别人利用。这时候基于<code>cookies</code>的<code>session</code>的意义就比较明显了，在客户端的<code>cookies</code>中我们只保存<code>session id</code>，而将完整信息以加密信息的形式保存到服务器端，这样服务器可以根据<code>session id</code>相对安全的在数据库中查询用户的更细致的信息和状态。</p>
+<p>在Django中<code>session</code>和<code>cookies</code>的操作方法一样，如下：</p>
+<pre><code># 保存session
+request.session[&apos;order_id&apos;] = order_id
+# 删除session
+del request.session[&apos;order_id&apos;]
+# 读取session
+session.get(&apos;order_id&apos;, False)
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/10/Django的F-表达式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1945,172 +2210,6 @@ print const.NAME
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/06/12/再读the-django-book-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/06/12/再读the-django-book-1/" itemprop="url">再读《the Django book》</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-06-12T00:06:56+08:00">
-                2015-06-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li><p>登录进数据库服务器看Django创建的数据表，除了手动启动命令行客户端，还可以执行</p>
-<pre><code>python manage.py dbshell
-</code></pre><p>这个命令将依据<code>DATABASE_SERVER</code> 的里设置自动检测使用哪种命令行客户端</p>
-</li>
-<li><p><strong><code>添加模块的字符串表现</code></strong>，这个讲的就是给模型添加<code>__unicode__()</code>方法，<code>__unicode__()</code>方法告诉python如何将对象以unicode的方式显示出来。</p>
-</li>
-</ul>
-<ul>
-<li><p>使用<code>Publisher.objects,all()</code>来选择所有数据时，SQL语句执行的是：</p>
-<pre><code>SELECT id, name, address, city, state_province, country, website 
-FROM books_publisher;
-</code></pre><p>并没有使用 <code>SELECT *</code>，而是<strong>显式列出了所有字段</strong>。 设计的时候就是这样： <code>SELECT *</code> 会更慢，而且最重要的是列出所有字段遵循了Python 界的一个信条： <strong>明言胜于暗示</strong>。</p>
-</li>
-<li><p>你可以在任意一个模型类中使用 <code>Meta</code> 类，来设置一些与特定模型相关的选项。例如设置<code>ordering</code>这个选项。如果你设置了这个选项，那么除非你检索时特意额外地使用了 <code>order_by()</code>，否则，当你使用 Django 的数据库 API 去检索时，这个模型的对象的相关返回值默认地都会按<code>ordering</code>设置的字段排序。</p>
-</li>
-<li><p>你需要一段<code>context</code>来解析模板。 一般情况下，这是一个 <code>django.template.Context</code> 的实例，不过在Django中还可以用一个特殊的子类， <code>django.template.RequestContext</code>，这个用起来稍微有些不同。 <code>RequestContext</code> 默认地在模板<code>context</code>中加入了一些变量，如 <code>HttpRequest</code> 对象或当前登录用户的相关信息。</p>
-</li>
-<li><p>在模板中判断当前是否处在debug模式下，可以启动<code>django.core.context_processors.debug</code>，它返回值中的<code>debug</code>字段就是<code>setting</code>中的<code>debug</code></p>
-</li>
-<li><p>作为合法的标签库，模块需要包含一个名为<code>register</code>的模块级变量。这个变量是<code>template.Library</code>的实例，是所有注册标签和过滤器的数据结构。 所以，请在你的模块的顶部插入如下语句：</p>
-<pre><code>from django import template
-register = template.Library()
-</code></pre></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2161,7 +2260,7 @@ register = template.Library()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">214</span>
+                <span class="site-state-item-count">215</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

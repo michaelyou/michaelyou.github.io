@@ -286,6 +286,164 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/22/LRU/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/22/LRU/" itemprop="url">LRU</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-22T19:15:52+08:00">
+                2015-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##概念分析<br>LRU(Least Recent Used):最近最少使用，就是将最近最少使用的页淘汰掉，替换为新的页。核心思想是：如果一个页最近被访问了，那他之后被访问的概率也高；如果一个页最近没有被访问，那他之后也不会被访问。这道理其实说不通哈，但是LRU算法确实解决页访问的效率问题。</p>
+<p>##原理<br>下面是一个应用LRU算法的例子的流程图</p>
+<p><img src="/img/LRU.png" alt="LRU"></p>
+<p>下面简单讲解一下(需要在这里说明一下,LRU一般采用<code>链表方式</code>实现,便于快速移动数据位置,虽然图中使用似乎是数组方式):</p>
+<ul>
+<li>一开始,缓存池是空的,缓存池中插入数据时不用担心容量不足的事情.因此这个过程就是类似队列的FIFO(但不止这些);</li>
+<li>在第5步将E插入到缓存池中后,缓存池已经满了(当然实际应用中不会让到达缓存池的尺寸,一般到70%左右就要考虑淘汰机制了);</li>
+<li>当第6步将E插入缓存池的时候,发现缓存池已经满了,LRU会将最早加入到缓存池的数据淘汰掉(A,实在不要意思啊);</li>
+<li>第7步,从缓存池中访问C,C被访问,从时间点上是最近最近访问的,将C移动到链表的头部(C侥幸暂时远离被淘汰的边缘);</li>
+<li>第8步,将G插入缓存池中,G处于链表头部,B不幸被淘汰.</li>
+</ul>
+<p>大致的过程就是这样,关于淘汰机制只是后面的三步中会用到,画出前面六步的过程只是说明LRU插入元素的方式.在这个图中,我想大家应该可以明白为什么使用链表,而不使用数组(链表的插入和删除的时间复杂度都是O(1)).</p>
+<p>##优劣分析</p>
+<p>###命中率<br>命中率较高,不过偶发性的情况对LRU的命中影响很大,同时也会引入很多数据污染</p>
+<p>###复杂度<br>实现起来较为简单.</p>
+<p>###存储成本<br>几乎没有空间上浪费.</p>
+<p>###缺陷<br>仅仅从最近使用时间上考虑淘汰算法,没有考虑缓存单元的使用频率,可能会淘汰一些仍有价值的单元.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/21/在Python中正确使用Unicode/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1796,186 +1954,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/14/Scrapy的架构/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/14/Scrapy的架构/" itemprop="url">scrapy的架构</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-14T10:46:23+08:00">
-                2015-01-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/scrapy/" itemprop="url" rel="index">
-                    <span itemprop="name">scrapy</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>下面是scrapy的架构图<br><img src="/img/scrapy_architecture.png" alt="scrapy architecture"></p>
-<p>##一. 组件</p>
-<ol>
-<li><code>Scrapy Engine（Scrapy引擎）</code>：Scrapy引擎是用来控制整个系统的数据处理流程，并进行事务处理的触发。更多的详细内容可以看下面的数据处理流程。</li>
-<li><code>Scheduler（调度）</code>：调度程序从Scrapy引擎接受请求并排序列入队列，并在Scrapy引擎发出请求后返还给他们。</li>
-<li><code>Downloader（下载器）</code>：下载器的主要职责是抓取网页并将网页内容返还给蜘蛛( Spiders)。</li>
-<li><code>Spiders（蜘蛛）</code>：蜘蛛是有Scrapy用户自己定义用来解析网页并抓取制定URL返回的内容的类，每个蜘蛛都能处理一个域名或一组域名。换句话说就是用来定义特定网站的抓取和解析规则。蜘蛛的整个抓取流程（周期）是这样的：<ol>
-<li>首先获取第一个URL的初始请求，当请求返回后调取一个回调函数。第一个请求是通过调用start_requests()方法。该方法默认从start_urls中的Url中生成请求，并执行解析来调用回调函数。</li>
-<li>在回调函数中，你可以解析网页响应并返回项目对象和请求对象或两者的迭代。这些请求也将包含一个回调，然后被Scrapy下载，然后有指定的回调处理。</li>
-<li>在回调函数中，你解析网站的内容，同程使用的是Xpath选择器（但是你也可以使用BeautifuSoup, lxml或其他任何你喜欢的程序），并生成解析的数据项。</li>
-<li>最后，从蜘蛛返回的项目通常会进驻到项目管道。</li>
-</ol>
-</li>
-<li><p><code>Item Pipeline（项目管道）</code>：项目管道的主要责任是负责处理有蜘蛛从网页中抽取的项目，他的主要任务是清晰、验证和存储数据。当页面被蜘蛛解析后，将被发送到项目管道，并经过几个特定的次序处理数据。每个项目管道的组件都是有一个简单的方法组成的Python类。他们获取了项目并执行他们的方法，同时他们还需要确定的是是否需要在项目管道中继续执行下一步或是直接丢弃掉不处理。项目管道通常执行的过程有：</p>
-<ol>
-<li>清洗HTML数据</li>
-<li>验证解析到的数据（检查项目是否包含必要的字段）</li>
-<li>检查是否是重复数据（如果重复就删除）</li>
-<li>将解析到的数据存储到数据库中</li>
-</ol>
-</li>
-<li><p><code>Downloader middlewares（下载器中间件）</code>：下载中间件是位于Scrapy引擎和下载器之间的钩子框架，主要是处理Scrapy引擎与下载器之间的请求及响应。它提供了一个自定义的代码的方式来拓展Scrapy的功能。下载中间器是一个处理请求和响应的钩子框架。他是轻量级的，对Scrapy尽享全局控制的底层的系统。</p>
-</li>
-<li><code>Spider middlewares（蜘蛛中间件）</code>:蜘蛛中间件是介于Scrapy引擎和蜘蛛之间的钩子框架，主要工作是处理蜘蛛的响应输入和请求输出。它提供一个自定义代码的方式来拓展Scrapy的功能。蛛中间件是一个挂接到Scrapy的蜘蛛处理机制的框架，你可以插入自定义的代码来处理发送给蜘蛛的请求和返回蜘蛛获取的响应内容和项目。</li>
-<li><code>Scheduler middlewares（调度中间件）</code>:调度中间件是介于Scrapy引擎和调度之间的中间件，主要工作是处从Scrapy引擎发送到调度的请求和响应。他提供了一个自定义的代码来拓展Scrapy的功能</li>
-</ol>
-<p>##二. 数据处理流程</p>
-<ol>
-<li>Scrapy的整个数据处理流程有Scrapy引擎进行控制，其主要的运行方式为：</li>
-<li>引擎打开一个域名，时蜘蛛处理这个域名，并让蜘蛛获取第一个爬取的URL。</li>
-<li>引擎从蜘蛛那获取第一个需要爬取的URL，然后作为请求在调度中进行调度。</li>
-<li>引擎从调度那获取接下来进行爬取的页面。</li>
-<li>调度将下一个爬取的URL返回给引擎，引擎将他们通过下载中间件发送到下载器。</li>
-<li>当网页被下载器下载完成以后，响应内容通过下载中间件被发送到引擎。</li>
-<li>引擎收到下载器的响应并将它通过蜘蛛中间件发送到蜘蛛进行处理。</li>
-<li>蜘蛛处理响应并返回爬取到的项目，然后给引擎发送新的请求。</li>
-<li>引擎将抓取到的项目项目管道，并向调度发送请求。</li>
-<li>系统重复第二部后面的操作，直到调度中没有请求，然后断开引擎与域之间的联系。</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2026,7 +2004,7 @@ int _tmain(int argc, _TCHAR* argv[])
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">214</span>
+                <span class="site-state-item-count">215</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

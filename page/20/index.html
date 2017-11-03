@@ -286,6 +286,257 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/26/笔试题总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/26/笔试题总结/" itemprop="url">笔试题总结1</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-26T17:02:27+08:00">
+                2015-01-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>应用程序PING发出的是什么报文（C）</p>
+<p>A.TCP请求报文</p>
+<p>B.TCP应答报文</p>
+<p>C.ICMP请求报文</p>
+<p>D.ICMP应答报文</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>语法分析器可以用于（C）</p>
+<p>A.识别语义错误</p>
+<p>B.识别语法和语义错误</p>
+<p>C.识别语法错误</p>
+<p>D.识别并修正语法，语义错误</p>
+</blockquote>
+<p>解释：语法分析器通常是作为编译器或解释器的组件出现的，它的作用是进行语法检查、并构建由输入的单片语组成的资料结构</p>
+<hr>
+<blockquote>
+<p>IPV6地址包含多少位（）</p>
+<p>A.16</p>
+<p>B.32</p>
+<p>C.64</p>
+<p>D.128</p>
+</blockquote>
+<p>解释：IPv6的128位地址通常写成8组，每组为四个十六进制数的形式。比如：<br>AD80:0000:0000:0000:ABAA:0000:00C2:0002 是一个合法的IPv6地址。</p>
+<hr>
+<blockquote>
+<p>如果在一个建立了TCP连接的socket上调用recv函数，返回值为0，则表示（B）</p>
+<p>A.对端发送了一段长度为0的数据</p>
+<p>B.对端关闭了连接</p>
+<p>C.还没有收到对端数据</p>
+<p>D.连接发生错误</p>
+</blockquote>
+<p>解释：recv返回0的唯一条件就是对端关闭了连接<br>在socket可读的情况下，当有异常发生的时候，read返回-1</p>
+<hr>
+<blockquote>
+<p>以下哪些不是内核对象（D）</p>
+<p>A.进程</p>
+<p>B.线程</p>
+<p>C.互斥器</p>
+<p>D.临界区</p>
+</blockquote>
+<p>解释：临界区是资源对象，只能被一个进程访问</p>
+<hr>
+<blockquote>
+<p>同一进程下的多个线程可以共享哪一种资源（B）</p>
+<p>A.stack</p>
+<p>B.data section</p>
+<p>C.register set</p>
+<p>D.thread ID</p>
+</blockquote>
+<p>解释：线程共享的环境包括：进程代码段、进程的公有数据(利用这些共享的数据，线程很容易的实现相互之间的通讯)、进程打开的文件描述符、信号的处理器、进程的当前目录和进程用户ID与进程组ID。</p>
+<hr>
+<blockquote>
+<p>对于Linux说法，下列说法正确的是（）</p>
+<p>A.线性访问内存非法时，当前线程会进入信号处理函数</p>
+<p>B.用mv命令移动文件时，文件的修改时间会发生变化</p>
+<p>C.ulimit -c设置的是函数调用栈的大小</p>
+<p>D.malloc函数是应用程序向操作系统申请内存的接口</p>
+</blockquote>
+<p>B.不会改变</p>
+<p>C.ulimit用于shell启动进程所占用的资源.-c size:设置core文件的最大值.单位:blocks</p>
+<hr>
+<blockquote>
+<p>在c++中，</p>
+<pre><code>const int i = 0; 
+int *j = (int *) &amp;i; 
+*j = 1; 
+printf(&quot;%d,%d&quot;, i, *j)
+</code></pre><p>输出是多少？(A)</p>
+<p>A.0，1</p>
+<p>B.1，1</p>
+<p>C.1，0</p>
+<p>D.0，0</p>
+</blockquote>
+<p>解释：const修饰的常量值具有不可变性,c++编译器通常会对该变量做优化处理，在编译时变量i的值为已知的，编译器直接将printf输出的变量i替换为0。尽管如此，编译器仍然会为变量i分配存储空间，通过修改内存的hack方式将变量i在内存中的值修改后并不影响printf的输出。</p>
+<p>gcc不会对此进行优化，所以如果用gcc来编译，输出就是1,1</p>
+<hr>
+<blockquote>
+<pre><code>  struct Date
+{
+    char a;
+    int b;
+    int64_t c;
+    char d;
+};
+</code></pre><p>Date data[2][10]; 在32位系统上，如果Data的地址是x，那么data[1][5].c的地址是（C）</p>
+<p>A.X+195</p>
+<p>B.X+365</p>
+<p>C.X+368</p>
+<p>D.X+215</p>
+</blockquote>
+<p>解释：</p>
+<pre><code>struct Date {      
+    char a;//起始位置0      
+    int b;//起始位置4      
+    int64_t c;//起始位置8      
+    char d;//起始位置16，
+    //考虑成员中自身对齐值最大的那个值是8. 16不是8的倍数，所以这个sturct的size是24.  
+};
+</code></pre><p>data[1][5]与data[0][0]相隔15个元素,data[1][5].c的地址是x+24*15+(4+4) = 368</p>
+<hr>
+<blockquote>
+<p>快速排序算法在序列已经有序的情况下的复杂度为（B）</p>
+<p>A.O(nlogn）</p>
+<p>B.O(n^2)</p>
+<p>C.O(n)</p>
+<p>D.O(n^2 logn)</p>
+</blockquote>
+<p>有序的情况是O(n2);无序的情况是O(nlog2n)</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/26/反转链表-带头结点/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1869,164 +2120,6 @@ int main()
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/22/LRU/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/22/LRU/" itemprop="url">LRU</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-22T19:15:52+08:00">
-                2015-01-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##概念分析<br>LRU(Least Recent Used):最近最少使用，就是将最近最少使用的页淘汰掉，替换为新的页。核心思想是：如果一个页最近被访问了，那他之后被访问的概率也高；如果一个页最近没有被访问，那他之后也不会被访问。这道理其实说不通哈，但是LRU算法确实解决页访问的效率问题。</p>
-<p>##原理<br>下面是一个应用LRU算法的例子的流程图</p>
-<p><img src="/img/LRU.png" alt="LRU"></p>
-<p>下面简单讲解一下(需要在这里说明一下,LRU一般采用<code>链表方式</code>实现,便于快速移动数据位置,虽然图中使用似乎是数组方式):</p>
-<ul>
-<li>一开始,缓存池是空的,缓存池中插入数据时不用担心容量不足的事情.因此这个过程就是类似队列的FIFO(但不止这些);</li>
-<li>在第5步将E插入到缓存池中后,缓存池已经满了(当然实际应用中不会让到达缓存池的尺寸,一般到70%左右就要考虑淘汰机制了);</li>
-<li>当第6步将E插入缓存池的时候,发现缓存池已经满了,LRU会将最早加入到缓存池的数据淘汰掉(A,实在不要意思啊);</li>
-<li>第7步,从缓存池中访问C,C被访问,从时间点上是最近最近访问的,将C移动到链表的头部(C侥幸暂时远离被淘汰的边缘);</li>
-<li>第8步,将G插入缓存池中,G处于链表头部,B不幸被淘汰.</li>
-</ul>
-<p>大致的过程就是这样,关于淘汰机制只是后面的三步中会用到,画出前面六步的过程只是说明LRU插入元素的方式.在这个图中,我想大家应该可以明白为什么使用链表,而不使用数组(链表的插入和删除的时间复杂度都是O(1)).</p>
-<p>##优劣分析</p>
-<p>###命中率<br>命中率较高,不过偶发性的情况对LRU的命中影响很大,同时也会引入很多数据污染</p>
-<p>###复杂度<br>实现起来较为简单.</p>
-<p>###存储成本<br>几乎没有空间上浪费.</p>
-<p>###缺陷<br>仅仅从最近使用时间上考虑淘汰算法,没有考虑缓存单元的使用频率,可能会淘汰一些仍有价值的单元.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2077,7 +2170,7 @@ int main()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">214</span>
+                <span class="site-state-item-count">215</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

@@ -286,6 +286,186 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/03/每天一个python小程序-7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/03/每天一个python小程序-7/" itemprop="url">每天一个python小程序(7)--敏感词</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-03T14:34:54+08:00">
+                2015-02-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>敏感词文本文件 filtered_words.txt，里面的内容为以下内容，当用户输入敏感词语时，则打印出 Freedom，否则打印出 Human Rights。</p>
+<p>love</p>
+<p>sex</p>
+<p>jiangge</p>
+<p>bitch</p>
+</blockquote>
+<p>代码中有两种从txt文件中获取敏感词的方法，有一种被注释掉了，因为用这种方法获得的list最后会有一个空的字符串，导致下面find的时候一直会匹配成功，感兴趣的同学可以去掉注释试一下（同时需要注释掉注释下面的4行）</p>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
+
+def get_sensitive_word(filepath):
+    f = open(filepath, &apos;r&apos;)
+    #data = f.read()
+    #filt = data.split(&apos;\n&apos;) 这个方法得到的序列中最后有一个空的字符串，导致匹配一直成功
+    words = []
+    for word in f:
+        #strip删除字符序列，这里是删除word中的&apos;\n&apos;
+        words.append(word.strip(&apos;\n&apos;))
+    f.close()
+    return words
+
+def filter_word(words):
+    flag = False
+    text = raw_input(&apos;please input: &apos;)
+    for word in words:
+        if text.find(word) != -1:
+            flag = True
+
+    if flag:
+        print &apos;freedom&apos;
+    else:
+        print &apos;human rights&apos;
+
+if __name__ == &apos;__main__&apos;:
+    filepath = &apos;filtered_words.txt&apos;
+    words = get_sensitive_word(filepath)
+    filter_word(words)
+</code></pre><p>完整项目见<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.11" target="_blank" rel="external">这里</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2432,209 +2612,6 @@ s.makefile()
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第十四部分-Deferred用于同步环境/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/第十四部分-Deferred用于同步环境/" itemprop="url">第十四部分 Deferred用于同步环境</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T22:18:36+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文在<a href="http://krondo.com/?p=2205" target="_blank" rel="external">这里</a></p>
-<p>##介绍<br>这部分我们要介绍Deferred的另外一个功能。便于讨论，我们设定如下情景：假设由于众多的内部网请求一个外部诗歌下载服务器，但由于这个外部下载服务器性能太差或请求负荷太重。因此，我们不想将所有的内部请求全部发送到外部服务器。我们的处理办法是，在中间添加一个缓存代理。当一个请求来到后，我们可以从中间缓存代理中找到缓存的备份（如果有缓存）或者直接从外部服务器获得。部署图如图30所示：</p>
-<p><img src="/img/缓存代理服务器.png" alt="图30 缓存代理服务器"></p>
-<p>考虑到，客户端端发送请求来时，此缓存代理可能会将本地的缓冲的诗歌取出并回复，也有可能需要异步等待外部诗歌下载服务器的诗歌回复。如此一来，就会出现这样的情景：客户端发送来的请求，缓存代理处理请求可能是同步也可能是异步。</p>
-<p>要解决这个需要，就用到了Deferred的另一个特性，即可以在将Deferred返回前就激活这个Deferred。之所以可以这样做，是因为你可以在一个已经激活的deferred上添加回调处理函数。一个非常值得注意的是：已经被激活的deferred可以立即激活新添加的回调处理函数。图31表示一个已经激活的deferred：</p>
-<p><img src="/img/已经激活的deferred.png" alt="图31 已经激活的deferred"></p>
-<p>如果在此时，我们再为其另一对callback/errback，那么会立即激活新的回调并执行。如图32</p>
-<p><img src="/img/同一个deferred在添加新的回调之后.png" alt="图32 同一个deferred在添加新的回调之后"></p>
-<p>后面的callback回调被执行，是因为前面的callback执行成功。如果其执行失败，那么接下来执行的将是新添加的errback回调。</p>
-<p>我们可以通过 twisted-deferred/defer-11.py 示例来检测我们这里说到的特性。其中第二组例子，演示了deferred中的pause与unpause函数的功能，即可以暂停一个已经激活的deferred对其回调链上回调的激活。并可以用unpause来解除暂停设置。这两个函数同样完成了在回调中继续产生deferred期间的控制。</p>
-<p>##代理 1.0版本<br>让我们来看看第一个版本的缓存代理的实现twisted-server-1/poetry-proxy.py。由于该服务器既作为服务器向客户端请求提供本地缓存的诗歌，同时也要作为向外部诗歌下载服务器提出下载请求的客户端。因此，其有两套协议/工厂，一套实现服务器角色，另一套实现客户端角色。<br>首先我们先来看看ProxyService的实现部分：</p>
-<pre><code>class ProxyService(object):
-    poem = None # the cached poem
-    def __init__(self, host, port):
-        self.host = host
-        self.port = port
-    def get_poem(self):
-        if self.poem is not None:
-            print &apos;Using cached poem.&apos;
-            return self.poem
-        print &apos;Fetching poem from server.&apos;
-        factory = PoetryClientFactory()
-        factory.deferred.addCallback(self.set_poem)
-        from twisted.internet import reactor
-        reactor.connectTCP(self.host, self.port, factory)
-        return factory.deferred
-    def set_poem(self, poem):
-        self.poem = poem
-        return poem
-</code></pre><p>主要的函数是get_poem。如果缓存中没有请求的诗歌，那么就会建立连接从外部服务器中异步取得而返回一个deferred，并将取得的诗歌放到缓冲区中。相反，若缓冲区中存在请求的诗歌，则直接返回诗歌。</p>
-<p>我们如何来处理这样一个返回值不确定的函数呢，让我们来看看实现服务器角色的协议/工厂：</p>
-<pre><code>class PoetryProxyProtocol(Protocol):
-    def connectionMade(self):
-        d = maybeDeferred(self.factory.service.get_poem)
-        d.addCallback(self.transport.write)
-        d.addBoth(lambda r: self.transport.loseConnection())
-class PoetryProxyFactory(ServerFactory):
-    protocol = PoetryProxyProtocol
-    def __init__(self, service):
-        self.service = service
-</code></pre><p>这里使用了maybeDeferred函数解决了这个问题。此函数的功能就是如果作为其参数返回值为defer，那么其不作任何处理，原样将defer返回。但如何返回值不是defer而是一个值（正如我们的缓存代理将本地缓冲的诗歌返回一样），那么这个maybeDeferred会将该值重新打包成一个已经激活的deferred返回，注意是已经激活的deferred。当然，如果返回的是一个异常，其也会将其打包成一个已经激活的deferred，只不过就不是通过callback而是errback激活的。</p>
-<p>##代理 2.0版本<br>前面我们已经提到，有另一种替代方法来实现这一机制。这在 twisted-server-2/poetry-proxy.py 中很好的说明了。即我们可以返回一个已经激活的defer，放在这儿就是如果缓存代理中有请求的诗歌，那么就通过返回一个激活的deferred：</p>
-<pre><code>def get_poem(self):
-    if self.poem is not None:
-        print &apos;Using cached poem.&apos;
-        # return an already-fired deferred
-        return succeed(self.poem)
-    print &apos;Fetching poem from server.&apos;
-    factory = PoetryClientFactory()
-    factory.deferred.addCallback(self.set_poem)
-    from twisted.internet import reactor
-    reactor.connectTCP(self.host, self.port, factory)
-    return factory.deferred
-</code></pre><p>如果我们去看succeed的源码会发现，其只是在返回一个deferred之前，将其激活。同样，如果想要返回一个以失败的方式激活的deferred，可以调用函数defer.fail<br>在这个版本中，由于get_poem返回的是deferred而不像前一个版本存在不确定性因素。因此协议实现就无需使用maybeDeferred：</p>
-<pre><code>class PoetryProxyProtocol(Protocol):
-    def connectionMade(self):
-        d = self.factory.service.get_poem()
-        d.addCallback(self.transport.write)
-        d.addBoth(lambda r: self.transport.loseConnection())
-</code></pre><p>##总结<br>这个部分我们学习到了deferred可以在返回之前被激活，这样我们就可以将其用于同步环境中。并且我们已经知道了有两种方法来实现。其一是使用maybeDeferred函数，其二是使用succeed/fail。两者返回的都是deferred，不同的是前者返回的可能是异步的也可能是同步的，而后者返回的肯定是同步的，即已经激活。</p>
-<p>Deferred可以在激活后添加新的回调也间接说明了我们在第九部分提到的，deferred中会在最后一个回调中遇到未处理异常，并在此deferred被垃圾回收（即其已经没有任何外界引用）时才将该异常的情况打印出来。即deferred回在其销毁前一直持有异常，等待可能还会添加进来的回调来处理。</p>
-<p>我们已经将deferred中的大部分功能都介绍完了，当然Twisted开发人员可能不会增强deferred的功能。我们下一部分将讲讲Twisted的其它内容。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2685,7 +2662,7 @@ class PoetryProxyFactory(ServerFactory):
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">214</span>
+                <span class="site-state-item-count">215</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
