@@ -286,6 +286,168 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/22/操作系统的一些知识/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/22/操作系统的一些知识/" itemprop="url">操作系统的一些知识</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-22T21:27:23+08:00">
+                2015-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>目录在linux文件系统中是以怎样的形式存在的：文件</li>
+<li>通过文件名存取文件时，文件系统内部的操作过程是通过:文件名在目录中查找对应的i节点，通过i节点存取文件数据。</li>
+<li>关于文件block，以下说法是正确的：<ul>
+<li>文件系统中存储的最小单位是块（Block）</li>
+<li>block越大，inode越少，适合存储文件大而少的文件系统</li>
+<li>block块可以用mkfs.ext3 -b来制定块的大小</li>
+<li>每个block最多存放一个文件，而当一个block存放不下的情况下，会占用下一个block</li>
+</ul>
+</li>
+<li>同一进程下的线程可以共享：<code>data section</code>，<code>file fd</code>，不可以共享：<code>stack</code>，<code>register set</code></li>
+<li>线程，进程，多任务：<ul>
+<li>线程是指进程内的一条执行线路，或者说是进程中可执行代码的单独单元，它是操作系统的基本调度单元。</li>
+<li>一个进程至少有一个线程，即主线程，也可以有多个线程协同工作。</li>
+<li>进程从主线程开始执行，进而可以创建一个或多个附加线程来执行该进程内的并发任务，这就是基于线程的多任务。</li>
+<li>线程和进程都可并发执行</li>
+<li>在linux系统中，线程是处理器调度的基本单位</li>
+<li>线程的粒度小于进程，通常多线程比多进程并发性更高</li>
+</ul>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/22/LRU/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1805,155 +1967,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/15/scrapy爬虫出现connection-refused的一个可能原因/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/15/scrapy爬虫出现connection-refused的一个可能原因/" itemprop="url">scrapy爬虫出现connection refused的一个可能原因</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-15T09:30:28+08:00">
-                2015-01-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/scrapy/" itemprop="url" rel="index">
-                    <span itemprop="name">scrapy</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>下载了别人的一个爬虫，跑的时候发现会出现connection refused的错误</p>
-<pre><code>Connection was refused by other side: 111: Connection refused.
-</code></pre><p>有时候还能继续跑，但是不一会儿就停了，代码很简单，至少scrapy.py不会有问题，哪有问题的应该就是setting了</p>
-<p>看了一下setting文件，里面DOWNLOADER_MIDDLEWARES启用了两个自定义的中间件：<code>CustomHttpProxyMiddleware</code>和<code>CustomUserAgentMiddleware</code>，其中<code>CustomUserAgentMiddleware</code>是用来模拟浏览器登陆的，<code>CustomHttpProxyMiddleware</code>则是防止网站对ip限制，使用代理进行抓取。不妨分别将二者注释掉再跑看看。最终发现果然是<code>CustomHttpProxyMiddleware</code>出了问题，那proxy.py里面是什么呢？</p>
-<pre><code>PROXIES = [
-{&quot;ip_port&quot;: &quot;127.0.0.1:8087&quot;},
-]
-</code></pre><p>127.0.0.1是本机的环回地址，同时也是goagent的代理ip，作者本意应该是使用goagent来做ip轮换的工作，但是没那么简单啊，你的goagent没有配置呢，所以用到127.0.0.1的时候网站自然不让你访问了</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2004,7 +2017,7 @@ int _tmain(int argc, _TCHAR* argv[])
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">215</span>
+                <span class="site-state-item-count">216</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

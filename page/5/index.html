@@ -286,6 +286,156 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/22/Django国际化遇到的神坑/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/22/Django国际化遇到的神坑/" itemprop="url">Django国际化遇到的神坑</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-22T00:14:23+08:00">
+                2015-05-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>配置完全是按照文档来，检查了一遍又一遍。来回地创建po，mo文件，可是web就是不显示中文，Django你坏了还是我坏了？</p>
+<p>django国际化的问题纠缠了我5个小时，我从没有如此痛苦过，因为我很清楚这是一个很小的问题，但是因为没法调试，没有log，我根本不知道问题出在哪里。谁能TMD知道不能用<code>-</code>啊，草泥马！！！</p>
+<p>解决方案：</p>
+<p>语言包不要有<code>-</code>，例如语言包是<code>zh-hans</code>, 请将其改成<code>zh_hans</code>，其他地方的<code>zh-hans</code>不需要修改。</p>
+<p>如果说这也能称为知识的话，我真是日了狗了。</p>
+<p>django现在对<code>zh-cn</code>, <code>zh-CN</code>都不支持了，用了这些的话Django会提醒你：</p>
+<pre><code>The use of the language code &apos;zh-cn&apos; is deprecated. Please use the &apos;zh-hans&apos; translation instead.
+</code></pre><p>其实直接用<code>zh</code>也可以，而且，他还会主动到<code>zh_hans</code>的语言包里去找它里面没有翻译的内容。虽然我很想赞叹一声，但是竟然要这样区分<code>-</code>和<code>_</code>，我也是醉了。</p>
+<p>切记切记，语言包的名称中不要有<code>-</code>!!!</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/20/为什么搬家之后手机地图定位仍是在原来的地方-Google-WiFi-定位的原理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2125,362 +2275,6 @@ export https_proxy=http://10.10.1.2:8080
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/08/python线程初探/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/08/python线程初探/" itemprop="url">python线程初探</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-08T11:22:20+08:00">
-                2015-05-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>我们将会看到一些在Python中使用线程的实例和如何避免线程之间的竞争。你应当将下边的例子运行多次，以便可以注意到线程是不可预测的和线程每次运行出的不同结果。声明：从这里开始忘掉你听到过的关于GIL的东西，因为GIL不会影响到我想要展示的东西。</p>
-<p>##示例1</p>
-<p>我们将要请求五个不同的url：</p>
-<p>单线程</p>
-<pre><code>import time
-import urllib2
-
-def get_responses():
-    urls = [
-        &apos;http://www.google.com&apos;,
-        &apos;http://www.amazon.com&apos;,
-        &apos;http://www.ebay.com&apos;,
-        &apos;http://www.alibaba.com&apos;,
-        &apos;http://www.reddit.com&apos;
-    ]
-    start = time.time()
-    for url in urls:
-        print url
-        resp = urllib2.urlopen(url)
-        print resp.getcode()
-    print &quot;Elapsed time: %s&quot; % (time.time()-start)
-
-get_responses()
-</code></pre><p>输出是：</p>
-<pre><code>http://www.google.com 200
-http://www.amazon.com 200
-http://www.ebay.com 200
-http://www.alibaba.com 200
-http://www.reddit.com 200
-Elapsed time: 3.0814409256
-</code></pre><p>解释：</p>
-<ul>
-<li>url顺序的被请求</li>
-<li>除非cpu从一个url获得了回应，否则不会去请求下一个url</li>
-<li>网络请求会花费较长的时间，所以cpu在等待网络请求的返回时间内一直处于闲置状态。<br>##多线程</li>
-</ul>
-<pre><code>import urllib2
-import time
-from threading import Thread
-
-class GetUrlThread(Thread):
-    def __init__(self, url):
-        self.url = url 
-        super(GetUrlThread, self).__init__()
-
-    def run(self):
-        resp = urllib2.urlopen(self.url)
-        print self.url, resp.getcode()
-
-def get_responses():
-    urls = [
-        &apos;http://www.google.com&apos;, 
-        &apos;http://www.amazon.com&apos;, 
-        &apos;http://www.ebay.com&apos;, 
-        &apos;http://www.alibaba.com&apos;, 
-        &apos;http://www.reddit.com&apos;
-    ]
-    start = time.time()
-    threads = []
-    for url in urls:
-        t = GetUrlThread(url)
-        threads.append(t)
-        t.start()
-    for t in threads:
-        t.join()
-    print &quot;Elapsed time: %s&quot; % (time.time()-start)
-
-get_responses()
-</code></pre><p>输出：</p>
-<pre><code>http://www.reddit.com 200
-http://www.google.com 200
-http://www.amazon.com 200
-http://www.alibaba.com 200
-http://www.ebay.com 200
-Elapsed time: 0.689890861511
-</code></pre><p>解释：</p>
-<ul>
-<li>意识到了程序在执行时间上的提升</li>
-<li>我们写了一个多线程程序来减少cpu的等待时间，当我们在等待一个线程内的网络请求返回时，这时cpu可以切换到其他线程去进行其他线程内的网络请求。</li>
-<li>我们期望一个线程处理一个url，所以实例化线程类的时候我们传了一个url。</li>
-<li>线程运行意味着执行类里的run()方法。</li>
-<li>无论如何我们想每个线程必须执行run()。</li>
-<li>为每个url创建一个线程并且调用start()方法，这告诉了cpu可以执行线程中的run()方法了。</li>
-<li>我们希望所有的线程执行完毕的时候再计算花费的时间，所以调用了join()方法。</li>
-<li>join()可以通知主线程等待这个线程结束后，才可以执行下一条指令。</li>
-<li>每个线程我们都调用了join()方法，所以我们是在所有线程执行完毕后计算的运行时间。</li>
-</ul>
-<p>关于线程：</p>
-<ul>
-<li>cpu可能不会在调用start()后马上执行run()方法。</li>
-<li>你不能确定run()在不同线程建间的执行顺序。</li>
-<li>对于单独的一个线程，可以保证run()方法里的语句是按照顺序执行的。</li>
-<li>这就是因为线程内的url会首先被请求，然后打印出返回的结果。<br>##示例2<br>我们将会用一个程序演示一下多线程间的资源竞争，并修复这个问题。</li>
-</ul>
-<pre><code>from threading import Thread
-
-#define a global variable
-some_var = 0
-
-class IncrementThread(Thread):
-    def run(self):
-        #we want to read a global variable
-        #and then increment it
-        global some_var
-        read_value = some_var
-        print &quot;some_var in %s is %d&quot; % (self.name, read_value)
-        some_var = read_value + 1
-        print &quot;some_var in %s after increment is %d&quot; % (self.name, some_var)
-
-def use_increment_thread():
-    threads = []
-    for i in range(50):
-        t = IncrementThread()
-        threads.append(t)
-        t.start()
-    for t in threads:
-        t.join()
-    print &quot;After 50 modifications, some_var should have become 50&quot;
-    print &quot;After 50 modifications, some_var is %d&quot; % (some_var,)
-
-use_increment_thread()
-</code></pre><p>多次运行这个程序，你会看到多种不同的结果。</p>
-<p>解释：</p>
-<ul>
-<li>有一个全局变量，所有的线程都想修改它。</li>
-<li>所有的线程应该在这个全局变量上加 1 。</li>
-<li><p>有50个线程，最后这个数值应该变成50，但是它却没有。<br>为什么没有达到50？</p>
-</li>
-<li><p>在some_var是15的时候，线程t1读取了some_var，这个时刻cpu将控制权给了另一个线程t2。</p>
-</li>
-<li>t2线程读到的some_var也是15</li>
-<li>t1和t2都把some_var加到16</li>
-<li>当时我们期望的是t1 t2两个线程使some_var + 2变成17</li>
-<li>在这里就有了资源竞争。</li>
-<li>相同的情况也可能发生在其它的线程间，所以出现了最后的结果小于50的情况。</li>
-</ul>
-<p>解决资源竞争</p>
-<pre><code>from threading import Lock, Thread
-lock = Lock()
-some_var = 0
-
-class IncrementThread(Thread):
-    def run(self):
-        #we want to read a global variable
-        #and then increment it
-        global some_var
-        lock.acquire()
-        read_value = some_var
-        print &quot;some_var in %s is %d&quot; % (self.name, read_value)
-        some_var = read_value + 1
-        print &quot;some_var in %s after increment is %d&quot; % (self.name, some_var)
-        lock.release()
-
-def use_increment_thread():
-    threads = []
-    for i in range(50):
-        t = IncrementThread()
-        threads.append(t)
-        t.start()
-    for t in threads:
-        t.join()
-    print &quot;After 50 modifications, some_var should have become 50&quot;
-    print &quot;After 50 modifications, some_var is %d&quot; % (some_var,)
-
-use_increment_thread()
-</code></pre><p>再次运行这个程序，达到了我们预期的结果。</p>
-<p>解释：</p>
-<ul>
-<li>Lock 用来防止竞争条件</li>
-<li>如果在执行一些操作之前，线程t1获得了锁。其他的线程在t1释放Lock之前，不会执行相同的操作</li>
-<li>我们想要确定的是一旦线程t1已经读取了some_var，直到t1完成了修改some_var，其他的线程才可以读取some_var</li>
-<li>这样读取和修改some_var成了逻辑上的原子操作。<br>##示例3<br>让我们用一个例子来证明一个线程不能影响其他线程内的变量（非全局变量）。</li>
-</ul>
-<p>time.sleep()可以使一个线程挂起，强制线程切换发生。</p>
-<pre><code>from threading import Thread
-import time
-
-class CreateListThread(Thread):
-    def run(self):
-        self.entries = []
-        for i in range(10):
-            time.sleep(1)
-            self.entries.append(i)
-        print self.entries
-
-def use_create_list_thread():
-    for i in range(3):
-        t = CreateListThread()
-        t.start()
-
-use_create_list_thread()
-</code></pre><p>运行几次后发现并没有打印出正确的结果。当一个线程正在打印的时候，cpu切换到了另一个线程，所以产生了不正确的结果。我们需要确保print self.entries是个逻辑上的原子操作，以防打印时被其他线程打断。</p>
-<p>我们使用了Lock()，来看下边的例子。</p>
-<pre><code>from threading import Thread, Lock
-import time
-
-lock = Lock()
-
-class CreateListThread(Thread):
-    def run(self):
-        self.entries = []
-        for i in range(10):
-            time.sleep(1)
-            self.entries.append(i)
-        lock.acquire()
-        print self.entries
-        lock.release()
-
-def use_create_list_thread():
-    for i in range(3):
-        t = CreateListThread()
-        t.start()
-
-use_create_list_thread()
-</code></pre><p>这次我们看到了正确的结果。证明了一个线程不可以修改其他线程内部的变量（非全局变量）。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2531,7 +2325,7 @@ use_create_list_thread()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">215</span>
+                <span class="site-state-item-count">216</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

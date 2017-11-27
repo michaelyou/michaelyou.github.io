@@ -286,6 +286,211 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/19/Django外键赋值/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/19/Django外键赋值/" itemprop="url">Django外键赋值</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-19T10:46:48+08:00">
+                2016-12-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <pre><code>class Article(models.Model):
+    title = models.CharField(max_length=1024, default=&apos;&apos;)
+    ...
+    def __str__(self):
+        return &apos;Article pk:%d %s&apos; % (self.pk, self.title[:30])
+
+class ArticleContent(models.Model):
+    article = cached_fields.OneToOneField(Article)
+    ...
+</code></pre><p>写代码的的时候，发现了一个很奇怪的现象，当我给一个instance的外键（以_id结尾）赋值（数字）的时候    ，这个外键对应的instance的值并不会改变。</p>
+<pre><code>In [44]: ac = ArticleContent.objects.get(article_id=14269)
+In [45]: ac.article_id
+Out[45]: 14269
+In [46]: ac.article_id = 14266
+In [47]: ac.save()
+In [48]: ac.article
+Out[48]: &lt;Article: Article pk:14266 EC: Russia, Ukraine to Meet in&gt;
+In [49]: ac.article.pk
+Out[49]: 14266
+</code></pre><p>如上面的代码所示，为了找到答案，我翻了一下Django的源码：</p>
+<pre><code>django/db/models/fields/related_descriptors.py 
+145     def __get__(self, instance, cls=None):
+146         &quot;&quot;&quot;
+147         Get the related instance through the forward relation.
+148
+149         With the example above, when getting ``child.parent``:
+150
+151         - ``self`` is the descriptor managing the ``parent`` attribute
+152         - ``instance`` is the ``child`` instance
+153         - ``cls`` is the ``Child`` class (we don&apos;t need it)
+154         &quot;&quot;&quot;
+155         if instance is None:
+156             return self
+157
+158         # The related instance is loaded from the database and then cached in
+159         # the attribute defined in self.cache_name. It can also be pre-cached
+160         # by the reverse accessor (ReverseOneToOneDescriptor).
+161         try:
+162             rel_obj = getattr(instance, self.cache_name)
+163         except AttributeError:
+164             val = self.field.get_local_related_value(instance)
+165             if None in val:
+166                 rel_obj = None
+167             else:
+168                 qs = self.get_queryset(instance=instance)
+169                 qs = qs.filter(self.field.get_reverse_related_filter(instance))
+170                 # Assuming the database enforces foreign keys, this won&apos;t fail.
+171                 rel_obj = qs.get()
+172                 # If this is a one-to-one relation, set the reverse accessor
+173                 # cache on the related object to the current instance to avoid
+174                 # an extra SQL query if it&apos;s accessed later on.
+175                 if not self.field.remote_field.multiple:
+176                     setattr(rel_obj, self.field.remote_field.get_cache_name(), instance)
+177             setattr(instance, self.cache_name, rel_obj)
+178
+179         if rel_obj is None and not self.field.null:
+180             raise self.RelatedObjectDoesNotExist(
+181                 &quot;%s has no %s.&quot; % (self.field.model.__name__, self.field.name)
+182             )
+183         else:
+184             return rel_obj
+</code></pre><p>注释得非常到位，当我们请求<code>ac.article</code>的时候，会先去检查对应的cache（在这里是<code>_article_cache</code>，感兴趣可以去看<code>cache_name</code>的生成规则，就是外键名前面加下划线，后面加cache）存不存在，如果不存在那么就进行数据库请求，请求完之后会保存到cache中。</p>
+<p>我们再看看<code>__set__</code>，代码太长就不贴了（就在<code>__get__</code>方法下面）。除了给外键字段（<code>article</code>）赋值外，还会将pk字段（<code>article_id</code>，是<code>lh_field.attname</code>的值）设置为None，这样下次请求的时候就能拿到正确的值。</p>
+<p>以上都是ForeignKey的Magic，而当我们给<code>article_id</code>赋值的时候，只是在给一个普通的attribute赋值而已，没有任何magic，不会清理对应外键的cache，这时候拿到的instance仍然是cache中原来的那个instance。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/03/Django-redis如何支持存取整型和布尔值/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3037,210 +3242,6 @@ alter table userinfo change column username varchar(20)
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/08/Django-优化数据库查询/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/11/08/Django-优化数据库查询/" itemprop="url">Django-优化数据库查询</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-08T21:09:31+08:00">
-                2015-11-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##一次检索你需要的所有东西</p>
-<p>在不同的位置多次访问数据库，一次获取一个数据集，通常来说不如在一次查询中获取它们更高效。如果你在一个循环中执行查询，这尤其重要。有可能你会做很多次数据库查询，但只需要一次就够了。</p>
-<p>我们需要充分了解并使用<code>select_related()</code>和<code>prefetch_related()</code></p>
-<p>###select_related()<br>Returns a QuerySet that will <code>“follow”</code> foreign-key relationships, selecting additional related-object data when it executes its query. This is a performance booster which results in a single more complex query but means later use of foreign-key relationships won’t require database queries.</p>
-<p>The following examples illustrate the difference between plain lookups and select_related() lookups. Here’s standard lookup:</p>
-<pre><code># Hits the database.
-e = Entry.objects.get(id=5)
-
-# Hits the database again to get the related Blog object.
-b = e.blog
-</code></pre><p>And here’s select_related lookup:</p>
-<pre><code># Hits the database.
-e = Entry.objects.select_related(&apos;blog&apos;).get(id=5)
-
-# Doesn&apos;t hit the database, because e.blog has been prepopulated
-# in the previous query.
-b = e.blog
-</code></pre><p>You can use <code>select_related()</code> with any queryset of objects:</p>
-<pre><code>from django.utils import timezone
-
-# Find all the blogs with entries scheduled to be published in the future.
-blogs = set()
-
-for e in Entry.objects.filter(pub_date__gt=timezone.now()).select_related(&apos;blog&apos;):
-    # Without select_related(), this would make a database query for each
-    # loop iteration in order to fetch the related blog for each entry.
-    blogs.add(e.blog)
-</code></pre><p>The order of <code>filter()</code> and <code>select_related()</code> chaining isn’t important. These querysets are equivalent:</p>
-<pre><code>Entry.objects.filter(pub_date__gt=timezone.now()).select_related(&apos;blog&apos;)
-Entry.objects.select_related(&apos;blog&apos;).filter(pub_date__gt=timezone.now())
-</code></pre><p>You can follow foreign keys in a similar way to querying them. If you have the following models:</p>
-<pre><code>from django.db import models
-
-class City(models.Model):
-    # ...
-    pass
-
-class Person(models.Model):
-    # ...
-    hometown = models.ForeignKey(City)
-
-class Book(models.Model):
-    # ...
-    author = models.ForeignKey(Person)
-</code></pre><p>… then a call to <code>Book.objects.select_related(&#39;author__hometown&#39;).get(id=4)</code> will cache the related Person and the related City:</p>
-<pre><code>b = Book.objects.select_related(&apos;author__hometown&apos;).get(id=4)
-p = b.author         # Doesn&apos;t hit the database.
-c = p.hometown       # Doesn&apos;t hit the database.
-
-b = Book.objects.get(id=4) # No select_related() in this example.
-p = b.author         # Hits the database.
-c = p.hometown       # Hits the database.
-</code></pre><p>###prefetch_related()<br>待补充</p>
-<p>##不要查询你不需要的东西</p>
-<p>###使用<code>QuerySet.values()</code>和<code>values_list()</code><br>当你仅仅想要一个带有值的字典或者列表，并不需要使用ORM模型对象时，可以适当使用<code>values()</code>。</p>
-<p>###使用<code>QuerySet.count()</code><br>如果你想要获取大小，不要使用 <code>len(queryset)</code></p>
-<p>###使用<code>QuerySet.exists()</code><br>如果你想要知道是否存在至少一个结果，不要使用<code>if queryset</code></p>
-<p>###使用<code>QuerySet.update()</code>和<code>delete()</code><br>通过<code>QuerySet.update()</code>使用批量的SQL UPDATE语句，而不是获取大量对象，设置一些值再单独保存。与此相似，在可能的地方使用批量<code>deletes</code>。</p>
-<p>但是要注意，这些批量的更新方法不会在单独的实例上面调用<code>save()</code>或者<code>delete()</code>方法，意思是任何你向这些方法添加的自定义行为都不会被执行，包括由普通数据库对象的信号驱动的任何方法。</p>
-<p>###直接使用外键的值<br>如果你仅仅需要外键当中的一个值，要使用对象上你已经取得的外键的值，而不是获取整个关联对象再得到它的主键。例如，执行：</p>
-<pre><code>entry.blog_id
-</code></pre><p>而不是：</p>
-<pre><code>entry.blog.id
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3291,7 +3292,7 @@ c = p.hometown       # Hits the database.
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">215</span>
+                <span class="site-state-item-count">216</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

@@ -286,6 +286,181 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/15/删除list里的重复元素/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/15/删除list里的重复元素/" itemprop="url">删除list里的重复元素</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-15T14:21:26+08:00">
+                2015-03-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##方法一：先排序后比较大小</p>
+<pre><code>if List:
+    List.sort()
+last = List[-1]
+for i in range(len(List)-2, -1, -1):
+    if last==List[i]: 
+        del List[i]
+    else: 
+        last=List[i]
+</code></pre><p>问题：为什么要从后往前迭代呢？我们可以从list[0]开始啊，代码如下：</p>
+<pre><code>if List:
+    List.sort()
+begin = List[0]
+for i in range(1, len(list)):
+    if begin==List[i]: 
+        del List[i]
+    else: 
+        begin=List[i]
+</code></pre><p>运行一下，报错如下：</p>
+<pre><code>IndexError: list index out of range
+</code></pre><p>数组访问越界了！why？</p>
+<p>我们调用del删除list里的元素，相应的list的长度也会自动减小，但我们迭代的范围range(1, len(list))是一开始就计算好的，所以必然会越界。比如说：</p>
+<pre><code>li = [1,1,2,2,3,3,3,4,5,6]
+</code></pre><p>调用len计算得到li的长度为10，range(1,10)得到我们迭代的序列是1-9，但是当我们删除了li中的重复元素1,2,3之后，li的长度只剩下了6，可是我们依然会访问li[7]，因为访问序列一开始就计算好了，所以必然造成了越界。</p>
+<p>那从后向前是如何避免越界的呢？从后向前遍历，删除元素后，只是把这个元素之后的已经没有重复元素的序列向前移动一位，数组依然在变短，但这个时候是不会影响到我们向前遍历的。</p>
+<p>##方法二：使用set</p>
+<pre><code>&gt;&gt;&gt; li = [1,2,4,5,7,8,2,3,4,56,7]
+&gt;&gt;&gt; list(set(li))
+&gt;&gt;&gt; [1, 2, 3, 4, 5, 7, 8, 56]
+</code></pre><p>##方法三：使用列表综合</p>
+<pre><code>l1 = [&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;b&apos;,&apos;c&apos;,&apos;a&apos;,&apos;a&apos;]  
+l2 = []  
+[l2.append(i) for i in l1 if not i in l2]  
+print l2
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/13/tcp是流的一些思考-拆包和粘包/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1735,159 +1910,6 @@ int main() {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/linux系统性能调试-free命令/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/12/linux系统性能调试-free命令/" itemprop="url">linux系统性能调试--free命令</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T10:36:35+08:00">
-                2015-03-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>使用free命令可以查看系统中内存空间的大小。内存是以KB为单位来衡量的。例如用户可以用free命令来获取系统内存空间的大小信息，命令如下：</p>
-<pre><code>$ free 
-
-              Total  used   free  shared  buffers  cached 
-Mem:         95772  86748   9024   54480     5796   36164 
--/+ buffers/cache:  44788  50984 
-Swap:       136512   7000 129512 
-</code></pre><p>在上面显示内容中：</p>
-<ul>
-<li>Mem行中的total栏显示了当前Linux正在使用的RAM总量。</li>
-<li>used栏显示的是被占用的内存空间，但Mem行与这一栏结合并不能产生最好的分析结果，因为其中包含了Linux分配给磁盘缓冲区的一部分分区。在大多数系统中，used栏显示的值和total栏的值相当。然而，我们可以核对used栏、-/+buffers/cache行对应的值来查看有多少内存处于使用状态（used栏、Swap栏对应的数值）。这一部分是作为内存来用的磁盘，而磁盘速度比内存慢，所以最好优先使用物理内存，交换内存则较少使用。–</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1938,7 +1960,7 @@ Swap:       136512   7000 129512
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">215</span>
+                <span class="site-state-item-count">216</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

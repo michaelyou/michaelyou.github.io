@@ -286,6 +286,174 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/cookie/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/10/cookie/" itemprop="url">cookie</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-10T18:33:54+08:00">
+                2015-02-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/http/" itemprop="url" rel="index">
+                    <span itemprop="name">http</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>转载自<a href="http://www.cnblogs.com/TankXiao/archive/2013/04/15/2848906.html" target="_blank" rel="external">这里</a></p>
+<p>##网站自动登录<br>我们以”博客园自动登陆“的例子，来说明cookie是如何传递的。</p>
+<p>大家知道博客园是可以自动登陆的。 如下图，这个是什么原理呢?</p>
+<p><img src="/img/cookie1.png" alt=""></p>
+<p>假如我已经在登陆页面输入了用户名，密码，选择了保存密码，登陆。</p>
+<p>（这时候，其实在你的机器上保存好了登陆的cookie, 不信你可以按照上节介绍方法去你的电脑上找下博客园的cookie）  </p>
+<p>当我下次访问博客园流程如下。</p>
+<ol>
+<li><p>用户打开IE浏览器，在地址栏上输入www.cnblogs.com.</p>
+</li>
+<li><p>IE首先会在硬盘中查找关于cnblogs.com的cookie. 然后把cookie放到HTTP Request中，再把Request发给Web服务器。</p>
+</li>
+<li><p>Web服务器返回博客园首页（你会看到你已经登陆了）。</p>
+</li>
+</ol>
+<p><img src="/img/自动登录.png" alt=""></p>
+<p>##截获Cookie，冒充别人身份<br>通过上面这个例子，可以看到cookie是很重要的，识别是否是登陆用户，就是通过cookie。  假如截获了别人的cookie是否可以冒充他人的身份登陆呢？  当然可以， 这就是一种黑客技术叫Cookie欺骗。</p>
+<p>利用Cookie 欺骗， 不需要知道用户名密码。就可以直接登录，使用别人的账户做坏事。</p>
+<p>我知道有两种方法可以截获他人的cookie，</p>
+<ol>
+<li><p>通过XSS脚步攻击， 获取他人的cookie. 具体原理可以看 <a href="http://www.cnblogs.com/TankXiao/archive/2012/03/21/2337194.html" target="_blank" rel="external">Web安全性测试之XSS</a></p>
+</li>
+<li><p>想办法获取别人电脑上保存的cookie文件（这个比较难）</p>
+</li>
+</ol>
+<p>##Cookie 泄露隐私<br>2013年央视的315晚会上， 曝光了很多不法公司利用Cookie跟踪并采集用户的个人信息，并转卖给网络广告商，形成了一条窃取用户信息的灰色产业链。从而实现广告准确投放。严重干扰了用户的正常网络应用，侵害了个人的隐私和利益。</p>
+<p>我经常就在门户网站上发现广告位上显示的是我在电商网站上流量过的商品。  这就是我的cookie被泄露了。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/在浏览器输入url回车，和直接按F5刷新有什么区别/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2382,170 +2550,6 @@ netstat -ntlp|grep mongod
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/03/python的-classmethod-修饰符/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/03/python的-classmethod-修饰符/" itemprop="url">python的@classmethod 修饰符</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-03T14:37:00+08:00">
-                2015-02-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>通常情况下，如果我们要使用一个类的方法，那我们只能将一个类实体化成一个对象，进而调用对象使用方法。</p>
-<pre><code>class Hello(object):
-    def __init__:
-        ...
-
-    def print_hello(self):
-        print &quot;Hello&quot;
-</code></pre><p> 要用 print_hello() 就得：</p>
-<pre><code>hlo = Hello()
-hlo.print_hello()
-输出：Hello
-</code></pre><p>如果用了 @classmethod 就简单了：</p>
-<pre><code>class Hello(object):
-    def __init__:
-        ...
-
-    @classmethod
-    def print_hello(cls):
-        print &quot;Hello&quot;
-</code></pre><p>要用的话直接：</p>
-<pre><code>Hello.print_hello()
-Hello
-</code></pre><p>注意：@classmethod 仅仅适用于单独的，与类本身的数据结构无关函数，其实用了它的函数，与使用普通函数无异，甚至不能在参数里加入 self，如果要在其中使用类的数据结构，仍然需要将类实例化一次才可以，所以要小心使用。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2596,7 +2600,7 @@ Hello
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">215</span>
+                <span class="site-state-item-count">216</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

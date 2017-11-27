@@ -286,6 +286,209 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/如何实现守护进程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/04/如何实现守护进程/" itemprop="url">如何实现守护进程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-04T16:10:42+08:00">
+                2015-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li><p>创建子进程，父进程退出。 （脱离控制终端），很自然地，子进程成了孤儿进程，被init进程收养。</p>
+</li>
+<li><p>子进程中创建新会话。</p>
+</li>
+</ul>
+<blockquote>
+<p>我们先介绍下进程组的概念：</p>
+<p>进程组是一个或者多个进程的集合，由进程组id来唯一标识，除了进程号PID之外，进程组ID也是一个进程的必备属性。<br>每个进程组都有一个组长进程，其组长进程的进程号PID等于进程组ID，且该进程ID不会因为组长进程的退出而受到影响。</p>
+<p><strong>会话期</strong></p>
+<p>会话组是一个或者多个进程组的集合，通常，一个会话开始于用户登录，终止于用户退出，在此期间用户运行的所有进程 都属于这个会话期。</p>
+<p>Setid函数就是用于创建一个新的会话，并担任该会话组的组长，有三个作用，让进程摆脱原会话和进程组，终端的控制，使进程完全独立出来。</p>
+</blockquote>
+<ul>
+<li>由于fork（）继承了父进程的工作目录，对以后的使用造成不便，所以我们要改变当前目录为根目录。</li>
+</ul>
+<ul>
+<li><p>关闭文件描述符。 （fork（）继承过来的）</p>
+</li>
+<li><p>重设文件权限掩码。因为由继承得来的文件模式屏蔽字可能会被设置为拒绝某些权限</p>
+<pre><code>void daemonize()
+{
+  pid_t pid;
+
+  pid = fork();
+
+  /* In case of fork is error. */
+  if (pid &lt; 0)
+    {
+      fprintf(stderr,&quot;fork error.\n&quot;);
+      exit(0);
+    }
+  /* In case of this is parent process. */
+  if (pid != 0)
+    exit (0);// 父进程退出
+  /* Become session leader and get pid. */
+  pid = setsid();
+  if (pid == -1)
+    {
+      fprintf(stderr, &quot;setsid failed..&quot;);
+      exit(0);
+    }
+  /* Change directory to root. */
+
+    chdir (&quot;/&quot;);
+
+  /* File descriptor close. */
+  int fd;
+  fd = open (&quot;/dev/null&quot;, O_RDWR, 0);
+  if(fd != -1)
+    {
+      dup2(fd, STDIN_FILENO);
+      dup2(fd, STDOUT_FILENO);
+      dup2(fd, STDERR_FILENO);//all the output to stdin&amp;stdout&amp;stderr will go into /dev/null now
+      if(fd &gt; 2)
+        close(fd);
+    }
+
+  umask (0);
+}
+</code></pre></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/编译原理基础/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1861,164 +2064,6 @@ sigrelse(SIGALRM);
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/03/TIME-WAIT状态详解/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/03/TIME-WAIT状态详解/" itemprop="url">TIME_WAIT状态详解</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-03T11:26:25+08:00">
-                2015-03-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
-                    <span itemprop="name">TCP/IP</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>TCP 的 timewait 状态是什么？谁会有 timewait 状态？timewait 状态存在的作用是什么？如何避免大量的 timewait 状态占用系统资源？</p>
-</blockquote>
-<p> timewait 状态是 TCP 链接的主动关闭方会有的状态，在发出最后一个 ACK 包之后，主动关闭方进入 timewait 状态，以确保 ACK 包到达对端，以及等待网络中之前迷路的数据包完全消失，防止在端口被复用的时候收到迷路包从而出现收包错误。</p>
-<p>timewait 状态会持续 2MSL（max segment lifetime) 的时间，一般会有 1分钟到4分钟事件。这段事件内 端口不可被重分配使用。</p>
-<p><strong>timewait 并不会占用更多系统资源，但是可以通过修改内核参数 /etc/sysctl.conf 来达到 限制timewait 数量的功能。</strong></p>
-<p><img src="/img/time_wait.png" alt="time_wait"></p>
-<p>##TIME_WAIT状态原理</p>
-<p>通信双方建立TCP连接后，主动关闭连接的一方就会进入<code>TIME_WAIT</code>状态。客户端主动关闭连接时，会发送最后一个ack，然后会进入TIME_WAIT状态，再停留2个MSL时间(后有MSL的解释)，进入CLOSED状态。</p>
-<p>上图是以客户端主动关闭连接为例，说明这一过程的。</p>
-<p>##TIME_WAIT状态存在的理由</p>
-<p>TCP/IP协议就是这样设计的，是不可避免的。主要有两个原因:</p>
-<p>###可靠地实现TCP全双工连接的终止</p>
-<p>TCP协议在关闭连接的四次握手过程中，最终的ACK是由主动关闭连接的一端（后面统称A端）发出的，如果这个ACK丢失，对方（后面统称B端）将重发出最终的FIN，因此A端必须维护状态信息（TIME_WAIT）允许它重发最终的ACK。如果A端不维持TIME_WAIT状态，而是处于CLOSED 状态，那么A端将响应RST分节，B端收到后将此分节解释成一个错误（在java中会抛出connection reset的SocketException)。<br>因而，要实现TCP全双工连接的正常终止，必须处理终止过程中四个分节任何一个分节的丢失情况，主动关闭连接的A端必须维持TIME_WAIT状态 。</p>
-<p>###允许老的重复分节在网络中消逝<br>TCP分节可能由于路由器异常而“迷途”，在迷途期间，TCP发送端可能因确认超时而重发这个分节，迷途的分节在路由器修复后也会被送到最终目的地，这个迟到的迷途分节到达时可能会引起问题。在关闭“前一个连接”之后，马上又重新建立起一个相同的IP和端口之间的“新连接”，“前一个连接”的迷途重复分组在“前一个连接”终止后到达，而被“新连接”收到了。为了避免这个情况，TCP协议不允许处于<code>TIME_WAIT</code>状态的连接启动一个新的可用连接，因为<code>TIME_WAIT</code>状态持续2MSL，就可以保证当成功建立一个新TCP连接的时候，来自旧连接重复分组已经在网络中消逝。</p>
-<h2 id="MSL时间"><a href="#MSL时间" class="headerlink" title="MSL时间"></a>MSL时间</h2><p>MSL就是maximum segment lifetime(最大分节生命期），这是一个IP数据包能在互联网上生存的最长时间，超过这个时间IP数据包将在网络中消失 。MSL在RFC 1122上建议是2分钟，而源自berkeley的TCP实现传统上使用30秒。</p>
-<h2 id="TIME-WAIT状态维持时间"><a href="#TIME-WAIT状态维持时间" class="headerlink" title="TIME_WAIT状态维持时间"></a>TIME_WAIT状态维持时间</h2><p>TIME_WAIT状态维持时间是两个MSL时间长度，也就是在1-4分钟。Windows操作系统就是4分钟。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2069,7 +2114,7 @@ sigrelse(SIGALRM);
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">215</span>
+                <span class="site-state-item-count">216</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
