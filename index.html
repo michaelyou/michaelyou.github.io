@@ -286,6 +286,192 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/05/go语言死循环分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/05/go语言死循环分析/" itemprop="url">go语言死循环分析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-05T12:18:55+08:00">
+                2017-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/go/" itemprop="url" rel="index">
+                    <span itemprop="name">go</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近看了一篇文章，<a href="https://gocn.io/article/441" target="_blank" rel="external">如何定位 golang 进程 hang 死的 bug</a>，里面有这张一段代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"fmt"</span></div><div class="line">    <span class="string">"io"</span></div><div class="line">    <span class="string">"log"</span></div><div class="line">    <span class="string">"net/http"</span></div><div class="line">    <span class="string">"runtime"</span></div><div class="line">    <span class="string">"time"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    runtime.GOMAXPROCS(runtime.NumCPU())</div><div class="line">    <span class="keyword">go</span> server()</div><div class="line">    <span class="keyword">go</span> printNum()</div><div class="line">    <span class="keyword">var</span> i = <span class="number">1</span></div><div class="line">    <span class="keyword">for</span> &#123;</div><div class="line">        <span class="comment">// will block here, and never go out</span></div><div class="line">        i++</div><div class="line">    &#125;</div><div class="line">    fmt.Println(<span class="string">"for loop end"</span>)</div><div class="line">    time.Sleep(time.Second * <span class="number">3600</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">printNum</span><span class="params">()</span></span> &#123;</div><div class="line">    i := <span class="number">0</span></div><div class="line">    <span class="keyword">for</span> &#123;</div><div class="line">        fmt.Println(i)</div><div class="line">        i++</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">HelloServer</span><span class="params">(w http.ResponseWriter, req *http.Request)</span></span> &#123;</div><div class="line">    fmt.Println(<span class="string">"hello world"</span>)</div><div class="line">    io.WriteString(w, <span class="string">"hello, world!\n"</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">server</span><span class="params">()</span></span> &#123;</div><div class="line">    http.HandleFunc(<span class="string">"/"</span>, HelloServer)</div><div class="line">    err := http.ListenAndServe(<span class="string">":12345"</span>, <span class="literal">nil</span>)</div><div class="line"></div><div class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">        log.Fatal(<span class="string">"ListenAndServe: "</span>, err)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>运行，会发现打印一会儿数字后停了，我们执行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl localhost:12345</div></pre></td></tr></table></figure>
+<p>程序卡死。关于程序挂在哪里借助<code>dlv</code>是很好定位的：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dlv debug hang.go</div></pre></td></tr></table></figure>
+<p>进去之后运行程序，打印停止进入卡死状态，我们执行<code>ctrl C</code>，<code>dlv</code>会显示断开的地方：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">received SIGINT, stopping process (will not forward signal)&gt; main.main() ./hang.<span class="keyword">go</span>:<span class="number">17</span> (PC: <span class="number">0x12dd</span>7c8)</div><div class="line">    <span class="number">12</span>: <span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="number">13</span>:         runtime.GOMAXPROCS(runtime.NumCPU())</div><div class="line">    <span class="number">14</span>:         <span class="keyword">go</span> server()</div><div class="line">    <span class="number">15</span>:         <span class="keyword">go</span> printNum()</div><div class="line">    <span class="number">16</span>:         <span class="keyword">var</span> i = <span class="number">1</span></div><div class="line">=&gt;  <span class="number">17</span>:         <span class="keyword">for</span> &#123;</div><div class="line">    <span class="number">18</span>:                 <span class="comment">// will block here, and never go out</span></div><div class="line">    <span class="number">19</span>:                 i++</div><div class="line">    <span class="number">20</span>:         &#125;</div><div class="line">    <span class="number">21</span>:         fmt.Println(<span class="string">"for loop end"</span>)</div><div class="line">    <span class="number">22</span>:         time.Sleep(time.Second * <span class="number">3600</span>)</div><div class="line">(dlv)</div></pre></td></tr></table></figure>
+<p>但是我还是不明白，不明白的地方主要是因为：</p>
+<ul>
+<li>. 我又看了两篇文章<a href="http://tonybai.com/2017/11/23/the-simple-analysis-of-goroutine-schedule-examples/" target="_blank" rel="external">Goroutine调度实例简要分析</a>和<a href="http://tonybai.com/2017/06/23/an-intro-about-goroutine-scheduler/" target="_blank" rel="external">也谈goroutine调度器</a>，是同一位作者Tony Bai写的，写得非常好。第二篇文章解释了goroutine的调度和cpu数量的关系（不多加解释，建议大家看看），我的mac是双核四线程（这里不明白的同学自行google cpu 超线程），go版本是1.9，理论上讲可以跑4个goroutine而不用考虑死循环，一个死循环最多把一个cpu打死，上面的代码中只有3个goroutine，而且他们看上去都挂住了。</li>
+</ul>
+<ol>
+<li>上面说的理论上讲，不是我主观臆测的，我跑了<code>1</code>中<a href="http://tonybai.com/2017/11/23/the-simple-analysis-of-goroutine-schedule-examples/" target="_blank" rel="external">第一篇文章</a>中的一个例子:</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"fmt"</span></div><div class="line">    <span class="string">"time"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">deadloop</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">for</span> &#123;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">go</span> deadloop()</div><div class="line">    <span class="keyword">for</span> &#123;</div><div class="line">        time.Sleep(time.Second * <span class="number">1</span>)</div><div class="line">        fmt.Println(<span class="string">"I got scheduled!"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面代码有两个goroutine，一个是<code>main goroutine</code>，一个是<code>deadloop goroutine</code>，跑得时候<code>deadloop gouroutine</code>不会对<code>main goroutine</code>造成影响，打印一直在持续，作者的文章解释了原因。</p>
+<ul>
+<li>. <a href="https://gocn.io/article/441" target="_blank" rel="external">如何定位 golang 进程 hang 死的 bug</a>这篇文章提到了<code>gcwaiting</code>，然而没有解释。</li>
+</ul>
+<p>在<a href="https://gocn.io/article/441" target="_blank" rel="external">如何定位 golang 进程 hang 死的 bug</a>有这样一段话：</p>
+<blockquote>
+<p>因为在 for 循环中没有函数调用的话，编译器不会插入调度代码，所以这个执行 for 循环的 goroutine 没有办法被调出，而在循环期间碰到 gc，那么就会卡在 gcwaiting 阶段，并且整个进程永远 hang 死在这个循环上。并不再对外响应。</p>
+</blockquote>
+<p>这个其实就是我们的第一段代码卡死的原因，也是我们第二段代码没有卡死的原因，就是在<code>gc</code>上！</p>
+<p>我们再看一篇文章，<a href="https://studygolang.com/articles/9004" target="_blank" rel="external">golang的垃圾回收（GC）机制</a>，这篇文章很短，但每句话都很重要：</p>
+<blockquote>
+<ol>
+<li>设置gcwaiting=1，这个在每一个G任务之前会检查一次这个状态，如是，则会将当前M 休眠；</li>
+<li>如果这个M里面正在运行一个长时间的G任务，咋办呢，难道会等待这个G任务自己切换吗？这样的话可要等10ms啊，不能等！坚决不能等！<br>所以会主动发出抢占标记（类似于上一篇），让当前G任务中断，再运行下一个G任务的时候，就会走到第1步</li>
+</ol>
+</blockquote>
+<p>那么如果这时候运行的是没有函数调用的死循环呢，gc也发出了抢占标记，但是如果死循环没有函数调用，就没有地方被标记，无法被抢占，那就只能设置<code>gcwaiting=1</code>，而<strong>M没有休眠</strong>，<code>stop the world</code>卡住了（死锁），<code>gcwaiting</code>一直是1，整个程序都卡住了！</p>
+<p>这里其实已经解释了第一份代码的现象，第二份代码为什么没有hang住相信大家也能猜到了：代码里没有触发gc！我们来手动触发一下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"fmt"</span></div><div class="line">    <span class="string">"log"</span></div><div class="line">    <span class="string">"net/http"</span></div><div class="line">    _ <span class="string">"net/http/pprof"</span></div><div class="line">    <span class="comment">// "runtime"</span></div><div class="line">    <span class="string">"time"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">deadloop</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">for</span> &#123;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">        log.Println(http.ListenAndServe(<span class="string">"localhost:6060"</span>, <span class="literal">nil</span>))</div><div class="line">    &#125;()</div><div class="line">    <span class="keyword">go</span> deadloop()</div><div class="line">    i := <span class="number">3</span></div><div class="line">    <span class="keyword">for</span> &#123;</div><div class="line">        time.Sleep(time.Second * <span class="number">1</span>)</div><div class="line">        i--</div><div class="line">        fmt.Println(<span class="string">"I got scheduled!"</span>)</div><div class="line">        <span class="keyword">if</span> i == <span class="number">0</span> &#123;</div><div class="line">            runtime.GC()</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>会发现打印了3行之后，程序也卡死了，bingo🎉</p>
+<p>我们来看看<code>gcwaiting</code>是不是等于1:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span> go build hang2.go</div><div class="line"></div><div class="line"><span class="meta">$</span> GODEBUG="schedtrace=300,scheddetail=1" ./hang2</div><div class="line"></div><div class="line">SCHED 2443ms: gomaxprocs=4 idleprocs=3 threads=7 spinningthreads=0 idlethreads=2 runqueue=0 gcwaiting=0 nmidlelocked=0 stopwait=0 sysmonwait=0</div><div class="line">  P0: status=1 schedtick=4 syscalltick=5 m=5 runqsize=0 gfreecnt=1</div><div class="line">  P1: status=0 schedtick=14 syscalltick=0 m=-1 runqsize=0 gfreecnt=0</div><div class="line">  P2: status=0 schedtick=3 syscalltick=4 m=-1 runqsize=0 gfreecnt=0</div><div class="line">......  </div><div class="line">SCHED 2751ms: gomaxprocs=4 idleprocs=0 threads=7 spinningthreads=0 idlethreads=2 runqueue=0 gcwaiting=1 nmidlelocked=0 stopwait=1 sysmonwait=0</div><div class="line">  P0: status=1 schedtick=4 syscalltick=5 m=5 runqsize=0 gfreecnt=1</div><div class="line">  P1: status=3 schedtick=14 syscalltick=0 m=-1 runqsize=0 gfreecnt=0</div><div class="line">  P2: status=3 schedtick=3 syscalltick=10 m=-1 runqsize=0 gfreecnt=0</div><div class="line">  P3: status=3 schedtick=1 syscalltick=26 m=0 runqsize=0 gfreecnt=0</div><div class="line">  M6: p=-1 curg=-1 mallocing=0 throwing=0 preemptoff= locks=0 dying=0 helpgc=0 spinning=false blocked=false lockedg=-1</div><div class="line">  M5: p=0 curg=19 mallocing=0 throwing=0 preemptoff= locks=0 dying=0 helpg</div></pre></td></tr></table></figure>
+<p>代码诚不欺我也！</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://gocn.io/article/441" target="_blank" rel="external">如何定位 golang 进程 hang 死的 bug</a></li>
+<li><a href="http://tonybai.com/2017/11/23/the-simple-analysis-of-goroutine-schedule-examples/" target="_blank" rel="external">Goroutine调度实例简要分析</a></li>
+<li><a href="http://tonybai.com/2017/06/23/an-intro-about-goroutine-scheduler/" target="_blank" rel="external">也谈goroutine调度器</a></li>
+<li><a href="https://studygolang.com/articles/9004" target="_blank" rel="external">golang的垃圾回收（GC）机制</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/27/hystrix-go简介/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1862,236 +2048,6 @@ Unicode字符串是一个代码点（code point）序列，代码点取值范围
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/13/ssl-traffic-analysis/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/13/ssl-traffic-analysis/" itemprop="url">SSL/TLS 会话流量分析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-13T12:50:39+08:00">
-                2017-08-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/网络/" itemprop="url" rel="index">
-                    <span itemprop="name">网络</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文：<a href="http://blog.fourthbit.com/2014/12/23/traffic-analysis-of-an-ssl-slash-tls-session" target="_blank" rel="external">http://blog.fourthbit.com/2014/12/23/traffic-analysis-of-an-ssl-slash-tls-session</a></p>
-<p>在这篇文章中，我将会给大家展示当我们使用SSL/TLS的时候，在协议层面上发生了什么。为了便于分析，我将会使用一个基于OpenSSL实现的非阻塞TCP客户端和服务端。</p>
-<p>我们要记住，SSL/TLS能让应用像底层基础设施（网络和主机）一样安全，确保通信安全是它唯一做的事。SSL/TLS是一个独立的协议，它处于应用层（一般来说是HTTP，其他同样也可以）和传输层（TCP）之间。如此，TLS不需要上下层协议有大的改动，对用户而言，它几乎是透明的，也就是说用户根本不需要知道这个协议的存在。当然，这也带来了一些弊端，它在一些基础方面对协议做了限制（比如不支持UDP）。</p>
-<p>自SSL/TLS诞生以来，它已经有了相当大的改进。现在，SSL 2.0和3.0被认为是不安全的，他们已经被TLS 1.0/1.1/1.2 替换。这些协议的历史是一个很有趣的话题。</p>
-<h2 id="协议描述"><a href="#协议描述" class="headerlink" title="协议描述"></a>协议描述</h2><p>就像上面提到的，TLS协议在应用层和传输层中间。它被分割成两个主要的子层。下面是这个协议的主要结构和它在网络协议栈中的位置。</p>
-<p><img src="/img/protocol_description.png" alt="tls structure"></p>
-<p>下面的子层在TCP之上，因为TCP是一个面向连接的可靠的协议。这一层主要包括TLS记录协议。简而言之，记录协议首先将上层协议的数据变成2^14bytes或更少的块，然后对数据进行压缩（可选），加上一个消息认证码（Message Authentication Code），最后，根据协商的加密细则对数据进行加密并添加一个SSL记录头。值得注意的是，每一个块都会被打包进一个结构体，这个结构体并不保存应用层消息的边界，这就意味着多条相同类型的消息可能会被合并到一个结构体中。</p>
-<p>下面的图描述了建立一个SSL Record的过程</p>
-<p><img src="/img/ssl_record.png" alt="ssl record"></p>
-<p>上面的子层在SSL记录协议(SSL Record Protocol)之上，它由四个子协议组成。每个子协议都有非常明确的目的，并在通信的不同阶段被应用：</p>
-<ol>
-<li><p>握手协议（HandShake Protocol）：它使双方可以相互认证，以及为本次连接协商出一个加密套件（cipher suite）和其他参数。SSL握手协议涉及到客户端和服务端之间4组消息交换。每一组都是在独立的TCP段（segment）中传输。下面的图为这个过程做了总结，它包含好几个步骤，一些步骤是可选的。注意，<em>ChangeCipherSpec</em>不属于这个协议，他们是独立的协议，下面会讲到。<br><img src="/img/handshake.png" alt="handshake"></p>
-</li>
-<li><p>ChangeCipherSpec协议：它使之前双方协商得到的参数起作用，通信变成加密的。</p>
-</li>
-<li>Alert协议：用于通信异常，并预警可能降低通信安全性的问题</li>
-<li>应用数据协议（Application Data Protocol）：它接受任意大小的数据（通常是应用层数据），将数据喂给安全通道（feeds it through the secure channel）。</li>
-</ol>
-<p>多条消息可以被串联成一条记录层（Record Layer）消息，但是这些消息必须归属于相同的子协议。结果是，这4个协议的每个都必须是自定界的（比如，都需要包含自己的长度字段）。</p>
-<h2 id="记录协议格式（Record-Protocol-format）"><a href="#记录协议格式（Record-Protocol-format）" class="headerlink" title="记录协议格式（Record Protocol format）"></a>记录协议格式（Record Protocol format）</h2><p>TLS 记录头（Record header）包含3个字段，高层协议建立在它之上：</p>
-<ol>
-<li>Byte 0：TLS记录类型（TLS recode type）</li>
-<li>Bytes 1-2: TLS version (major/minor)</li>
-<li>Bytes 3-4: Length of data in the record (excluding the header itself). The maximum supported is 16384 (16K)</li>
-</ol>
-<p><img src="/img/record_protocol_format.png" alt="record protocol format"></p>
-<h2 id="握手协议格式（Handshake-Protocol-format）"><a href="#握手协议格式（Handshake-Protocol-format）" class="headerlink" title="握手协议格式（Handshake Protocol format）"></a>握手协议格式（Handshake Protocol format）</h2><p>这是TLS种最复杂的子协议。TLS标准主要也在这一部分，因为它为建立一个安全的连接处理了所有细节。下面的图展示了握手协议消息的主体结构。TLS标准存在10种（不包括扩展）握手消息类型，下面一一做了展示。</p>
-<p><img src="/img/handshake_message_structure.png" alt="handshake message general structure"></p>
-<ul>
-<li>HelloRequest：允许服务器重启握手协商。不常用。如果一个连接被挂起了足够长时间只是安全性下降，服务器可以使用此消息迫使客户端重新协商新的会话秘钥（keys）。</li>
-</ul>
-<p><img src="/img/hello_request.png" alt="hello request"></p>
-<ul>
-<li>ClientHello：这条消息代表了一个TLS握手协商的开始。发送它的同时会带上客户端支持的加密套件列表，服务端会挑选最合适的那个（安全性最强的那个），此外还有一个压缩方法列表，一个扩展列表。通过包含<code>SessionId</code>字段，它也赋予了客户端重新开始之前的会话的能力。</li>
-</ul>
-<p><img src="/img/client_hello.png" alt="client hello"></p>
-<ul>
-<li>ServerHello：ServerHello消息和ClientHello消息很类似，除了它只包含一个密码套件和一个加密方法。如果他包含了一个SessionId（例如：SessionId长度大于0），就是通知客户端在以后重用这个会话。</li>
-</ul>
-<p><img src="/img/server_hello.png" alt="server hello"></p>
-<ul>
-<li>Certificate：这个消息的消息体包含了一个公钥证书链。证书链使TLS支持证书分层和公钥基础设施（PKI：Public Key Infrastructures）</li>
-</ul>
-<p><img src="/img/certificate.png" alt="certificate"></p>
-<ul>
-<li>ServerKeyExchange：该消息携带客户端需要从服务器获得的密钥交换算法参数，以便之后能使用对称加密。这是可选的，因为并非所有密钥交换都要求服务器明确地发送此消息。实际上，在大多数情况下，Certificate消息足以使客户端与服务器安全地通信一个预先密钥。这些参数的格式完全取决于所选择的密钥套件（CipherSuite），它先前由服务器通过ServerHello消息设置。</li>
-</ul>
-<p><img src="/img/server_key_exchange.png" alt="server key exchange"></p>
-<ul>
-<li>CertificateRequest：当服务器需要客户端身份验证时使用它。在Web服务器中不常用，但在某些情况下非常重要。该消息不仅向客户端询问证书，还会告知哪些证书类型是可接受的。此外，它还指出那些证书机构是可信赖的。</li>
-</ul>
-<p><img src="/img/certificate_request.png" alt="certificate request"></p>
-<ul>
-<li>ServerHelloDone：该消息完成了握手协商的服务器部分。它没有附加信息。</li>
-</ul>
-<p><img src="/img/server_hello_done.png" alt="server hello done"></p>
-<ul>
-<li>ClientKeyExchange：它为服务器提供必要的数据，以生成对称加密的密钥。消息格式与ServerKeyExchange非常相似，因为它主要取决于服务器选择的密钥交换算法。</li>
-</ul>
-<p><img src="/img/client_key_exchange.png" alt="client key exchange"></p>
-<ul>
-<li>CertificateVerify：客户端使用该消息来证明服务器拥有与其公钥证书相对应的私钥。该消息保存有客户端数字签名的散​​列信息。如果服务器向客户端发出CertificateRequest，则需要发送需要验证的证书。同样的，信息的确切尺寸和结构取决于商定的算法。在所有情况下，输入到哈希函数的信息是相同的。</li>
-</ul>
-<p><img src="/img/certificate_verify.png" alt="certificate verify"></p>
-<ul>
-<li>Finished：此消息表示TLS协商已完成，密码套件（CipherSuite）已激活。应该发送已经加密，因为协商成功完成，所以必须在此之前发送一个<code>ChangeCipherSpec</code>协议消息来激活加密。Finish消息包含一个用所有先前的握手消息组合的哈希，其后是识别服务器/客户端角色的特殊号码，主密钥和填充。所产生的哈希与<code>CertificateVerify</code>哈希不同，因为存在更多的握手消息。</li>
-</ul>
-<p><img src="/img/finish.png" alt="finish"></p>
-<h2 id="ChangeCipherSpec协议格式"><a href="#ChangeCipherSpec协议格式" class="headerlink" title="ChangeCipherSpec协议格式"></a>ChangeCipherSpec协议格式</h2><p>这是最简单的协议：它只有一条消息。该消息必须是单独的协议而不是握手协议的一部分的原因是由于记录层封装（Record Layer encapsulation）。 TLS协议同时对整个记录层消息进行加密。 ChangeCipherSpec消息表示加密的激活，并且由于加密不能应用于消息的一部分，因此任何其他消息都不可能遵循ChangeCipherSpec。避免这些组合的最佳方法是将此消息升级为协议状态。</p>
-<p>下面展示ChangeCipherSpec消息是如何构造的：</p>
-<p><img src="/img/change_cipher_spec.png" alt="change cipher spec"></p>
-<h2 id="Alert协议格式"><a href="#Alert协议格式" class="headerlink" title="Alert协议格式"></a>Alert协议格式</h2><p>警报协议也很简单。它定义了两个字段：严重性级别和警报描述。第一个字段表示警报的严重性（警告为1，致命的2），而第二个字段则表示准确的条件。支持的警报描述取决于SSL/TLS版本。</p>
-<p><img src="/img/alert_protocol_format.png" alt="alert protocol format"></p>
-<h2 id="ApplicationData协议格式"><a href="#ApplicationData协议格式" class="headerlink" title="ApplicationData协议格式"></a>ApplicationData协议格式</h2><p>该协议的任务是正确地封装来自网络堆栈的应用层的数据，从而可以通过底层协议（TCP）无缝地处理数据，而不会强制更改任何这些层。此协议中消息的格式遵循与以前协议相同的结构。</p>
-<p><img src="/img/application_protocol_format.png" alt="applicationdata protocol format"></p>
-<h2 id="分析SSL-TLS流量"><a href="#分析SSL-TLS流量" class="headerlink" title="分析SSL/TLS流量"></a>分析SSL/TLS流量</h2><p>我将使用Wireshark进行抓包。客户端基于Scheme的方式支持SSL/TLS，服务端是OpenSSL分发的一部分（具有证书）。服务器监听在443端口，所有通信将通过环回设备进行。在Wireshark中将视图限制为TLS数据包的最简单方法是使用协议过滤器“ssl”。</p>
-<h3 id="第一个包（客户端-gt-服务端）"><a href="#第一个包（客户端-gt-服务端）" class="headerlink" title="第一个包（客户端-&gt;服务端）"></a>第一个包（客户端-&gt;服务端）</h3><p>一旦服务器运行并等待连接，客户端就可以启动它。这是客户端发送的第一个数据包</p>
-<p><img src="/img/first_flight.png" alt="first flight"></p>
-<h3 id="第二个包（服务端-gt-客户端）"><a href="#第二个包（服务端-gt-客户端）" class="headerlink" title="第二个包（服务端-&gt;客户端）"></a>第二个包（服务端-&gt;客户端）</h3><p>第一个包只包含一个从客户端发送到服务器的TLS握手消息（ClientHello）。然而，服务器发送给客户端的作为ClientHello响应的下一个TCP数据包携带3个握手消息。这些消息是ServerHello，Certificate和ServerHelloDone（没有发送ServerKeyExchange或CertificateRequest）。在下一个数据包之后，我将省略较低的堆栈协议（TCP/IP）。</p>
-<p><img src="/img/second_flight.png" alt="second flight"></p>
-<h3 id="第三个包（客户端-gt-服务端）"><a href="#第三个包（客户端-gt-服务端）" class="headerlink" title="第三个包（客户端-&gt;服务端）"></a>第三个包（客户端-&gt;服务端）</h3><p>目前看上去都是正确的，与上述的协议一致。客户端和服务器现在已经同意使用的算法（密钥交换的RSA，对称加密的AES-256-CBC和消息散列的SHA），压缩（无压缩）和使用的TLS扩展（SessionTicket TLS，重新谈判信息）。此外，客户端现在拥有服务器的证书，因此可以决定是否信任服务器。下一个数据包由客户端发送，并携带以下消息：ClientKeyExchange，ChangeCipherSpec，Finished（已经加密）。</p>
-<p><img src="/img/third_flight.png" alt="third flight"></p>
-<h3 id="第四个包（服务端-gt-客户端）"><a href="#第四个包（服务端-gt-客户端）" class="headerlink" title="第四个包（服务端-&gt;客户端）"></a>第四个包（服务端-&gt;客户端）</h3><p>在客户端发送ChangeCipherSpec和Finished之后，服务器预期执行相同的操作，以便双向启动采用对称密钥和所有协商的密码套件参数的加密通信。服务器必须发送自己的ChangeCipherSpec和Finished的消息，以使握手过程可以被认为是成功的。在这个消息中发生的一件非常有趣的事情是，我们看到其中一个扩展，扩展名称为Transport Layer Security（传输层安全TLS）会话恢复，而无需服务器端状态，它明确说明了它的作用。你应该记得，它被要求作为我们的ClientHello的一部分，并由服务器在其ServerHello中实现。有关与此扩展相关的消息的信息，我们需要查找<a href="http://www.ietf.org/rfc/rfc5077.txt" target="_blank" rel="external">RFC5077</a>规范。如文档中所述，此扩展握手消息已被分配号码4。</p>
-<p><img src="/img/fourth_flight.png" alt="fourth flight"></p>
-<h3 id="应用层数据（客户端-lt-gt-服务端）"><a href="#应用层数据（客户端-lt-gt-服务端）" class="headerlink" title="应用层数据（客户端&lt;-&gt;服务端）"></a>应用层数据（客户端&lt;-&gt;服务端）</h3><p>此时，客户端和服务器完成握手。加密通信就位，应用数据可以安全传输。这是一个示例记录，单个TCP数据包可以携带几个消息：</p>
-<p><img src="/img/application_data.png" alt="application data"></p>
-<h3 id="关闭连接"><a href="#关闭连接" class="headerlink" title="关闭连接"></a>关闭连接</h3><p>由于我们的连接是加密的，所以想知道在数据包中发送什么的唯一方法是使Wireshark或类似的工具知道传输中使用的密钥。尽管这是可能的，我认为为了分析的目的，当客户端或服务器主动关闭连接时，知道客户端会发出一个警告消息就足够了。此警报消息的类型应为CloseNotify（类型0），但是我们将无法从原始数据中看到它。在这种情况下，客户端是以下警报消息的发件人：</p>
-<p><img src="/img/closing_connection.png" alt="closing message"></p>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>从流量分析可以看出，标准库和客户端的实现遵循了TLS 1.0规范。希望这对您了解SSL/TLS协议的内部机制是有用的。我发现检查十六进制原始数据（特别是像Wireshark这样强大的工具）是一种非常有意义和有趣的工作方式。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2142,7 +2098,7 @@ Unicode字符串是一个代码点（code point）序列，代码点取值范围
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">216</span>
+                <span class="site-state-item-count">217</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

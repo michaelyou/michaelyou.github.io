@@ -286,6 +286,175 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/03/SO-REUSEADDR套接字选项/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/03/SO-REUSEADDR套接字选项/" itemprop="url">SO_REUSEADDR套接字选项</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-03T19:06:08+08:00">
+                2015-03-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##features<br>SO_REUSEADDR套接字选项能起到以下4个不同的功用。</p>
+<ul>
+<li>SO_REUSEADDR允许启动一个监听服务器并捆绑其众所周知的端口，即使以前建立的将该端口用作他们的本地端口的连接仍存在。这个条件通常是这样碰到的：<ol>
+<li>启动一个监听服务器；</li>
+</ol>
+<ul>
+<li>连接请求到达，派生一个子进程来处理这个客户；</li>
+<li>监听服务器终止，但子进程继续为现有连接上的客户提供服务；</li>
+<li>重启监听服务器。      </li>
+</ul>
+</li>
+</ul>
+<p>　　默认情况下，当监听服务器在步骤4通过调用socket，bind和listen重新启动时，由于他试图捆绑一个现有连接（即正由早先派生的那个子进程处理着的连接）上的端口，从而bind调用会失败。但是如果该服务器在socket和bind两个调用之间设置了SO_REUSEADDR套接字选项，那么将成功。所有TCP服务器都应该指定本套接字选项，以允许服务器在这种情况下被重新启动。</p>
+<ul>
+<li><code>SO_REUSEADDR</code>允许在同一端口上启动同一服务器的多个实例，只要每个实例捆绑一个不同的本地IP地址即可。这对于使用IP别名技术托管多个http服务器的网点来说是很常见的。举例来说，假设本地主机的主ip地址是198.19.10.2，不过他有两个别名：198.69.10.128和198.69.10.129。在其上启动三个http服务器。第一个http服务器以本地通配ip地址<code>INADDR_ANY</code>和本地端口号80（http的众所周知端口）调用bind。第二个http服务器以本地ip地址198.69.10.128和本地端口号80调用bind。这次调用bind将失败，除非在调用前设置了<code>SO_REUSEADDR</code>套接字选项。第三个http服务器以本地ip地址198.69.10.129和本地端口号80调用bind。这次调用bind成功的先决条件同样是预先设置<code>SO_REUSEADDR</code>。假设<code>SO_REUSEADDR</code>均已设置，从而三个服务器都启动了，目的ip地址为198.69.10.128、目的端口号为80的外来tcp请求将被递送给第二个服务器，目的地址为198.69.10.129、目的端口号为80的外来连接请求将被递送给第三个服务器，目的端口号为80的所有其他tcp连接请求都将递送给第一个服务器，这个“默认”服务器处理目的地址为198.69.10.2或该主机已配置的任何其他ip别名的请求。这里通配地址的意思是“没有更好的（即更为明确的）匹配地址”。注意，允许某个给定服务存在多个服务器的情形在服务器设置SO_REUSEADDR套接字选项时是自动处理的（我们建议设置这个选项）</li>
+</ul>
+<p>对于TCP，我们绝对不可能启动捆绑相同IP地址和相同端口号的多个服务器：这是完全重复的捆绑。也就是说，我们不可能在启动绑定198.69.10.2和端口80的服务器之后，再启动同样捆绑198.69.10.2和端口80的另一个服务器，即使我们给第二个服务器设置了<code>SO_REUSEADDR</code>套接字也不管用。</p>
+<ul>
+<li><p>SO_REUSEADDR 允许单个进程捆绑同一端口到多个套接字上，只要每次捆绑指定不同的本地IP地址即可。</p>
+</li>
+<li><p>SO_REUSEADDR允许完全重复的捆绑：当一个IP地址和端口号已绑定到某个套接字上时，如果传输协议支持，同样的IP地址和端口还可以捆绑到另一个套接字上。一般来说本特性仅支持UDP套接字。</p>
+</li>
+</ul>
+<p>##problem</p>
+<blockquote>
+<p>这就引出了另外的一个问题，就是设置这个属性后允许一个套接字上同时有两个应用程序进行监听，那系统究竟会将数据发送给哪一个程序呢？</p>
+</blockquote>
+<p>系统会将数据首先交给监听IP最确定的应用程序。例如应用程序A在调用监听函数时设置的属性是<code>addr.sin_addr.S_addr = INADDR_ANY</code>;而另外的一个应用程序B则监听的地址为<code>addr.sin_addr.S_addr = inet_addr(PChar(sMainIP))</code>，同时这两个应用程序监听的端口都是相同的，这时系统接收到数据后会首先交给B然后再交给A。因此一般为了程序安全我们会禁止这种情况的发生。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/03/TIME-WAIT状态详解/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2381,353 +2550,6 @@ cd tmp
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/11/Python编程中常用的基础知识总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/11/Python编程中常用的基础知识总结/" itemprop="url">Python编程中常用的基础知识总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-11T10:34:19+08:00">
-                2015-02-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Python编程中常用的12种基础知识总结：遍历目录方法，列表按列排序、去重，字典排序，字典、列表、字符串互转，时间对象操作，命令行参数解析(getopt)，print 格式化输出，进制转换，Python调用系统命令或者脚本，Python 读写文件。</p>
-<p>##遍历目录方法<br>在某些时候，我们需要遍历某个目录找出特定的文件列表，可以通过os.walk方法来遍历，非常方便</p>
-<pre><code>import os
-fileList = []
-rootdir = &quot;/data&quot;
-for root, subFolders, files in os.walk(rootdir):
-    if &apos;.svn&apos; in subFolders: 
-        subFolders.remove(&apos;.svn&apos;)  # 排除特定目录
-    for file in files:
-        if file.find(&quot;.t2t&quot;) != -1:# 查找特定扩展名的文件
-            file_dir_path = os.path.join(root,file)
-            fileList.append(file_dir_path)  
-
-print fileList
-</code></pre><p>##列表按列排序(list sort)<br>如果列表的每个元素都是一个元组(tuple),我们要根据元组的某列来排序的话，可参考如下方法</p>
-<p>下面例子我们是根据元组的第2列和第3列数据来排序的,而且是倒序(reverse=True)</p>
-<pre><code>&gt;&gt;&gt; a = [(&apos;2011-03-17&apos;, &apos;2.26&apos;, 6429600, &apos;0.0&apos;), (&apos;2011-03-16&apos;, &apos;2.26&apos;, 12036900, &apos;-3.0&apos;),
- (&apos;2011-03-15&apos;, &apos;2.33&apos;, 15615500,&apos;-19.1&apos;)]
-&gt;&gt;&gt; print a[0][0]
-2011-03-17
-&gt;&gt;&gt; b = sorted(a, key=lambda result: result[1],reverse=True)
-&gt;&gt;&gt; print b
-[(&apos;2011-03-15&apos;, &apos;2.33&apos;, 15615500, &apos;-19.1&apos;), (&apos;2011-03-17&apos;, &apos;2.26&apos;, 6429600, &apos;0.0&apos;),
-(&apos;2011-03-16&apos;, &apos;2.26&apos;, 12036900, &apos;-3.0&apos;)]
-&gt;&gt;&gt; c = sorted(a, key=lambda result: result[2],reverse=True)
-&gt;&gt;&gt; print c
-[(&apos;2011-03-15&apos;, &apos;2.33&apos;, 15615500, &apos;-19.1&apos;), (&apos;2011-03-16&apos;, &apos;2.26&apos;, 12036900, &apos;-3.0&apos;),
-(&apos;2011-03-17&apos;, &apos;2.26&apos;, 6429600, &apos;0.0&apos;)]
-</code></pre><p>##列表去重(list uniq)<br>有时候需要将list中重复的元素删除，就要使用如下方法</p>
-<pre><code>&gt;&gt;&gt; lst= [(1,&apos;sss&apos;),(2,&apos;fsdf&apos;),(1,&apos;sss&apos;),(3,&apos;fd&apos;)]
-&gt;&gt;&gt; set(lst)
-set([(2, &apos;fsdf&apos;), (3, &apos;fd&apos;), (1, &apos;sss&apos;)])
-&gt;&gt;&gt;
-&gt;&gt;&gt; lst = [1, 1, 3, 4, 4, 5, 6, 7, 6]
-&gt;&gt;&gt; set(lst)
-set([1, 3, 4, 5, 6, 7])
-</code></pre><p>##字典排序(dict sort)<br>一般来说，我们都是根据字典的key来进行排序，但是我们如果想根据字典的value值来排序，就使用如下方法</p>
-<pre><code>&gt;&gt;&gt; from operator import itemgetter
-&gt;&gt;&gt; aa = {&quot;a&quot;:&quot;1&quot;,&quot;sss&quot;:&quot;2&quot;,&quot;ffdf&quot;:&apos;5&apos;,&quot;ffff2&quot;:&apos;3&apos;}
-&gt;&gt;&gt; sort_aa = sorted(aa.items(),key=itemgetter(1))
-&gt;&gt;&gt; sort_aa
-[(&apos;a&apos;, &apos;1&apos;), (&apos;sss&apos;, &apos;2&apos;), (&apos;ffff2&apos;, &apos;3&apos;), (&apos;ffdf&apos;, &apos;5&apos;)]
-或者：
-&gt;&gt;&gt; sort_aa = sorted(aa.items(), key=lambda result: result[1])
-</code></pre><p>##字典,列表,字符串互转<br>以下是生成数据库连接字符串,从字典转换到字符串</p>
-<pre><code>&gt;&gt;&gt; params = {&quot;server&quot;:&quot;mpilgrim&quot;, &quot;database&quot;:&quot;master&quot;, &quot;uid&quot;:&quot;sa&quot;, &quot;pwd&quot;:&quot;secret&quot;}
-&gt;&gt;&gt; [&quot;%s=%s&quot; % (k, v) for k, v in params.items()]
-[&apos;server=mpilgrim&apos;, &apos;uid=sa&apos;, &apos;database=master&apos;, &apos;pwd=secret&apos;]
-&gt;&gt;&gt; &quot;;&quot;.join([&quot;%s=%s&quot; % (k, v) for k, v in params.items()])
-&apos;server=mpilgrim;uid=sa;database=master;pwd=secret&apos;
-</code></pre><p>下面的例子 是将字符串转化为字典</p>
-<pre><code>&gt;&gt;&gt; a = &apos;server=mpilgrim;uid=sa;database=master;pwd=secret&apos;
-&gt;&gt;&gt; aa = {}
-&gt;&gt;&gt; for i in a.split(&apos;;&apos;):aa[i.split(&apos;=&apos;,1)[0]] = i.split(&apos;=&apos;,1)[1]  #split(&apos;=&apos;,1)表示按&apos;=&apos;分割1次
-...
-&gt;&gt;&gt; aa
-{&apos;pwd&apos;: &apos;secret&apos;, &apos;database&apos;: &apos;master&apos;, &apos;uid&apos;: &apos;sa&apos;, &apos;server&apos;: &apos;mpilgrim&apos;}
-</code></pre><p>##时间对象操作<br>    将时间对象转换成字符串</p>
-<pre><code>&gt;&gt;&gt; import datetime
-&gt;&gt;&gt; datetime.datetime.now().strftime(&quot;%Y-%m-%d %H:%M&quot;)
-  &apos;2011-01-20 14:05&apos;
-
-时间大小比较
-&gt;&gt;&gt; import time
-&gt;&gt;&gt; t1 = time.strptime(&apos;2011-01-20 14:05&apos;,&quot;%Y-%m-%d %H:%M&quot;)
-&gt;&gt;&gt; t2 = time.strptime(&apos;2011-01-20 16:05&apos;,&quot;%Y-%m-%d %H:%M&quot;)
-&gt;&gt;&gt; t1 &gt; t2
-  False
-&gt;&gt;&gt; t1 &lt; t2
-  True
-
-时间差值计算,计算8小时前的时间
-&gt;&gt;&gt; datetime.datetime.now().strftime(&quot;%Y-%m-%d %H:%M&quot;)
-  &apos;2011-01-20 15:02&apos;
-&gt;&gt;&gt; (datetime.datetime.now() - datetime.timedelta(hours=8)).strftime(&quot;%Y-%m-%d %H:%M&quot;)
-  &apos;2011-01-20 07:03&apos;
-
-将字符串转换成时间对象
-&gt;&gt;&gt; endtime=datetime.datetime.strptime(&apos;20100701&apos;,&quot;%Y%m%d&quot;)
-&gt;&gt;&gt; type(endtime)
-  &lt;type &apos;datetime.datetime&apos;&gt;
-&gt;&gt;&gt; print endtime
-  2010-07-01 00:00:00
-
-将从 1970-01-01 00:00:00 UTC 到现在的秒数，格式化输出   
-
-&gt;&gt;&gt; import time
-&gt;&gt;&gt; a = 1302153828
-&gt;&gt;&gt; time.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;,time.localtime(a))
-  &apos;2011-04-07 13:23:48&apos;
-</code></pre><p>##命令行参数解析(getopt)<br>通常在编写一些日运维脚本时，需要根据不同的条件，输入不同的命令行选项来实现不同的功能 在Python中提供了getopt模块很好的实现了命令行参数的解析,下面距离说明。请看如下程序:</p>
-<pre><code>#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-import sys,os,getopt
-def usage():
-print &apos;&apos;&apos;&apos;&apos;
-Usage: analyse_stock.py [options...]
-Options:
--e : Exchange Name
--c : User-Defined Category Name
--f : Read stock info from file and save to db
--d : delete from db by stock code
--n : stock name
--s : stock code
--h : this help info
-test.py -s haha -n &quot;HA Ha&quot;
-&apos;&apos;&apos;
-
-try:
-opts, args = getopt.getopt(sys.argv[1:],&apos;he:c:f:d:n:s:&apos;)
-except getopt.GetoptError:
-usage()
-sys.exit()
-if len(opts) == 0:
-usage()
-sys.exit()  
-
-for opt, arg in opts:
-if opt in (&apos;-h&apos;, &apos;--help&apos;):
-  usage()
-  sys.exit()
-elif opt == &apos;-d&apos;:
-  print &quot;del stock %s&quot; % arg
-elif opt == &apos;-f&apos;:
-  print &quot;read file %s&quot; % arg
-elif opt == &apos;-c&apos;:
-  print &quot;user-defined %s &quot; % arg
-elif opt == &apos;-e&apos;:
-  print &quot;Exchange Name %s&quot; % arg
-elif opt == &apos;-s&apos;:
-  print &quot;Stock code %s&quot; % arg
-elif opt == &apos;-n&apos;:
-  print &quot;Stock name %s&quot; % arg  
-
-sys.exit()
-</code></pre><p>##print 格式化输出</p>
-<pre><code>截取字符串输出,下面例子将只输出字符串的前3个字母
-&gt;&gt;&gt; str=&quot;abcdefg&quot;
-&gt;&gt;&gt; print &quot;%.3s&quot; % str
-  abc
-按固定宽度输出，不足使用空格补全,下面例子输出宽度为10
-&gt;&gt;&gt; str=&quot;abcdefg&quot;
-&gt;&gt;&gt; print &quot;%10s&quot; % str
-     abcdefg
-截取字符串，按照固定宽度输出
-&gt;&gt;&gt; str=&quot;abcdefg&quot;
-&gt;&gt;&gt; print &quot;%10.3s&quot; % str
-         abc
-浮点类型数据位数保留
-&gt;&gt;&gt; import fpformat
-&gt;&gt;&gt; a= 0.0030000000005
-&gt;&gt;&gt; b=fpformat.fix(a,6)
-&gt;&gt;&gt; print b
-  0.003000
-对浮点数四舍五入,主要使用到round函数
-&gt;&gt;&gt; from decimal import *
-&gt;&gt;&gt; a =&quot;2.26&quot;
-&gt;&gt;&gt; b =&quot;2.29&quot;
-&gt;&gt;&gt; c = Decimal(a) - Decimal(b)
-&gt;&gt;&gt; print c
-  -0.03
-&gt;&gt;&gt; c / Decimal(a) * 100
-  Decimal(&apos;-1.327433628318584070796460177&apos;)
-&gt;&gt;&gt; Decimal(str(round(c / Decimal(a) * 100, 2)))
-  Decimal(&apos;-1.33&apos;)
-</code></pre><h2 id="进制转换"><a href="#进制转换" class="headerlink" title="进制转换"></a>进制转换</h2><p>有些时候需要作不同进制转换，可以参考下面的例子(%x 十六进制,%d 十进制,%o 八进制)</p>
-<pre><code>&gt;&gt;&gt; num = 10
-&gt;&gt;&gt; print &quot;Hex = %x,Dec = %d,Oct = %o&quot; %(num,num,num)
-  Hex = a,Dec = 10,Oct = 12
-</code></pre><h2 id="Python调用系统命令或者脚本"><a href="#Python调用系统命令或者脚本" class="headerlink" title="Python调用系统命令或者脚本"></a>Python调用系统命令或者脚本</h2><pre><code>使用 os.system() 调用系统命令 , 程序中无法获得到输出和返回值
-&gt;&gt;&gt; import os
-&gt;&gt;&gt; os.system(&apos;ls -l /proc/cpuinfo&apos;)
-&gt;&gt;&gt; os.system(&quot;ls -l /proc/cpuinfo&quot;)
-  -r--r--r-- 1 root root 0  3月 29 16:53 /proc/cpuinfo
-  0
-
-使用 os.popen() 调用系统命令, 程序中可以获得命令输出，但是不能得到执行的返回值
-&gt;&gt;&gt; out = os.popen(&quot;ls -l /proc/cpuinfo&quot;)
-&gt;&gt;&gt; print out.read()
-  -r--r--r-- 1 root root 0  3月 29 16:59 /proc/cpuinfo  
-
-使用 commands.getstatusoutput() 调用系统命令, 程序中可以获得命令输出和执行的返回值
-&gt;&gt;&gt; import commands
-&gt;&gt;&gt; commands.getstatusoutput(&apos;ls /bin/ls&apos;)
-  (0, &apos;/bin/ls&apos;)
-</code></pre><p>##Python 读写文件</p>
-<pre><code>一次性读入文件到列表，速度较快，适用文件比较小的情况下
-track_file = &quot;track_stock.conf&quot;
-fd = open(track_file)
-content_list = fd.readlines()
-fd.close()
-for line in content_list:
-    print line  
-
-逐行读入，速度较慢,适用没有足够内存读取整个文件(文件太大)
-fd = open(file_path)
-fd.seek(0)
-title = fd.readline()
-keyword = fd.readline()
-uuid = fd.readline()
-fd.close()  
-
-写文件 write 与 writelines 的区别   
-
-Fd.write(str) : 把str写到文件中，write()并不会在str后加上一个换行符
-Fd.writelines(content) : 把content的内容全部写到文件中,原样写入，不会在每行后面加上任何东西
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2778,7 +2600,7 @@ Fd.writelines(content) : 把content的内容全部写到文件中,原样写入�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">216</span>
+                <span class="site-state-item-count">217</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

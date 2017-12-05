@@ -286,6 +286,252 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/01/python试题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/01/python试题/" itemprop="url">python试题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-01T14:19:48+08:00">
+                2015-02-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##list与tuple的区别 ？dictionary与set的区别？<br>对于list与tupel的区别，在《Python核心编程2》中讲解的很清楚，可以总体概括为，可变与不可变、他们本质相同，但是就因为可变性就延伸了很多不同点。如list类型可以进行相应更改和方法操作，但tupel就没有这个功能。</p>
+<p>对于dict和set，一个是Python唯一的映射类型，一个是Python集合。python中集合对象（set）是一组无序排列的可哈希的值，包含两种类型：可变集合（set）和不可变集合（frozenset），所以set不是可哈希的，frozenset是可哈希的，能当作字典的键。字典和集合的详细区别可以点<a href="http://codingnow.cn/language/353.html" target="_blank" rel="external">这里</a></p>
+<p>##python中String类型和unicode什么关系?<br>string是字节串，而unicode是一个统一的字符集，utf-8是它的一种存储实现形式，string可为utf-8编码，也可编码为GBK等各种编码格式</p>
+<p>##输出从1加到100的和<br>    sum = 0<br>    for i in range(1, 101):<br>        sum += i<br>    print sum </p>
+<pre><code>#注意点：range的右范围是取不到的
+</code></pre><p>##如何在一个函数内修改一个全局变量？<br>在函数中使用global关键字声明全局变量，然后修改。如： </p>
+<pre><code>a = 10
+
+def add1():
+    global a
+    print a + 1
+
+add1()
+</code></pre><p>##except的用法和作用<br>Python的except用来捕获所有异常， 因为Python里面的每次错误都会抛出 一个异常，所以每个程序的错误都被当作一个运行时错误。</p>
+<p>以下是使用except的一个例子：</p>
+<pre><code>try:    
+    foo = opne(“file”) #open被错写为opne    
+except: 
+    sys.exit(“could not open file!”)
+</code></pre><p>因为这个错误是由于open被拼写成opne而造成的，然后被except捕获，所以debug程序的时候很容易不知道出了什么问题</p>
+<p>下面这个例子更好点：</p>
+<pre><code>try:
+    foo = opne(“file”) # 这时候except只捕获IOError
+except IOError:
+    sys.exit(“could not open file”)
+</code></pre><p>##如何反序的迭代一个序列?how do I iterate over a sequence in reverse order</p>
+<p>如果是一个list, 最快的解决方案是：</p>
+<pre><code>list.reverse()
+try:
+    for x in list:
+        “do something with x”
+finally:
+list.reverse()
+</code></pre><p>如果不是list, 最通用但是稍慢的解决方案是：</p>
+<pre><code>#range函数的参数
+#第一个：从这个数开始迭代
+#第二个：迭代到这个数
+#第三个：步长，为负表示倒序
+for i in range(len(sequence)-1, -1, -1):
+    x = sequence[i]
+</code></pre><p>##判断当前用户是否是root<br>    import os<br>    if os.geteuid() != 0:<br>        print “This program must be run as root. Aborting.”<br>    sys.exit(1)</p>
+<p>##什么是lambda函数?<br>Python允许你定义一种单行的小函数。定义lambda函数的形式如下：labmda 参数：表达式lambda函数默认返回表达式的值。你也可以将其赋值给一个变量。lambda函数可以接受任意个参数，包括可选参数，但是表达式只有一个：</p>
+<pre><code>&gt;&gt;&gt; g = lambda x, y: x*y
+&gt;&gt;&gt; g(3,4)
+12
+&gt;&gt;&gt; g = lambda x, y=0, z=0: x+y+z
+&gt;&gt;&gt; g(1)
+1
+&gt;&gt;&gt; g(3, 4, 7)
+14
+</code></pre><p>也能够直接使用lambda函数，不把它赋值给变量：</p>
+<pre><code>&gt;&gt;&gt; (lambda x,y=0,z=0:x+y+z)(3,5,6)
+14
+</code></pre><p>如果你的函数非常简单，只有一个表达式，不包含命令，可以考虑lambda函数。否则，你还是定义函数才对，毕竟函数没有这么多限制。</p>
+<p>##Python是如何进行内存管理的?<br>Python的内存管理是由Python得解释器负责的，开发人员可以从内存管理事务中解放出来，致力于应用程序的开发，这样就使得开发的程序错误更少，程序更健壮，开发周期更短</p>
+<p>##如何用Python来发送邮件?<br>以下代码可以在支持SMTP监听器的服务器上执行。</p>
+<pre><code>import sys, smtplib
+
+fromaddr = raw_input(“From: “)
+toaddrs = raw_input(“To: “).split(‘,’)
+print “Enter message, end with ^D:”
+msg = &quot;&quot;
+while 1:
+    line = sys.stdin.readline()
+    if not line:
+        break
+    msg = msg + line
+
+# 发送邮件部分
+server = smtplib.SMTP(‘localhost’)
+server.sendmail(fromaddr, toaddrs, msg)
+server.quit()
+</code></pre><p>##Python输出一个Fibonacci数列?</p>
+<p>方法一：</p>
+<pre><code>a,b = 0, 1
+while b&lt;100:
+    print (b),
+    a, b = b, a+b
+</code></pre><p>方法二：递归</p>
+<pre><code>def fibonacci2(n):  
+    if n == 1 or n == 2:  
+        return 1  
+    else:  
+        return fibonacci2(n-1) + fibonacci2(n-2)
+</code></pre><p>方法三：迭代</p>
+<pre><code>def fibonacci(n):  
+    if n == 1 or n == 2:  
+        return 1  
+
+    nPre = 1  
+    nLast = 1  
+    nResult = 0  
+    i = 2  
+    while i &lt; n:  
+        nResult = nPre + nLast  
+        nPre = nLast  
+        nLast = nResult  
+        i += 1  
+
+    return nResult  
+</code></pre><p>##Python里面如何生成随机数?<br>标准库random实现了一个随机数生成器，实例代码如下：</p>
+<pre><code>import random
+
+random.random()
+</code></pre><p>它会返回一个随机的0和1之间的浮点数</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/31/python的socket编程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2498,369 +2744,6 @@ traceback.print_stack()
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第七部分：小插曲，Deferred/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/第七部分：小插曲，Deferred/" itemprop="url">第七部分：小插曲，Deferred</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T14:32:17+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文点<a href="http://krondo.com/?p=1682" target="_blank" rel="external">这里</a></p>
-<p>##回调函数的后序发展</p>
-<p>在第六部分我们认识这样一个情况：回调是Twisted异步编程中的基础。除了与reactor交互外，回调可以安插在任何我们写的Twisted结构内。因此在使用Twisted或其它基于reactor的异步编程体系时，都意味需要将我们的代码组织成一系列由reactor循环可以激活的回调函数链。</p>
-<p>即使一个简单的get_poetry函数都需要回调，两个回调函数中一个用于处理正常结果而另一个用于处理错误。作为一个Twisted程序员，我们必须充分利用这一点。应该花点时间思考一下如何更好地使用回调及使用过程中会遇到什么困难。</p>
-<p>分析下3.1版本中的get_poetry函数：</p>
-<pre><code>...
-def got_poem(poem):
-    print poem
-    reactor.stop()
-def poem_failed(err):
-    print &gt;&gt;sys.stderr, &apos;poem download failed&apos;
-    print &gt;&gt;sys.stderr, &apos;I am terribly sorry&apos;
-    print &gt;&gt;sys.stderr, &apos;try again later?&apos;
-    reactor.stop()
-
-get_poetry(host, port, got_poem, poem_failed)
-
-reactor.run()
-</code></pre><p>我们想法很简单：</p>
-<ol>
-<li>如果完成诗歌下载，那么就打印它</li>
-<li>如果没有下载到诗歌，那就打印出错误信息</li>
-<li>上面任何一种情况出现，都要停止程序继续运行</li>
-</ol>
-<p>同步程序中处理上面的情况会采用如下方式：</p>
-<pre><code>...
-try:
-    poem = get_poetry(host, port) # the synchronous version of get_poetry
-except Exception, err:
-    print &gt;&gt;sys.stderr, &apos;poem download failed&apos;
-    print &gt;&gt;sys.stderr, &apos;I am terribly sorry&apos;
-    print &gt;&gt;sys.stderr, &apos;try again later?&apos;
-    sys.exit()
-else:
-    print poem
-    sys.exit()
-</code></pre><p>即callback类似else处理路径，而errback类似except处理路径。这意味着激活errback回调函数类似于同步程序中抛出一个异常，而激活一个callback意味着同步程序中的正常执行路径。</p>
-<p>两个版本有什么不同之外吗？可以明确的是，在同步版本中，Python解释器可以确保只要get_poetry抛出何种类型的异步都会执行except块。即只要我们相信Python解释器能够正确的解释执行Python程序，那么就可以相信异常处理块会在恰当的时间点被执行。</p>
-<p>不异步版本相反的是：poem_failed错误回调是由我们自己的代码激活并调用的，即<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-3/get-poetry-1.py#L66" target="_blank" rel="external">PeotryClientFactory</a>的<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-3/get-poetry-1.py#L77" target="_blank" rel="external">clientConnectFailed</a>函数。是我们自己而不是Python来确保当出错时错误处理代码能够执行。因此我们必须保证通过调用携带Failure对象的errback来处理任何可能的错误。</p>
-<p>否则，我们的程序就会因为等待一个永远不会出现的回调而止步不前。</p>
-<p>这里显示出了同步与异步版本的又一个不同之处。如果我们在同步版本中没有使用try/except捕获异步，那么Python解释器会为我们捕获然后关掉我们的程序并打印出错误信息。但是如果我们忘记抛出我们的异步异常（在本程序中是在PoetryClientFactory调用errback），我们的程序会一直运行下去，还开心地以为什么事都没有呢。</p>
-<p>显而易见，在异步程序中处理错误是相当重要的，甚至有些严峻。也可以说在异步程序中处理错误信息比处理正常的信息要重要的多，这是因为错误会以多种方式出现，而正确的结果出现的方式是唯一的。当使用Twisted编程时忘记处理异常是一个常犯的错误。</p>
-<p>关于上面同步程序代码的另一个默认实事是：else与except块两者只能是运行其中一个（假设我们的get_poetry没有在一个无限循环中运行）。Python解释器不会突然决定两者都运行或突发奇想来运行else块27次。对于通过Python来实现那样的动作是不可能的。</p>
-<p>但在异步程序中，我们要负责callback和errback的运行。因此，我们可能就会犯这样的错误：同时调用了callback与errback或激活callback27次。这对于使用get_poetry的用户来说是不幸的。虽然在描述文档中没有明确地说明，像try/except块中的else与except一样，对于每次调用get_poetry时callback与errback只能运行其中一个，不管是我们是否成功得下载完诗歌。</p>
-<p>设想一下，我们在调试某个程序时，我们提出了三次诗歌下载请求，但是得到有7次callback被激活和2次errback被激活。可能这时，你会下来检查一下，什么时候get_poetry激活了两次callback并且还抛出一个错误出来。</p>
-<p>从另一个视角来看，两个版本都有代码重复。异步的版本中含有两次reactor.stop，同步版本中含有两次sys.exit调用。我们可以重构同步版本如下：</p>
-<pre><code>...
-try:
-    poem = get_poetry(host, port) # the synchronous version of get_poetry
-except Exception, err:
-    print &gt;&gt;sys.stderr, &apos;poem download failed&apos;
-    print &gt;&gt;sys.stderr, &apos;I am terribly sorry&apos;
-    print &gt;&gt;sys.stderr, &apos;try again later?&apos;
-else:
-    print poem
-
-sys.exit()
-</code></pre><p>我们可以以同样的方式来重构异步版本吗？说实话，确实不太可能，因为callback与errback是两个不同的函数。难道要我们回到使用单一回调来实现重构吗？</p>
-<p>好下面是我们在讨论使用回调编程时的一些观点：</p>
-<ol>
-<li>激活errback是非常重要的。由于errback的功能与except块相同，因此用户需要确保它们的存在。他们并不可选项，而是必选项。</li>
-<li>不在错误的时间点激活回调与在正确的时间点激活回调同等重要。典型的用法是，callback与errback是互斥的即只能运行其中一个。</li>
-<li>使用回调函数的代码重构起来有些困难。<br>来下面的部分，我们还会讨论回调，但是已经可以明白为什么Twisted引入了deferred抽象机制来管理回调了。</li>
-</ol>
-<p>##Deferred<br>由于架设在异步程序中大量被使用，并且我们也看到了，正确的使用这一机制需要一些技巧。因此，Twisted开发者设计了一种抽象机制-Deferred-以让程序员在使用回调时更简便。</p>
-<p>一个Deferred有一对回调链，一个是为针对正确结果，另一个针对错误结果。新创建的Deferred的这两条链是空的。我们可以向两条链里分别添加callback与errback。其后，就可以用正确的结果或异常来激活Deferred。激活Deferred意味着以我们添加的顺序激活callback或errback。图12展示了一个拥有callback/errback链的Deferred对象：</p>
-<p><img src="/img/Deferred.png" alt="图12： Deferred"></p>
-<p>由于defered中不使用reactor，所以我们可以不用在事件循环中使用它。也许你在Deferred中发现一个seTimeout的函数中使用了reactor。放心，它将来将来的版本中删掉。</p>
-<p>下面是我们第一人使用deferred的例子<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/defer-1.py" target="_blank" rel="external">twisted-deferred/defer-1.py</a>:</p>
-<pre><code>from twisted.internet.defer import Deferred
-
-def got_poem(res):
-    print &apos;Your poem is served:&apos;
-    print res
-
-def poem_failed(err):
-    print &apos;No poetry for you.&apos;
-
-d = Deferred()
-
-# add a callback/errback pair to the chain
-d.addCallbacks(got_poem, poem_failed)
-
-# fire the chain with a normal result
-d.callback(&apos;This poem is short.&apos;)
-
-print &quot;Finished&quot;
-</code></pre><p>代码开始创建了一个新deferred，然后使用addCallbacks添加了callback/errback对，然后使用callback函数激活了其正常结果处理回调链。当然了，由于只含有一个回调函数还算不上链，但不要紧，运行它：</p>
-<pre><code>Your poem is served:
-This poem is short.
-Finished
-</code></pre><p>有几个问题需要注意：</p>
-<ol>
-<li>正如3.1版本中我们使用的callback/errback对，添加到deferred中的回调函数只携带一个参数，正确的结果或出错信息。其实，deferred支持回调函数可以有多个参数，但至少得有一个参数并且第一个只能是正确的结果或错误信息。</li>
-<li>我们向deferred添加的是回调函数对</li>
-<li>callbac函数携带仅有的一个参数即正确的结果来激活deferred</li>
-<li>从打印结果顺序可以看出，激活的deferred立即调用了回调。没有任何异步的痕迹。这是因为没有reactor参与导致的。</li>
-</ol>
-<p>好了，让我们来试试另外一种情况，<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/defer-2.py" target="_blank" rel="external">twisted-deferred/defer-2.py</a>激活了错误处理回调：</p>
-<pre><code>from twisted.internet.defer import Deferred
-from twisted.python.failure import Failure
-
-def got_poem(res):
-    print &apos;Your poem is served:&apos;
-    print res
-
-def poem_failed(err):
-    print &apos;No poetry for you.&apos;
-
-d = Deferred()
-
-# add a callback/errback pair to the chain
-d.addCallbacks(got_poem, poem_failed)
-
-# fire the chain with an error result
-d.errback(Failure(Exception(&apos;I have failed.&apos;)))
-
-print &quot;Finished&quot;
-</code></pre><p>运行它打印出的结果为：</p>
-<pre><code>No poetry for you.
-Finished
-</code></pre><p>激活errback链就调用errback函数而不是callback，并且传进的参数也是错误信息。正如上面那样，errback在deferred激活就被调用。<br>在前面的例子中，我们将一个Failure对象传给了errback。deferred会将一个Exception对象转换成Failure，因此我们可以这样写：</p>
-<pre><code>from twisted.internet.defer import Deferred
-
-def got_poem(res):
-    print &apos;Your poem is served:&apos;
-    print res
-
-def poem_failed(err):
-    print err.__class__
-    print err
-    print &apos;No poetry for you.&apos;
-
-d = Deferred()
-
-# add a callback/errback pair to the chain
-d.addCallbacks(got_poem, poem_failed)
-
-# fire the chain with an error result
-d.errback(Exception(&apos;I have failed.&apos;))
-</code></pre><p>运行结果如下：</p>
-<pre><code>twisted.python.failure.Failure [Failure instance: Traceback (failure with no frames): : I have failed. ]
-No poetry for you.
-</code></pre><p>这意味着在使用deferred时，我们可以正常地使用Exception。其中deferred会为我们完成向Failure的转换。</p>
-<p>下面我们来运行下面的代码看看会出现什么结果：</p>
-<pre><code>from twisted.internet.defer import Deferred
-def out(s): print s
-d = Deferred()
-d.addCallbacks(out, out)
-d.callback(&apos;First result&apos;)
-d.callback(&apos;Second result&apos;)
-print &apos;Finished&apos;
-</code></pre><p>输出结果：</p>
-<pre><code>First result Traceback (most recent call last): ... twisted.internet.defer.AlreadyCalledError
-</code></pre><p>很意外吧，也就是说deferred不允许别人激活它两次。这也就解决了上面出现的那个问题：一个激活会导致多个回调同时出现。而deferred设计机制控制住了这种可能，如果你非要在一个deferred上要激活多个回调，那么正如上面那样，会报异常错。<br>那deferred能帮助我们重构异步代码吗？考虑下面这个<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/defer-8.py" target="_blank" rel="external">例子twisted-deferred/defer-8.py</a>：</p>
-<pre><code>import sys
-
-from twisted.internet.defer import Deferred
-
-def got_poem(poem):
-    print poem
-    from twisted.internet import reactor
-    reactor.stop()
-
-def poem_failed(err):
-    print &gt;&gt;sys.stderr, &apos;poem download failed&apos;
-    print &gt;&gt;sys.stderr, &apos;I am terribly sorry&apos;
-    print &gt;&gt;sys.stderr, &apos;try again later?&apos;
-    from twisted.internet import reactor
-    reactor.stop()
-
-d = Deferred()
-
-d.addCallbacks(got_poem, poem_failed)
-
-from twisted.internet import reactor
-
-reactor.callWhenRunning(d.callback, &apos;Another short poem.&apos;)
-
-reactor.run()
-</code></pre><p>这基本上与我们上面的代码相同，唯一不同的是加进了reactor。我们在启动reactor后调用了<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/interfaces.py#L766" target="_blank" rel="external">callWhenRunning</a>函数来激活deferred。我们利用了callWhenRunning函数可以接收一个额外的参数给回调函数。多数Twisted的API都以这样的方式注册回调函数，包括向deferred添加callback的API。下面我们给deferred回调链添加第二个回调,<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/defer-9.py" target="_blank" rel="external">twisted-deferred/defer-9.py</a>：</p>
-<pre><code>import sys
-
-from twisted.internet.defer import Deferred
-
-def got_poem(poem):
-    print poem
-
-def poem_failed(err):
-    print &gt;&gt;sys.stderr, &apos;poem download failed&apos;
-    print &gt;&gt;sys.stderr, &apos;I am terribly sorry&apos;
-    print &gt;&gt;sys.stderr, &apos;try again later?&apos;
-
-def poem_done(_):
-    from twisted.internet import reactor
-    reactor.stop()
-
-d = Deferred()
-
-d.addCallbacks(got_poem, poem_failed)
-d.addBoth(poem_done)
-
-from twisted.internet import reactor
-
-reactor.callWhenRunning(d.callback, &apos;Another short poem.&apos;)
-
-reactor.run()
-</code></pre><p>addBoth函数向callback与errback链中添加了相同的回调函数。在这种方式下，deferred有可能也会执行errback链中的回调。这将在下面的部分讨论，只要记住后面我们还会深入讨论deferred。</p>
-<p>##总结：</p>
-<p>在这部分我们分析了回调编程与其中潜藏的问题。我们也认识到了deferred是如何帮我们解决这些问题的：</p>
-<ol>
-<li>我们不能忽视errback，在任何异步编程的API中都需要它。Deferred支持errbacks。</li>
-<li>激活回调多次可能会导致很严重的问题。Deferred只能被激活一次，这就类似于同步编程中的try/except的处理方法。</li>
-<li>含有回调的程序在重构时相当困难。有了deferred，我们就通过修改回调链来重构程序。</li>
-</ol>
-<p>关于deferred的故事还没有结束，后面还有大量的细节来讲。但对于使用它来重构我们的客户端已经够用的了，在第八部分将讲述这部分内容。</p>
-<p>##练习</p>
-<ol>
-<li>The last example ignores the argument to poem_done. Print it out instead. Make got_poem return a value and see how that changes the argument to poem_done.</li>
-<li>Modify the last two deferred examples to fire the errback chains. Make sure to fire the errback with an Exception.</li>
-<li>Read the docstrings for the <a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/defer.py#L189" target="_blank" rel="external">addCallback</a> and <a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/defer.py#L192" target="_blank" rel="external">addErrback</a> methods on Deferred.</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2911,7 +2794,7 @@ reactor.run()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">216</span>
+                <span class="site-state-item-count">217</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

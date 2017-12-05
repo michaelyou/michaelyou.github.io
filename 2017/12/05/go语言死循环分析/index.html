@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="go," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/img/lufei.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="最近看了一篇文章，如何定位 golang 进程 hang 死的 bug，里面有这张一段代码： 123456789101112131415161718192021222324252627282930313233343536373839404142434445package mainimport (    &quot;fmt&quot;    &quot;io&quot;    &quot;log&quot;    &quot;net/http&quot;    &quot;runtime">
+<meta name="keywords" content="go">
+<meta property="og:type" content="article">
+<meta property="og:title" content="go语言死循环分析">
+<meta property="og:url" content="http://yoursite.com/2017/12/05/go语言死循环分析/index.html">
+<meta property="og:site_name" content="Youmai の Blog">
+<meta property="og:description" content="最近看了一篇文章，如何定位 golang 进程 hang 死的 bug，里面有这张一段代码： 123456789101112131415161718192021222324252627282930313233343536373839404142434445package mainimport (    &quot;fmt&quot;    &quot;io&quot;    &quot;log&quot;    &quot;net/http&quot;    &quot;runtime">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-12-05T04:19:35.902Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="go语言死循环分析">
+<meta name="twitter:description" content="最近看了一篇文章，如何定位 golang 进程 hang 死的 bug，里面有这张一段代码： 123456789101112131415161718192021222324252627282930313233343536373839404142434445package mainimport (    &quot;fmt&quot;    &quot;io&quot;    &quot;log&quot;    &quot;net/http&quot;    &quot;runtime">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/05/go语言死循环分析/"/>
+
+
+
+
+
+  <title>go语言死循环分析 | Youmai の Blog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-63551049-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youmai の Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/05/go语言死循环分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">go语言死循环分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-05T12:18:55+08:00">
+                2017-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/go/" itemprop="url" rel="index">
+                    <span itemprop="name">go</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近看了一篇文章，<a href="https://gocn.io/article/441" target="_blank" rel="external">如何定位 golang 进程 hang 死的 bug</a>，里面有这张一段代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"fmt"</span></div><div class="line">    <span class="string">"io"</span></div><div class="line">    <span class="string">"log"</span></div><div class="line">    <span class="string">"net/http"</span></div><div class="line">    <span class="string">"runtime"</span></div><div class="line">    <span class="string">"time"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    runtime.GOMAXPROCS(runtime.NumCPU())</div><div class="line">    <span class="keyword">go</span> server()</div><div class="line">    <span class="keyword">go</span> printNum()</div><div class="line">    <span class="keyword">var</span> i = <span class="number">1</span></div><div class="line">    <span class="keyword">for</span> &#123;</div><div class="line">        <span class="comment">// will block here, and never go out</span></div><div class="line">        i++</div><div class="line">    &#125;</div><div class="line">    fmt.Println(<span class="string">"for loop end"</span>)</div><div class="line">    time.Sleep(time.Second * <span class="number">3600</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">printNum</span><span class="params">()</span></span> &#123;</div><div class="line">    i := <span class="number">0</span></div><div class="line">    <span class="keyword">for</span> &#123;</div><div class="line">        fmt.Println(i)</div><div class="line">        i++</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">HelloServer</span><span class="params">(w http.ResponseWriter, req *http.Request)</span></span> &#123;</div><div class="line">    fmt.Println(<span class="string">"hello world"</span>)</div><div class="line">    io.WriteString(w, <span class="string">"hello, world!\n"</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">server</span><span class="params">()</span></span> &#123;</div><div class="line">    http.HandleFunc(<span class="string">"/"</span>, HelloServer)</div><div class="line">    err := http.ListenAndServe(<span class="string">":12345"</span>, <span class="literal">nil</span>)</div><div class="line"></div><div class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">        log.Fatal(<span class="string">"ListenAndServe: "</span>, err)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>运行，会发现打印一会儿数字后停了，我们执行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl localhost:12345</div></pre></td></tr></table></figure>
+<p>程序卡死。关于程序挂在哪里借助<code>dlv</code>是很好定位的：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dlv debug hang.go</div></pre></td></tr></table></figure>
+<p>进去之后运行程序，打印停止进入卡死状态，我们执行<code>ctrl C</code>，<code>dlv</code>会显示断开的地方：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">received SIGINT, stopping process (will not forward signal)&gt; main.main() ./hang.<span class="keyword">go</span>:<span class="number">17</span> (PC: <span class="number">0x12dd</span>7c8)</div><div class="line">    <span class="number">12</span>: <span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="number">13</span>:         runtime.GOMAXPROCS(runtime.NumCPU())</div><div class="line">    <span class="number">14</span>:         <span class="keyword">go</span> server()</div><div class="line">    <span class="number">15</span>:         <span class="keyword">go</span> printNum()</div><div class="line">    <span class="number">16</span>:         <span class="keyword">var</span> i = <span class="number">1</span></div><div class="line">=&gt;  <span class="number">17</span>:         <span class="keyword">for</span> &#123;</div><div class="line">    <span class="number">18</span>:                 <span class="comment">// will block here, and never go out</span></div><div class="line">    <span class="number">19</span>:                 i++</div><div class="line">    <span class="number">20</span>:         &#125;</div><div class="line">    <span class="number">21</span>:         fmt.Println(<span class="string">"for loop end"</span>)</div><div class="line">    <span class="number">22</span>:         time.Sleep(time.Second * <span class="number">3600</span>)</div><div class="line">(dlv)</div></pre></td></tr></table></figure>
+<p>但是我还是不明白，不明白的地方主要是因为：</p>
+<ul>
+<li>. 我又看了两篇文章<a href="http://tonybai.com/2017/11/23/the-simple-analysis-of-goroutine-schedule-examples/" target="_blank" rel="external">Goroutine调度实例简要分析</a>和<a href="http://tonybai.com/2017/06/23/an-intro-about-goroutine-scheduler/" target="_blank" rel="external">也谈goroutine调度器</a>，是同一位作者Tony Bai写的，写得非常好。第二篇文章解释了goroutine的调度和cpu数量的关系（不多加解释，建议大家看看），我的mac是双核四线程（这里不明白的同学自行google cpu 超线程），go版本是1.9，理论上讲可以跑4个goroutine而不用考虑死循环，一个死循环最多把一个cpu打死，上面的代码中只有3个goroutine，而且他们看上去都挂住了。</li>
+</ul>
+<ol>
+<li>上面说的理论上讲，不是我主观臆测的，我跑了<code>1</code>中<a href="http://tonybai.com/2017/11/23/the-simple-analysis-of-goroutine-schedule-examples/" target="_blank" rel="external">第一篇文章</a>中的一个例子:</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"fmt"</span></div><div class="line">    <span class="string">"time"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">deadloop</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">for</span> &#123;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">go</span> deadloop()</div><div class="line">    <span class="keyword">for</span> &#123;</div><div class="line">        time.Sleep(time.Second * <span class="number">1</span>)</div><div class="line">        fmt.Println(<span class="string">"I got scheduled!"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面代码有两个goroutine，一个是<code>main goroutine</code>，一个是<code>deadloop goroutine</code>，跑得时候<code>deadloop gouroutine</code>不会对<code>main goroutine</code>造成影响，打印一直在持续，作者的文章解释了原因。</p>
+<ul>
+<li>. <a href="https://gocn.io/article/441" target="_blank" rel="external">如何定位 golang 进程 hang 死的 bug</a>这篇文章提到了<code>gcwaiting</code>，然而没有解释。</li>
+</ul>
+<p>在<a href="https://gocn.io/article/441" target="_blank" rel="external">如何定位 golang 进程 hang 死的 bug</a>有这样一段话：</p>
+<blockquote>
+<p>因为在 for 循环中没有函数调用的话，编译器不会插入调度代码，所以这个执行 for 循环的 goroutine 没有办法被调出，而在循环期间碰到 gc，那么就会卡在 gcwaiting 阶段，并且整个进程永远 hang 死在这个循环上。并不再对外响应。</p>
+</blockquote>
+<p>这个其实就是我们的第一段代码卡死的原因，也是我们第二段代码没有卡死的原因，就是在<code>gc</code>上！</p>
+<p>我们再看一篇文章，<a href="https://studygolang.com/articles/9004" target="_blank" rel="external">golang的垃圾回收（GC）机制</a>，这篇文章很短，但每句话都很重要：</p>
+<blockquote>
+<ol>
+<li>设置gcwaiting=1，这个在每一个G任务之前会检查一次这个状态，如是，则会将当前M 休眠；</li>
+<li>如果这个M里面正在运行一个长时间的G任务，咋办呢，难道会等待这个G任务自己切换吗？这样的话可要等10ms啊，不能等！坚决不能等！<br>所以会主动发出抢占标记（类似于上一篇），让当前G任务中断，再运行下一个G任务的时候，就会走到第1步</li>
+</ol>
+</blockquote>
+<p>那么如果这时候运行的是没有函数调用的死循环呢，gc也发出了抢占标记，但是如果死循环没有函数调用，就没有地方被标记，无法被抢占，那就只能设置<code>gcwaiting=1</code>，而<strong>M没有休眠</strong>，<code>stop the world</code>卡住了（死锁），<code>gcwaiting</code>一直是1，整个程序都卡住了！</p>
+<p>这里其实已经解释了第一份代码的现象，第二份代码为什么没有hang住相信大家也能猜到了：代码里没有触发gc！我们来手动触发一下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"fmt"</span></div><div class="line">    <span class="string">"log"</span></div><div class="line">    <span class="string">"net/http"</span></div><div class="line">    _ <span class="string">"net/http/pprof"</span></div><div class="line">    <span class="comment">// "runtime"</span></div><div class="line">    <span class="string">"time"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">deadloop</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">for</span> &#123;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">        log.Println(http.ListenAndServe(<span class="string">"localhost:6060"</span>, <span class="literal">nil</span>))</div><div class="line">    &#125;()</div><div class="line">    <span class="keyword">go</span> deadloop()</div><div class="line">    i := <span class="number">3</span></div><div class="line">    <span class="keyword">for</span> &#123;</div><div class="line">        time.Sleep(time.Second * <span class="number">1</span>)</div><div class="line">        i--</div><div class="line">        fmt.Println(<span class="string">"I got scheduled!"</span>)</div><div class="line">        <span class="keyword">if</span> i == <span class="number">0</span> &#123;</div><div class="line">            runtime.GC()</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>会发现打印了3行之后，程序也卡死了，bingo🎉</p>
+<p>我们来看看<code>gcwaiting</code>是不是等于1:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span> go build hang2.go</div><div class="line"></div><div class="line"><span class="meta">$</span> GODEBUG="schedtrace=300,scheddetail=1" ./hang2</div><div class="line"></div><div class="line">SCHED 2443ms: gomaxprocs=4 idleprocs=3 threads=7 spinningthreads=0 idlethreads=2 runqueue=0 gcwaiting=0 nmidlelocked=0 stopwait=0 sysmonwait=0</div><div class="line">  P0: status=1 schedtick=4 syscalltick=5 m=5 runqsize=0 gfreecnt=1</div><div class="line">  P1: status=0 schedtick=14 syscalltick=0 m=-1 runqsize=0 gfreecnt=0</div><div class="line">  P2: status=0 schedtick=3 syscalltick=4 m=-1 runqsize=0 gfreecnt=0</div><div class="line">......  </div><div class="line">SCHED 2751ms: gomaxprocs=4 idleprocs=0 threads=7 spinningthreads=0 idlethreads=2 runqueue=0 gcwaiting=1 nmidlelocked=0 stopwait=1 sysmonwait=0</div><div class="line">  P0: status=1 schedtick=4 syscalltick=5 m=5 runqsize=0 gfreecnt=1</div><div class="line">  P1: status=3 schedtick=14 syscalltick=0 m=-1 runqsize=0 gfreecnt=0</div><div class="line">  P2: status=3 schedtick=3 syscalltick=10 m=-1 runqsize=0 gfreecnt=0</div><div class="line">  P3: status=3 schedtick=1 syscalltick=26 m=0 runqsize=0 gfreecnt=0</div><div class="line">  M6: p=-1 curg=-1 mallocing=0 throwing=0 preemptoff= locks=0 dying=0 helpgc=0 spinning=false blocked=false lockedg=-1</div><div class="line">  M5: p=0 curg=19 mallocing=0 throwing=0 preemptoff= locks=0 dying=0 helpg</div></pre></td></tr></table></figure>
+<p>代码诚不欺我也！</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://gocn.io/article/441" target="_blank" rel="external">如何定位 golang 进程 hang 死的 bug</a></li>
+<li><a href="http://tonybai.com/2017/11/23/the-simple-analysis-of-goroutine-schedule-examples/" target="_blank" rel="external">Goroutine调度实例简要分析</a></li>
+<li><a href="http://tonybai.com/2017/06/23/an-intro-about-goroutine-scheduler/" target="_blank" rel="external">也谈goroutine调度器</a></li>
+<li><a href="https://studygolang.com/articles/9004" target="_blank" rel="external">golang的垃圾回收（GC）机制</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/go/" rel="tag"># go</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/27/hystrix-go简介/" rel="next" title="hystrix-go简介">
+                <i class="fa fa-chevron-left"></i> hystrix-go简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/lufei.jpeg"
+               alt="You Wangqiu" />
+          <p class="site-author-name" itemprop="name">You Wangqiu</p>
+           
+              <p class="site-description motion-element" itemprop="description">世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">217</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/michaelyou" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhi-yu-65-2" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      知乎
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">1.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">You Wangqiu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
