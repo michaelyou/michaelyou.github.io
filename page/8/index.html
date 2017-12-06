@@ -286,6 +286,153 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/16/django的unicode对象/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/16/django的unicode对象/" itemprop="url">Django的unicode对象</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-16T08:00:23+08:00">
+                2015-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>你可以认为unicode对象就是一个Python字符串，它可以处理上百万不同类别的字符——从古老版本的Latin字符到非Latin字符，再到曲折的引用和艰涩的符号。</p>
+<p>普通的python字符串是经过编码的，意思就是它们使用了某种编码方式（如ASCII，ISO-8859-1或者UTF-8）来编码。 如果你把奇特的字符（其它任何超出标准128个如0-9和A-Z之类的ASCII字符）保存在一个普通的Python字符串里，你一定要跟踪你的字符串是用什么编码的，否则这些奇特的字符可能会在显示或者打印的时候出现乱码。 当你尝试要将用某种编码保存的数据结合到另外一种编码的数据中，或者你想要把它显示在已经假定了某种编码的程序中的时候，问题就会发生。 我们都已经见到过网页和邮件被???弄得乱七八糟。 ?????? 或者其它出现在奇怪位置的字符：这一般来说就是存在编码问题了。</p>
+<p>但是Unicode对象并没有编码。它们使用Unicode，一个一致的，通用的字符编码集。 当你在Python中处理Unicode对象的时候，你可以直接将它们混合使用和互相匹配而不必去考虑编码细节。</p>
+<p>Django 在其内部的各个方面都使用到了 Unicode 对象。 模型 对象中，检索匹配方面的操作使用的是 Unicode 对象，视图 函数之间的交互使用的是 Unicode 对象，模板的渲染也是用的 Unicode 对象。 通常，我们不必担心编码是否正确，后台会处理的很好。</p>
+<p>注意，我们这里只是对Unicode对象进行非常浅显的概述，若要深入了解你可能需要查阅相关的资料。 这是一个很好的起点：<a href="http://www.joelonsoftware.com/articles/Unicode.html" target="_blank" rel="external">http://www.joelonsoftware.com/articles/Unicode.html</a>。</p>
+<p>–《the django book 2.0 第五章》</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django-project和app的区别/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1731,171 +1878,6 @@ def hours_ahead(request, offset):
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django是如何处理请求的/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/15/django是如何处理请求的/" itemprop="url">Django是如何处理请求的</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T16:56:40+08:00">
-                2015-04-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>当你通过在浏览器里敲<code>http://127.0.0.1:8000/hello/</code>来访问<code>Hello world</code>消息得时候，Django在后台有些什么动作呢？</p>
-<p>所有均开始于setting文件。当你运行<code>python manage.py runserver</code>，脚本将在于manage.py同一个目录下查找名为setting.py的文件。这个文件包含了所有有关这个Django项目的配置信息，均大写： <code>TEMPLATE_DIRS</code> , <code>DATABASE_NAME</code> , 等. 最重要的设置是<code>ROOT_URLCONF</code>，它将作为URLconf告诉Django在这个站点中那些Python的模块将被用到</p>
-<p>还记得什么时候<code>django-admin.py startproject</code>创建文件<code>settings.py</code>和<code>urls.py</code>吗？自动创建的settings.py包含一个<code>ROOT_URLCONF</code>配置用来指向自动产生的<code>urls.py</code>. 打开文件<code>settings.py</code>你将看到如下：</p>
-<pre><code>ROOT_URLCONF = &apos;mysite.urls&apos;
-</code></pre><p>相对应的文件是mysite/urls.py</p>
-<p>当访问 URL <code>/hello/</code> 时，Django 根据 <code>ROOT_URLCONF</code> 的设置装载 <code>URLconf</code> 。 然后按顺序逐个匹配URLconf里的URLpatterns，直到找到一个匹配的。 当找到这个匹配 的URLpatterns就调用相关联的view函数，并把 HttpRequest 对象作为第一个参数。 </p>
-<p>正如我们在第一个视图例子里面看到的，一个视图功能必须返回一个<code>HttpResponse</code>。 一旦做完，Django将完成剩余的转换Python的对象到一个合适的带有HTTP头和body的Web Response，（例如，网页内容）。</p>
-<p>总结一下：</p>
-<ol>
-<li><p>进来的请求转入/hello/.</p>
-</li>
-<li><p>Django通过在ROOT_URLCONF配置来决定根URLconf.</p>
-</li>
-<li><p>Django在URLconf中的所有URL模式中，查找第一个匹配/hello/的条目。</p>
-</li>
-<li><p>如果找到匹配，将调用相应的视图函数</p>
-</li>
-<li><p>视图函数返回一个HttpResponse</p>
-</li>
-<li><p>Django转换HttpResponse为一个适合的HTTP response， 以Web page显示出来</p>
-</li>
-</ol>
-<p>你现在知道了怎么做一个 Django-powered 页面了，真的很简单，只需要写视图函数并用 <code>URLconfs</code>把它们和URLs对应起来。 你可能会认为用一系列正则表达式将URLs映射到函数也许会比较慢，但事实却会让你惊讶。</p>
-<p>–《django book 2.0》</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1946,7 +1928,7 @@ def hours_ahead(request, offset):
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">217</span>
+                <span class="site-state-item-count">218</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

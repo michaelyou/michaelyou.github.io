@@ -286,6 +286,155 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/05/unix的errno值/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/05/unix的errno值/" itemprop="url">unix的errno值</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-05T15:26:46+08:00">
+                2015-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li><p>只要一个Unix函数中有错误发生，全局变量errno就被置为一个指明该错误类型的正值，函数本身则通常返回-1。</p>
+</li>
+<li><p>errno的值只在函数发生错误时设置。如果函数不返回错误，errno的值就没有定义。errno的所有正数错误值都是常值，具有以“E”开头的全大写字母名字，并通常在<sys errno.h="">头文件中定义。值0不表示任何错误。</sys></p>
+</li>
+<li><p>在全局变量中存放errno值对于共享所有全局变量的多个线程并不适合。线程函数遇到错误时并不设置标准Unix的errno变量，而是把errno的值作为函数返回值返回给调用者。这意味着每次调用以<code>pthread_</code>开头的某个函数时，我们必须分配一个变量来存放函数返回值，以便在调用err_sys前把errno变量设置成该值。</p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/Questions-from-tencent/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1939,189 +2088,6 @@ sigrelse(SIGALRM);
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/03/UNP上的一些问题与回答/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/03/UNP上的一些问题与回答/" itemprop="url">UNP上的一些问题与回答</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-03T19:07:37+08:00">
-                2015-03-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
-                    <span itemprop="name">unix网络编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>在一个以太网上的主机和一个令牌环网上的主机之间建立一个连接，其中以太网上的主机的TCP通告的MSS为1460，令牌环网上的主机的TCP通告的MSS为4096.两个主机都没有实现路径MTU发现功能。观察分组，我们在另个相反方向上都找不到大于1460字节的数据，为什么？</p>
-</blockquote>
-<p>答：令牌环网上的主机不能发送超过1460字节的数据，因为它接受到的MSS是1460.以太网上的主机可以发送最多4096的数据（因为他接收到的MSS是4096），但是为了避免分片，它不会超过外出接口（即以太网）的MTU。TCP净荷不能超过对端宣告的MSS，但是净荷小于这个数量的TCP分节总是可以发送的。</p>
-<blockquote>
-<p>如果没有收到来自对端的MSS选项，本端的TCP就采用536这个MSS值。为什么使用这个值？</p>
-</blockquote>
-<p>答：对于IPv4这个默认值产生576字节的IP数据报（其中IPv4首部占用20字节，TCP首部占用20字节，剩下536字节的TCP净荷），这是IPv4的最小重组缓冲区的大小</p>
-<blockquote>
-<p>对于一个TCP套接字调用close会导致发送一个FIN，然后是正常的TCP连接终止序列。在使用fork的并发程序中，为什么父进程对connfd调用close没有终止它与客户端的连接，子进程依然能够运行呢(unp-p92)？</p>
-</blockquote>
-<p>答：每个文件或套接字都有一个引用计数。引用计数在文件表项中维护，它是当前打开着的引用该文件或套接字的描述符的个数。socket返回后与listened关联的文件表项的引用计数值为1.  accept返回后与connfd关联的文件表项的引用计数值为1.然而fork返回后，这两个描述符就在父进程与子进程间共享（也就是被复制），因此与这两个套接字相关联的文件表项各自的访问计数值均为2。这么一来，当父进程关闭connfd时，它只是把相应的引用计数值从2减为1。该套接字真正清理和资源释放要等到其引用计数值达到0时才发生。这会在稍后子进程也关闭connfd时发生</p>
-<blockquote>
-<p>调用fork的时候，套接字描述符在父进程和子进程间共享，但是子进程调用exec程序，不就是失去对端地址了吗？</p>
-</blockquote>
-<p>答：当子程序调用exec执行真正的服务器程序（譬如说telnet服务器程序）时，子进程的内存印象被替换成新的telnet服务器的程序文件（也就是说包含对端地址的那个套接字地址结构就此丢失），不过那个已连接套接字描述符跨exec继续保持开放。telnet服务器首先调用的函数之一便是getpeername，用于获取客户的IP地址和端口号</p>
-<blockquote>
-<p>对于UDP，调用recvfrom，不管应用请求多大，recvfrom绝不会返回多于一个数据报的数据。而TCP可以！</p>
-</blockquote>
-<p> 例如,我们连续发送三个数据包,大小分别是2k, 4k , 8k,这三个数据包,都已经到达了接收端的网络堆栈中,如果使 用UDP协议,不管我们使用多大的接收缓冲区去接收数据,我们必须有 三次接收动作,才能够把所有的数据包接收完.而使用TCP协议,我们 只要把接收的缓冲区大小设置在14k以上,我们就能够一次把所有的 数据包接收下来.只需要有一次接收动作.</p>
-<p>这就是因为UDP协议的保护消息边界使得每一个消息都是独立的.而 流传输,却把数据当作一串数据流,他不认为数据是一个一个的消息.</p>
-<p>所以有很多人在使用tcp协议通讯的时候,并不清楚tcp是基于流的 传输,当连续发送数据的时候,他们时常会认识tcp会丢包.其实不然, 因为当他们使用的缓冲区足够大时,他们有可能会一次接收到两个甚 至更多的数据包,而很多人往往会忽视这一点,只解析检查了第一个<br>数据包,而已经接收的其他数据包却被忽略了.所以大家如果要作这 类的网络编程的时候,必须要注意这一点.</p>
-<p><strong>结论</strong></p>
-<p>根据以上所说，可以这样理解，TCP为了保证可靠传输，尽量减少额外开销（每次发包都要验证），因此采用了流式传输，面向流的传输，相对于面向消息的传输，可以减少发送包的数量。从而减少了额外开销。但是，对于数据传输频繁的程序来讲，使用TCP可能会容易粘包。当然，对接收端的程序来讲，如果机器负荷很重，也会在接收缓冲里粘包。这样，就需要接收端额外拆包，增加了工作量。因此，这个特别适合的是数据要求可靠传输，但是不需要太频繁传输的场合（两次操作间隔100ms，具体是由TCP等待发送间隔决定的，取决于内核中的socket的写法）</p>
-<p>而UDP，由于面向的是消息传输，它把所有接收到的消息都挂接到缓冲区的接受队列中，因此，它对于数据的提取分离就更加方便，但是，它没有粘包机制，因此，当发送数据量较小的时候，就会发生数据包有效载荷较小的情况，也会增加多次发送的系统发送开销（系统调用，写硬件等）和接收开销。因此，应该最好设置一个比较合适的数据包的包长，来进行UDP数据的发送。（UDP最大载荷为1472，因此最好能每次传输接近这个数的数据量，这特别适合于视频，音频等大块数据的发送，同时，通过减少握手来保证流媒体的实时性）</p>
-<blockquote>
-<p>对于UDP/IPv4套接字，可传递给sendto的最大长度是多少；也就是说，可装填在一个UDP/IPv4数据报中的最大数据量是多少？</p>
-</blockquote>
-<p><img src="ipv4首部.png" alt="ipv4首部格式"></p>
-<p>IPv4数据报最大为65536字节，这是由上图中16位的总长度字段决定的。IPv4的首部需要20字节，UDP首部需要8字节。留给UDP用户的数据最大为65507字节.</p>
-<p>那么我们使用UDP的时候，是否就能发送65507字节的数据呢？答案是否定的</p>
-<p>在进行UDP编程的时候,我们最容易想到的问题就是,一次发送多少bytes好?</p>
-<p>首先,我们知道,TCP/IP通常被认为是一个四层协议系统,包括链路层,网络层,运输层,应用层.</p>
-<p>UDP属于运输层,下面我们由下至上一步一步来看:</p>
-<p>以太网(Ethernet)数据帧的长度必须在46-1500字节之间，这是由以太网的物理特性决定的。这个1500字节被称为链路层的MTU(最大传输单元)。但这并不是指链路层的长度被限制在1500字节，其实这这个MTU指的是链路层的数据区，并不包括链路层的首部和尾部的18个字节。所以，事实上，这个1500字节就是网络层IP数据报的长度限制。因为IP数据报的首部为20字节，所以IP数据报的数据区长度最大为1480字节。而这个1480字节就是用来放TCP传来的TCP报文段或UDP传来的UDP数据报的。又因为UDP数据报的首部8字节，所以UDP数据报的数据区最大长度为1472字节。这个1472字节就是我们可以使用的字节数。:)</p>
-<p>当我们发送的UDP数据大于1472的时候会怎样呢？</p>
-<p>这也就是说IP数据报大于1500字节，大于MTU。这个时候发送方IP层就需要分片(fragmentation)。把数据报分成若干片，使每一片都小于MTU。而接收方IP层则需要进行数据报的重组。这样就会多做许多事情，而更严重的是，由于UDP的特性，当某一片数据传送中丢失时，接收方便无法重组数据报。将导致丢弃整个UDP数据报。</p>
-<p>因此，在普通的局域网环境下，我建议将UDP的数据控制在1472字节以下为好。</p>
-<p>进行Internet编程时则不同，因为Internet上的路由器可能会将MTU设为不同的值。</p>
-<p>如果我们假定MTU为1500来发送数据的，而途经的某个网络的MTU值小于1500字节，那么系统将会使用一系列的机<br>制来调整MTU值，使数据报能够顺利到达目的地，这样就会做许多不必要的操作.</p>
-<p>鉴于Internet上的标准MTU值为576字节，所以我建议在进行Internet的UDP编程时.</p>
-<p>最好将UDP的数据长度控件在548字节(576-8-20)以内.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2172,7 +2138,7 @@ sigrelse(SIGALRM);
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">217</span>
+                <span class="site-state-item-count">218</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

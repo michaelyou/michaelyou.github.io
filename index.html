@@ -286,6 +286,171 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/06/go-pprof-采样何时进行/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/06/go-pprof-采样何时进行/" itemprop="url">go pprof 采样何时进行</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-06T15:20:36+08:00">
+                2017-12-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/go/" itemprop="url" rel="index">
+                    <span itemprop="name">go</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> (</div><div class="line">	_ <span class="string">"net/http/pprof"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">		log.Println(http.ListenAndServe(<span class="string">"localhost:6060"</span>, <span class="literal">nil</span>))</div><div class="line">	&#125;()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这段代码大家应该都很熟悉，<code>go tool pprof</code>工具的通用代码，用来做性能等分析。我这两天尝试用了一下，不免有了一个疑问：<code>pprof</code>是要采样的，这个采样是何时进行的？是程序启动就开始采样还是当我<code>curl localhost:$PORT/debug/pprof/$PROFILE_TYPE</code>开始？</p>
+<p>为什么会考虑这个呢，主要是在看的框架里集成了<code>pprof</code>，默认打开，如果是程序一开始就采样，那对于性能是有损耗的。这种问题别人回答你，你也不一定相信，我们还是来看看<code>pprof</code>的代码吧。</p>
+<p>标准库的代码是在<code>$GOROOT/src</code>下面，我们找一下<code>pprof</code>，在我的mac上路径是<code>/usr/local/Cellar/go/1.9.2/libexec/src/net/http/pprof/pprof.go</code></p>
+<p>首先是<code>init</code>函数，注册了我们用到的分析urls：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</div><div class="line">    http.Handle(<span class="string">"/debug/pprof/"</span>, http.HandlerFunc(Index))</div><div class="line">    http.Handle(<span class="string">"/debug/pprof/cmdline"</span>, http.HandlerFunc(Cmdline))</div><div class="line">    http.Handle(<span class="string">"/debug/pprof/profile"</span>, http.HandlerFunc(Profile))</div><div class="line">    http.Handle(<span class="string">"/debug/pprof/symbol"</span>, http.HandlerFunc(Symbol))</div><div class="line">    http.Handle(<span class="string">"/debug/pprof/trace"</span>, http.HandlerFunc(Trace))</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这是在程序启动就执行的，这也是我们感觉只要import就万事大吉的原因。其实看到这里应该就明白了，profile只是普通的函数调用而已，程序启动只是注册了handler，真正的采样应该是在请求之后执行的。</p>
+<p>但是来都来了，我们不妨往下看看，毕竟需要看标准库的机会不多。我们来看一下<code>cpu profile</code>，也就是<code>Profile</code>函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">// Profile responds with the pprof-formatted cpu profile.</div><div class="line">// The package initialization registers it as /debug/pprof/profile.</div><div class="line">func Profile(w http.ResponseWriter, r *http.Request) &#123;</div><div class="line">    sec, _ := strconv.ParseInt(r.FormValue(&quot;seconds&quot;), 10, 64)</div><div class="line">    if sec == 0 &#123;</div><div class="line">        sec = 30</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if durationExceedsWriteTimeout(r, float64(sec)) &#123;</div><div class="line">        w.Header().Set(&quot;Content-Type&quot;, &quot;text/plain; charset=utf-8&quot;)</div><div class="line">        w.Header().Set(&quot;X-Go-Pprof&quot;, &quot;1&quot;)</div><div class="line">        w.WriteHeader(http.StatusBadRequest)</div><div class="line">        fmt.Fprintln(w, &quot;profile duration exceeds server&apos;s WriteTimeout&quot;)</div><div class="line">        return</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Set Content Type assuming StartCPUProfile will work,</div><div class="line">    // because if it does it starts writing.</div><div class="line">    w.Header().Set(&quot;Content-Type&quot;, &quot;application/octet-stream&quot;)</div><div class="line">    if err := pprof.StartCPUProfile(w); err != nil &#123;</div><div class="line">        // StartCPUProfile failed, so no writes yet.</div><div class="line">        // Can change header back to text content</div><div class="line">        // and send error code.</div><div class="line">        w.Header().Set(&quot;Content-Type&quot;, &quot;text/plain; charset=utf-8&quot;)</div><div class="line">        w.Header().Set(&quot;X-Go-Pprof&quot;, &quot;1&quot;)</div><div class="line">        w.WriteHeader(http.StatusInternalServerError)</div><div class="line">        fmt.Fprintf(w, &quot;Could not enable CPU profiling: %s\n&quot;, err)</div><div class="line">                return</div><div class="line">    &#125;</div><div class="line">    sleep(w, time.Duration(sec)*time.Second)</div><div class="line">    pprof.StopCPUProfile()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>获取了一个默认30秒的时间，执行<code>StartCPUProfile</code>，里面应该是个<code>goroutine</code>，调用返回后sleep了一下，结束<code>cpu profile</code>。采样应该是在<code>StartCPUProfile</code>，执行seconds时间。</p>
+<p>再来看看<code>StartCPUProfile</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">func StartCPUProfile(w io.Writer) error &#123;</div><div class="line">    // The runtime routines allow a variable profiling rate,</div><div class="line">    // but in practice operating systems cannot trigger signals</div><div class="line">    // at more than about 500 Hz, and our processing of the</div><div class="line">    // signal is not cheap (mostly getting the stack trace).</div><div class="line">    // 100 Hz is a reasonable choice: it is frequent enough to</div><div class="line">    // produce useful data, rare enough not to bog down the</div><div class="line">    // system, and a nice round number to make it easy to</div><div class="line">    // convert sample counts to seconds. Instead of requiring</div><div class="line">    // each client to specify the frequency, we hard code it.</div><div class="line">    const hz = 100</div><div class="line"></div><div class="line">    cpu.Lock()</div><div class="line">    defer cpu.Unlock()</div><div class="line">    if cpu.done == nil &#123;</div><div class="line">        cpu.done = make(chan bool)</div><div class="line">    &#125;</div><div class="line">    // Double-check.</div><div class="line">    if cpu.profiling &#123;</div><div class="line">        return fmt.Errorf(&quot;cpu profiling already in use&quot;)</div><div class="line">    &#125;</div><div class="line">    cpu.profiling = true</div><div class="line">    runtime.SetCPUProfileRate(hz)</div><div class="line">    go profileWriter(w)</div><div class="line">    return nil</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注释解释了取样频率的由来，我们先看一下CPU主频的概念：</p>
+<blockquote>
+<p>CPU的主频，即CPU内核工作的时钟频率（CPU Clock Speed）。CPU的主频的基本单位是赫兹（Hz），但更多的是以兆赫兹（MHz）或吉赫兹（GHz）为单位。时钟频率的倒数即为时钟周期。时钟周期的基本单位为秒（s），但更多的是以毫秒（ms）、微妙（us）或纳秒（ns）为单位。在一个时钟周期内，CPU执行一条运算指令。也就是说，在1000 Hz的CPU主频下，每1毫秒可以执行一条CPU运算指令。在1 MHz的CPU主频下，每1微妙可以执行一条CPU运算指令。而在1 GHz的CPU主频下，每1纳秒可以执行一条CPU运算指令。</p>
+</blockquote>
+<p>在默认情况下，Go语言的运行时系统会以100 Hz的的频率对CPU使用情况进行取样。也就是说每秒取样100次，即每10毫秒会取样一次。为什么使用这个频率呢？因为100 Hz既足够产生有用的数据，又不至于让系统产生停顿。并且100这个数上也很容易做换算，比如把总取样计数换算为每秒的取样数。实际上，这里所说的对CPU使用情况的取样就是对当前的Goroutine的堆栈上的程序计数器的取样。由此，我们就可以从样本记录中分析出哪些代码是计算时间最长或者说最耗CPU资源的部分了。</p>
+<p>代码很容易理解，锁住cpu，设置runtime的采样频率，<code>profileWriter</code>就是实际采样了。</p>
+<p>所以结论是，采样在请求之后才会进行，线上打开采样的接口没有问题。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://blog.golang.org/profiling-go-programs" target="_blank" rel="external">Profiling Go Programs</a></li>
+<li><a href="https://jvns.ca/blog/2017/09/24/profiling-go-with-pprof/" target="_blank" rel="external">Profiling Go programs with pprof</a></li>
+<li><a href="http://wiki.jikexueyuan.com/project/go-command-tutorial/0.12.html" target="_blank" rel="external">go tool pprof</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/05/go语言死循环分析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1884,168 +2049,6 @@ Unicode字符串是一个代码点（code point）序列，代码点取值范围
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/30/go和python变量赋值的一个小问题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/30/go和python变量赋值的一个小问题/" itemprop="url">go和python变量赋值的一个小问题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-30T19:37:23+08:00">
-                2017-08-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/go/" itemprop="url" rel="index">
-                    <span itemprop="name">go</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>平时写得多的是python，最近看了一点go，今天碰到了一个问题，和大家分享一下</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></div><div class="line"></div><div class="line"><span class="keyword">type</span> student <span class="keyword">struct</span> &#123;</div><div class="line">    Name <span class="keyword">string</span></div><div class="line">    Age  <span class="keyword">int</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">pase_student</span><span class="params">()</span></span> &#123;</div><div class="line">    m := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]*student)</div><div class="line">    stus := []student&#123;</div><div class="line">        &#123;Name: <span class="string">"zhou"</span>, Age: <span class="number">24</span>&#125;,</div><div class="line">        &#123;Name: <span class="string">"li"</span>, Age: <span class="number">23</span>&#125;,</div><div class="line">        &#123;Name: <span class="string">"wang"</span>, Age: <span class="number">22</span>&#125;,</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">for</span> _, stu := <span class="keyword">range</span> stus &#123;</div><div class="line">        m[stu.Name] = &amp;stu</div><div class="line">    &#125;</div><div class="line">    fmt.Println(m[<span class="string">"zhou"</span>].Name)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    pase_student()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>代码很简单，大家可以思考一下会打印出什么。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">time.sleep(<span class="number">60</span>)  <span class="comment"># 思考</span></div></pre></td></tr></table></figure>
-<p>结果是<code>wang</code>!，惊喜不惊喜！遍历赋值啊同学们，这么简单的操作都能出幺蛾子，WTF！</p>
-<p>为什么是<code>wang</code>呢？<del>你tm给我</del>解释解释<del>什么是惊喜</del>：</p>
-<p>for循环的时候，变量stu的指针是不变的，每次循环仅仅是对student结构体的<strong>值</strong>拷贝，上面的for循环和下面是一样的：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> stu student </div><div class="line"><span class="keyword">for</span> _, stu = <span class="keyword">range</span> stus &#123;</div><div class="line">	m[stu.Name] = &amp;stu</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>所以<code>&amp;stu</code>自始至终都是一个地址，变化的是这个地址上存储的值。<code>&amp;stu</code>最终存储的值是<code>student{Name: &quot;wang&quot;, Age: 22}</code>结构体，所以拿出来的是<code>wang</code>。</p>
-<p>可以将<code>m</code>打出来看一下：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">map</span>[zhou:<span class="number">0xc42000a260</span> li:<span class="number">0xc42000a260</span> wang:<span class="number">0xc42000a260</span>]</div></pre></td></tr></table></figure>
-<p>验证了我们上面的想法，大家的value都是同一个地址。</p>
-<p>看到这里，如果是一个日常写c，c++等强类型语言的同学可能会说，神经病啊！这有什么好说的！不就是这样的吗！请原谅我，我日常写python的 [捂脸]。</p>
-<p>从上面的例子可以看出来，在go中，变量名是<code>存储地址的名字</code>。它在编译时绑定已经完成，运行时是不可以改变的，你只能改变地址中存储的值。</p>
-<p>而在python中，变量是对象的名字，运行时变量可以绑定到任意的对象上。如下所示：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">In [<span class="number">4</span>]: a = <span class="number">123456</span></div><div class="line"></div><div class="line">In [<span class="number">5</span>]: id(a)</div><div class="line">Out[<span class="number">5</span>]: <span class="number">4426596208</span></div><div class="line"></div><div class="line">In [<span class="number">6</span>]: a = <span class="number">1234567</span></div><div class="line"></div><div class="line">In [<span class="number">7</span>]: id(a)</div><div class="line">Out[<span class="number">7</span>]: <span class="number">4426592592</span></div></pre></td></tr></table></figure>
-<p>注意：由于python对int类型实现了<strong>小整数对象池</strong>，不要用<strong>0-255</strong>的整数做实验，不然你得到id会是一样的。</p>
-<p>也就是说，当你循环一个list的时候，每次得到的是不同对象，变量指向了不同的地址：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">In [<span class="number">9</span>]: <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">2222</span>, <span class="number">2223</span>, <span class="number">2224</span>]:</div><div class="line">   ...:     print(id(i))</div><div class="line">   ...:</div><div class="line"><span class="number">4426596208</span></div><div class="line"><span class="number">4426592336</span></div><div class="line"><span class="number">4426596080</span></div></pre></td></tr></table></figure>
-<p>上面这段代码，python为我们创建了3个<code>PyIntObject</code>，<strong>i</strong>只是他们的名字。而在go中，可以认为只有一个object，值变化了3次。</p>
-<p>python中说的<code>赋值就是建立一个对象的引用</code>，是实话。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2096,7 +2099,7 @@ Unicode字符串是一个代码点（code point）序列，代码点取值范围
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">217</span>
+                <span class="site-state-item-count">218</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

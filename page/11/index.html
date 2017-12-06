@@ -286,6 +286,157 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/17/能够关闭（close）一个套接字，为何还使用shutdown/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/17/能够关闭（close）一个套接字，为何还使用shutdown/" itemprop="url">能够关闭（close）一个套接字，为何还使用shutdown</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-17T23:22:17+08:00">
+                2015-03-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li><p>只有一个最后一个活动关闭时，close才释放网络断点。这意味着如果复制一个套接字（如采用dup），要直到关闭了最后一个引用它的文件描述符才会释放这个套接字。而shutdown允许使一个套接字处于不活动状态，和引用它的文件描述符无关</p>
+</li>
+<li><p>有时可以很方便地关闭套接字双向传输中的一个方向。例如，如果想让所通信的进程能够确定数据传输何时结束，可以关闭该套接字的写段，然而通过该套接字读端仍可以继续接受数据</p>
+</li>
+</ol>
+<p><strong>注意</strong>：</p>
+<p>在unix中调用了shutdown后，以shutdown（s, 0）为例，此函数为关闭s的接收端，unix会刷新输入队列，以丢弃应用程序还未读取的所有数据。如果有新数据到达，TCP会进行ACK，然后悄悄地将其丢弃。因为应用程序再也无法接收数据了</p>
+<p>shutdown（s，1）关闭连接的发送端。将套接字标识为无法发送任何额外的数据，后继所有试图对套接字进行的写操作都会出错。将发送缓冲区中所有的数据都发送出去之后，TCP会向其对等实体发送一个FIN，通知它没有其他数据了。这被称为半关闭（half close）</p>
+<p>只有关闭连接的发送端被称为半关闭，它虽然也发送FIN，但此FIN与close的FIN有差别，这个FIN表示的是“我已经完成了数据的传送，因此发送一个FIN到另一端，但我还想接收另一端发来的消息，直到他给我发来文件结束（FIN）</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/16/海量数据处理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1821,187 +1972,6 @@ crontab -e //建立一个新的定时任务
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/孤儿进程与僵尸进程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/12/孤儿进程与僵尸进程/" itemprop="url">孤儿进程与僵尸进程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T13:13:45+08:00">
-                2015-03-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##前言<br>孤儿继承和僵尸进程是APUE里面的一个重要概念，之前看书不仔细，也没有总结，所以这两个概念一直很模糊，只知道是父进程和子进程有一个退了，至于到底是父进程退还是子进程退会产生孤儿进程和僵尸进程，一直是我的一块心病啊。今天有空，来认真总结一下。</p>
-<p>##基本概念</p>
-<p>在unix/linux中，子进程是通过父进程创建的(fork)。子进程的结束和父进程的运行是一个异步过程,即父进程永远无法预测子进程到底什么时候结束。 当一个进程完成它的工作终止之后，它的父进程需要调用wait()或者waitpid()系统调用取得子进程的终止状态。</p>
-<p><strong>孤儿进程</strong>：一个父进程退出，而它的一个或多个子进程还在运行，那么那些子进程将成为孤儿进程。孤儿进程将被init进程(进程号为1)所收养，并由init进程对它们完成状态收集工作。</p>
-<p><strong>僵尸进程</strong>：一个进程使用fork创建子进程，如果子进程退出，而父进程并没有调用wait或waitpid获取子进程的状态信息，那么子进程的进程描述符仍然保存在系统中。这种进程称之为僵死进程。</p>
-<p>我们再来分析一下：</p>
-<p><code>孤儿</code>的意思是什么？被父母抛弃了，或者没有父母。所以孤儿进程就是父进程不在了，留下子进程在继续运行。但孤儿不能自己存在啊，所以总会有好心人收养他，在unix系统里，这个好心人就是init进程，init进程会收养所有的孤儿进程，代替父进程手机子进程的终止状态。</p>
-<p>同理，什么是<code>僵尸</code>？如果你死了，你就有可能成为僵尸。子进程挂了之后，有一个重要的步骤就是父进程应该调用wait或者waitpid来获取它的终止状态，让它入土为安的。但有些父母非常不负责，他没有做。所以子进程不能入土，就只能继续在系统里飘荡，成了僵尸。这不怪他们啊，都是父进程害的！</p>
-<p>##危害</p>
-<p>有的人就说了，那干嘛一定要父进程调用wait和waitpid来回收子进程啊，子进程挂了就让他挂好了，父进程不要回收，让系统自己把回收的事干了。我也是这样想的，可是你知道父母的通病在哪里吗？就是他们对自己的小孩，都有旺盛的控制欲！</p>
-<p>unix提供了一种机制可以保证只要父进程想知道子进程结束时的状态信息， 就可以得到。这种机制就是: </p>
-<blockquote>
-<p>在每个进程退出的时候,内核释放该进程所有的资源,包括打开的文件,占用的内存等。 但是仍然为其保留一定的信息(包括进程号the process ID,退出状态the termination status of the process,运行时间the amount of CPU time taken by the process等)。直到父进程通过wait / waitpid来取时才释放。 </p>
-</blockquote>
-<p>所以就导致了问题，如果进程不调用wait / waitpid的话，那么保留的那段信息就不会释放，其进程号就会一直被占用，但是系统所能使用的进程号是有限的，如果产生大量的僵死进程，将因为没有可用的进程号而导致系统不能产生新的进程. 此即为僵尸进程的危害。</p>
-<p><code>孤儿进程</code>是没有父进程的进程，处理孤儿进程的这个重任落到了init进程身上，init进程就好像是一个民政局，专门负责处理孤儿进程的善后工作。每当出现一个孤儿进程的时候，内核就把孤 儿进程的父进程设置为init，而init进程会循环地wait()它的已经退出的子进程。这样，当一个孤儿进程凄凉地结束了其生命周期的时候，init进程就会代表党和政府出面处理它的一切善后工作。<strong>因此孤儿进程并不会有什么危害</strong>。</p>
-<p>任何一个子进程(init除外)在exit()之后，并非马上就消失掉，而是留下一个称为僵尸进程(Zombie)的数据结构，等待父进程处理。这是每个 子进程在结束时都要经过的阶段。如果子进程在exit()之后，父进程没有来得及处理，这时用ps命令就能看到子进程的状态是“Z”。如果父进程能及时 处理，可能用ps命令就来不及看到子进程的僵尸状态，但这并不等于子进程不经过僵尸状态。  如果父进程在子进程结束之前退出，则子进程将由init接管。init将会以父进程的身份对僵尸状态的子进程进行处理。</p>
-<p>##如何避免产生僵尸进程</p>
-<p>我们知道了僵尸进程产生的原因和危害，那么如何避免产生僵尸进程呢？</p>
-<p>一般，为了防止产生僵尸进程，在fork子进程之后我们都要wait它们；同时，当子进程退出的时候，内核都会给父进程一个SIGCHLD信号，所以我们可以建立一个捕获SIGCHLD信号的信号处理函数，在函数体中调用wait（或waitpid），就可以清理退出的子进程以达到防止僵尸进程的目的。如下代码所示：</p>
-<pre><code>void sig_chld( int signo ) {
-    pid_t pid;
-    int stat;
-    pid = wait(&amp;stat);    
-    printf( &quot;child %d exit\n&quot;, pid );
-    return;
-}
-
-int main() {
-    signal(SIGCHLD,  &amp;sig_chld);
-}
-</code></pre><p>先在main函数中给SIGCHLD信号注册一个信号处理函数（<code>sig_chld</code>），然后在子进程退出的时候，内核递交一个SIGCHLD的时候就会被主进程捕获而进入信号处理函数<code>sig_chld</code>，然后再在<code>sig_chld</code>中调用wait，就可以清理退出的子进程。这样退出的子进程就不会成为僵尸进程。</p>
-<p>但是，这种方法并不是完美的，有时候还是会有<strong>漏网之鱼</strong>，下面是就是一个例子：</p>
-<p>我们假设有一个<code>client/server</code>的程序，对于每一个连接过来的client，server都启动一个新的进程去处理来自这个client的请求。然后我们有一个client进程，在这个进程内，发起了多个到server的请求（假设5个），则server会fork 5个子进程来读取client输入并处理（同时，当客户端关闭套接字的时候，每个子进程都退出）；当我们终止这个client进程的时候 ，内核将自动关闭所有由这个client进程打开的套接字，那么由这个client进程发起的5个连接基本在同一时刻终止。这就引发了5个FIN，每个连接一个。server端接受到这5个FIN的时候，5个子进程基本在同一时刻终止。这就又导致差不多在同一时刻递交5个SIGCHLD信号给父进程，而最终结果大家将会发现，我们没有能够回收所有的5个进程，有僵尸进程产生了。</p>
-<p>wait函数不能处理这种情况的原因是：所有5个信号都在信号处理函数执行之前产生，而信号处理函数只执行一次，因为Unix信号一般是不排队的。 更为严重的是，本问题是不确定的，依赖于客户FIN到达服务器主机的时机，信号处理函数执行的次数并不确定。</p>
-<p>这种情况的正确的解决办法是调用waitpid而不是wait，方法为：<strong>信号处理函数中，在一个循环内调用waitpid，以获取所有已终止子进程的状态。我们必须指定WNOHANG选项，他告知waitpid在有尚未终止的子进程在运行时不要阻塞。（我们不能在循环内调用wait，因为没有办法防止wait在尚有未终止的子进程在运行时阻塞，wait将会阻塞到现有的子进程中第一个终止为止）</strong>。</p>
-<p>##产生了僵尸进程怎么办</p>
-<p>如果系统中出现了僵尸进程，如何打僵尸呢？</p>
-<p><img src="/img/僵尸.png" alt=""></p>
-<p>僵尸进程用kill命令是无法杀掉的，但是我们可以<strong>结果掉僵尸进程的爸爸</strong>，僵尸daddy挂了之后，僵尸进程就成了孤儿进程，会被init程序收养，然后init程序将其回收</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2052,7 +2022,7 @@ int main() {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">217</span>
+                <span class="site-state-item-count">218</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
