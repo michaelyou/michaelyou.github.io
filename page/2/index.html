@@ -2382,22 +2382,14 @@ True
         
           
             <p>这是<a href="http://stackoverflow.com/users/9951/e-satis" target="_blank" rel="external">e-satis同学</a>在stackoverflow上的<a href="http://stackoverflow.com/questions/100003/what-is-a-metaclass-in-python/6581949#6581949" target="_blank" rel="external">回答</a></p>
-<p>##类也是对象<br>在理解<code>metaclass</code>之前（<code>metaclass</code>也被称为<code>元类</code>，这里就不翻译了），你要先掌握python中的class。python中class的概念非常奇特（一切皆对象），这一点借鉴了<code>Smalltalk</code>这门语言。</p>
+<h2 id="类也是对象"><a href="#类也是对象" class="headerlink" title="类也是对象"></a>类也是对象</h2><p>在理解<code>metaclass</code>之前（<code>metaclass</code>也被称为<code>元类</code>，这里就不翻译了），你要先掌握python中的class。python中class的概念非常奇特（一切皆对象），这一点借鉴了<code>Smalltalk</code>这门语言。</p>
 <p>在大部分语言中，class只是用来描述如何产生一个object（翻译成<code>对象</code>，这里也不翻译了）的代码段。这在python中也成立：<br>In most languages, classes are just pieces of code that describe how to produce an object. That’s kinda true in Python too:</p>
-<pre><code>&gt;&gt;&gt; class ObjectCreator(object):
-...       pass
-... 
-
-&gt;&gt;&gt; my_object = ObjectCreator()
-&gt;&gt;&gt; print(my_object)
-&lt;__main__.ObjectCreator object at 0x8974f2c&gt;
-</code></pre><p>但是Python中的class不止如此。class也是object。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="class"><span class="keyword">class</span> <span class="title">ObjectCreator</span><span class="params">(object)</span>:</span></div><div class="line"><span class="meta">... </span>      <span class="keyword">pass</span></div><div class="line"><span class="meta">... </span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>my_object = ObjectCreator()</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(my_object)</div><div class="line">&lt;__main__.ObjectCreator object at <span class="number">0x8974f2c</span>&gt;</div></pre></td></tr></table></figure>
+<p>但是Python中的class不止如此。class也是object。</p>
 <p>对，类也是对象</p>
 <p>只要你使用了class关键字，Python就会创建一个object。下面的代码段在内存中创建了一个名为<code>ObjectCreator</code>的object：</p>
-<pre><code>&gt;&gt;&gt; class ObjectCreator(object):
-...       pass
-... 
-</code></pre><p>这个object（这个class）本身就具有创建object的能力，这就是为什么它是一个类。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="class"><span class="keyword">class</span> <span class="title">ObjectCreator</span><span class="params">(object)</span>:</span></div><div class="line"><span class="meta">... </span>      <span class="keyword">pass</span></div><div class="line">...</div></pre></td></tr></table></figure>
+<p>这个object（这个class）本身就具有创建object的能力，这就是为什么它是一个类。</p>
 <p>但是，它同时也是一个object，所以你可以：</p>
 <ul>
 <li>将它赋值给一个变量</li>
@@ -2406,164 +2398,56 @@ True
 <li>将它作为函数参数进行传递</li>
 </ul>
 <p>e.g.:</p>
-<pre><code>&gt;&gt;&gt; print(ObjectCreator) # you can print a class because it&apos;s an object
-&lt;class &apos;__main__.ObjectCreator&apos;&gt;
-&gt;&gt;&gt; def echo(o):
-...       print(o)
-... 
-&gt;&gt;&gt; echo(ObjectCreator) # you can pass a class as a parameter
-&lt;class &apos;__main__.ObjectCreator&apos;&gt;
-&gt;&gt;&gt; print(hasattr(ObjectCreator, &apos;new_attribute&apos;))
-False
-&gt;&gt;&gt; ObjectCreator.new_attribute = &apos;foo&apos; # you can add attributes to a class
-&gt;&gt;&gt; print(hasattr(ObjectCreator, &apos;new_attribute&apos;))
-True
-&gt;&gt;&gt; print(ObjectCreator.new_attribute)
-foo
-&gt;&gt;&gt; ObjectCreatorMirror = ObjectCreator # you can assign a class to a variable
-&gt;&gt;&gt; print(ObjectCreatorMirror.new_attribute)
-foo
-&gt;&gt;&gt; print(ObjectCreatorMirror())
-&lt;__main__.ObjectCreator object at 0x8997b4c&gt;
-</code></pre><p>##动态创建类<br>因为类即是对象，所以你可以动态地创建它们，就像创建一个普通的object。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(ObjectCreator) <span class="comment"># you can print a class because it's an object</span></div><div class="line">&lt;<span class="class"><span class="keyword">class</span> '<span class="title">__main__</span>.<span class="title">ObjectCreator</span>'&gt;</span></div><div class="line"><span class="class">&gt;&gt;&gt; <span class="title">def</span> <span class="title">echo</span><span class="params">(o)</span>:</span></div><div class="line"><span class="meta">... </span>      print(o)</div><div class="line"><span class="meta">... </span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>echo(ObjectCreator) <span class="comment"># you can pass a class as a parameter</span></div><div class="line">&lt;<span class="class"><span class="keyword">class</span> '<span class="title">__main__</span>.<span class="title">ObjectCreator</span>'&gt;</span></div><div class="line"><span class="class">&gt;&gt;&gt; <span class="title">print</span><span class="params">(hasattr<span class="params">(ObjectCreator, <span class="string">'new_attribute'</span>)</span>)</span></span></div><div class="line"><span class="class"><span class="title">False</span></span></div><div class="line">&gt;&gt;&gt; ObjectCreator.new_attribute = 'foo' # you can add attributes to a class</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(hasattr(ObjectCreator, <span class="string">'new_attribute'</span>))</div><div class="line"><span class="keyword">True</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(ObjectCreator.new_attribute)</div><div class="line">foo</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>ObjectCreatorMirror = ObjectCreator <span class="comment"># you can assign a class to a variable</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(ObjectCreatorMirror.new_attribute)</div><div class="line">foo</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(ObjectCreatorMirror())</div><div class="line">&lt;__main__.ObjectCreator object at <span class="number">0x8997b4c</span>&gt;</div></pre></td></tr></table></figure>
+<h2 id="动态创建类"><a href="#动态创建类" class="headerlink" title="动态创建类"></a>动态创建类</h2><p>因为类即是对象，所以你可以动态地创建它们，就像创建一个普通的object。</p>
 <p>首先，你可以在一个函数中用class关键字来创建一个类。</p>
-<pre><code>&gt;&gt;&gt; def choose_class(name):
-...     if name == &apos;foo&apos;:
-...         class Foo(object):
-...             pass
-...         return Foo # return the class, not an instance
-...     else:
-...         class Bar(object):
-...             pass
-...         return Bar
-...     
-&gt;&gt;&gt; MyClass = choose_class(&apos;foo&apos;) 
-&gt;&gt;&gt; print(MyClass) # the function returns a class, not an instance
-&lt;class &apos;__main__.Foo&apos;&gt;
-&gt;&gt;&gt; print(MyClass()) # you can create an object from this class
-&lt;__main__.Foo object at 0x89c6d4c&gt;
-</code></pre><p>但是这还不够动态，因为你还是需要自己写整个类。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">choose_class</span><span class="params">(name)</span>:</span></div><div class="line"><span class="meta">... </span>    <span class="keyword">if</span> name == <span class="string">'foo'</span>:</div><div class="line"><span class="meta">... </span>        <span class="class"><span class="keyword">class</span> <span class="title">Foo</span><span class="params">(object)</span>:</span></div><div class="line"><span class="meta">... </span>            <span class="keyword">pass</span></div><div class="line"><span class="meta">... </span>        <span class="keyword">return</span> Foo <span class="comment"># return the class, not an instance</span></div><div class="line"><span class="meta">... </span>    <span class="keyword">else</span>:</div><div class="line"><span class="meta">... </span>        <span class="class"><span class="keyword">class</span> <span class="title">Bar</span><span class="params">(object)</span>:</span></div><div class="line"><span class="meta">... </span>            <span class="keyword">pass</span></div><div class="line"><span class="meta">... </span>        <span class="keyword">return</span> Bar</div><div class="line"><span class="meta">... </span>    </div><div class="line"><span class="meta">&gt;&gt;&gt; </span>MyClass = choose_class(<span class="string">'foo'</span>) </div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(MyClass) <span class="comment"># the function returns a class, not an instance</span></div><div class="line">&lt;<span class="class"><span class="keyword">class</span> '<span class="title">__main__</span>.<span class="title">Foo</span>'&gt;</span></div><div class="line"><span class="class">&gt;&gt;&gt; <span class="title">print</span><span class="params">(MyClass<span class="params">()</span>)</span> # <span class="title">you</span> <span class="title">can</span> <span class="title">create</span> <span class="title">an</span> <span class="title">object</span> <span class="title">from</span> <span class="title">this</span> <span class="title">class</span></span></div><div class="line"><span class="class">&lt;<span class="title">__main__</span>.<span class="title">Foo</span> <span class="title">object</span> <span class="title">at</span> 0<span class="title">x89c6d4c</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>但是这还不够动态，因为你还是需要自己写整个类。</p>
 <p>因为类即是对象，它们一定是由什么东西生成的。</p>
 <p>当你使用class关键字，Python会自动创建这个对象。但是就像Python中其他东西一样，Python总会给你提供一种方法来手动操作它。</p>
 <p>还记得type函数吗？这个古老而强大的函数可以告诉我们一个对象的类型是什么：</p>
-<pre><code>&gt;&gt;&gt; print(type(1))
-&lt;type &apos;int&apos;&gt;
-&gt;&gt;&gt; print(type(&quot;1&quot;))
-&lt;type &apos;str&apos;&gt;
-&gt;&gt;&gt; print(type(ObjectCreator))
-&lt;type &apos;type&apos;&gt;
-&gt;&gt;&gt; print(type(ObjectCreator()))
-&lt;class &apos;__main__.ObjectCreator&apos;&gt;
-</code></pre><p>well，type还有一个截然不同的能力，它也能动态创建类。type可以接受一个类的描述作为参数，然后返回一个类。(我知道，同一个函数因为传入的参数不同而表现出完全不同的用法是很傻的。但是这是Python为了保持向后兼容)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(type(<span class="number">1</span>))</div><div class="line">&lt;type <span class="string">'int'</span>&gt;</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(type(<span class="string">"1"</span>))</div><div class="line">&lt;type <span class="string">'str'</span>&gt;</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(type(ObjectCreator))</div><div class="line">&lt;type <span class="string">'type'</span>&gt;</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(type(ObjectCreator()))</div><div class="line">&lt;<span class="class"><span class="keyword">class</span> '<span class="title">__main__</span>.<span class="title">ObjectCreator</span>'&gt;</span></div></pre></td></tr></table></figure>
+<p>well，type还有一个截然不同的能力，它也能动态创建类。type可以接受一个类的描述作为参数，然后返回一个类。(我知道，同一个函数因为传入的参数不同而表现出完全不同的用法是很傻的。但是这是Python为了保持向后兼容)</p>
 <p><code>type</code>这样工作：</p>
 <pre><code>type(name of the class, 
      tuple of the parent class (for inheritance, can be empty), 
      dictionary containing attributes names and values)
 </code></pre><p>e.g.:</p>
-<pre><code>&gt;&gt;&gt; class MyShinyClass(object):
-...       pass
-can be created manually this way:
-
-&gt;&gt;&gt; MyShinyClass = type(&apos;MyShinyClass&apos;, (), {}) # returns a class object
-&gt;&gt;&gt; print(MyShinyClass)
-&lt;class &apos;__main__.MyShinyClass&apos;&gt;
-&gt;&gt;&gt; print(MyShinyClass()) # create an instance with the class
-&lt;__main__.MyShinyClass object at 0x8997cec&gt;
-</code></pre><p>你可能注意到我们用<code>MyShinyClass</code>作为了类的名字，也用它来作为变量接受类的引用。我们可以给他们取不同的名字，但是没有必要将事情复杂化。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="class"><span class="keyword">class</span> <span class="title">MyShinyClass</span><span class="params">(object)</span>:</span></div><div class="line"><span class="meta">... </span>      <span class="keyword">pass</span></div><div class="line">can be created manually this way:</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>MyShinyClass = type(<span class="string">'MyShinyClass'</span>, (), &#123;&#125;) <span class="comment"># returns a class object</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(MyShinyClass)</div><div class="line">&lt;<span class="class"><span class="keyword">class</span> '<span class="title">__main__</span>.<span class="title">MyShinyClass</span>'&gt;</span></div><div class="line"><span class="class">&gt;&gt;&gt; <span class="title">print</span><span class="params">(MyShinyClass<span class="params">()</span>)</span> # <span class="title">create</span> <span class="title">an</span> <span class="title">instance</span> <span class="title">with</span> <span class="title">the</span> <span class="title">class</span></span></div><div class="line"><span class="class">&lt;<span class="title">__main__</span>.<span class="title">MyShinyClass</span> <span class="title">object</span> <span class="title">at</span> 0<span class="title">x8997cec</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>你可能注意到我们用<code>MyShinyClass</code>作为了类的名字，也用它来作为变量接受类的引用。我们可以给他们取不同的名字，但是没有必要将事情复杂化。</p>
 <p><code>type</code>接受一个字典来定义类的属性，所以：</p>
-<pre><code>&gt;&gt;&gt; class Foo(object):
-...       bar = True
-Can be translated to:
-
-&gt;&gt;&gt; Foo = type(&apos;Foo&apos;, (), {&apos;bar&apos;:True})
-And used as a normal class:
-
-&gt;&gt;&gt; print(Foo)
-&lt;class &apos;__main__.Foo&apos;&gt;
-&gt;&gt;&gt; print(Foo.bar)
-True
-&gt;&gt;&gt; f = Foo()
-&gt;&gt;&gt; print(f)
-&lt;__main__.Foo object at 0x8a9b84c&gt;
-&gt;&gt;&gt; print(f.bar)
-True
-</code></pre><p>并且，可以继承它:</p>
-<pre><code>&gt;&gt;&gt;   class FooChild(Foo):
-...         pass
-</code></pre><p>这个也可以写作为:</p>
-<pre><code>&gt;&gt;&gt; FooChild = type(&apos;FooChild&apos;, (Foo,), {})
-&gt;&gt;&gt; print(FooChild)
-&lt;class &apos;__main__.FooChild&apos;&gt;
-&gt;&gt;&gt; print(FooChild.bar) # bar is inherited from Foo
-True
-</code></pre><p>最终你可能会希望为你的类增加方法。只需要定义一个有恰当签名的函数并且作为属性赋值就可以了。</p>
-<pre><code>&gt;&gt;&gt; def echo_bar(self):
-...       print(self.bar)
-... 
-&gt;&gt;&gt; FooChild = type(&apos;FooChild&apos;, (Foo,), {&apos;echo_bar&apos;: echo_bar})
-&gt;&gt;&gt; hasattr(Foo, &apos;echo_bar&apos;)
-False
-&gt;&gt;&gt; hasattr(FooChild, &apos;echo_bar&apos;)
-True
-&gt;&gt;&gt; my_foo = FooChild()
-&gt;&gt;&gt; my_foo.echo_bar()
-True
-</code></pre><p>动态创建了类之后，你能够给类添加更多的方法，就跟给一个正常创建的对象添加方法一样。</p>
-<pre><code>&gt;&gt;&gt; def echo_bar_more(self):
-...       print(&apos;yet another method&apos;)
-... 
-&gt;&gt;&gt; FooChild.echo_bar_more = echo_bar_more
-&gt;&gt;&gt; hasattr(FooChild, &apos;echo_bar_more&apos;)
-True
-</code></pre><p>可以看到：在Python中，类是对象，你可以动态创建类。这些就是当你使用<code>class</code>关键字的时候，Python在幕后做的事。而这些，都是通过metaclass来实现。</p>
-<p>##什么是<code>metaclass</code>(终于开始了)<br>metaclass是创建class的“东西”。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="class"><span class="keyword">class</span> <span class="title">Foo</span><span class="params">(object)</span>:</span></div><div class="line"><span class="meta">... </span>      bar = <span class="keyword">True</span></div><div class="line">Can be translated to:</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>Foo = type(<span class="string">'Foo'</span>, (), &#123;<span class="string">'bar'</span>:<span class="keyword">True</span>&#125;)</div><div class="line">And used <span class="keyword">as</span> a normal <span class="class"><span class="keyword">class</span>:</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(Foo)</div><div class="line">&lt;<span class="class"><span class="keyword">class</span> '<span class="title">__main__</span>.<span class="title">Foo</span>'&gt;</span></div><div class="line"><span class="class">&gt;&gt;&gt; <span class="title">print</span><span class="params">(Foo.bar)</span></span></div><div class="line"><span class="class"><span class="title">True</span></span></div><div class="line">&gt;&gt;&gt; f = Foo()</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(f)</div><div class="line">&lt;__main__.Foo object at <span class="number">0x8a9b84c</span>&gt;</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(f.bar)</div><div class="line"><span class="keyword">True</span></div></pre></td></tr></table></figure>
+<p>并且，可以继承它:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>  <span class="class"><span class="keyword">class</span> <span class="title">FooChild</span><span class="params">(Foo)</span>:</span></div><div class="line">             <span class="keyword">pass</span></div></pre></td></tr></table></figure>
+<p>这个也可以写作为:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>FooChild = type(<span class="string">'FooChild'</span>, (Foo,), &#123;&#125;)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(FooChild)</div><div class="line">&lt;<span class="class"><span class="keyword">class</span> '<span class="title">__main__</span>.<span class="title">FooChild</span>'&gt;</span></div><div class="line"><span class="class">&gt;&gt;&gt; <span class="title">print</span><span class="params">(FooChild.bar)</span> # <span class="title">bar</span> <span class="title">is</span> <span class="title">inherited</span> <span class="title">from</span> <span class="title">Foo</span></span></div><div class="line"><span class="class"><span class="title">True</span></span></div></pre></td></tr></table></figure>
+<p>最终你可能会希望为你的类增加方法。只需要定义一个有恰当签名的函数并且作为属性赋值就可以了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">echo_bar</span><span class="params">(self)</span>:</span></div><div class="line"><span class="meta">... </span>      print(self.bar)</div><div class="line"><span class="meta">... </span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>FooChild = type(<span class="string">'FooChild'</span>, (Foo,), &#123;<span class="string">'echo_bar'</span>: echo_bar&#125;)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>hasattr(Foo, <span class="string">'echo_bar'</span>)</div><div class="line"><span class="keyword">False</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>hasattr(FooChild, <span class="string">'echo_bar'</span>)</div><div class="line"><span class="keyword">True</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>my_foo = FooChild()</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>my_foo.echo_bar()</div><div class="line"><span class="keyword">True</span></div></pre></td></tr></table></figure>
+<p>动态创建了类之后，你能够给类添加更多的方法，就跟给一个正常创建的对象添加方法一样。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">echo_bar_more</span><span class="params">(self)</span>:</span></div><div class="line"><span class="meta">... </span>      print(<span class="string">'yet another method'</span>)</div><div class="line"><span class="meta">... </span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>FooChild.echo_bar_more = echo_bar_more</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>hasattr(FooChild, <span class="string">'echo_bar_more'</span>)</div><div class="line"><span class="keyword">True</span></div></pre></td></tr></table></figure>
+<p>可以看到：在Python中，类是对象，你可以动态创建类。这些就是当你使用<code>class</code>关键字的时候，Python在幕后做的事。而这些，都是通过metaclass来实现。</p>
+<h2 id="什么是metaclass-终于开始了"><a href="#什么是metaclass-终于开始了" class="headerlink" title="什么是metaclass(终于开始了)"></a>什么是<code>metaclass</code>(终于开始了)</h2><p>metaclass是创建class的“东西”。</p>
 <p>你定义class是为了创建对象是吧？但是我们也知道Python中的类也是对象。</p>
 <p>well，metaclass就是用来创建这些对象（类）的。它们是class的class，你可以理解为：</p>
-<pre><code>MyClass = MetaClass()
-MyObject = MyClass()
-</code></pre><p>你已经看到了<code>type</code>让你可以这样做：</p>
-<pre><code>MyClass = type(&apos;MyClass&apos;, (), {})
-</code></pre><p>这是因为<code>type</code>方法本质上就是一个metaclass。type是Python在背后用来创建所有类的metaclass。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">MyClass = MetaClass()</div><div class="line">MyObject = MyClass()</div></pre></td></tr></table></figure>
+<p>你已经看到了<code>type</code>让你可以这样做：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">MyClass = type(<span class="string">'MyClass'</span>, (), &#123;&#125;)</div></pre></td></tr></table></figure>
+<p>这是因为<code>type</code>方法本质上就是一个metaclass。type是Python在背后用来创建所有类的metaclass。</p>
 <p>现在你可能想搞清楚为什么<code>type</code>要全部用小写字母，而不是写成<code>Type</code>?</p>
 <p>我想这是为了要和str、int保持一致。type只是用来创建类对象的类。你可以通过查看<code>__class__</code>属性来验证这一点。在Python中，一切，所有一切都是对象。包括整数，字符串，函数和类，它们都是对象。并且它们都是从一个类创建而来。</p>
-<pre><code>&gt;&gt;&gt; age = 35
-&gt;&gt;&gt; age.__class__
-&lt;type &apos;int&apos;&gt;
-&gt;&gt;&gt; name = &apos;bob&apos;
-&gt;&gt;&gt; name.__class__
-&lt;type &apos;str&apos;&gt;
-&gt;&gt;&gt; def foo(): pass
-&gt;&gt;&gt; foo.__class__
-&lt;type &apos;function&apos;&gt;
-&gt;&gt;&gt; class Bar(object): pass
-&gt;&gt;&gt; b = Bar()
-&gt;&gt;&gt; b.__class__
-&lt;class &apos;__main__.Bar&apos;&gt;
-Now, what is the __class__ of any __class__ ?
-
-&gt;&gt;&gt; age.__class__.__class__
-&lt;type &apos;type&apos;&gt;
-&gt;&gt;&gt; name.__class__.__class__
-&lt;type &apos;type&apos;&gt;
-&gt;&gt;&gt; foo.__class__.__class__
-&lt;type &apos;type&apos;&gt;
-&gt;&gt;&gt; b.__class__.__class__
-&lt;type &apos;type&apos;&gt;
-</code></pre><p>所以，一个metaclass仅仅是创建类对象的东西。如果你愿意，你可以称呼它为<code>类工厂</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>age = <span class="number">35</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>age.__class__</div><div class="line">&lt;type <span class="string">'int'</span>&gt;</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>name = <span class="string">'bob'</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>name.__class__</div><div class="line">&lt;type <span class="string">'str'</span>&gt;</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">()</span>:</span> <span class="keyword">pass</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>foo.__class__</div><div class="line">&lt;type <span class="string">'function'</span>&gt;</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="class"><span class="keyword">class</span> <span class="title">Bar</span><span class="params">(object)</span>:</span> <span class="keyword">pass</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>b = Bar()</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>b.__class__</div><div class="line">&lt;<span class="class"><span class="keyword">class</span> '<span class="title">__main__</span>.<span class="title">Bar</span>'&gt;</span></div><div class="line">Now, what is the __class__ of any __class__ ?</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>age.__class__.__class__</div><div class="line">&lt;type <span class="string">'type'</span>&gt;</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>name.__class__.__class__</div><div class="line">&lt;type <span class="string">'type'</span>&gt;</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>foo.__class__.__class__</div><div class="line">&lt;type <span class="string">'type'</span>&gt;</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>b.__class__.__class__</div><div class="line">&lt;type <span class="string">'type'</span>&gt;</div></pre></td></tr></table></figure>
+<p>所以，一个metaclass仅仅是创建类对象的东西。如果你愿意，你可以称呼它为<code>类工厂</code>。</p>
 <p><code>type</code>是Python使用的内置的metaclass，当然，你也可以创建自己的metaclass。</p>
-<p>##<strong>metaclass</strong>属性<br>当你定义一个类的时候，你可以添加一个<code>__metaclass__</code>属性。</p>
-<pre><code>class Foo(object):
-  __metaclass__ = something...
-  [...]
-</code></pre><p>如果你这样做了，Python将会使用这个metaclass去创建Foo类。</p>
+<h2 id="metaclass属性"><a href="#metaclass属性" class="headerlink" title="metaclass属性"></a><strong>metaclass</strong>属性</h2><p>当你定义一个类的时候，你可以添加一个<code>__metaclass__</code>属性。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span><span class="params">(object)</span>:</span></div><div class="line">  __metaclass__ = something...</div><div class="line">  [...]</div></pre></td></tr></table></figure>
+<p>如果你这样做了，Python将会使用这个metaclass去创建Foo类。</p>
 <p>注意了，这里面有一些技巧。</p>
 <p>你首先写下了<code>class Foo(object)</code>，但是这个时候类对象Foo还没有被在内存中创建。</p>
 <p>Python将会在类的定义中寻找<code>__metaclass__</code>属性。如果找到了，Python就会用它来创建类对象Foo。如果没有，那它就用<code>type</code>来创建这个类。</p>
 <p>请把上面一段多读几遍。</p>
 <p>当你写下：</p>
-<pre><code>class Foo(Bar):
-  pass
-</code></pre><p>Python做了下面的工作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span><span class="params">(Bar)</span>:</span></div><div class="line">  <span class="keyword">pass</span></div></pre></td></tr></table></figure>
+<p>Python做了下面的工作：</p>
 <p>Foo中有<code>__metaclass__</code>属性吗？</p>
 <p>如果有，使用<code>__metaclass__</code>的值在内存中创建一个类对象（我说的是类对象，请紧跟我的思路），取名为Foo。</p>
 <p>如果Python找不到<code>__metaclass__</code>，他会在MODULE层面继续找<code>__metaclass__</code>（所谓MODULE层面，可以理解我类定义的文件内，把这个文件看成一个MODULE），并且做和前面相同的操作（但这只适用于没有继承的类，也就是旧式类）。</p>
@@ -2572,114 +2456,21 @@ Now, what is the __class__ of any __class__ ?
 <p>现在最大的问题是，你能给<code>__metaclass__</code>赋什么值？</p>
 <p>答案是：可以创建一个类的值。</p>
 <p>那什么可以创建一个类呢？<code>type</code>或者它的子类，或者任意用到了它的东西。</p>
-<p>##自定义 metaclass<br>metaclass的主要目的就是在类创建的时候，动态地修改它。</p>
+<h2 id="自定义-metaclass"><a href="#自定义-metaclass" class="headerlink" title="自定义 metaclass"></a>自定义 metaclass</h2><p>metaclass的主要目的就是在类创建的时候，动态地修改它。</p>
 <p>通常你会为API做这些工作，因为你想创建符合当前上下文的类。想象一个很傻的例子，你想让你的模块内所有的类的属性都大写。有好几种方法能达到这个需求，其中一种就是在MODULE层面设置<code>__metaclass__</code>。</p>
 <p>通过这种方法，所有这个模块内的类都会用这个metaclass来创建，我们只需要告诉这个metaclass来将所有的属性都转换成大写。</p>
 <p>幸运的是，<code>__metaclass__</code>可以是任意可调用的东西，它并不需要是一个普通的类（我知道，某些名字里带有‘class’的东西并不需要是一个class，请理解这一点，这很有帮助）。所以我们用一个函数作为一个简单的例子开始。</p>
-<pre><code># the metaclass will automatically get passed the same argument
-# that you usually pass to `type`
-def upper_attr(future_class_name, future_class_parents, future_class_attr):
-  &quot;&quot;&quot;
-    Return a class object, with the list of its attribute turned 
-    into uppercase.
-  &quot;&quot;&quot;
-
-  # pick up any attribute that doesn&apos;t start with &apos;__&apos; and uppercase it
-  uppercase_attr = {}
-  for name, val in future_class_attr.items():
-      if not name.startswith(&apos;__&apos;):
-          uppercase_attr[name.upper()] = val
-      else:
-          uppercase_attr[name] = val
-
-  # let `type` do the class creation
-  return type(future_class_name, future_class_parents, uppercase_attr)
-
-__metaclass__ = upper_attr # this will affect all classes in the module
-
-class Foo(): # global __metaclass__ won&apos;t work with &quot;object&quot; though
-  # but we can define __metaclass__ here instead to affect only this class
-  # and this will work with &quot;object&quot; children
-  bar = &apos;bip&apos;
-
-print(hasattr(Foo, &apos;bar&apos;))
-# Out: False
-print(hasattr(Foo, &apos;BAR&apos;))
-# Out: True
-
-f = Foo()
-print(f.BAR)
-# Out: &apos;bip&apos;
-</code></pre><p>现在，我们用一个真正的类作为metaclass来做相同的事情：</p>
-<pre><code># remember that `type` is actually a class like `str` and `int`
-# so you can inherit from it
-class UpperAttrMetaclass(type): 
-    # __new__ is the method called before __init__
-    # it&apos;s the method that creates the object and returns it
-    # while __init__ just initializes the object passed as parameter
-    # you rarely use __new__, except when you want to control how the object
-    # is created.
-    # here the created object is the class, and we want to customize it
-    # so we override __new__
-    # you can do some stuff in __init__ too if you wish
-    # some advanced use involves overriding __call__ as well, but we won&apos;t
-    # see this
-    def __new__(upperattr_metaclass, future_class_name, 
-                future_class_parents, future_class_attr):
-
-        uppercase_attr = {}
-        for name, val in future_class_attr.items():
-            if not name.startswith(&apos;__&apos;):
-                uppercase_attr[name.upper()] = val
-            else:
-                uppercase_attr[name] = val
-
-        return type(future_class_name, future_class_parents, uppercase_attr)
-</code></pre><p>但是，这种写法并不<code>OOP</code>（<code>Object-oriented programming</code>，面向对象编程）,我们直接调用了<code>type</code>，并且我们没有覆盖或者调用父类的<code>__new__</code>方法，让我们这么做：</p>
-<pre><code>class UpperAttrMetaclass(type): 
-
-    def __new__(upperattr_metaclass, future_class_name, 
-                future_class_parents, future_class_attr):
-
-        uppercase_attr = {}
-        for name, val in future_class_attr.items():
-            if not name.startswith(&apos;__&apos;):
-                uppercase_attr[name.upper()] = val
-            else:
-                uppercase_attr[name] = val
-
-        # reuse the type.__new__ method
-        # this is basic OOP, nothing magic in there
-        return type.__new__(upperattr_metaclass, future_class_name, 
-                            future_class_parents, uppercase_attr)
-</code></pre><p>你可能已经注意到了有个额外的参数<code>upperattr_metaclass</code>，这并没有什么特别的。<code>__new__</code>方法的第一个参数总是表示当前的实例，就像在普通的类方法中的self参数一样。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># the metaclass will automatically get passed the same argument</span></div><div class="line"><span class="comment"># that you usually pass to `type`</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">upper_attr</span><span class="params">(future_class_name, future_class_parents, future_class_attr)</span>:</span></div><div class="line">  <span class="string">"""</span></div><div class="line"><span class="string">    Return a class object, with the list of its attribute turned </span></div><div class="line"><span class="string">    into uppercase.</span></div><div class="line"><span class="string">  """</span></div><div class="line"></div><div class="line">  <span class="comment"># pick up any attribute that doesn't start with '__' and uppercase it</span></div><div class="line">  uppercase_attr = &#123;&#125;</div><div class="line">  <span class="keyword">for</span> name, val <span class="keyword">in</span> future_class_attr.items():</div><div class="line">      <span class="keyword">if</span> <span class="keyword">not</span> name.startswith(<span class="string">'__'</span>):</div><div class="line">          uppercase_attr[name.upper()] = val</div><div class="line">      <span class="keyword">else</span>:</div><div class="line">          uppercase_attr[name] = val</div><div class="line"></div><div class="line">  <span class="comment"># let `type` do the class creation</span></div><div class="line">  <span class="keyword">return</span> type(future_class_name, future_class_parents, uppercase_attr)</div><div class="line"></div><div class="line">__metaclass__ = upper_attr <span class="comment"># this will affect all classes in the module</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span><span class="params">()</span>:</span> <span class="comment"># global __metaclass__ won't work with "object" though</span></div><div class="line">  <span class="comment"># but we can define __metaclass__ here instead to affect only this class</span></div><div class="line">  <span class="comment"># and this will work with "object" children</span></div><div class="line">  bar = <span class="string">'bip'</span></div><div class="line"></div><div class="line">print(hasattr(Foo, <span class="string">'bar'</span>))</div><div class="line"><span class="comment"># Out: False</span></div><div class="line">print(hasattr(Foo, <span class="string">'BAR'</span>))</div><div class="line"><span class="comment"># Out: True</span></div><div class="line"></div><div class="line">f = Foo()</div><div class="line">print(f.BAR)</div><div class="line"><span class="comment"># Out: 'bip'</span></div></pre></td></tr></table></figure>
+<p>现在，我们用一个真正的类作为metaclass来做相同的事情：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># remember that `type` is actually a class like `str` and `int`</span></div><div class="line"><span class="comment"># so you can inherit from it</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">UpperAttrMetaclass</span><span class="params">(type)</span>:</span> </div><div class="line">    <span class="comment"># __new__ is the method called before __init__</span></div><div class="line">    <span class="comment"># it's the method that creates the object and returns it</span></div><div class="line">    <span class="comment"># while __init__ just initializes the object passed as parameter</span></div><div class="line">    <span class="comment"># you rarely use __new__, except when you want to control how the object</span></div><div class="line">    <span class="comment"># is created.</span></div><div class="line">    <span class="comment"># here the created object is the class, and we want to customize it</span></div><div class="line">    <span class="comment"># so we override __new__</span></div><div class="line">    <span class="comment"># you can do some stuff in __init__ too if you wish</span></div><div class="line">    <span class="comment"># some advanced use involves overriding __call__ as well, but we won't</span></div><div class="line">    <span class="comment"># see this</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(upperattr_metaclass, future_class_name, </span></span></div><div class="line"><span class="function"><span class="params">                future_class_parents, future_class_attr)</span>:</span></div><div class="line"></div><div class="line">        uppercase_attr = &#123;&#125;</div><div class="line">        <span class="keyword">for</span> name, val <span class="keyword">in</span> future_class_attr.items():</div><div class="line">            <span class="keyword">if</span> <span class="keyword">not</span> name.startswith(<span class="string">'__'</span>):</div><div class="line">                uppercase_attr[name.upper()] = val</div><div class="line">            <span class="keyword">else</span>:</div><div class="line">                uppercase_attr[name] = val</div><div class="line"></div><div class="line">        <span class="keyword">return</span> type(future_class_name, future_class_parents, uppercase_attr)</div></pre></td></tr></table></figure>
+<p>但是，这种写法并不<code>OOP</code>（<code>Object-oriented programming</code>，面向对象编程）,我们直接调用了<code>type</code>，并且我们没有覆盖或者调用父类的<code>__new__</code>方法，让我们这么做：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">UpperAttrMetaclass</span><span class="params">(type)</span>:</span> </div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(upperattr_metaclass, future_class_name, </span></span></div><div class="line"><span class="function"><span class="params">                future_class_parents, future_class_attr)</span>:</span></div><div class="line"></div><div class="line">        uppercase_attr = &#123;&#125;</div><div class="line">        <span class="keyword">for</span> name, val <span class="keyword">in</span> future_class_attr.items():</div><div class="line">            <span class="keyword">if</span> <span class="keyword">not</span> name.startswith(<span class="string">'__'</span>):</div><div class="line">                uppercase_attr[name.upper()] = val</div><div class="line">            <span class="keyword">else</span>:</div><div class="line">                uppercase_attr[name] = val</div><div class="line"></div><div class="line">        <span class="comment"># reuse the type.__new__ method</span></div><div class="line">        <span class="comment"># this is basic OOP, nothing magic in there</span></div><div class="line">        <span class="keyword">return</span> type.__new__(upperattr_metaclass, future_class_name, </div><div class="line">                            future_class_parents, uppercase_attr)</div></pre></td></tr></table></figure>
+<p>你可能已经注意到了有个额外的参数<code>upperattr_metaclass</code>，这并没有什么特别的。<code>__new__</code>方法的第一个参数总是表示当前的实例，就像在普通的类方法中的self参数一样。</p>
 <p>当然了，为了清晰起见，这里的名字我起的比较长。但是就像self一样，所有的参数都有它们约定俗成的名称。因此，在真实的产品代码中一个元类应该是像这样的：                         </p>
-<pre><code>class UpperAttrMetaclass(type): 
-
-    def __new__(cls, clsname, bases, dct):
-
-        uppercase_attr = {}
-        for name, val in dct.items():
-            if not name.startswith(&apos;__&apos;):
-                uppercase_attr[name.upper()] = val
-            else:
-                uppercase_attr[name] = val
-
-        return type.__new__(cls, clsname, bases, uppercase_attr)
-</code></pre><p>我们还可以使用<code>super</code>让它更清晰一点，这会<code>ease inheritance</code>（因为你可以拥有metaclass，从metaclass继承，从type继承）</p>
-<pre><code>class UpperAttrMetaclass(type): 
-
-    def __new__(cls, clsname, bases, dct):
-
-        uppercase_attr = {}
-        for name, val in dct.items():
-            if not name.startswith(&apos;__&apos;):
-                uppercase_attr[name.upper()] = val
-            else:
-                uppercase_attr[name] = val
-
-        return super(UpperAttrMetaclass, cls).__new__(cls, clsname, bases, uppercase_attr)
-</code></pre><p>就是这样，除此之外，对于metaclass真的没什么可说的了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">UpperAttrMetaclass</span><span class="params">(type)</span>:</span> </div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, clsname, bases, dct)</span>:</span></div><div class="line"></div><div class="line">        uppercase_attr = &#123;&#125;</div><div class="line">        <span class="keyword">for</span> name, val <span class="keyword">in</span> dct.items():</div><div class="line">            <span class="keyword">if</span> <span class="keyword">not</span> name.startswith(<span class="string">'__'</span>):</div><div class="line">                uppercase_attr[name.upper()] = val</div><div class="line">            <span class="keyword">else</span>:</div><div class="line">                uppercase_attr[name] = val</div><div class="line"></div><div class="line">        <span class="keyword">return</span> type.__new__(cls, clsname, bases, uppercase_attr)</div></pre></td></tr></table></figure>
+<p>我们还可以使用<code>super</code>让它更清晰一点，这会<code>ease inheritance</code>（因为你可以拥有metaclass，从metaclass继承，从type继承）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">UpperAttrMetaclass</span><span class="params">(type)</span>:</span> </div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, clsname, bases, dct)</span>:</span></div><div class="line"></div><div class="line">        uppercase_attr = &#123;&#125;</div><div class="line">        <span class="keyword">for</span> name, val <span class="keyword">in</span> dct.items():</div><div class="line">            <span class="keyword">if</span> <span class="keyword">not</span> name.startswith(<span class="string">'__'</span>):</div><div class="line">                uppercase_attr[name.upper()] = val</div><div class="line">            <span class="keyword">else</span>:</div><div class="line">                uppercase_attr[name] = val</div><div class="line"></div><div class="line">        <span class="keyword">return</span> super(UpperAttrMetaclass, cls).__new__(cls, clsname, bases, uppercase_attr)</div></pre></td></tr></table></figure>
+<p>就是这样，除此之外，对于metaclass真的没什么可说的了。</p>
 <p>使用了metaclass的代码看起来复杂的原因并不是因为metaclass本身，而是因为你通常会用metaclass做一些晦涩的事情，依赖于自省、控制继承，和像<code>__dict__</code>这样的变量等。</p>
 <p>诚然，metaclass用来搞<code>黑魔法</code>非常合适，因而会搞出来复杂的东西。但是就metaclass本身而言，他们非常简单：</p>
 <ul>
@@ -2702,19 +2493,14 @@ class UpperAttrMetaclass(type):
 <p>“元就是深 度的魔法，99%的用户应该根本不必为此操心。如果你想搞清楚究竟是否需要用到元类，那么你就不需要它。那些实际用到元类的人都非常清楚地知道他们需要做什么，而且根本不需要解释为什么要用元类。”  —— Python界的领袖 Tim Peters</p>
 </blockquote>
 <p>metaclass最多的应用场景是创建API。一个典型的例子是Django的ORM系统。它允许你像下面一样定义一些东西：</p>
-<pre><code>class Person(models.Model):
-  name = models.CharField(max_length=30)
-  age = models.IntegerField()
-</code></pre><p>但是如果你这样做的话：</p>
-<pre><code>guy = Person(name=&apos;bob&apos;, age=&apos;35&apos;)
-print(guy.age)
-</code></pre><p>它不会返回一个<code>IntegerField</code>对象，而是返回了一个整数，甚至可以从数据库里取出数据。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span><span class="params">(models.Model)</span>:</span></div><div class="line">  name = models.CharField(max_length=<span class="number">30</span>)</div><div class="line">  age = models.IntegerField()</div></pre></td></tr></table></figure>
+<p>但是如果你这样做的话：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">guy = Person(name=<span class="string">'bob'</span>, age=<span class="string">'35'</span>)</div><div class="line">print(guy.age)</div></pre></td></tr></table></figure>
+<p>它不会返回一个<code>IntegerField</code>对象，而是返回了一个整数，甚至可以从数据库里取出数据。</p>
 <p>这个可能是因为<code>models.Model</code>定义了<code>__metaclass__</code>，它用了一些魔法来将你刚刚定义的简单的<code>Person</code>类转换成对数据库的一个复杂的hook。Django通过暴露一个使用metaclass的API让这些复杂的东西简化，通过这个API重新创建代码，在背后完成真正的工作。</p>
 <p>##结语<br>首先，你要知道类其实是能够创建出类实例的对象。事实上，类本身也是实例，他们是metaclass的实例。</p>
-<pre><code>&gt;&gt;&gt; class Foo(object): pass
-&gt;&gt;&gt; id(Foo)
-142630324
-</code></pre><p>在Python中，一切皆对象，它们不是类的实例就是metaclass的实例。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="class"><span class="keyword">class</span> <span class="title">Foo</span><span class="params">(object)</span>:</span> <span class="keyword">pass</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>id(Foo)</div><div class="line"><span class="number">142630324</span></div></pre></td></tr></table></figure>
+<p>在Python中，一切皆对象，它们不是类的实例就是metaclass的实例。</p>
 <p><strong>除了<code>type</code></strong></p>
 <p>type实际上是它自己的metaclass。在纯Python环境中这是不可能做到的（你不能创建一个类，metaclass是这个类自身），这是通过在实现层面通过一些手段做到的。</p>
 <p>其次，metaclass很复杂。对于一些非常简单的类的更改，你并不需要使用metaclass。你可以用下面两个不同的技术来修改类</p>
@@ -2726,9 +2512,8 @@ print(guy.age)
 <p>##The Metaclass Hook in Python 3</p>
 <p><a href="http://python-3-patterns-idioms-test.readthedocs.io/en/latest/Metaprogramming.html#the-metaclass-hook-in-python-3" target="_blank" rel="external">metaclass在python3中语法有了变化</a></p>
 <p>Python3改变了metaclass的语法。你仍然可以定义<code>__metaclass</code>属性，但是Python会忽略它。取而代之的是，你可以在基类列表中使用一个关键字参数：</p>
-<pre><code>class Simple1(object, metaclass = SimpleMeta1):
-    ...
-</code></pre><p>这意味着在Python3中，直接将<code>__metaclass__</code>定义成一个类或者一个方法都不再可行。所有的metaclass都必须被定义成单独的类。这种方法也有好处，它让metaclass更具有一致性，当然也更易读和理解。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Simple1</span><span class="params">(object, metaclass = SimpleMeta1)</span>:</span></div><div class="line">    ...</div></pre></td></tr></table></figure>
+<p>这意味着在Python3中，直接将<code>__metaclass__</code>定义成一个类或者一个方法都不再可行。所有的metaclass都必须被定义成单独的类。这种方法也有好处，它让metaclass更具有一致性，当然也更易读和理解。</p>
 
           
         
