@@ -286,396 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/17/能够关闭（close）一个套接字，为何还使用shutdown/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/17/能够关闭（close）一个套接字，为何还使用shutdown/" itemprop="url">能够关闭（close）一个套接字，为何还使用shutdown</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-17T23:22:17+08:00">
-                2015-03-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
-                    <span itemprop="name">unix网络编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ol>
-<li><p>只有一个最后一个活动关闭时，close才释放网络断点。这意味着如果复制一个套接字（如采用dup），要直到关闭了最后一个引用它的文件描述符才会释放这个套接字。而shutdown允许使一个套接字处于不活动状态，和引用它的文件描述符无关</p>
-</li>
-<li><p>有时可以很方便地关闭套接字双向传输中的一个方向。例如，如果想让所通信的进程能够确定数据传输何时结束，可以关闭该套接字的写段，然而通过该套接字读端仍可以继续接受数据</p>
-</li>
-</ol>
-<p><strong>注意</strong>：</p>
-<p>在unix中调用了shutdown后，以shutdown（s, 0）为例，此函数为关闭s的接收端，unix会刷新输入队列，以丢弃应用程序还未读取的所有数据。如果有新数据到达，TCP会进行ACK，然后悄悄地将其丢弃。因为应用程序再也无法接收数据了</p>
-<p>shutdown（s，1）关闭连接的发送端。将套接字标识为无法发送任何额外的数据，后继所有试图对套接字进行的写操作都会出错。将发送缓冲区中所有的数据都发送出去之后，TCP会向其对等实体发送一个FIN，通知它没有其他数据了。这被称为半关闭（half close）</p>
-<p>只有关闭连接的发送端被称为半关闭，它虽然也发送FIN，但此FIN与close的FIN有差别，这个FIN表示的是“我已经完成了数据的传送，因此发送一个FIN到另一端，但我还想接收另一端发来的消息，直到他给我发来文件结束（FIN）</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/16/海量数据处理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/16/海量数据处理/" itemprop="url">海量数据处理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-16T17:04:51+08:00">
-                2015-03-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>转载自<a href="http://blog.csdn.net/v_july_v/article/details/6685962" target="_blank" rel="external">这里</a></p>
-<p>##海量日志数据，提取出某日访问百度次数最多的那个IP。</p>
-<p>算法思想：分而治之+Hash</p>
-<ol>
-<li>IP地址最多有2^32=4G种取值情况，所以不能完全加载到内存中处理； </li>
-<li>可以考虑采用“分而治之”的思想，按照IP地址的Hash(IP)%1024值，把海量IP日志分别存储到1024个小文件中。这样，每个小文件最多包含4MB个IP地址； </li>
-<li>对于每一个小文件，可以构建一个IP为key，出现次数为value的Hash map，同时记录当前出现次数最多的那个IP地址；</li>
-<li>可以得到1024个小文件中的出现次数最多的IP，再依据常规的排序算法得到总体上出现次数最多的IP；</li>
-</ol>
-<p>##给定a、b两个文件，各存放50亿个url，每个url各占64字节，内存限制是4G，让你找出a、b文件共同的url？</p>
-<p><strong>方法</strong>：可以估计每个文件安的大小为5G×64=320G，远远大于内存限制的4G。所以不可能将其完全加载到内存中处理。考虑采取分而治之的方法。</p>
-<ol>
-<li>遍历文件a，对每个url求取<code>hash(url)%1000</code>，然后根据所取得的值将url分别存储到1000个小文件中(每个小文件存放的是经过<code>hash(url)%1000</code>计算后结果相同的url)，记为<code>a1a2a3...a999</code>。这样每个小文件的大约为300M。</li>
-</ol>
-<ul>
-<li><p>遍历文件b，采取和a相同的方式将url分别存储到1000小文件中，记为<code>b1b2b3...b999</code>。这样处理后，所有可能相同的url都在对应的小文件中，<code>a1-&gt;b1，a2-&gt;b2，...，a999-&gt;b999</code>，不对应的小文件不可能有相同的url(相同的url的<code>hash(url)%1000</code>的值也必然相等)。然后我们只要求出1000对小文件中相同的url即可。</p>
-</li>
-<li><p>求每对小文件中相同的url时，可以把其中一个小文件的url存储到<code>hash_set</code>中。然后遍历另一个小文件的每个url，看其是否在刚才构建的<code>hash_set</code>中，如果是，那么就是共同的url，存到文件里面就可以了。</p>
-</li>
-</ul>
-<p>注意点：</p>
-<ol>
-<li>hash后要判断每个文件大小，如果hash分的不均衡有文件较大，还应继续hash分文件，换个hash算法第二次再分较大的文件，一直分到没有较大的文件为止。这样文件标号可以用A1-2表示（第一次hash编号为1，文件较大所以参加第二次hash，编号为2）</li>
-<li>由于1存在，第一次hash如果有大文件，不能用直接set的方法。建议对每个文件都先用字符串自然顺序排序，然后具有相同hash编号的（如都是1-3，而不能a编号是1，b编号是1-1和1-2），可以直接从头到尾比较一遍。对于层级不一致的，如a1，b有1-1，1-2-1，1-2-2，层级浅的要和层级深的每个文件都比较一次，才能确认每个相同的url。</li>
-</ol>
-<p>##有10个文件，每个文件1G，每个文件的每一行存放的都是用户的query，每个文件的query都可能重复。要求你按照query的频度排序。</p>
-<p>方案1：</p>
-<ol>
-<li>顺序读取10个文件，按照<code>hash(query)%10</code>的结果将query写入到另外10个文件中。这样新生成的文件每个的大小大约也1G（假设hash函数是随机的）。</li>
-</ol>
-<ul>
-<li>找一台内存在2G左右的机器，依次对1中生成的10个文件用<code>hash_map(query, query_count)</code>来统计每个query出现的次数。利用快速/堆/归并排序按照出现次数进行排序。将排序好的<code>query</code>和对应的<code>query_cout</code>输出到文件中。这样得到了10个排好序的文件。</li>
-<li>对这10个文件进行归并排序（内排序与外排序相结合）。</li>
-</ul>
-<p>方案2：</p>
-<p>一般query的总量是有限的，只是重复的次数比较多而已，可能对于所有的query，一次性就可以加入到内存了。这样，我们就可以采用trie树/hash_map等直接来统计每个query出现的次数，然后按出现次数做快速/堆/归并排序就可以了</p>
-<p>##寻找热门查询：</p>
-<p>搜索引擎会通过日志文件把用户每次检索使用的所有检索串都记录下来，每个查询串的长度为1-255字节。假设目前有一千万个记录，这些查询串的重复读比较高，虽然总数是1千万，但是如果去除重复和，不超过3百万个。一个查询串的重复度越高，说明查询它的用户越多，也就越热门。请你统计最热门的10个查询串，要求使用的内存不能超过1G。</p>
-<ol>
-<li>先对这批海量数据预处理，在O（N）的时间内用Hash表完成统计；</li>
-<li>借助堆这个数据结构，找出Top K，时间复杂度为<code>N&#39;*logK</code>。即，借助堆结构，我们可以在log量级的时间内查找和调整/移动。因此，维护一个K(该题目中是10)大小的小根堆，然后遍历300万的Query，分别和根元素进行对比所以，我们最终的时间复杂度是：<code>O（N） + N&#39;*O（logK）</code>，（N为1000万，N’为300万）。</li>
-</ol>
-<p>##有一个1G大小的一个文件，里面每一行是一个词，词的大小不超过16字节，内存限制大小是1M。返回频数最高的100个词。</p>
-<p>方案1：</p>
-<ol>
-<li>顺序读文件中，对于每个词x，取<code>hash(x)%5000</code>，然后按照该值存到5000个小文件中。这样每个文件大概是200k左右。如果其中的有的文件超过了1M大小，还可以按照类似的方法继续往下分，直到分解得到的小文件的大小都不超过1M。</li>
-</ol>
-<ul>
-<li>对每个小文件，统计每个文件中出现的词以及相应的频率（可以采用trie树/hash_map等），并取出出现频率最大的100个词（可以用含100个结点的最小堆），并把100词及相应的频率存入文件，这样又得到了5000个文件。</li>
-<li>把这5000个文件进行归并（类似于归并排序）排序。</li>
-</ul>
-<p>##在2.5亿个整数中找出不重复的整数，内存不足以容纳这2.5亿个整数。</p>
-<p><strong>方案1</strong>：采用2-Bitmap（每个数分配2bit，00表示不存在，01表示出现一次，10表示多次，11无意义）进行，共需内存2^32*2bit=1GB内存，还可以接受。然后扫描这2.5亿个整数，查看Bitmap中相对应位，如果是00变01，01变10，10保持不变。所描完事后，查看bitmap，把对应位是01的整数输出即可。</p>
-<p><strong>方案2</strong>：也可采用上题类似的方法，进行划分小文件的方法。然后在小文件中找出不重复的整数，并排序。然后再进行归并，注意去除重复的元素。</p>
-<p>##腾讯面试题：给40亿个不重复的unsigned int的整数，没排过序的，然后再给一个数，如何快速判断这个数是否在那40亿个数当中？</p>
-<p><strong>方案1</strong>：申请512M(<code>512*1024*1024*8 = 40亿bit</code>)的内存，一个bit位代表一个unsigned int值。读入40亿个数，设置相应的bit位，读入要查询的数，查看相应bit位是否为1，为1表示存在，为0表示不存在。</p>
-<p><strong>方案2</strong>：这个问题在《编程珠玑》里有很好的描述，大家可以参考下面的思路，探讨一下：</p>
-<p>因为2^32为40亿多，所以给定一个数可能在，也可能不在其中；<br>这里我们把40亿个数中的每一个用32位的二进制来表示<br>假设这40亿个数开始放在一个文件中。</p>
-<p>然后将这40亿个数分成两类:</p>
-<ol>
-<li>最高位为0</li>
-<li>最高位为1</li>
-</ol>
-<p>并将这两类分别写入到两个文件中，其中一个文件中数的个数&lt;=20亿，而另一个&gt;=20亿（这相当于折半了）；与要查找的数的最高位比较并接着进入相应的文件再查找</p>
-<p>再然后把这个文件为又分成两类:</p>
-<ol>
-<li>次最高位为0</li>
-<li>次最高位为1</li>
-</ol>
-<p>并将这两类分别写入到两个文件中，其中一个文件中数的个数&lt;=10亿，而另一个&gt;=10亿（这相当于折半了）；</p>
-<p>与要查找的数的次最高位比较并接着进入相应的文件再查找。</p>
-<p>…….</p>
-<p>以此类推，就可以找到了,而且时间复杂度为O(logn)，方案2完。</p>
-<p>附：这里，再简单介绍下，位图方法：</p>
-<blockquote>
-<p>使用位图法判断整形数组是否存在重复<br>判断集合中存在重复是常见编程任务之一，当集合中数据量比较大时我们通常希望少进行几次扫描，这时双重循环法就不可取了。</p>
-<p>位图法比较适合于这种情况，它的做法是按照集合中最大元素max创建一个长度为max+1的新数组，然后再次扫描原数组，遇到几就给新数组的第几位置上1，如遇到5就给新数组的第六个元素置1，这样下次再遇到5想置位时发现新数组的第六个元素已经是1了，这说明这次的数据肯定和以前的数据存在着重复。这种给新数组初始化时置零其后置一的做法类似于位图的处理方法故称位图法。它的运算次数最坏的情况为2N。如果已知数组的最大值即能事先给新数组定长的话效率还能提高一倍。</p>
-</blockquote>
-<p>##海量数据分布在100台电脑中，想个办法高效统计出这批数据的TOP10。</p>
-<p>方案1：</p>
-<ol>
-<li>在每台电脑上求出TOP10，可以采用包含10个元素的堆完成（TOP10小，用最大堆，TOP10大，用最小堆）。比如求TOP10大，我们首先取前10个元素调整成最小堆，如果发现，然后扫描后面的数据，并与堆顶元素比较，如果比堆顶元素大，那么用该元素替换堆顶，然后再调整为最小堆。最后堆中的元素就是TOP10大。</li>
-</ol>
-<ul>
-<li>求出每台电脑上的TOP10后，然后把这100台电脑上的TOP10组合起来，共1000个数据，再利用上面类似的方法求出TOP10就可以了。</li>
-</ul>
-<p>##怎么在海量数据中找出重复次数最多的一个？</p>
-<p><strong>方案1</strong>：先做hash，然后求模映射为小文件，求出每个小文件中重复次数最多的一个，并记录重复次数。然后找出上一步求出的数据中重复次数最多的一个就是所求（具体参考前面的题）。</p>
-<p>##上千万或上亿数据（有重复），统计其中出现次数最多的前N个数据。</p>
-<p><strong>方案1</strong>：上千万或上亿的数据，现在的机器的内存应该能存下。所以考虑采用hash_map/搜索二叉树/红黑树等来进行统计次数。然后就是取出前N个出现次数最多的数据了，可以用堆机制完成。</p>
-<p>##1000万字符串，其中有些是重复的，需要把重复的全部去掉，保留没有重复的字符串。请怎么设计和实现？</p>
-<p><strong>方案1</strong>：这题用trie树比较合适，hash_map也应该能行。</p>
-<p>##一个文本文件，大约有一万行，每行一个词，要求统计出其中最频繁出现的前10个词，请给出思想，给出时间复杂度分析。</p>
-<p><strong>方案1</strong>：这题是考虑时间效率。用trie树统计每个词出现的次数，时间复杂度是<code>O(n*le)</code>（le表示单词的平准长度）。然后是找出出现最频繁的前10个词，可以用堆来实现，前面的题中已经讲到了，时间复杂度是<code>O(n*lg10)</code>。所以总的时间复杂度，是<code>O(n*le)</code>与<code>O(n*lg10)</code>中较大的哪一个。</p>
-<p>##一个文本文件，找出前10个经常出现的词，但这次文件比较长，说是上亿行或十亿行，总之无法一次读入内存，问最优解。</p>
-<p><strong>方案1</strong>：首先根据用hash并求模，将文件分解为多个小文件，对于单个文件利用上题的方法求出每个文件件中10个最常出现的词。然后再进行归并处理，找出最终的10个最常出现的词。</p>
-<p>##100w个数中找出最大的100个数。</p>
-<p><strong>方案1</strong>：在前面的题中，我们已经提到了，用一个含100个元素的最小堆完成。复杂度为O(100w*lg100)。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/15/删除list里的重复元素/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1972,11 +1582,339 @@ crontab -e //建立一个新的定时任务
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/孤儿进程与僵尸进程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/12/孤儿进程与僵尸进程/" itemprop="url">孤儿进程与僵尸进程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T13:13:45+08:00">
+                2015-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##前言<br>孤儿继承和僵尸进程是APUE里面的一个重要概念，之前看书不仔细，也没有总结，所以这两个概念一直很模糊，只知道是父进程和子进程有一个退了，至于到底是父进程退还是子进程退会产生孤儿进程和僵尸进程，一直是我的一块心病啊。今天有空，来认真总结一下。</p>
+<p>##基本概念</p>
+<p>在unix/linux中，子进程是通过父进程创建的(fork)。子进程的结束和父进程的运行是一个异步过程,即父进程永远无法预测子进程到底什么时候结束。 当一个进程完成它的工作终止之后，它的父进程需要调用wait()或者waitpid()系统调用取得子进程的终止状态。</p>
+<p><strong>孤儿进程</strong>：一个父进程退出，而它的一个或多个子进程还在运行，那么那些子进程将成为孤儿进程。孤儿进程将被init进程(进程号为1)所收养，并由init进程对它们完成状态收集工作。</p>
+<p><strong>僵尸进程</strong>：一个进程使用fork创建子进程，如果子进程退出，而父进程并没有调用wait或waitpid获取子进程的状态信息，那么子进程的进程描述符仍然保存在系统中。这种进程称之为僵死进程。</p>
+<p>我们再来分析一下：</p>
+<p><code>孤儿</code>的意思是什么？被父母抛弃了，或者没有父母。所以孤儿进程就是父进程不在了，留下子进程在继续运行。但孤儿不能自己存在啊，所以总会有好心人收养他，在unix系统里，这个好心人就是init进程，init进程会收养所有的孤儿进程，代替父进程手机子进程的终止状态。</p>
+<p>同理，什么是<code>僵尸</code>？如果你死了，你就有可能成为僵尸。子进程挂了之后，有一个重要的步骤就是父进程应该调用wait或者waitpid来获取它的终止状态，让它入土为安的。但有些父母非常不负责，他没有做。所以子进程不能入土，就只能继续在系统里飘荡，成了僵尸。这不怪他们啊，都是父进程害的！</p>
+<p>##危害</p>
+<p>有的人就说了，那干嘛一定要父进程调用wait和waitpid来回收子进程啊，子进程挂了就让他挂好了，父进程不要回收，让系统自己把回收的事干了。我也是这样想的，可是你知道父母的通病在哪里吗？就是他们对自己的小孩，都有旺盛的控制欲！</p>
+<p>unix提供了一种机制可以保证只要父进程想知道子进程结束时的状态信息， 就可以得到。这种机制就是: </p>
+<blockquote>
+<p>在每个进程退出的时候,内核释放该进程所有的资源,包括打开的文件,占用的内存等。 但是仍然为其保留一定的信息(包括进程号the process ID,退出状态the termination status of the process,运行时间the amount of CPU time taken by the process等)。直到父进程通过wait / waitpid来取时才释放。 </p>
+</blockquote>
+<p>所以就导致了问题，如果进程不调用wait / waitpid的话，那么保留的那段信息就不会释放，其进程号就会一直被占用，但是系统所能使用的进程号是有限的，如果产生大量的僵死进程，将因为没有可用的进程号而导致系统不能产生新的进程. 此即为僵尸进程的危害。</p>
+<p><code>孤儿进程</code>是没有父进程的进程，处理孤儿进程的这个重任落到了init进程身上，init进程就好像是一个民政局，专门负责处理孤儿进程的善后工作。每当出现一个孤儿进程的时候，内核就把孤 儿进程的父进程设置为init，而init进程会循环地wait()它的已经退出的子进程。这样，当一个孤儿进程凄凉地结束了其生命周期的时候，init进程就会代表党和政府出面处理它的一切善后工作。<strong>因此孤儿进程并不会有什么危害</strong>。</p>
+<p>任何一个子进程(init除外)在exit()之后，并非马上就消失掉，而是留下一个称为僵尸进程(Zombie)的数据结构，等待父进程处理。这是每个 子进程在结束时都要经过的阶段。如果子进程在exit()之后，父进程没有来得及处理，这时用ps命令就能看到子进程的状态是“Z”。如果父进程能及时 处理，可能用ps命令就来不及看到子进程的僵尸状态，但这并不等于子进程不经过僵尸状态。  如果父进程在子进程结束之前退出，则子进程将由init接管。init将会以父进程的身份对僵尸状态的子进程进行处理。</p>
+<p>##如何避免产生僵尸进程</p>
+<p>我们知道了僵尸进程产生的原因和危害，那么如何避免产生僵尸进程呢？</p>
+<p>一般，为了防止产生僵尸进程，在fork子进程之后我们都要wait它们；同时，当子进程退出的时候，内核都会给父进程一个SIGCHLD信号，所以我们可以建立一个捕获SIGCHLD信号的信号处理函数，在函数体中调用wait（或waitpid），就可以清理退出的子进程以达到防止僵尸进程的目的。如下代码所示：</p>
+<pre><code>void sig_chld( int signo ) {
+    pid_t pid;
+    int stat;
+    pid = wait(&amp;stat);    
+    printf( &quot;child %d exit\n&quot;, pid );
+    return;
+}
+
+int main() {
+    signal(SIGCHLD,  &amp;sig_chld);
+}
+</code></pre><p>先在main函数中给SIGCHLD信号注册一个信号处理函数（<code>sig_chld</code>），然后在子进程退出的时候，内核递交一个SIGCHLD的时候就会被主进程捕获而进入信号处理函数<code>sig_chld</code>，然后再在<code>sig_chld</code>中调用wait，就可以清理退出的子进程。这样退出的子进程就不会成为僵尸进程。</p>
+<p>但是，这种方法并不是完美的，有时候还是会有<strong>漏网之鱼</strong>，下面是就是一个例子：</p>
+<p>我们假设有一个<code>client/server</code>的程序，对于每一个连接过来的client，server都启动一个新的进程去处理来自这个client的请求。然后我们有一个client进程，在这个进程内，发起了多个到server的请求（假设5个），则server会fork 5个子进程来读取client输入并处理（同时，当客户端关闭套接字的时候，每个子进程都退出）；当我们终止这个client进程的时候 ，内核将自动关闭所有由这个client进程打开的套接字，那么由这个client进程发起的5个连接基本在同一时刻终止。这就引发了5个FIN，每个连接一个。server端接受到这5个FIN的时候，5个子进程基本在同一时刻终止。这就又导致差不多在同一时刻递交5个SIGCHLD信号给父进程，而最终结果大家将会发现，我们没有能够回收所有的5个进程，有僵尸进程产生了。</p>
+<p>wait函数不能处理这种情况的原因是：所有5个信号都在信号处理函数执行之前产生，而信号处理函数只执行一次，因为Unix信号一般是不排队的。 更为严重的是，本问题是不确定的，依赖于客户FIN到达服务器主机的时机，信号处理函数执行的次数并不确定。</p>
+<p>这种情况的正确的解决办法是调用waitpid而不是wait，方法为：<strong>信号处理函数中，在一个循环内调用waitpid，以获取所有已终止子进程的状态。我们必须指定WNOHANG选项，他告知waitpid在有尚未终止的子进程在运行时不要阻塞。（我们不能在循环内调用wait，因为没有办法防止wait在尚有未终止的子进程在运行时阻塞，wait将会阻塞到现有的子进程中第一个终止为止）</strong>。</p>
+<p>##产生了僵尸进程怎么办</p>
+<p>如果系统中出现了僵尸进程，如何打僵尸呢？</p>
+<p><img src="/img/僵尸.png" alt=""></p>
+<p>僵尸进程用kill命令是无法杀掉的，但是我们可以<strong>结果掉僵尸进程的爸爸</strong>，僵尸daddy挂了之后，僵尸进程就成了孤儿进程，会被init程序收养，然后init程序将其回收</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/linux系统性能调试-uptime命令/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/12/linux系统性能调试-uptime命令/" itemprop="url">linux系统性能调试-uptime命令</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T10:38:38+08:00">
+                2015-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>我们可以使用uptime命令来监视Linux系统性能和状态， 这是一种非常有效的简单方法。uptime命令会显示在一定时间间隔内系统运行队列中进程的信息。通过这些信息可以大致地分析系统的工作负载。所以当系统性能下降时，首先应使用uptime命令来观察系统运行队列中进程的情况。</p>
+<pre><code>$ uptime 
+
+2:07pm up 11 days, 4:54, 9 users, load average: 1.90, 1.98, 2.01
+</code></pre><p>在上面显示内容其中有用的信息是三个负载的平均值：1.90、1.98和2.01分别是前1分钟、5分钟和15分钟内的负载平均值。  </p>
+<p> 系统管理员需要定期运行uptime命令以观察系统的平均负载值及其变化趋势。系统的问题往往通过上述数据反映出来。当系统负载增大时，说明多条命令被阻塞在内存和I/O系统中。这时需要检查系统的有关信息。一般Linux系统，负载为2和3 表示轻载，5和6表示中等程度负载，10 以上为过载。不同系统的划分标准是不同的。系统管理员应根据实际情况确定自己系统中划分轻载和过载的界限。-</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/10/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/12/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/10/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/12/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2022,7 +1960,7 @@ crontab -e //建立一个新的定时任务
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">203</span>
+                <span class="site-state-item-count">199</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

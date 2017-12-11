@@ -286,1074 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/01/python试题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/01/python试题/" itemprop="url">python试题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-01T14:19:48+08:00">
-                2015-02-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##list与tuple的区别 ？dictionary与set的区别？<br>对于list与tupel的区别，在《Python核心编程2》中讲解的很清楚，可以总体概括为，可变与不可变、他们本质相同，但是就因为可变性就延伸了很多不同点。如list类型可以进行相应更改和方法操作，但tupel就没有这个功能。</p>
-<p>对于dict和set，一个是Python唯一的映射类型，一个是Python集合。python中集合对象（set）是一组无序排列的可哈希的值，包含两种类型：可变集合（set）和不可变集合（frozenset），所以set不是可哈希的，frozenset是可哈希的，能当作字典的键。字典和集合的详细区别可以点<a href="http://codingnow.cn/language/353.html" target="_blank" rel="external">这里</a></p>
-<p>##python中String类型和unicode什么关系?<br>string是字节串，而unicode是一个统一的字符集，utf-8是它的一种存储实现形式，string可为utf-8编码，也可编码为GBK等各种编码格式</p>
-<p>##输出从1加到100的和<br>    sum = 0<br>    for i in range(1, 101):<br>        sum += i<br>    print sum </p>
-<pre><code>#注意点：range的右范围是取不到的
-</code></pre><p>##如何在一个函数内修改一个全局变量？<br>在函数中使用global关键字声明全局变量，然后修改。如： </p>
-<pre><code>a = 10
-
-def add1():
-    global a
-    print a + 1
-
-add1()
-</code></pre><p>##except的用法和作用<br>Python的except用来捕获所有异常， 因为Python里面的每次错误都会抛出 一个异常，所以每个程序的错误都被当作一个运行时错误。</p>
-<p>以下是使用except的一个例子：</p>
-<pre><code>try:    
-    foo = opne(“file”) #open被错写为opne    
-except: 
-    sys.exit(“could not open file!”)
-</code></pre><p>因为这个错误是由于open被拼写成opne而造成的，然后被except捕获，所以debug程序的时候很容易不知道出了什么问题</p>
-<p>下面这个例子更好点：</p>
-<pre><code>try:
-    foo = opne(“file”) # 这时候except只捕获IOError
-except IOError:
-    sys.exit(“could not open file”)
-</code></pre><p>##如何反序的迭代一个序列?how do I iterate over a sequence in reverse order</p>
-<p>如果是一个list, 最快的解决方案是：</p>
-<pre><code>list.reverse()
-try:
-    for x in list:
-        “do something with x”
-finally:
-list.reverse()
-</code></pre><p>如果不是list, 最通用但是稍慢的解决方案是：</p>
-<pre><code>#range函数的参数
-#第一个：从这个数开始迭代
-#第二个：迭代到这个数
-#第三个：步长，为负表示倒序
-for i in range(len(sequence)-1, -1, -1):
-    x = sequence[i]
-</code></pre><p>##判断当前用户是否是root<br>    import os<br>    if os.geteuid() != 0:<br>        print “This program must be run as root. Aborting.”<br>    sys.exit(1)</p>
-<p>##什么是lambda函数?<br>Python允许你定义一种单行的小函数。定义lambda函数的形式如下：labmda 参数：表达式lambda函数默认返回表达式的值。你也可以将其赋值给一个变量。lambda函数可以接受任意个参数，包括可选参数，但是表达式只有一个：</p>
-<pre><code>&gt;&gt;&gt; g = lambda x, y: x*y
-&gt;&gt;&gt; g(3,4)
-12
-&gt;&gt;&gt; g = lambda x, y=0, z=0: x+y+z
-&gt;&gt;&gt; g(1)
-1
-&gt;&gt;&gt; g(3, 4, 7)
-14
-</code></pre><p>也能够直接使用lambda函数，不把它赋值给变量：</p>
-<pre><code>&gt;&gt;&gt; (lambda x,y=0,z=0:x+y+z)(3,5,6)
-14
-</code></pre><p>如果你的函数非常简单，只有一个表达式，不包含命令，可以考虑lambda函数。否则，你还是定义函数才对，毕竟函数没有这么多限制。</p>
-<p>##Python是如何进行内存管理的?<br>Python的内存管理是由Python得解释器负责的，开发人员可以从内存管理事务中解放出来，致力于应用程序的开发，这样就使得开发的程序错误更少，程序更健壮，开发周期更短</p>
-<p>##如何用Python来发送邮件?<br>以下代码可以在支持SMTP监听器的服务器上执行。</p>
-<pre><code>import sys, smtplib
-
-fromaddr = raw_input(“From: “)
-toaddrs = raw_input(“To: “).split(‘,’)
-print “Enter message, end with ^D:”
-msg = &quot;&quot;
-while 1:
-    line = sys.stdin.readline()
-    if not line:
-        break
-    msg = msg + line
-
-# 发送邮件部分
-server = smtplib.SMTP(‘localhost’)
-server.sendmail(fromaddr, toaddrs, msg)
-server.quit()
-</code></pre><p>##Python输出一个Fibonacci数列?</p>
-<p>方法一：</p>
-<pre><code>a,b = 0, 1
-while b&lt;100:
-    print (b),
-    a, b = b, a+b
-</code></pre><p>方法二：递归</p>
-<pre><code>def fibonacci2(n):  
-    if n == 1 or n == 2:  
-        return 1  
-    else:  
-        return fibonacci2(n-1) + fibonacci2(n-2)
-</code></pre><p>方法三：迭代</p>
-<pre><code>def fibonacci(n):  
-    if n == 1 or n == 2:  
-        return 1  
-
-    nPre = 1  
-    nLast = 1  
-    nResult = 0  
-    i = 2  
-    while i &lt; n:  
-        nResult = nPre + nLast  
-        nPre = nLast  
-        nLast = nResult  
-        i += 1  
-
-    return nResult  
-</code></pre><p>##Python里面如何生成随机数?<br>标准库random实现了一个随机数生成器，实例代码如下：</p>
-<pre><code>import random
-
-random.random()
-</code></pre><p>它会返回一个随机的0和1之间的浮点数</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/31/python的socket编程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/31/python的socket编程/" itemprop="url">python的socket编程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-31T20:29:30+08:00">
-                2015-01-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>python的网络编程比c语言简单许多, 封装许多底层的实现细节, 方便程序员使用的同时, 也使程序员比较难了解一些底层的东西, 我觉得学网络编程还是用c语言更好一点。</p>
-<p>这篇文章将一些Linux网络编程的函数和Python网络编程函数做了一个简单的对照, 方便记忆。</p>
-<p>##Socket套接字的概念<br>Socket，是操作系统内核中的一个数据结构，它是网络中的节点进行相互通信的门户。它是网络进程的ID。网络通信，归根到底还是进程间的通信（不同计算机上的进程间通信, 又称进程间通信, IP协议进行的主要是端到端通信）。在网络中，每一个节点（计算机或路由）都有一个网络地址，也就是IP地址。两个进程通信时，首先要确定各自所在的网络节点的网络地址。但是，网络地址只能确定进程所在的计算机，而一台计算机上很可能同时运行着多个进程，所以仅凭网络地址还不能确定到底是和网络中的哪一个进程进行通信，因此套接口中还需要包括其他的信息，也就是端口号（PORT）。在一台计算机中，一个端口号一次只能分配给一个进程，也就是说，在一台计算机中，端口号和进程之间是一一对应关系。</p>
-<p>所以，使用端口号和网络地址的组合可以唯一的确定整个网络中的一个网络进程.<br>端口号的范围从0~65535，一类是由互联网指派名字和号码公司ICANN负责分配给一些常用的应用程序固定使用的“周知的端口”，其值一般为0~1023, 用户自定义端口号一般大于等于1024。</p>
-<p>每一个socket都用一个半相关描述{协议、本地地址、本地端口}来表示；一个完整的套接字则用一个相关描述{协议、本地地址、本地端口、远程地址、远程端口}来表示。socket也有一个类似于打开文件的函数调用，该函数返回一个整型的socket描述符，随后的连接建立、数据传输等操作都是通过socket来实现的</p>
-<p>###Socket类型<br>socket类型在Liunx和Python是一样的, 只是Python中的类型都定义在socket模块中, 调用方式socket.SOCK_XXXX</p>
-<ul>
-<li>流式socket（SOCK_STREAM） 用于TCP通信</li>
-</ul>
-<blockquote>
-<p>流式套接字提供可靠的、面向连接的通信流；它使用TCP协议，从而保证了数据传输的正确性和顺序性</p>
-</blockquote>
-<ul>
-<li>数据报socket（SOCK_DGRAM） 用于UDP通信</li>
-</ul>
-<blockquote>
-<p>数据报套接字定义了一种无连接的服务，数据通过相互独立的报文进行传输，是无序的，并且不保证是可靠、无差错的。它使用数据报协议UDP</p>
-</blockquote>
-<ul>
-<li>原始socket（SOCK_RAW） 用于新的网络协议实现的测试等</li>
-</ul>
-<blockquote>
-<p>原始套接字，普通的套接字无法处理ICMP、IGMP等网络报文，而SOCK_RAW可以, 其次，SOCK_RAW也可以处理特殊的IPv4报文；此外，利用原始套接字，可以通过IP_HDRINCL套接字选项由用户构造IP头。</p>
-</blockquote>
-<p>##Socket编程</p>
-<p>###TCP通信<br>TCP通信的基本步骤如下：</p>
-<p>服务端：socket—-bind—-listen—-while(True){—-accept—-recv—-send——}—-close</p>
-<p>客户端：socket———————————————connect—-send—-recv———-close</p>
-<p><img src="/img/TCP通信.png" alt="TCP通信.png"></p>
-<p>####socket函数<br>使用给定的地址族、套接字类型、协议编号（默认为0）来创建套接字</p>
-<pre><code>#Linux
-int socket(int domain, int type, int protocol);
-domain：AF_INET：Ipv4网络协议 AF_INET6：IPv6网络协议
-type : tcp：SOCK_STREAM   udp：SOCK_DGRAM
-protocol : 指定socket所使用的传输协议编号。通常为0.
-返回值：成功则返回套接口描述符，失败返回-1。
-
-
-#python
-socket.socket([family[, type[, proto]]])
-family : AF_INET (默认ipv4), AF_INET6(ipv6) or AF_UNIX(Unix系统进程间通信). 
-type : SOCK_STREAM (TCP), SOCK_DGRAM(UDP) . 
-protocol : 一般为0或者默认
-如果socket创建失败会抛出一个socket.error异常
-</code></pre><p>####服务器端函数</p>
-<p>#####bind函数<br>将套接字绑定到地址, python下,以元组（host,port）的形式表示地址, Linux下使用sockaddr_in结构体指针</p>
-<pre><code>#Linux
-int bind(int sockfd, struct sockaddr * my_addr, int addrlen);
-sockfd : 前面socket()的返回值
-my_addr : 结构体指针变量
-#####
-struct sockaddr_in  //常用的结构体
-{
-unsigned short int sin_family;  //即为sa_family AF_INET
-uint16_t sin_port;  //为使用的port编号
-struct in_addr sin_addr;  //为IP地址
-unsigned char sin_zero[8];  //未使用
-};
-struct in_addr
-{
-uint32_t s_addr;
-};
-####
-addrlen : sockaddr的结构体长度。通常是计算sizeof(struct sockaddr);
-返回值：成功则返回0，失败返回-1
-
-
-#python
-s.bind(address)
-s为socket.socket()返回的套接字对象
-address为元组（host,port）
-host: ip地址, 为一个字符串
-post: 自定义主机号, 为整型
-</code></pre><p>#####listen函数<br>使服务器的这个端口和IP处于监听状态，等待网络中某一客户机的连接请求。如果客户端有连接请求，端口就会接受这个连接</p>
-<pre><code>#Linux
-int listen(int sockfd,int backlog);
-sockfd : 为前面socket的返回值.
-backlog : 指定同时能处理的最大连接要求，通常为10或者5。最大值可设至128
-返回值：成功则返回0，失败返回-1
-
-
-#python
-s.listen(backlog)
-s为socket.socket()返回的套接字对象
-backlog : 操作系统可以挂起的最大连接数量。该值至少为1，大部分应用程序设为5就可以了
-</code></pre><p>#####accept函数<br>接受远程计算机的连接请求，建立起与客户机之间的通信连接。服务器处于监听状态时，如果某时刻获得客户机的连接请求，此时并不是立即处理这个请求，而是将这个请求放在等待队列中，当系统空闲时再处理客户机的连接请求。</p>
-<pre><code>#Linux
-int accept(int s,struct sockaddr * addr,int * addrlen);
-sockfd : 为前面socket的返回值.
-addr : 为结构体指针变量，和bind的结构体是同种类型的，系统会把远程主机的信息（远程主机的地址和端口号信息）保存到这个指针所指的结构体中。
-addrlen : 表示结构体的长度，为整型指针 
-返回值：成功则返回新的socket处理代码new_fd，失败返回-1
-#python
-s.accept()
-s为socket.socket()返回的套接字对象
-返回（conn,address）,其中conn是新的套接字对象，可以用来接收和发送数据。address是连接客户端的地址
-</code></pre><p>####客户端函数</p>
-<p>#####connect函数<br>用来请求连接远程服务器</p>
-<pre><code>#Linux
-int connect (int sockfd,struct sockaddr * serv_addr,int addrlen);
-sockfd : 为前面socket的返回值.
-serv_addr : 为结构体指针变量，存储着远程服务器的IP与端口号信息
-addrlen : 表示结构体变量的长度
-返回值：成功则返回0，失败返回-1
-
-
-#python
-s.connect(address)
-s为socket.socket()返回的套接字对象
-address : 格式为元组（hostname,port），如果连接出错，返回socket.error错误
-</code></pre><p>####通用函数<br>接收远端主机传来的数据</p>
-<p>#####recv函数</p>
-<pre><code>#Linux
-int recv(int sockfd,void *buf,int len,unsigned int flags);
-sockfd : 为前面accept的返回值.也就是新的套接字。
-buf : 表示缓冲区
-len : 表示缓冲区的长度
-flags : 通常为0
-返回值：成功则返回实际接收到的字符数，可能会少于你所指定的接收长度。失败返回-1
-
-
-#python
-s.recv(bufsize[,flag])
-s为socket.socket()返回的套接字对象
-bufsize : 指定要接收的数据大小
-flag : 提供有关消息的其他信息，通常可以忽略
-返回值为数据以字符串形式
-</code></pre><p>#####send函数<br>发送数据给指定的远端主机</p>
-<pre><code>#Linux
-int send(int s,const void * msg,int len,unsigned int flags);
-sockfd : 为前面socket的返回值.
-msg : 一般为常量字符串
-len : 表示长度
-flags : 通常为0
-返回值：成功则返回实际传送出去的字符数，可能会少于你所指定的发送长度。失败返回-1
-
-
-#python
-s.send(string[,flag])
-s为socket.socket()返回的套接字对象
-string : 要发送的字符串数据 
-flag : 提供有关消息的其他信息，通常可以忽略
-返回值是要发送的字节数量，该数量可能小于string的字节大小。
-s.sendall(string[,flag])
-#完整发送TCP数据。将string中的数据发送到连接的套接字，但在返回之前会尝试发送所有数据。
-返回值 : 成功返回None，失败则抛出异常。
-</code></pre><p>#####close函数<br>关闭套接字</p>
-<pre><code>#Linux
-int close(int fd);
-fd : 为前面的sockfd
-返回值：若文件顺利关闭则返回0，发生错误时返回-1
-
-
-#python
-s.close()
-s为socket.socket()返回的套接字对象
-</code></pre><p>####简单的客户端服务器TCP连接<br>一个简单的回显服务器和客户端模型, 客户端发出的数据, 服务器会回显到客户端的终端上(只是一个简单的模型, 没考虑错误处理等问题)</p>
-<pre><code>#服务器端
-#!/usr/bin/python
-# -*- coding:utf-8 -*-
-import socket   #socket模块
-import commands   #执行系统命令模块
-BUF_SIZE = 1024  #设置缓冲区大小
-server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #生成一个新的socket对象
-server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  #设置地址复用
-server.bind(server_addr)  #绑定地址
-server.listen(5)  #监听, 最大监听数为5
-while True:
-    client, client_addr = server.accept()  #接收TCP连接, 并返回新的套接字和地址
-    print &apos;Connected by&apos;, client_addr
-    while True :
-        data = client.recv(BUF_SIZE)  #从客户端接收数据
-        print data
-        client.sendall(data)  #发送数据到客户端
-server.close()
-
-
-
-#客户端
-#!/usr/bin/python
-# -*- coding:utf-8 -*-
-import socket
-BUF_SIZE = 1024  #设置缓冲区的大小
-server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #返回新的socket对象
-client.connect(server_addr)  #要连接的服务器地址
-while True:
-    data = raw_input(&quot;Please input some string &gt; &quot;)  
-    client.sendall(data)  #发送数据到服务器
-    data = client.recv(BUF_SIZE)  #从服务器端接收数据
-    print data
-client.close()
-</code></pre><p>####带错误处理的客户端服务器TCP连接<br>在进行网络编程时, 最好使用大量的错误处理, 能够尽量的发现错误, 也能够使代码显得更加严谨</p>
-<pre><code>#服务器端
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
-import sys
-import socket   #socket模块
-BUF_SIZE = 1024  #设置缓冲区大小
-server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
-try :
-  server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #生成一个新的socket对象
-except socket.error, msg :
-    print &quot;Creating Socket Failure. Error Code : &quot; + str(msg[0]) + &quot; Message : &quot; + msg[1]
-    sys.exit()
-print &quot;Socket Created!&quot;
-server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  #设置地址复用
-try : 
-    server.bind(server_addr)  #绑定地址
-except socket.error, msg :
-  print &quot;Binding Failure. Error Code : &quot; + str(msg[0]) + &quot; Message : &quot; + msg[1]
-  sys.exit()
-print &quot;Socket Bind!&quot;
-server.listen(5)  #监听, 最大监听数为5
-print &quot;Socket listening&quot;
-while True:
-    client, client_addr = server.accept()  #接收TCP连接, 并返回新的套接字和地址, 阻塞函数
-    print &apos;Connected by&apos;, client_addr
-    while True :
-        data = client.recv(BUF_SIZE)  #从客户端接收数据
-        print data
-        client.sendall(data)  #发送数据到客户端
-server.close()
-
-
-#客户端
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
-import sys
-import socket
-BUF_SIZE = 1024  #设置缓冲区的大小
-server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
-try : 
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #返回新的socket对象
-except socket.error, msg :
-    print &quot;Creating Socket Failure. Error Code : &quot; + str(msg[0]) + &quot; Message : &quot; + msg[1]
-    sys.exit()
-client.connect(server_addr)  #要连接的服务器地址
-while True:
-    data = raw_input(&quot;Please input some string &gt; &quot;)  
-    if not data :
-        print &quot;input can&apos;t empty, Please input again..&quot;
-        continue
-    client.sendall(data)  #发送数据到服务器
-    data = client.recv(BUF_SIZE)  #从服务器端接收数据
-    print data
-client.close()
-</code></pre><p>###UDP通信<br>UDP通信流程图如下：</p>
-<p>服务端：socket—-bind—-recvfrom—-sendto—-close</p>
-<p>客户端：socket—————sendto—-recvfrom—-close</p>
-<p><img src="/img/UDP通信.png" alt="UDP通信"></p>
-<p>#####sendto()函数<br>发送UDP数据, 将数据发送到套接字</p>
-<pre><code>#Linux
-int sendto(int sockfd, const void *msg,int len,unsigned int flags,const struct sockaddr *to, int tolen);
-sockfd : 为前面socket的返回值.
-msg : 一般为常量字符串
-len : 表示长度
-flags : 通常为0
-to : 表示目地机的IP地址和端口号信息, 表示地址的结构体
-tolen : 常常被赋值为sizeof (struct sockaddr)
-返回值 :　返回实际发送的数据字节长度或在出现发送错误时返回-1。
-
-
-#Python
-s.sendto(string[,flag],address)
-s为socket.socket()返回的套接字对象
-address : 指定远程地址, 形式为（ipaddr，port）的元组
-flag : 提供有关消息的其他信息，通常可以忽略
-返回值 : 发送的字节数。
-</code></pre><p>#####recvfrom()函数<br>接受UDP套接字的数据, 与recv()类似</p>
-<pre><code>#Linux
-int recvfrom(int sockfd,void *buf,int len,unsigned int flags,struct sockaddr *from,int *fromlen);
-sockfd : 为前面socket的返回值.
-msg : 一般为常量字符串
-len : 表示长度
-flags : 通常为0
-from :是一个struct sockaddr类型的变量，该变量保存连接机的IP地址及端口号
-fromlen : 常置为sizeof (struct sockaddr)。
-返回值 : 返回接收到的字节数或当出现错误时返回-1，并置相应的errno。
-
-
-#Python
-s.recvfrom(bufsize[.flag])
-返回值 : （data,address）元组, 其中data是包含接收数据的字符串，address是发送数据的套接字地址
-bufsize : 指定要接收的数据大小
-flag : 提供有关消息的其他信息，通常可以忽略
-</code></pre><p>####2.4. 简单的客户端服务器UDP连接</p>
-<pre><code>#服务器端
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
-import socket
-BUF_SIZE = 1024  #设置缓冲区大小
-server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
-server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  #生成新的套接字对象
-server.bind(server_addr)  #套接字绑定IP和端口
-while True :
-    print &quot;waitting for data&quot;
-    data, client_addr = server.recvfrom(BUF_SIZE)  #从客户端接收数据
-    print &apos;Connected by&apos;, client_addr, &apos; Receive Data : &apos;, data
-    server.sendto(data, client_addr)  #发送数据给客户端
-server.close()
-
-
-#客户端
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
-import socket
-import struct
-BUF_SIZE = 1024  #设置缓冲区
-server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
-client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  #生成新的套接字对象
-while True :
-    data = raw_input(&apos;Please Input data &gt; &apos;)
-    client.sendto(data, server_addr)  #向服务器发送数据
-    data, addr = client.recvfrom(BUF_SIZE)  #从服务器接收数据
-    print &quot;Data : &quot;, data
-client.close()
-</code></pre><p>###2.5. 其他</p>
-<pre><code>s.getpeername()
-#返回连接套接字的远程地址。返回值通常是元组（ipaddr,port）。
-s.getsockname()
-#返回套接字自己的地址。通常是一个元组(ipaddr,port)
-s.setsockopt(level,optname,value)
-#设置给定套接字选项的值。
-s.getsockopt(level,optname[.buflen])
-#返回套接字选项的值。
-s.settimeout(timeout)
-#设置套接字操作的超时期，timeout是一个浮点数，单位是秒。值为None表示没有超时期。一般，超时期应该在刚创建套接字时设置，因为它们可能用于连接的操作（如connect()）
-s.gettimeout()
-#返回当前超时期的值，单位是秒，如果没有设置超时期，则返回None。
-s.fileno()
-#返回套接字的文件描述符。
-s.setblocking(flag)
-#如果flag为0，则将套接字设为非阻塞模式，否则将套接字设为阻塞模式（默认值）。非阻塞模式下，如果调用recv()没有发现任何数据，或send()调用无法立即发送数据，那么将引起socket.error异常。
-s.makefile()
-#创建一个与该套接字相关连的文件
-</code></pre><p>##3. 参考链接<br><a href="https://docs.python.org/2/library/socket.html" target="_blank" rel="external">python-socket官方文档</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/如何重命名scrapy下载的图片/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/如何重命名scrapy下载的图片/" itemprop="url">如何重命名scrapy下载的图片</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T17:07:32+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/scrapy/" itemprop="url" rel="index">
-                    <span itemprop="name">scrapy</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>默认情况下，使用ImagePipeline组件下载图片的时候，图片名称是以图片URL的SHA1值进行保存的。</p>
-<p>如：<br>图片URL:<a href="http://www.example.com/image.jpg" target="_blank" rel="external">http://www.example.com/image.jpg</a></p>
-<p>SHA1结果：3afec3b4765f8f0a07b78f98c07b83f013567a0a</p>
-<p>则图片名称：3afec3b4765f8f0a07b78f98c07b83f013567a0a.jpg</p>
-<p>但是，我想要以原来的图片名称进行保存，比如上面例子中的图片保存到本地的话，图片名称就应该是：image.jpg</p>
-<p>stackoverflow上说是可以重写<code>image_key</code>函数，不过我试了下，结果发现不行，重写的image_key函数没被调用。其实不是stackoverflow上的回答是错误的，在<code>scrapy 0.12</code>之前，确实应该这样来解决此问题，现在scrapy的版本已经更新了很多，这个方法不适用了，下面是ImagePipeline的源码中的提醒：</p>
-<blockquote>
-<p>ImagesPipeline.image_key(url) and file_key(url) methods are deprecated, please use file_path(request, response=None, info=None) instead</p>
-</blockquote>
-<p>也就是说，在最新版本的Scrapy中（0.24.4），使用<code>file_path</code>代替<code>image_key</code>函数。</p>
-<p>下面是新版本的解决方法，在<code>scrapy 0.24.4</code>中测试通过</p>
-<ul>
-<li><p>在pipelines.py中自定义ImagePipeline类，并重写file_path函数</p>
-<pre><code>from scrapy.contrib.pipeline.images import ImagesPipeline
-from scrapy.http import Request
-from scrapy.exceptions import DropItem
-
-class MyImagesPipeline(ImagesPipeline):
-    def file_path(self, request, response=None, info=None):
-        image_guid = request.url.split(&apos;/&apos;)[-1]
-        return &apos;full/%s&apos; % (image_guid)
-
-    #item[&apos;image_urls&apos;]是我们在item.py中定义的存放图片url的变量，如果定义了别的变量名，注意更换
-    def get_media_requests(self, item, info):
-        for image_url in item[&apos;image_urls&apos;]:
-            yield Request(image_url)
-
-    def item_completed(self, results, item, info):
-        image_paths = [x[&apos;path&apos;] for ok, x in results if ok]
-        if not image_paths:
-            raise DropItem(&quot;Item contains no images&quot;)
-        return item
-</code></pre></li>
-<li><p>修改setting.py</p>
-<pre><code>ITEM_PIPELINES = {
-    # &apos;scrapy.contrib.pipeline.images.ImagesPipeline&apos;: 1
-    &apos;sis.pipelines.MyImagesPipeline&apos;
-    }
-</code></pre></li>
-</ul>
-<p>可以参考stackoverflow上<a href="http://stackoverflow.com/questions/6194041/scrapy-image-download-how-to-use-custom-filename/22263951#22263951" target="_blank" rel="external">此问题的讨论</a></p>
-<p>原文地址在<a href="http://www.it165.net/pro/html/201402/9615.html" target="_blank" rel="external">这里</a>，本文做了一些删除和修改</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/29/scrapy如何获取完整的url/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/29/scrapy如何获取完整的url/" itemprop="url">scrapy如何获取完整的url</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-29T20:31:07+08:00">
-                2015-01-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/scrapy/" itemprop="url" rel="index">
-                    <span itemprop="name">scrapy</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>用scrapy抓取网页的时候，有时抓取到的并不是完整的url，而是url的后面部分。例如，完整的url是<code>http://michaelyou.github.io/categories/scrapy/</code>，我们抓到的只是<code>/categories/scrapy/</code>,这个时候如何获取完整的url呢？或者说，如何将完整的url拼出来呢？</p>
-<p>解决方法如下：</p>
-<ul>
-<li><p>首先在我们的spider文件头上加上：</p>
-<pre><code>from scrapy.utils.response import get_base_url
-from scrapy.utils.url import urljoin_rfc
-</code></pre></li>
-<li><p>第二步在我们定义的parse函数中加上：</p>
-<pre><code>#这一句便是取url的开头部分
-base_url = get_base_url(response)
-#省略若干行
-#这一句是取url的后面部分
-relative_url = sel.xpath(&apos;***&apos;).extract()[0]
-#将两部分合并
-item[&apos;link&apos;] = urljoin_rfc(base_url, relative_url)
-</code></pre></li>
-</ul>
-<p>严重提醒：</p>
-<p>在求<code>relative_url</code>时，我们在<code>extract()</code>后面加了<code>[0]</code>,因为<code>extract()</code>取出来的是一个数组，而函数<code>urljoin_rfc</code>需要的参数是字符串，所以要从数组中将值取出来，这时的数组内只有一个值，<code>index=0</code>，所以加上了<code>[0]</code>.很多人忘记了加<code>[0]</code>,最后导致合并的时候失败。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/29/MongoDB教程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2653,11 +1585,762 @@ node reverse_list(node head)
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/25/在O-1-时间删除链表结点/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/25/在O-1-时间删除链表结点/" itemprop="url">在O(1)时间删除链表结点</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-25T21:13:55+08:00">
+                2015-01-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##QUESTION<br>给定单项链表的头指针和一个结点指针，定义一个函数在O(1)时间删除该节点。</p>
+<p>##O(n)解法<br>O(n)解法就是常规的删除链表结点的做法。从链表的头结点开始，顺序遍历查找要删除的结点，并在链表中删除该结点。这种思路由于要顺序查找，时间复杂度自然就是O(n)了。</p>
+<p>之所以要从头开始查找，是因为我们需要得到将被删除的结点的前面一个结点。在单向链表中，结点中没有指向前一个结点的指针，所以只好从链表的头结点开始顺序查找。</p>
+<p>##O(1)解法<br>那是不是一定要得到被删除结点的前一个节点呢？答案是否定的。我们可以这样来删除一个结点，例子如下，别删除的结点为i，i的下一个结点为j：</p>
+<ul>
+<li>把j结点的内容复制到i结点，覆盖i结点的内容</li>
+<li>将i结点的next指向j结点的next</li>
+<li>删除j结点</li>
+</ul>
+<p>这里我们删除的虽然是j结点，但是得到的效果却是删除了i结点。</p>
+<p>还有一个问题，当我们删除的结点是尾结点时，尾结点的next是NULL，上述解法就不再适用，我们还是要顺序遍历后删除尾结点。</p>
+<p>代码如下：</p>
+<pre><code>typedef struct Node
+{
+    int data;
+    struct Node *next;
+}*node;
+
+/*在O(1)时间删除结点*/
+void DeleteNode(node &amp;pListHead, node pToBeDeleted)
+{
+    if(!pListHead || !pToBeDeleted)
+        return;
+
+    // 要删除的结点不是尾结点
+    if(pToBeDeleted-&gt;next!= NULL)
+    {
+        node pNext = pToBeDeleted-&gt;next;
+        pToBeDeleted-&gt;data= pNext-&gt;data;
+        pToBeDeleted-&gt;next = pNext-&gt;next;
+
+        delete pNext;
+        pNext = NULL;
+    }
+    // 链表只有一个结点，删除头结点（也是尾结点）
+    else if(pListHead == pToBeDeleted)
+    {
+        delete pToBeDeleted;
+        pToBeDeleted = NULL;
+        pListHead = NULL;
+    }
+    // 链表中有多个结点，删除尾结点
+    else
+    {
+        node pNode = pListHead;
+        while(pNode-&gt;next != pToBeDeleted)
+        {
+            pNode = pNode-&gt;next;            
+        }
+
+        pNode-&gt;next = NULL;
+        delete pToBeDeleted;
+        pToBeDeleted = NULL;
+    }
+}
+</code></pre><p>我们分析一下这个思路的时间复杂度。对于n-1个非尾结点而言，我们可以在O(1)时把下一个结点的内存复制覆盖要删除的结点，并删除下一个结点；对于尾结点而言，由于仍需要顺序查找，时间复杂度为O(n).因此总的时间复杂度为<code>[(n-1)*O(1)+O(n)]/n</code>,结果仍然是O(1),符合要求。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/25/二进制中1的个数/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/25/二进制中1的个数/" itemprop="url">二进制中1的个数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-25T16:03:18+08:00">
+                2015-01-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>题目：输入一个整数，求该整数的二进制表达中有多少个1。例如输入10，由于其二进制表示为1010，有两个1，因此输出2。</p>
+<p>##可能引起死循环的解法<br>一个很基本的想法是，我们先判断整数的最右边一位是不是1。接着把整数右移一位，原来处于右边第二位的数字现在被移到第一位了，再判断是不是1。这样每次 移动一位，直到这个整数变成0为止。现在的问题变成怎样判断一个整数的最右边一位是不是1了。很简单，如果它和整数1作与运算。由于1除了最右边一位以 外，其他所有位都为0。因此如果与运算的结果为1，表示整数的最右边一位是1，否则是0。</p>
+<p>代码如下：</p>
+<pre><code>///////////////////////////////////////////////////////////////////////
+// Get how many 1s in an integer&apos;s binary expression
+///////////////////////////////////////////////////////////////////////
+int NumberOf1_Solution1(int i)
+{
+      int count = 0;
+      while(i)
+      {
+            if(i &amp; 1)
+                  count ++;
+            i = i &gt;&gt; 1;
+      }
+      return count;
+}
+</code></pre><p>面试官会问，整数右移一位在数学上是和除以2是等价的。那可不可以把上面的代码中的右移运算符换成除以2呢？答案是否定的。因为除法的效率比移位运算要低的多，在实际编程中如果可以，应尽可能地用移位运算符代替乘除法。</p>
+<p>这个思路当输入i是正数时没有问题，但当输入的i是一个负数时，不但不能得到正确的1的个数，还将导致死循环。以负数0x80000000为例，右移一位 的时候，并不是简单地把最高位的1移到第二位变成0x40000000，而是0xC0000000。这是因为移位前是个负数，仍然要保证移位后是个负数， 因此移位后的最高位会设为1。如果一直做右移运算，最终这个数字就会变成0xFFFFFFFF而陷入死循环。</p>
+<p>##改进算法避免死循环<br>为了避免死循环，我们可以不右移输入的数字i。首先i和1做与运算，判断i的最低位是不是为1。接着把1左移一位得到2，再和i做与运算，就能判断i的次高位是不是1……这样反复左移，每次都能判断i的其中一位是不是1。基于此，我们得到如下代码：</p>
+<pre><code>///////////////////////////////////////////////////////////////////////
+// Get how many 1s in an integer&apos;s binary expression
+///////////////////////////////////////////////////////////////////////
+int NumberOf1_Solution2(int i)
+{
+      int count = 0;
+      unsigned int flag = 1;
+      while(flag)
+      {
+            if(i &amp; flag)
+                  count ++;
+            flag = flag &lt;&lt; 1;
+      }
+      return count;
+}
+</code></pre><p>##给面试官带来惊喜的解法<br>另外一种思路是如果一个整数不为0，那么这个整数至少有一位是1。如果我们把这个整数减去1，那么原来处在整数最右边的1就会变成0，原来在1后面的所有 的0都会变成1。其余的所有位将不受到影响。举个例子：一个二进制数1100，从右边数起的第三位是处于最右边的一个1。减去1后，第三位变成0，它后面 的两位0变成1，而前面的1保持不变，因此得到结果是1011。</p>
+<p>我们发现减1的结果是把从最右边一个1开始的所有位都取反了。这个时候如果我们再把原来的整数和减去1之后的结果做与运算，从原来整数最右边一个1那一位 开始所有位都会变成0。如1100&amp;1011=1000。也就是说，把一个整数减去1，再和原整数做与运算，会把该整数最右边一个1变成0。那么 一个整数的二进制有多少个1，就可以进行多少次这样的操作。</p>
+<p>这种思路对应的代码如下：</p>
+<pre><code>///////////////////////////////////////////////////////////////////////
+// Get how many 1s in an integer&apos;s binary expression
+///////////////////////////////////////////////////////////////////////
+int NumberOf1_Solution3(int i)
+{
+      int count = 0;
+      while (i)
+      {
+            ++ count;
+            i = (i - 1) &amp; i;
+      }
+      return count;
+}
+</code></pre><p>##扩展<br>扩展1：如何用一个语句判断一个整数是不是二的整数次幂？</p>
+<p>思路：一个整数如果是2的整数次方，那么它的二进制表示中有且只有一位是1，而其他所有位都是0.根据前面的分析，把这个整数减去1之后再和它自己做与运算，这个整数中唯一的1就会变成0.</p>
+<pre><code>n&amp;(n-1)==0;//二进制数只有一位位1，则该数是2的整数次幂.
+</code></pre><p>扩展2：输入两个整数m和n，计算需要改变m的二进制表示中的多少位才能得到n。比如10的二进制表示为1010,13的二进制表示为1101，需要改变1010中的3位才能得到1101.</p>
+<p>思路：我们可以分两步解决这个问题：第一步求这两个数的异或，第二步统计异或结果中1的位数。</p>
+<p>##总结<br>把一个整数减去1之后再和原来的整数做位与运算，得到的结果相当于是把整数的二进制表示中的最后一个1变成0.很多二进制的问题都可以用这个思路解决</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/25/为什么求斐波拉切数列用递归不是一个好方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/25/为什么求斐波拉切数列用递归不是一个好方法/" itemprop="url">为什么求斐波拉切数列用递归不是一个好方法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-25T15:14:32+08:00">
+                2015-01-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##递归解法<br>教课书上一般都是用斐波拉切数列来说明递归，但是用递归的方法来求解斐波拉切数列并不是一个好的方法，这主要是效率的问题。</p>
+<pre><code>long fibonacci(unsigned int n)
+{
+    if(n &lt;= 0)
+        return 0;
+
+    if(n == 1)
+        return 1;
+
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+</code></pre><p>这个方法的低效体现在哪里呢？我们不妨来分析一下fibnacci(8)的求解过程：</p>
+<p><img src="/img/fibonacci.png" alt="fibonacci"></p>
+<p>我们不难发现在这棵树中很多结点是重复的，而且重复的结点数会随着n的增大而急剧增加，这意味着计算量会随着n的睁大而急剧增大。事实上，用递归计算的时间复杂度是以n的指数的方式递增的。</p>
+<p>##循环解法<br>在这里，递归的缺陷在于重复计算了很多项，为了避免重复计算，我们可以使用循环：</p>
+<pre><code>long fibonacci_iterator(unsigned int n)
+{
+    int result[2] = {0, 1};
+    if(n &lt; 2)
+        return result[n];
+
+    long fib_one = 0;
+    long fib_two = 1;
+
+    long fib_num = 0;
+    int i;
+    for(i = 2; i &lt;= n; i++) {
+        fib_num = fib_one + fib_two;
+        fib_one = fib_two;
+        fib_two = fib_num;
+    }
+
+    return fib_num;
+}
+</code></pre><p>##测试程序</p>
+<pre><code>#define n 50
+int main(int argc, char **argv)
+{
+    clock_t start, end;
+    double times = 0;
+
+    start = clock();
+    printf(&quot;fibonacci(%d) = %d\n&quot;, n, fibonacci(n));
+    end = clock();
+    times = (double)(end - start) / CLOCKS_PER_SEC;
+    printf(&quot;The fibonacci took %fs\n&quot;, times);
+    start = clock();
+    printf(&quot;fibonacci(%d) = %d\n&quot;, n, fibonacci_iterator(n));
+    end = clock();
+    times = (double)(end - start) / CLOCKS_PER_SEC;
+    printf(&quot;The fibonacci_iterator took %fs\n&quot;, times);
+}
+</code></pre><p>输出为:</p>
+<blockquote>
+<p>fibonacci(50) = 12586269025</p>
+<p>The fibonacci took 203.040000s</p>
+<p>fibonacci(50) = 12586269025</p>
+<p>The fibonacci_iterator took 0.000000s</p>
+</blockquote>
+<p>所以说，在这里用递归的话真是脑子被门夹了</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/24/重建二叉树/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/24/重建二叉树/" itemprop="url">重建二叉树</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-24T21:31:11+08:00">
+                2015-01-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##题目</p>
+<blockquote>
+<p>输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字，例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，应该重构出如下二叉树：</p>
+<p><img src="/img/tree.png" alt="tree"></p>
+</blockquote>
+<p>##答案</p>
+<ul>
+<li>前序遍历的第一个节点是树的根结点，所以<code>1</code>是树的根结点</li>
+<li>中序遍历的规则是：1.遍历左子树；2.根结点；3.遍历右子树。既然1是根结点，那么从中序遍历的输出可知：<code>4,7,2</code>在左子树中，<code>5,3,8,6</code>在右子树中</li>
+<li>前序遍历输出的第二个值是根结点的左子树的根结点，即<code>2</code>是左子树序列<code>4,7,2</code>的根结点，而在<code>2</code>左侧的<code>4,7</code>就是根结点<code>2</code>的左子树中的值了。同理<code>3</code>是根结点的右子树的根结点，<code>5</code>是以<code>3</code>为根结点的树的左子树中的值，<code>8,6</code>是右子树中的值</li>
+<li>下面只需要判断左子树中<code>4,7</code>和右子树中<code>8,6</code>的位置就可以了，易知，<code>4</code>是<code>2</code>的左儿子，<code>7</code>是<code>4</code>的右儿子。<code>6</code>是<code>3</code>的右儿子，<code>8</code>是<code>6</code>的左儿子。</li>
+<li>这是一个递归的过程，没分析一段，就将这一段当做一个完整的树来分析就很容易了</li>
+</ul>
+<p>实现的代码在<a href="https://github.com/michaelyou/data_structure/blob/master/tree.c" target="_blank" rel="external">这里Construct</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/17/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/19/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/17/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/19/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2703,7 +2386,7 @@ node reverse_list(node head)
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">203</span>
+                <span class="site-state-item-count">199</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

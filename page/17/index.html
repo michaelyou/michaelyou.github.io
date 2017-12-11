@@ -286,821 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/04/scrapy的一些知识点/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/04/scrapy的一些知识点/" itemprop="url">scrapy的一些知识点</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-04T11:23:27+08:00">
-                2015-02-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/scrapy/" itemprop="url" rel="index">
-                    <span itemprop="name">scrapy</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li><p>###运行spider，将爬取到的信息用JSON形式存到scraped_data.json文件中</p>
-<pre><code>scrapy crawl my_spider -o scraped_data.json
-</code></pre></li>
-<li><p>###在scrapy shell里面打印返回的html</p>
-<pre><code>response.body
-</code></pre></li>
-<li><p>###创建一个Spider，我们必须继承<code>scrapy.Spider</code>类(或者别的爬虫类)，并且定义以下3个属性</p>
-<ul>
-<li>name：用于区别Spider。 该名字必须是唯一的，您不可以为不同的Spider设定相同的名字。</li>
-<li>start_urls：包含了Spider在启动时进行爬取的url列表。 因此，第一个被获取到的页面将是其中之一(每个url都会被爬取)。 <code>后续的URL则从初始的URL获取到的数据中提取</code>。</li>
-<li>parse() 是spider的一个方法。 被调用时，<code>每个初始URL完成下载后生成的 Response 对象将会作为唯一的参数传递给该函数</code>。 该方法负责解析返回的数据(response data)，提取数据(生成item)以及生成需要进一步处理的URL的 Request 对象。parse只是初始url的回调函数，可以定义别的回调函数来处理后序的链接。</li>
-</ul>
-</li>
-<li><p>###scrapy shell</p>
-<pre><code>scrapy shell &quot;http://www.dmoz.org/Computers/Programming/Languages/Python/Books/&quot;
-</code></pre><blockquote>
-<p>当您在终端运行Scrapy时，请一定记得给url地址加上<code>引号</code>，否则包含参数的url(例如 &amp; 字符)会导致Scrapy运行失败。</p>
-</blockquote>
-</li>
-<li><p>###Item 对象是自定义的python字典。 您可以使用标准的字典语法来获取到其每个字段的值。(字段即是我们之前用Field赋值的属性):</p>
-<pre><code>&gt;&gt;&gt; item = DmozItem()
-&gt;&gt;&gt; item[&apos;title&apos;] = &apos;Example title&apos;
-&gt;&gt;&gt; item[&apos;title&apos;]
-&apos;Example title&apos;
-</code></pre></li>
-<li><p>###<code>scrapy.cfg</code> 存放的目录被认为是 项目的根目录 。该文件中包含python模块名的字段定义了项目的设置</p>
-</li>
-<li><h3 id="Link-Extractors-是用于从网页-scrapy-http-Response-中抽取会被follow的链接的对象。"><a href="#Link-Extractors-是用于从网页-scrapy-http-Response-中抽取会被follow的链接的对象。" class="headerlink" title="Link Extractors 是用于从网页(scrapy.http.Response )中抽取会被follow的链接的对象。"></a>Link Extractors 是用于从网页(scrapy.http.Response )中抽取会被follow的链接的对象。</h3><pre><code>scrapy.contrib.linkextractors import LinkExtractor
-</code></pre></li>
-<li><p>###log服务<br>Scrapy提供了log功能。您可以通过 scrapy.log 模块使用。当前底层实现使用了 Twisted logging ，不过可能在之后会有所变化。</p>
-</li>
-<li><p>###使用FormRequest.from_response()方法模拟用户登录<br>通常网站通过 <input type="hidden"> 实现对某些表单字段（如数据或是登录界面中的认证令牌等）的预填充。 使用Scrapy抓取网页时，如果想要预填充或重写像用户名、用户密码这些表单字段， 可以使用 FormRequest.from_response() 方法实现。下面是使用这种方法的爬虫例子:</p>
-<pre><code>import scrapy
-
-class LoginSpider(scrapy.Spider):
-    name = &apos;example.com&apos;
-    start_urls = [&apos;http://www.example.com/users/login.php&apos;]
-
-    def start_requests(self):
-        return scrapy.FormRequest.from_response(
-            &quot;url&quot;,
-            formdata={&apos;username&apos;: &apos;john&apos;, &apos;password&apos;: &apos;secret&apos;},
-            callback=self.after_login
-        )
-
-    def after_login(self, response):
-        # check login succeed before going on
-        if &quot;authentication failed&quot; in response.body:
-            self.log(&quot;Login failed&quot;, level=log.ERROR)
-            return
-
-        # continue scraping with authenticated session...
-</code></pre></li>
-<li><p>###Scrapy是以广度优先还是深度优先进行爬取的呢<br>默认情况下，Scrapy使用 LIFO 队列来存储等待的请求。简单的说，就是 深度优先顺序 。深度优先对大多数情况下是更方便的。如果您想以 广度优先顺序 进行爬取，你可以设置以下的设定:</p>
-<pre><code>DEPTH_PRIORITY = 1
-SCHEDULER_DISK_QUEUE = &apos;scrapy.squeue.PickleFifoDiskQueue&apos;
-SCHEDULER_MEMORY_QUEUE = &apos;scrapy.squeue.FifoMemoryQueue&apos;
-</code></pre></li>
-<li><p>###避免被禁止(ban)<br>有些网站实现了特定的机制，以一定规则来避免被爬虫爬取。 与这些规则打交道并不容易，需要技巧，有时候也需要些特别的基础。 如果有疑问请考虑联系 商业支持 。</p>
-<p>  下面是些处理这些站点的建议(tips):</p>
-<ul>
-<li>使用user agent池，轮流选择之一来作为user agent。池中包含常见的浏览器的user agent(google一下一大堆)</li>
-<li>禁止cookies(参考 COOKIES_ENABLED)，有些站点会使用cookies来发现爬虫的轨迹。</li>
-<li>设置下载延迟(2或更高)。参考 DOWNLOAD_DELAY 设置。</li>
-<li>如果可行，使用 <a href="http://www.googleguide.com/cached_pages.html" target="_blank" rel="external">Google cache</a> 来爬取数据，而不是直接访问站点。</li>
-<li>使用IP池。例如免费的 <a href="https://www.torproject.org/" target="_blank" rel="external">Tor</a>项目 或付费服务(<a href="http://proxymesh.com/" target="_blank" rel="external">ProxyMesh</a>)。</li>
-<li>使用高度分布式的下载器(downloader)来绕过禁止(ban)，您就只需要专注分析处理页面。这样的例子有: <a href="http://crawlera.com/" target="_blank" rel="external">Crawlera</a></li>
-</ul>
-</li>
-<li><p>###禁止重试<br>对失败的HTTP请求进行重试会减慢爬取的效率，尤其是当站点响应很慢(甚至失败)时， 访问这样的站点会造成超时并重试多次。这是不必要的，同时也占用了爬虫爬取其他站点的能力。</p>
-<p>  禁止重试:</p>
-<pre><code>RETRY_ENABLED = False
-</code></pre></li>
-<li>###使用相对Xpaths</li>
-</ul>
-<p>如果你使用嵌套的选择器，并使用起始为 <code>/</code> 的XPath，那么该XPath将对文档使用绝对路径，而且对于你调用的 Selector 不是相对路径。</p>
-<p>比如，假设你想提取在 <code>&lt;div&gt;</code>元素中的所有 <code>&lt;p&gt;</code>元素。首先，你将先得到所有的 <code>&lt;div&gt;</code> 元素:</p>
-<pre><code>&gt;&gt;&gt; divs = response.xpath(&apos;//div&apos;)
-</code></pre><p>开始时，你可能会尝试使用下面的错误的方法，<strong>因为它其实是从整篇文档中，而不仅仅是从那些 <code>&lt;div&gt;</code> 元素内部提取所有的 <code>&lt;p&gt;</code>元素</strong>:</p>
-<pre><code>&gt;&gt;&gt; for p in divs.xpath(&apos;//p&apos;):  # this is wrong - gets all &lt;p&gt; from the whole document
-...     print p.extract()
-</code></pre><p>下面是比较合适的处理方法(注意 .//p XPath的点前缀):</p>
-<pre><code>&gt;&gt;&gt; for p in divs.xpath(&apos;.//p&apos;):  # extracts all &lt;p&gt; inside
-...     print p.extract()
-</code></pre><p>另一种常见的情况将是提取所有直系 <code>&lt;p&gt;</code>的结果:</p>
-<pre><code>&gt;&gt;&gt; for p in divs.xpath(&apos;p&apos;):
-...     print p.extract()
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/03/mongodb分布式集群架构/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/03/mongodb分布式集群架构/" itemprop="url">mongodb分布式集群架构</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-03T16:47:08+08:00">
-                2015-02-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/数据库/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>本文转载自<a href="mongodb分布式集群架构">这里</a></p>
-<p>##关于mongodb</p>
-<blockquote>
-<p>MongoDB是一个基于分布式文件存储的数据库。由C++语言编写。旨在为WEB应用提供可扩展的高性能数据存储解决方案。 MongoDB是一个介于关系数据库和非关系数据库之间的产品，是非关系数据库当中功能最丰富，最像关系数据库的。他支持的数据结构非常松散，是类似json的bjson格式，因此可以存储比较复杂的数据类型。Mongo最大的特点是他支持的查询语言非常强大，其语法有点类似于面向对象的查询语言，几乎可以实现类似关系数据库单表查询的绝大部分功能，而且还支持对数据建立索引。</p>
-</blockquote>
-<p>##mongodb分布式应用原理<br>&gt;<br>MongoDB集群包括一定数量的mongod（分片存储数据）、mongos（路由处理）、config server（配置节点）、clients（客户端）、arbiter（仲裁节点：为了选举某个分片存储数据节点那台为主节点）。</p>
-<p><img src="161802143.png" alt=""></p>
-<ol>
-<li>shards：一个shard为一组mongod，通常一组为两台，主从或互为主从，这一组mongod中的数据时相同的，具体可见《mongodb分布式之数据复制》。数据分割按有序分割方式，每个分片上的数据为某一范围的数据块，故可支持指定分片的范围查询，这同google的BigTable 类似。数据块有指定的最大容量，一旦某个数据块的容量增长到最大容量时，这个数据块会切分成为两块；当分片的数据过多时，数据块将被迁移到系统的其他分片中。另外，新的分片加入时，数据块也会迁移。</li>
-<li>mongos：可以有多个，相当于一个控制中心，负责路由和协调操作，使得集群像一个整体的系统。mongos可以运行在任何一台服务器上，有些选择放在shards服务器上，也有放在client 服务器上的。mongos启动时需要从config servers上获取基本信息，然后接受client端的请求，路由到shards服务器上，然后整理返回的结果发回给client服务器。</li>
-<li>config server：存储集群的信息，包括分片和块数据信息。主要存储块数据信息，每个config server上都有一份所有块数据信息的拷贝，以保证每台config server上的数据的一致性。</li>
-<li>shard key：为了分割数据集，需要制定分片key的格式，类似于用于索引的key格式，通常由一个或多个字段组成以分发数据，比如：{ name : 1 }{ _id : 1 }{ lastname : 1, firstname : 1 }{ tag : 1, timestamp : -1 }mongoDB的分片为有序存储(1为升序，-1为降序)，shard key相邻的数据通常会存在同一台服务（数据块）上。</li>
-</ol>
-<p>##mongodb分布式部署方式<br>服务器部署可以有多种方式。首先，每台config server、mongos、mongod都可以是单独的服务器，但这样会导致某些服务器的浪费，比如config server。下图为物理机共享的集群部署，不需要额外加机器。</p>
-<p><img src="162121526.png" alt=""></p>
-<p>当然也有其他的方案，比如把mongos部署在所有的mongod（server1-6）上，又或者在每个运用服务器（server7）上部署mongos。这样部署有个好处在于，appserver和mongos之间的通信建立在localhost interface上，减少了通信成本。当然，此乃官方说法，但本人有想法，尽管减少了appserver和mongos之间的通信成本，但mongos与mongod之间的通信成本却增加了，而且把mongos部署在appserver上并不是很利于sa管理，mongoDB应该是一个相对独立的系统，与应用的耦合度应该尽量降到最低，万一应用想要换数据库，也能多少减少些工作量。</p>
-<p>##mongodb分布式的安装</p>
-<ul>
-<li><p>下载</p>
-<pre><code>wget http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.0.4.tgz
-</code></pre></li>
-<li><p>安装</p>
-<pre><code>tar zxvf mongodb-linux-2.0.4.tgz
-cp -fr mongodb-linux-*2.0.4/* /data/mongodb/
-mkdir -p /data/mongodb/data/      #创建数据存储目录                      
-mkdir -p /data/mongodb/log/       #创建日志存储目录
-mkdir -p /data/mongodb/config/    #创建配置存储目录
-mkdir -p /data/mongodb/arbiter/   #创建仲裁节点存储目录
-</code></pre></li>
-<li><p>单机模式以及个参数说明</p>
-<pre><code>mongod --fork --bind_ip 127.0.0.1 --port 11811 --dbpath /data/mongodb/data --directoryperdb --logpath /data/mongodb/log/db1.log --logappend  --nohttpinterface
-netstat -ntlp|grep mongod
-</code></pre></li>
-</ul>
-<p>简单的参数说明：</p>
-<blockquote>
-<ul>
-<li>–logpath 日志文件路径 </li>
-<li>–master 指定为主机器  </li>
-<li>–slave 指定为从机器   </li>
-<li>–source 指定主机器的IP地址</li>
-<li>–pologSize 指定日志文件大小不超过64M.因为resync是非常操作量大且耗时，最好通过设置一个足够大的oplogSize来避免resync(默认的 oplog大小是空闲磁盘大小的5%)。</li>
-<li>–logappend 日志文件末尾添加</li>
-<li>–port 启用端口号</li>
-<li>–fork 在后台运行</li>
-<li>–only 指定只复制哪一个数据库</li>
-<li>–slavedelay 指从复制检测的时间间隔</li>
-<li>–auth 是否需要验证权限登录(用户名和密码)</li>
-<li>–noauth 不需要验证权限登录(用户名和密码)</li>
-</ul>
-</blockquote>
-<p>##集群模式mongos,mongod,configsvr<br>    1.Shard分片–第一组分片  192.168.200.226:<br>    /data/mongodb/bin/mongod –replSet rep1 –fork –port 11813 –maxConns 65535 –dbpath /data/mongodb/data –directoryperdb –logpath /data/mongodb/log/db.log –logappend –nohttpinterface</p>
-<pre><code>#启动rep1分片的一个数据节点
-/data/mongodb/bin/mongos --configdb 192.168.201.226:11812 --port 11811 --fork --chunkSize 256 --logpath /data/mongodb/log/ms.log   
-#启动路由节点，读取201.226上的配置节点的配置文件，（在配置节点启动后启动）
-/data/mongodb/bin/mongod --replSet rep1 --fork --port 11814 --dbpath /data/mongodb/arbiter --directoryperdb --logpath /data/mongodb/log/arbiter.log --logappend --nohttpinterface
-#启动分片的仲裁节点192.168.201.226:    
-/data/mongodb/bin/mongod --replSet rep1 --fork --port 11813 --maxConns 65535 --dbpath /data/mongodb/data --directoryperdb --logpath /data/mongodb/log/db.log --logappend --nohttpinterface
-#启动rep1分片的第二个数据节点
-/data/mongodb/bin/mongos --configdb 192.168.201.226:11812 --port 11811 --fork --chunkSize 256 --logpath /data/mongodb/log/ms.log
-#启动第二个路由节点 （在配置节点启动后启动）
-2.ConfigServer---   #启动config server     192.168.201.226:          
-/data/mongodb/bin/mongod --configsvr --dbpath /data/mongodb/config --port 11812 --fork --logpath /data/mongodb/log/mc.log
-#启动配置节点，注意配置节点应该优先启动，不然路由节点读取不到配置节点信息则会启动失败。
-3.Mongos路由---   #启动mongos，指定config server, chunkSize 256M   192.168.201.226:      
-/data/mongodb/bin/mongos --configdb 192.168.201.226:11812 --port 11811 --fork --chunkSize 256 --logpath /data/mongodb/log/ms.log
-#启动路由节点
-
-#由于机器有限，只配置了一个shard分片，该分片里有2个节点，新增加分片只需对应改replSet 名称即可。
-
-4.配置replSet: 连接任一mongod membersmongo 192.168.201.226:11813 config = {_id: &apos;rep1&apos;, members: [{_id: 0, host: &apos;192.168.200.226:11813&apos;, priority: 2},                     
-#priority 为定义优先级，默认为1，高优先级会被认为是主节点优先启用。{_id: 1, host: &apos;192.168.201.226:11813&apos;},{_id: 2, host: &apos;192.168.200.226:11814&apos;, arbiterOnly: true}]}   rs.initiate(config);   rs.status()
-
-5.连接mongos增加shard 80G   
-   mongo 192.168.201.226:11811/admin   show dbs   use admin   db.runCommand({addshard:&apos;rep1/192.168.201.226:11813,192.168.200.226:11813&apos;,maxsize:81920})   
-   db.runCommand({listshards:1})
-6.连接mongos增加创建test库和c1集合，并测试
-   mongo 192.168.201.226:11811/admin
-   db.runCommand({enablesharding:&apos;test&apos;})
-   printShardingStatus()
-   db.runCommand({shardcollection:&apos;test.auto_increment_id&apos;, key:{_id:1}, unique : true})
-   db.runCommand({shardcollection:&apos;test.c1&apos;, key:{_id:1}, unique : true})
-   for (var i = 1; i &lt;= 100; i++)db.c1.save({id:i,value1:&quot;1234567890&quot;,value2:&quot;1234567890&quot;,value3:&quot;1234567890&quot;,value4:&quot;1234567890&quot;})
-   db.c1.stats()
-   db.createCollection(&quot;cap_coll&quot;, {capped:true, size:100000, max:100});
-   db.mycoll.validate();
-
-7.检查： db.printCollectionStats()
-
-8.管理: mongo 127.0.0.1:11811
-    show dbs
-    use admin
-    show collections
-    db.serverStatus()
-    db.shutdownServer()
-    exit
-9.索引：db.product_data.ensureIndex({data_id: 1}, {unique: true,dropDups: true}); #创建索引
-       db.product_data.dropIndexes();#删除索引 
-</code></pre><blockquote>
-<p>至此，mongodb的分布式架构就架起来了，并且通过测试和log的分析，可看服务是否正常，下面就需要php客户端的支持，和程序的运行，之后加到监控里，就可以在线上部署使用了。                                      </p>
-</blockquote>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/03/python的-classmethod-修饰符/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/03/python的-classmethod-修饰符/" itemprop="url">python的@classmethod 修饰符</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-03T14:37:00+08:00">
-                2015-02-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>通常情况下，如果我们要使用一个类的方法，那我们只能将一个类实体化成一个对象，进而调用对象使用方法。</p>
-<pre><code>class Hello(object):
-    def __init__:
-        ...
-
-    def print_hello(self):
-        print &quot;Hello&quot;
-</code></pre><p> 要用 print_hello() 就得：</p>
-<pre><code>hlo = Hello()
-hlo.print_hello()
-输出：Hello
-</code></pre><p>如果用了 @classmethod 就简单了：</p>
-<pre><code>class Hello(object):
-    def __init__:
-        ...
-
-    @classmethod
-    def print_hello(cls):
-        print &quot;Hello&quot;
-</code></pre><p>要用的话直接：</p>
-<pre><code>Hello.print_hello()
-Hello
-</code></pre><p>注意：@classmethod 仅仅适用于单独的，与类本身的数据结构无关函数，其实用了它的函数，与使用普通函数无异，甚至不能在参数里加入 self，如果要在其中使用类的数据结构，仍然需要将类实例化一次才可以，所以要小心使用。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/03/每天一个python小程序-7/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/03/每天一个python小程序-7/" itemprop="url">每天一个python小程序(7)--敏感词</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-03T14:34:54+08:00">
-                2015-02-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>敏感词文本文件 filtered_words.txt，里面的内容为以下内容，当用户输入敏感词语时，则打印出 Freedom，否则打印出 Human Rights。</p>
-<p>love</p>
-<p>sex</p>
-<p>jiangge</p>
-<p>bitch</p>
-</blockquote>
-<p>代码中有两种从txt文件中获取敏感词的方法，有一种被注释掉了，因为用这种方法获得的list最后会有一个空的字符串，导致下面find的时候一直会匹配成功，感兴趣的同学可以去掉注释试一下（同时需要注释掉注释下面的4行）</p>
-<pre><code>#!/usr/bin/python
-#encoding=utf-8
-
-def get_sensitive_word(filepath):
-    f = open(filepath, &apos;r&apos;)
-    #data = f.read()
-    #filt = data.split(&apos;\n&apos;) 这个方法得到的序列中最后有一个空的字符串，导致匹配一直成功
-    words = []
-    for word in f:
-        #strip删除字符序列，这里是删除word中的&apos;\n&apos;
-        words.append(word.strip(&apos;\n&apos;))
-    f.close()
-    return words
-
-def filter_word(words):
-    flag = False
-    text = raw_input(&apos;please input: &apos;)
-    for word in words:
-        if text.find(word) != -1:
-            flag = True
-
-    if flag:
-        print &apos;freedom&apos;
-    else:
-        print &apos;human rights&apos;
-
-if __name__ == &apos;__main__&apos;:
-    filepath = &apos;filtered_words.txt&apos;
-    words = get_sensitive_word(filepath)
-    filter_word(words)
-</code></pre><p>完整项目见<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.11" target="_blank" rel="external">这里</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2136,11 +1321,1079 @@ if __name__ == &apos;__main__&apos;:
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/01/python试题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/01/python试题/" itemprop="url">python试题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-01T14:19:48+08:00">
+                2015-02-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##list与tuple的区别 ？dictionary与set的区别？<br>对于list与tupel的区别，在《Python核心编程2》中讲解的很清楚，可以总体概括为，可变与不可变、他们本质相同，但是就因为可变性就延伸了很多不同点。如list类型可以进行相应更改和方法操作，但tupel就没有这个功能。</p>
+<p>对于dict和set，一个是Python唯一的映射类型，一个是Python集合。python中集合对象（set）是一组无序排列的可哈希的值，包含两种类型：可变集合（set）和不可变集合（frozenset），所以set不是可哈希的，frozenset是可哈希的，能当作字典的键。字典和集合的详细区别可以点<a href="http://codingnow.cn/language/353.html" target="_blank" rel="external">这里</a></p>
+<p>##python中String类型和unicode什么关系?<br>string是字节串，而unicode是一个统一的字符集，utf-8是它的一种存储实现形式，string可为utf-8编码，也可编码为GBK等各种编码格式</p>
+<p>##输出从1加到100的和<br>    sum = 0<br>    for i in range(1, 101):<br>        sum += i<br>    print sum </p>
+<pre><code>#注意点：range的右范围是取不到的
+</code></pre><p>##如何在一个函数内修改一个全局变量？<br>在函数中使用global关键字声明全局变量，然后修改。如： </p>
+<pre><code>a = 10
+
+def add1():
+    global a
+    print a + 1
+
+add1()
+</code></pre><p>##except的用法和作用<br>Python的except用来捕获所有异常， 因为Python里面的每次错误都会抛出 一个异常，所以每个程序的错误都被当作一个运行时错误。</p>
+<p>以下是使用except的一个例子：</p>
+<pre><code>try:    
+    foo = opne(“file”) #open被错写为opne    
+except: 
+    sys.exit(“could not open file!”)
+</code></pre><p>因为这个错误是由于open被拼写成opne而造成的，然后被except捕获，所以debug程序的时候很容易不知道出了什么问题</p>
+<p>下面这个例子更好点：</p>
+<pre><code>try:
+    foo = opne(“file”) # 这时候except只捕获IOError
+except IOError:
+    sys.exit(“could not open file”)
+</code></pre><p>##如何反序的迭代一个序列?how do I iterate over a sequence in reverse order</p>
+<p>如果是一个list, 最快的解决方案是：</p>
+<pre><code>list.reverse()
+try:
+    for x in list:
+        “do something with x”
+finally:
+list.reverse()
+</code></pre><p>如果不是list, 最通用但是稍慢的解决方案是：</p>
+<pre><code>#range函数的参数
+#第一个：从这个数开始迭代
+#第二个：迭代到这个数
+#第三个：步长，为负表示倒序
+for i in range(len(sequence)-1, -1, -1):
+    x = sequence[i]
+</code></pre><p>##判断当前用户是否是root<br>    import os<br>    if os.geteuid() != 0:<br>        print “This program must be run as root. Aborting.”<br>    sys.exit(1)</p>
+<p>##什么是lambda函数?<br>Python允许你定义一种单行的小函数。定义lambda函数的形式如下：labmda 参数：表达式lambda函数默认返回表达式的值。你也可以将其赋值给一个变量。lambda函数可以接受任意个参数，包括可选参数，但是表达式只有一个：</p>
+<pre><code>&gt;&gt;&gt; g = lambda x, y: x*y
+&gt;&gt;&gt; g(3,4)
+12
+&gt;&gt;&gt; g = lambda x, y=0, z=0: x+y+z
+&gt;&gt;&gt; g(1)
+1
+&gt;&gt;&gt; g(3, 4, 7)
+14
+</code></pre><p>也能够直接使用lambda函数，不把它赋值给变量：</p>
+<pre><code>&gt;&gt;&gt; (lambda x,y=0,z=0:x+y+z)(3,5,6)
+14
+</code></pre><p>如果你的函数非常简单，只有一个表达式，不包含命令，可以考虑lambda函数。否则，你还是定义函数才对，毕竟函数没有这么多限制。</p>
+<p>##Python是如何进行内存管理的?<br>Python的内存管理是由Python得解释器负责的，开发人员可以从内存管理事务中解放出来，致力于应用程序的开发，这样就使得开发的程序错误更少，程序更健壮，开发周期更短</p>
+<p>##如何用Python来发送邮件?<br>以下代码可以在支持SMTP监听器的服务器上执行。</p>
+<pre><code>import sys, smtplib
+
+fromaddr = raw_input(“From: “)
+toaddrs = raw_input(“To: “).split(‘,’)
+print “Enter message, end with ^D:”
+msg = &quot;&quot;
+while 1:
+    line = sys.stdin.readline()
+    if not line:
+        break
+    msg = msg + line
+
+# 发送邮件部分
+server = smtplib.SMTP(‘localhost’)
+server.sendmail(fromaddr, toaddrs, msg)
+server.quit()
+</code></pre><p>##Python输出一个Fibonacci数列?</p>
+<p>方法一：</p>
+<pre><code>a,b = 0, 1
+while b&lt;100:
+    print (b),
+    a, b = b, a+b
+</code></pre><p>方法二：递归</p>
+<pre><code>def fibonacci2(n):  
+    if n == 1 or n == 2:  
+        return 1  
+    else:  
+        return fibonacci2(n-1) + fibonacci2(n-2)
+</code></pre><p>方法三：迭代</p>
+<pre><code>def fibonacci(n):  
+    if n == 1 or n == 2:  
+        return 1  
+
+    nPre = 1  
+    nLast = 1  
+    nResult = 0  
+    i = 2  
+    while i &lt; n:  
+        nResult = nPre + nLast  
+        nPre = nLast  
+        nLast = nResult  
+        i += 1  
+
+    return nResult  
+</code></pre><p>##Python里面如何生成随机数?<br>标准库random实现了一个随机数生成器，实例代码如下：</p>
+<pre><code>import random
+
+random.random()
+</code></pre><p>它会返回一个随机的0和1之间的浮点数</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/31/python的socket编程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/31/python的socket编程/" itemprop="url">python的socket编程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-31T20:29:30+08:00">
+                2015-01-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>python的网络编程比c语言简单许多, 封装许多底层的实现细节, 方便程序员使用的同时, 也使程序员比较难了解一些底层的东西, 我觉得学网络编程还是用c语言更好一点。</p>
+<p>这篇文章将一些Linux网络编程的函数和Python网络编程函数做了一个简单的对照, 方便记忆。</p>
+<p>##Socket套接字的概念<br>Socket，是操作系统内核中的一个数据结构，它是网络中的节点进行相互通信的门户。它是网络进程的ID。网络通信，归根到底还是进程间的通信（不同计算机上的进程间通信, 又称进程间通信, IP协议进行的主要是端到端通信）。在网络中，每一个节点（计算机或路由）都有一个网络地址，也就是IP地址。两个进程通信时，首先要确定各自所在的网络节点的网络地址。但是，网络地址只能确定进程所在的计算机，而一台计算机上很可能同时运行着多个进程，所以仅凭网络地址还不能确定到底是和网络中的哪一个进程进行通信，因此套接口中还需要包括其他的信息，也就是端口号（PORT）。在一台计算机中，一个端口号一次只能分配给一个进程，也就是说，在一台计算机中，端口号和进程之间是一一对应关系。</p>
+<p>所以，使用端口号和网络地址的组合可以唯一的确定整个网络中的一个网络进程.<br>端口号的范围从0~65535，一类是由互联网指派名字和号码公司ICANN负责分配给一些常用的应用程序固定使用的“周知的端口”，其值一般为0~1023, 用户自定义端口号一般大于等于1024。</p>
+<p>每一个socket都用一个半相关描述{协议、本地地址、本地端口}来表示；一个完整的套接字则用一个相关描述{协议、本地地址、本地端口、远程地址、远程端口}来表示。socket也有一个类似于打开文件的函数调用，该函数返回一个整型的socket描述符，随后的连接建立、数据传输等操作都是通过socket来实现的</p>
+<p>###Socket类型<br>socket类型在Liunx和Python是一样的, 只是Python中的类型都定义在socket模块中, 调用方式socket.SOCK_XXXX</p>
+<ul>
+<li>流式socket（SOCK_STREAM） 用于TCP通信</li>
+</ul>
+<blockquote>
+<p>流式套接字提供可靠的、面向连接的通信流；它使用TCP协议，从而保证了数据传输的正确性和顺序性</p>
+</blockquote>
+<ul>
+<li>数据报socket（SOCK_DGRAM） 用于UDP通信</li>
+</ul>
+<blockquote>
+<p>数据报套接字定义了一种无连接的服务，数据通过相互独立的报文进行传输，是无序的，并且不保证是可靠、无差错的。它使用数据报协议UDP</p>
+</blockquote>
+<ul>
+<li>原始socket（SOCK_RAW） 用于新的网络协议实现的测试等</li>
+</ul>
+<blockquote>
+<p>原始套接字，普通的套接字无法处理ICMP、IGMP等网络报文，而SOCK_RAW可以, 其次，SOCK_RAW也可以处理特殊的IPv4报文；此外，利用原始套接字，可以通过IP_HDRINCL套接字选项由用户构造IP头。</p>
+</blockquote>
+<p>##Socket编程</p>
+<p>###TCP通信<br>TCP通信的基本步骤如下：</p>
+<p>服务端：socket—-bind—-listen—-while(True){—-accept—-recv—-send——}—-close</p>
+<p>客户端：socket———————————————connect—-send—-recv———-close</p>
+<p><img src="/img/TCP通信.png" alt="TCP通信.png"></p>
+<p>####socket函数<br>使用给定的地址族、套接字类型、协议编号（默认为0）来创建套接字</p>
+<pre><code>#Linux
+int socket(int domain, int type, int protocol);
+domain：AF_INET：Ipv4网络协议 AF_INET6：IPv6网络协议
+type : tcp：SOCK_STREAM   udp：SOCK_DGRAM
+protocol : 指定socket所使用的传输协议编号。通常为0.
+返回值：成功则返回套接口描述符，失败返回-1。
+
+
+#python
+socket.socket([family[, type[, proto]]])
+family : AF_INET (默认ipv4), AF_INET6(ipv6) or AF_UNIX(Unix系统进程间通信). 
+type : SOCK_STREAM (TCP), SOCK_DGRAM(UDP) . 
+protocol : 一般为0或者默认
+如果socket创建失败会抛出一个socket.error异常
+</code></pre><p>####服务器端函数</p>
+<p>#####bind函数<br>将套接字绑定到地址, python下,以元组（host,port）的形式表示地址, Linux下使用sockaddr_in结构体指针</p>
+<pre><code>#Linux
+int bind(int sockfd, struct sockaddr * my_addr, int addrlen);
+sockfd : 前面socket()的返回值
+my_addr : 结构体指针变量
+#####
+struct sockaddr_in  //常用的结构体
+{
+unsigned short int sin_family;  //即为sa_family AF_INET
+uint16_t sin_port;  //为使用的port编号
+struct in_addr sin_addr;  //为IP地址
+unsigned char sin_zero[8];  //未使用
+};
+struct in_addr
+{
+uint32_t s_addr;
+};
+####
+addrlen : sockaddr的结构体长度。通常是计算sizeof(struct sockaddr);
+返回值：成功则返回0，失败返回-1
+
+
+#python
+s.bind(address)
+s为socket.socket()返回的套接字对象
+address为元组（host,port）
+host: ip地址, 为一个字符串
+post: 自定义主机号, 为整型
+</code></pre><p>#####listen函数<br>使服务器的这个端口和IP处于监听状态，等待网络中某一客户机的连接请求。如果客户端有连接请求，端口就会接受这个连接</p>
+<pre><code>#Linux
+int listen(int sockfd,int backlog);
+sockfd : 为前面socket的返回值.
+backlog : 指定同时能处理的最大连接要求，通常为10或者5。最大值可设至128
+返回值：成功则返回0，失败返回-1
+
+
+#python
+s.listen(backlog)
+s为socket.socket()返回的套接字对象
+backlog : 操作系统可以挂起的最大连接数量。该值至少为1，大部分应用程序设为5就可以了
+</code></pre><p>#####accept函数<br>接受远程计算机的连接请求，建立起与客户机之间的通信连接。服务器处于监听状态时，如果某时刻获得客户机的连接请求，此时并不是立即处理这个请求，而是将这个请求放在等待队列中，当系统空闲时再处理客户机的连接请求。</p>
+<pre><code>#Linux
+int accept(int s,struct sockaddr * addr,int * addrlen);
+sockfd : 为前面socket的返回值.
+addr : 为结构体指针变量，和bind的结构体是同种类型的，系统会把远程主机的信息（远程主机的地址和端口号信息）保存到这个指针所指的结构体中。
+addrlen : 表示结构体的长度，为整型指针 
+返回值：成功则返回新的socket处理代码new_fd，失败返回-1
+#python
+s.accept()
+s为socket.socket()返回的套接字对象
+返回（conn,address）,其中conn是新的套接字对象，可以用来接收和发送数据。address是连接客户端的地址
+</code></pre><p>####客户端函数</p>
+<p>#####connect函数<br>用来请求连接远程服务器</p>
+<pre><code>#Linux
+int connect (int sockfd,struct sockaddr * serv_addr,int addrlen);
+sockfd : 为前面socket的返回值.
+serv_addr : 为结构体指针变量，存储着远程服务器的IP与端口号信息
+addrlen : 表示结构体变量的长度
+返回值：成功则返回0，失败返回-1
+
+
+#python
+s.connect(address)
+s为socket.socket()返回的套接字对象
+address : 格式为元组（hostname,port），如果连接出错，返回socket.error错误
+</code></pre><p>####通用函数<br>接收远端主机传来的数据</p>
+<p>#####recv函数</p>
+<pre><code>#Linux
+int recv(int sockfd,void *buf,int len,unsigned int flags);
+sockfd : 为前面accept的返回值.也就是新的套接字。
+buf : 表示缓冲区
+len : 表示缓冲区的长度
+flags : 通常为0
+返回值：成功则返回实际接收到的字符数，可能会少于你所指定的接收长度。失败返回-1
+
+
+#python
+s.recv(bufsize[,flag])
+s为socket.socket()返回的套接字对象
+bufsize : 指定要接收的数据大小
+flag : 提供有关消息的其他信息，通常可以忽略
+返回值为数据以字符串形式
+</code></pre><p>#####send函数<br>发送数据给指定的远端主机</p>
+<pre><code>#Linux
+int send(int s,const void * msg,int len,unsigned int flags);
+sockfd : 为前面socket的返回值.
+msg : 一般为常量字符串
+len : 表示长度
+flags : 通常为0
+返回值：成功则返回实际传送出去的字符数，可能会少于你所指定的发送长度。失败返回-1
+
+
+#python
+s.send(string[,flag])
+s为socket.socket()返回的套接字对象
+string : 要发送的字符串数据 
+flag : 提供有关消息的其他信息，通常可以忽略
+返回值是要发送的字节数量，该数量可能小于string的字节大小。
+s.sendall(string[,flag])
+#完整发送TCP数据。将string中的数据发送到连接的套接字，但在返回之前会尝试发送所有数据。
+返回值 : 成功返回None，失败则抛出异常。
+</code></pre><p>#####close函数<br>关闭套接字</p>
+<pre><code>#Linux
+int close(int fd);
+fd : 为前面的sockfd
+返回值：若文件顺利关闭则返回0，发生错误时返回-1
+
+
+#python
+s.close()
+s为socket.socket()返回的套接字对象
+</code></pre><p>####简单的客户端服务器TCP连接<br>一个简单的回显服务器和客户端模型, 客户端发出的数据, 服务器会回显到客户端的终端上(只是一个简单的模型, 没考虑错误处理等问题)</p>
+<pre><code>#服务器端
+#!/usr/bin/python
+# -*- coding:utf-8 -*-
+import socket   #socket模块
+import commands   #执行系统命令模块
+BUF_SIZE = 1024  #设置缓冲区大小
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #生成一个新的socket对象
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  #设置地址复用
+server.bind(server_addr)  #绑定地址
+server.listen(5)  #监听, 最大监听数为5
+while True:
+    client, client_addr = server.accept()  #接收TCP连接, 并返回新的套接字和地址
+    print &apos;Connected by&apos;, client_addr
+    while True :
+        data = client.recv(BUF_SIZE)  #从客户端接收数据
+        print data
+        client.sendall(data)  #发送数据到客户端
+server.close()
+
+
+
+#客户端
+#!/usr/bin/python
+# -*- coding:utf-8 -*-
+import socket
+BUF_SIZE = 1024  #设置缓冲区的大小
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #返回新的socket对象
+client.connect(server_addr)  #要连接的服务器地址
+while True:
+    data = raw_input(&quot;Please input some string &gt; &quot;)  
+    client.sendall(data)  #发送数据到服务器
+    data = client.recv(BUF_SIZE)  #从服务器端接收数据
+    print data
+client.close()
+</code></pre><p>####带错误处理的客户端服务器TCP连接<br>在进行网络编程时, 最好使用大量的错误处理, 能够尽量的发现错误, 也能够使代码显得更加严谨</p>
+<pre><code>#服务器端
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+import sys
+import socket   #socket模块
+BUF_SIZE = 1024  #设置缓冲区大小
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+try :
+  server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #生成一个新的socket对象
+except socket.error, msg :
+    print &quot;Creating Socket Failure. Error Code : &quot; + str(msg[0]) + &quot; Message : &quot; + msg[1]
+    sys.exit()
+print &quot;Socket Created!&quot;
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  #设置地址复用
+try : 
+    server.bind(server_addr)  #绑定地址
+except socket.error, msg :
+  print &quot;Binding Failure. Error Code : &quot; + str(msg[0]) + &quot; Message : &quot; + msg[1]
+  sys.exit()
+print &quot;Socket Bind!&quot;
+server.listen(5)  #监听, 最大监听数为5
+print &quot;Socket listening&quot;
+while True:
+    client, client_addr = server.accept()  #接收TCP连接, 并返回新的套接字和地址, 阻塞函数
+    print &apos;Connected by&apos;, client_addr
+    while True :
+        data = client.recv(BUF_SIZE)  #从客户端接收数据
+        print data
+        client.sendall(data)  #发送数据到客户端
+server.close()
+
+
+#客户端
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+import sys
+import socket
+BUF_SIZE = 1024  #设置缓冲区的大小
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+try : 
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #返回新的socket对象
+except socket.error, msg :
+    print &quot;Creating Socket Failure. Error Code : &quot; + str(msg[0]) + &quot; Message : &quot; + msg[1]
+    sys.exit()
+client.connect(server_addr)  #要连接的服务器地址
+while True:
+    data = raw_input(&quot;Please input some string &gt; &quot;)  
+    if not data :
+        print &quot;input can&apos;t empty, Please input again..&quot;
+        continue
+    client.sendall(data)  #发送数据到服务器
+    data = client.recv(BUF_SIZE)  #从服务器端接收数据
+    print data
+client.close()
+</code></pre><p>###UDP通信<br>UDP通信流程图如下：</p>
+<p>服务端：socket—-bind—-recvfrom—-sendto—-close</p>
+<p>客户端：socket—————sendto—-recvfrom—-close</p>
+<p><img src="/img/UDP通信.png" alt="UDP通信"></p>
+<p>#####sendto()函数<br>发送UDP数据, 将数据发送到套接字</p>
+<pre><code>#Linux
+int sendto(int sockfd, const void *msg,int len,unsigned int flags,const struct sockaddr *to, int tolen);
+sockfd : 为前面socket的返回值.
+msg : 一般为常量字符串
+len : 表示长度
+flags : 通常为0
+to : 表示目地机的IP地址和端口号信息, 表示地址的结构体
+tolen : 常常被赋值为sizeof (struct sockaddr)
+返回值 :　返回实际发送的数据字节长度或在出现发送错误时返回-1。
+
+
+#Python
+s.sendto(string[,flag],address)
+s为socket.socket()返回的套接字对象
+address : 指定远程地址, 形式为（ipaddr，port）的元组
+flag : 提供有关消息的其他信息，通常可以忽略
+返回值 : 发送的字节数。
+</code></pre><p>#####recvfrom()函数<br>接受UDP套接字的数据, 与recv()类似</p>
+<pre><code>#Linux
+int recvfrom(int sockfd,void *buf,int len,unsigned int flags,struct sockaddr *from,int *fromlen);
+sockfd : 为前面socket的返回值.
+msg : 一般为常量字符串
+len : 表示长度
+flags : 通常为0
+from :是一个struct sockaddr类型的变量，该变量保存连接机的IP地址及端口号
+fromlen : 常置为sizeof (struct sockaddr)。
+返回值 : 返回接收到的字节数或当出现错误时返回-1，并置相应的errno。
+
+
+#Python
+s.recvfrom(bufsize[.flag])
+返回值 : （data,address）元组, 其中data是包含接收数据的字符串，address是发送数据的套接字地址
+bufsize : 指定要接收的数据大小
+flag : 提供有关消息的其他信息，通常可以忽略
+</code></pre><p>####2.4. 简单的客户端服务器UDP连接</p>
+<pre><code>#服务器端
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+import socket
+BUF_SIZE = 1024  #设置缓冲区大小
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  #生成新的套接字对象
+server.bind(server_addr)  #套接字绑定IP和端口
+while True :
+    print &quot;waitting for data&quot;
+    data, client_addr = server.recvfrom(BUF_SIZE)  #从客户端接收数据
+    print &apos;Connected by&apos;, client_addr, &apos; Receive Data : &apos;, data
+    server.sendto(data, client_addr)  #发送数据给客户端
+server.close()
+
+
+#客户端
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+import socket
+import struct
+BUF_SIZE = 1024  #设置缓冲区
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  #生成新的套接字对象
+while True :
+    data = raw_input(&apos;Please Input data &gt; &apos;)
+    client.sendto(data, server_addr)  #向服务器发送数据
+    data, addr = client.recvfrom(BUF_SIZE)  #从服务器接收数据
+    print &quot;Data : &quot;, data
+client.close()
+</code></pre><p>###2.5. 其他</p>
+<pre><code>s.getpeername()
+#返回连接套接字的远程地址。返回值通常是元组（ipaddr,port）。
+s.getsockname()
+#返回套接字自己的地址。通常是一个元组(ipaddr,port)
+s.setsockopt(level,optname,value)
+#设置给定套接字选项的值。
+s.getsockopt(level,optname[.buflen])
+#返回套接字选项的值。
+s.settimeout(timeout)
+#设置套接字操作的超时期，timeout是一个浮点数，单位是秒。值为None表示没有超时期。一般，超时期应该在刚创建套接字时设置，因为它们可能用于连接的操作（如connect()）
+s.gettimeout()
+#返回当前超时期的值，单位是秒，如果没有设置超时期，则返回None。
+s.fileno()
+#返回套接字的文件描述符。
+s.setblocking(flag)
+#如果flag为0，则将套接字设为非阻塞模式，否则将套接字设为阻塞模式（默认值）。非阻塞模式下，如果调用recv()没有发现任何数据，或send()调用无法立即发送数据，那么将引起socket.error异常。
+s.makefile()
+#创建一个与该套接字相关连的文件
+</code></pre><p>##3. 参考链接<br><a href="https://docs.python.org/2/library/socket.html" target="_blank" rel="external">python-socket官方文档</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/如何重命名scrapy下载的图片/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/30/如何重命名scrapy下载的图片/" itemprop="url">如何重命名scrapy下载的图片</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T17:07:32+08:00">
+                2015-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>默认情况下，使用ImagePipeline组件下载图片的时候，图片名称是以图片URL的SHA1值进行保存的。</p>
+<p>如：<br>图片URL:<a href="http://www.example.com/image.jpg" target="_blank" rel="external">http://www.example.com/image.jpg</a></p>
+<p>SHA1结果：3afec3b4765f8f0a07b78f98c07b83f013567a0a</p>
+<p>则图片名称：3afec3b4765f8f0a07b78f98c07b83f013567a0a.jpg</p>
+<p>但是，我想要以原来的图片名称进行保存，比如上面例子中的图片保存到本地的话，图片名称就应该是：image.jpg</p>
+<p>stackoverflow上说是可以重写<code>image_key</code>函数，不过我试了下，结果发现不行，重写的image_key函数没被调用。其实不是stackoverflow上的回答是错误的，在<code>scrapy 0.12</code>之前，确实应该这样来解决此问题，现在scrapy的版本已经更新了很多，这个方法不适用了，下面是ImagePipeline的源码中的提醒：</p>
+<blockquote>
+<p>ImagesPipeline.image_key(url) and file_key(url) methods are deprecated, please use file_path(request, response=None, info=None) instead</p>
+</blockquote>
+<p>也就是说，在最新版本的Scrapy中（0.24.4），使用<code>file_path</code>代替<code>image_key</code>函数。</p>
+<p>下面是新版本的解决方法，在<code>scrapy 0.24.4</code>中测试通过</p>
+<ul>
+<li><p>在pipelines.py中自定义ImagePipeline类，并重写file_path函数</p>
+<pre><code>from scrapy.contrib.pipeline.images import ImagesPipeline
+from scrapy.http import Request
+from scrapy.exceptions import DropItem
+
+class MyImagesPipeline(ImagesPipeline):
+    def file_path(self, request, response=None, info=None):
+        image_guid = request.url.split(&apos;/&apos;)[-1]
+        return &apos;full/%s&apos; % (image_guid)
+
+    #item[&apos;image_urls&apos;]是我们在item.py中定义的存放图片url的变量，如果定义了别的变量名，注意更换
+    def get_media_requests(self, item, info):
+        for image_url in item[&apos;image_urls&apos;]:
+            yield Request(image_url)
+
+    def item_completed(self, results, item, info):
+        image_paths = [x[&apos;path&apos;] for ok, x in results if ok]
+        if not image_paths:
+            raise DropItem(&quot;Item contains no images&quot;)
+        return item
+</code></pre></li>
+<li><p>修改setting.py</p>
+<pre><code>ITEM_PIPELINES = {
+    # &apos;scrapy.contrib.pipeline.images.ImagesPipeline&apos;: 1
+    &apos;sis.pipelines.MyImagesPipeline&apos;
+    }
+</code></pre></li>
+</ul>
+<p>可以参考stackoverflow上<a href="http://stackoverflow.com/questions/6194041/scrapy-image-download-how-to-use-custom-filename/22263951#22263951" target="_blank" rel="external">此问题的讨论</a></p>
+<p>原文地址在<a href="http://www.it165.net/pro/html/201402/9615.html" target="_blank" rel="external">这里</a>，本文做了一些删除和修改</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/29/scrapy如何获取完整的url/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/29/scrapy如何获取完整的url/" itemprop="url">scrapy如何获取完整的url</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-29T20:31:07+08:00">
+                2015-01-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>用scrapy抓取网页的时候，有时抓取到的并不是完整的url，而是url的后面部分。例如，完整的url是<code>http://michaelyou.github.io/categories/scrapy/</code>，我们抓到的只是<code>/categories/scrapy/</code>,这个时候如何获取完整的url呢？或者说，如何将完整的url拼出来呢？</p>
+<p>解决方法如下：</p>
+<ul>
+<li><p>首先在我们的spider文件头上加上：</p>
+<pre><code>from scrapy.utils.response import get_base_url
+from scrapy.utils.url import urljoin_rfc
+</code></pre></li>
+<li><p>第二步在我们定义的parse函数中加上：</p>
+<pre><code>#这一句便是取url的开头部分
+base_url = get_base_url(response)
+#省略若干行
+#这一句是取url的后面部分
+relative_url = sel.xpath(&apos;***&apos;).extract()[0]
+#将两部分合并
+item[&apos;link&apos;] = urljoin_rfc(base_url, relative_url)
+</code></pre></li>
+</ul>
+<p>严重提醒：</p>
+<p>在求<code>relative_url</code>时，我们在<code>extract()</code>后面加了<code>[0]</code>,因为<code>extract()</code>取出来的是一个数组，而函数<code>urljoin_rfc</code>需要的参数是字符串，所以要从数组中将值取出来，这时的数组内只有一个值，<code>index=0</code>，所以加上了<code>[0]</code>.很多人忘记了加<code>[0]</code>,最后导致合并的时候失败。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/16/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/18/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/16/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/18/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2186,7 +2439,7 @@ if __name__ == &apos;__main__&apos;:
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">203</span>
+                <span class="site-state-item-count">199</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

@@ -286,522 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/12/cookie-和session-的区别/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/12/cookie-和session-的区别/" itemprop="url">cookie 和session 的区别</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-12T14:37:50+08:00">
-                2015-02-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/http/" itemprop="url" rel="index">
-                    <span itemprop="name">http</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>转载自<a href="http://www.cnblogs.com/shiyangxt/archive/2008/10/07/1305506.html" target="_blank" rel="external">这里</a>  </p>
-<p>当你在浏览网站的时候，WEB 服务器会先送一小小资料放在你的计算机上，Cookie 会把你在网站上所打的文字或是一些选择都纪录下来。当下次你再光临同一个网站，WEB 服务器会先看看有没有它上次留下的 Cookie 资料，有的话，就会依据 Cookie<br>里的内容来判断使用者，送出特定的网页内容给你。 Cookie 的使用很普遍，许多提供个人化服务的网站，都是利用 Cookie来辨认使用者，以方便送出使用者量身定做的内容，像是 Web 接口的免费 email 网站，都要用到 Cookie。</p>
-<p>具体来说cookie机制采用的是在客户端保持状态的方案，而session机制采用的是在服务器端保持状态的方案。</p>
-<p>同时我们也看到，由于采用服务器端保持状态的方案在客户端也需要保存一个标识，所以session机制可能需要借助于cookie机制来达到保存标识的目的，但实际上它还有其他选择。</p>
-<p>cookie机制。正统的cookie分发是通过扩展HTTP协议来实现的，服务器通过在HTTP的响应头中加上一行特殊的指示以提示浏览器按照指示生成相应的cookie。然而纯粹的客户端脚本如JavaScript或者VBScript也可以生成cookie。而cookie的使用是由浏览器按照一定的原则在后台自动发送给服务器的。浏览器检查所有存储的cookie，如果某个cookie所声明的作用范围大于等于将要请求的资源所在的位置，则把该cookie附在请求资源的HTTP请求头上发送给服务器。</p>
-<p>cookie的内容主要包括：名字，值，过期时间，路径和域。路径与域一起构成cookie的作用范围。若不设置过期时间，则表示这个cookie的生命期为浏览器会话期间，关闭浏览器窗口，cookie就消失。这种生命期为浏览器会话期的cookie被称为会话cookie。</p>
-<p>会话cookie一般不存储在硬盘上而是保存在内存里，当然这种行为并不是规范规定的。若设置了过期时间，浏览器就会把cookie保存到硬盘上，关闭后再次打开浏览器，这些cookie仍然有效直到超过设定的过期时间。存储在硬盘上的cookie可以在不同的浏览器进程间共享，比如两个IE窗口。而对于保存在内存里的cookie，不同的浏览器有不同的处理方式。</p>
-<p>session机制。session机制是一种服务器端的机制，服务器使用一种类似于散列表的结构（也可能就是使用散列表）来保存信息。</p>
-<p>当程序需要为某个客户端的请求创建一个session时，服务器首先检查这个客户端的请求里是否已包含了一个session标识（称为session id），如果已包含则说明以前已经为此客户端创建过session，服务器就按照session id把这个session检索出来<br>使用（检索不到，会新建一个），如果客户端请求不包含session id，则为此客户端创建一个session并且生成一个与此session相关联的session id，session id的值应该是一个既不会重复，又不容易被找到规律以仿造的字符串，这个session id将被在本次响应中返回给客户端保存。保存这个session id的方式可以采用cookie，这样在交互过程中浏览器可以自动的按照规则把这个标识发送给服务器。一般这个cookie的名字都是类似于SEEESIONID。但cookie可以被人为的禁止，则必须有其他机制以便在cookie被禁止时仍然能够把session id传递回服务器。</p>
-<p>经常被使用的一种技术叫做URL重写，就是把session id直接附加在URL路径的后面。还有一种技术叫做表单隐藏字段。就是服务器会自动修改表单，添加一个隐藏字段，以便在表单提交时能够把session id传递回服务器。比如： </p>
-<pre><code>&lt;form name=&quot;testform&quot; action=&quot;/xxx&quot;&gt; 
-&lt;input type=&quot;hidden&quot; name=&quot;jsessionid&quot; value=&quot;ByOK3vjFD75aPnrF7C2HmdnV6QZcEbzWoWiBYEnLerjQ99zWpBng!-145788764&quot;&gt; 
-&lt;input type=&quot;text&quot;&gt; 
-&lt;/form&gt; 
-</code></pre><p>实际上这种技术可以简单的用对action应用URL重写来代替。</p>
-<p>cookie 和session 的区别：</p>
-<ol>
-<li><p>cookie数据存放在客户的浏览器上，session数据放在服务器上。</p>
-</li>
-<li><p>cookie不是很安全，别人可以分析存放在本地的COOKIE并进行COOKIE欺骗<br>考虑到安全应当使用session。</p>
-</li>
-<li><p>session会在一定时间内保存在服务器上。当访问增多，会比较占用你服务器的性能<br>考虑到减轻服务器性能方面，应当使用COOKIE。</p>
-</li>
-<li><p>单个cookie保存的数据不能超过4K，很多浏览器都限制一个站点最多保存20个cookie。</p>
-</li>
-<li><p>所以个人建议：<br>将登陆信息等重要信息存放为SESSION<br>其他信息如果需要保留，可以放在COOKIE中</p>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/11/Python编程中常用的基础知识总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/11/Python编程中常用的基础知识总结/" itemprop="url">Python编程中常用的基础知识总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-11T10:34:19+08:00">
-                2015-02-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Python编程中常用的12种基础知识总结：遍历目录方法，列表按列排序、去重，字典排序，字典、列表、字符串互转，时间对象操作，命令行参数解析(getopt)，print 格式化输出，进制转换，Python调用系统命令或者脚本，Python 读写文件。</p>
-<p>##遍历目录方法<br>在某些时候，我们需要遍历某个目录找出特定的文件列表，可以通过os.walk方法来遍历，非常方便</p>
-<pre><code>import os
-fileList = []
-rootdir = &quot;/data&quot;
-for root, subFolders, files in os.walk(rootdir):
-    if &apos;.svn&apos; in subFolders: 
-        subFolders.remove(&apos;.svn&apos;)  # 排除特定目录
-    for file in files:
-        if file.find(&quot;.t2t&quot;) != -1:# 查找特定扩展名的文件
-            file_dir_path = os.path.join(root,file)
-            fileList.append(file_dir_path)  
-
-print fileList
-</code></pre><p>##列表按列排序(list sort)<br>如果列表的每个元素都是一个元组(tuple),我们要根据元组的某列来排序的话，可参考如下方法</p>
-<p>下面例子我们是根据元组的第2列和第3列数据来排序的,而且是倒序(reverse=True)</p>
-<pre><code>&gt;&gt;&gt; a = [(&apos;2011-03-17&apos;, &apos;2.26&apos;, 6429600, &apos;0.0&apos;), (&apos;2011-03-16&apos;, &apos;2.26&apos;, 12036900, &apos;-3.0&apos;),
- (&apos;2011-03-15&apos;, &apos;2.33&apos;, 15615500,&apos;-19.1&apos;)]
-&gt;&gt;&gt; print a[0][0]
-2011-03-17
-&gt;&gt;&gt; b = sorted(a, key=lambda result: result[1],reverse=True)
-&gt;&gt;&gt; print b
-[(&apos;2011-03-15&apos;, &apos;2.33&apos;, 15615500, &apos;-19.1&apos;), (&apos;2011-03-17&apos;, &apos;2.26&apos;, 6429600, &apos;0.0&apos;),
-(&apos;2011-03-16&apos;, &apos;2.26&apos;, 12036900, &apos;-3.0&apos;)]
-&gt;&gt;&gt; c = sorted(a, key=lambda result: result[2],reverse=True)
-&gt;&gt;&gt; print c
-[(&apos;2011-03-15&apos;, &apos;2.33&apos;, 15615500, &apos;-19.1&apos;), (&apos;2011-03-16&apos;, &apos;2.26&apos;, 12036900, &apos;-3.0&apos;),
-(&apos;2011-03-17&apos;, &apos;2.26&apos;, 6429600, &apos;0.0&apos;)]
-</code></pre><p>##列表去重(list uniq)<br>有时候需要将list中重复的元素删除，就要使用如下方法</p>
-<pre><code>&gt;&gt;&gt; lst= [(1,&apos;sss&apos;),(2,&apos;fsdf&apos;),(1,&apos;sss&apos;),(3,&apos;fd&apos;)]
-&gt;&gt;&gt; set(lst)
-set([(2, &apos;fsdf&apos;), (3, &apos;fd&apos;), (1, &apos;sss&apos;)])
-&gt;&gt;&gt;
-&gt;&gt;&gt; lst = [1, 1, 3, 4, 4, 5, 6, 7, 6]
-&gt;&gt;&gt; set(lst)
-set([1, 3, 4, 5, 6, 7])
-</code></pre><p>##字典排序(dict sort)<br>一般来说，我们都是根据字典的key来进行排序，但是我们如果想根据字典的value值来排序，就使用如下方法</p>
-<pre><code>&gt;&gt;&gt; from operator import itemgetter
-&gt;&gt;&gt; aa = {&quot;a&quot;:&quot;1&quot;,&quot;sss&quot;:&quot;2&quot;,&quot;ffdf&quot;:&apos;5&apos;,&quot;ffff2&quot;:&apos;3&apos;}
-&gt;&gt;&gt; sort_aa = sorted(aa.items(),key=itemgetter(1))
-&gt;&gt;&gt; sort_aa
-[(&apos;a&apos;, &apos;1&apos;), (&apos;sss&apos;, &apos;2&apos;), (&apos;ffff2&apos;, &apos;3&apos;), (&apos;ffdf&apos;, &apos;5&apos;)]
-或者：
-&gt;&gt;&gt; sort_aa = sorted(aa.items(), key=lambda result: result[1])
-</code></pre><p>##字典,列表,字符串互转<br>以下是生成数据库连接字符串,从字典转换到字符串</p>
-<pre><code>&gt;&gt;&gt; params = {&quot;server&quot;:&quot;mpilgrim&quot;, &quot;database&quot;:&quot;master&quot;, &quot;uid&quot;:&quot;sa&quot;, &quot;pwd&quot;:&quot;secret&quot;}
-&gt;&gt;&gt; [&quot;%s=%s&quot; % (k, v) for k, v in params.items()]
-[&apos;server=mpilgrim&apos;, &apos;uid=sa&apos;, &apos;database=master&apos;, &apos;pwd=secret&apos;]
-&gt;&gt;&gt; &quot;;&quot;.join([&quot;%s=%s&quot; % (k, v) for k, v in params.items()])
-&apos;server=mpilgrim;uid=sa;database=master;pwd=secret&apos;
-</code></pre><p>下面的例子 是将字符串转化为字典</p>
-<pre><code>&gt;&gt;&gt; a = &apos;server=mpilgrim;uid=sa;database=master;pwd=secret&apos;
-&gt;&gt;&gt; aa = {}
-&gt;&gt;&gt; for i in a.split(&apos;;&apos;):aa[i.split(&apos;=&apos;,1)[0]] = i.split(&apos;=&apos;,1)[1]  #split(&apos;=&apos;,1)表示按&apos;=&apos;分割1次
-...
-&gt;&gt;&gt; aa
-{&apos;pwd&apos;: &apos;secret&apos;, &apos;database&apos;: &apos;master&apos;, &apos;uid&apos;: &apos;sa&apos;, &apos;server&apos;: &apos;mpilgrim&apos;}
-</code></pre><p>##时间对象操作<br>    将时间对象转换成字符串</p>
-<pre><code>&gt;&gt;&gt; import datetime
-&gt;&gt;&gt; datetime.datetime.now().strftime(&quot;%Y-%m-%d %H:%M&quot;)
-  &apos;2011-01-20 14:05&apos;
-
-时间大小比较
-&gt;&gt;&gt; import time
-&gt;&gt;&gt; t1 = time.strptime(&apos;2011-01-20 14:05&apos;,&quot;%Y-%m-%d %H:%M&quot;)
-&gt;&gt;&gt; t2 = time.strptime(&apos;2011-01-20 16:05&apos;,&quot;%Y-%m-%d %H:%M&quot;)
-&gt;&gt;&gt; t1 &gt; t2
-  False
-&gt;&gt;&gt; t1 &lt; t2
-  True
-
-时间差值计算,计算8小时前的时间
-&gt;&gt;&gt; datetime.datetime.now().strftime(&quot;%Y-%m-%d %H:%M&quot;)
-  &apos;2011-01-20 15:02&apos;
-&gt;&gt;&gt; (datetime.datetime.now() - datetime.timedelta(hours=8)).strftime(&quot;%Y-%m-%d %H:%M&quot;)
-  &apos;2011-01-20 07:03&apos;
-
-将字符串转换成时间对象
-&gt;&gt;&gt; endtime=datetime.datetime.strptime(&apos;20100701&apos;,&quot;%Y%m%d&quot;)
-&gt;&gt;&gt; type(endtime)
-  &lt;type &apos;datetime.datetime&apos;&gt;
-&gt;&gt;&gt; print endtime
-  2010-07-01 00:00:00
-
-将从 1970-01-01 00:00:00 UTC 到现在的秒数，格式化输出   
-
-&gt;&gt;&gt; import time
-&gt;&gt;&gt; a = 1302153828
-&gt;&gt;&gt; time.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;,time.localtime(a))
-  &apos;2011-04-07 13:23:48&apos;
-</code></pre><p>##命令行参数解析(getopt)<br>通常在编写一些日运维脚本时，需要根据不同的条件，输入不同的命令行选项来实现不同的功能 在Python中提供了getopt模块很好的实现了命令行参数的解析,下面距离说明。请看如下程序:</p>
-<pre><code>#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-import sys,os,getopt
-def usage():
-print &apos;&apos;&apos;&apos;&apos;
-Usage: analyse_stock.py [options...]
-Options:
--e : Exchange Name
--c : User-Defined Category Name
--f : Read stock info from file and save to db
--d : delete from db by stock code
--n : stock name
--s : stock code
--h : this help info
-test.py -s haha -n &quot;HA Ha&quot;
-&apos;&apos;&apos;
-
-try:
-opts, args = getopt.getopt(sys.argv[1:],&apos;he:c:f:d:n:s:&apos;)
-except getopt.GetoptError:
-usage()
-sys.exit()
-if len(opts) == 0:
-usage()
-sys.exit()  
-
-for opt, arg in opts:
-if opt in (&apos;-h&apos;, &apos;--help&apos;):
-  usage()
-  sys.exit()
-elif opt == &apos;-d&apos;:
-  print &quot;del stock %s&quot; % arg
-elif opt == &apos;-f&apos;:
-  print &quot;read file %s&quot; % arg
-elif opt == &apos;-c&apos;:
-  print &quot;user-defined %s &quot; % arg
-elif opt == &apos;-e&apos;:
-  print &quot;Exchange Name %s&quot; % arg
-elif opt == &apos;-s&apos;:
-  print &quot;Stock code %s&quot; % arg
-elif opt == &apos;-n&apos;:
-  print &quot;Stock name %s&quot; % arg  
-
-sys.exit()
-</code></pre><p>##print 格式化输出</p>
-<pre><code>截取字符串输出,下面例子将只输出字符串的前3个字母
-&gt;&gt;&gt; str=&quot;abcdefg&quot;
-&gt;&gt;&gt; print &quot;%.3s&quot; % str
-  abc
-按固定宽度输出，不足使用空格补全,下面例子输出宽度为10
-&gt;&gt;&gt; str=&quot;abcdefg&quot;
-&gt;&gt;&gt; print &quot;%10s&quot; % str
-     abcdefg
-截取字符串，按照固定宽度输出
-&gt;&gt;&gt; str=&quot;abcdefg&quot;
-&gt;&gt;&gt; print &quot;%10.3s&quot; % str
-         abc
-浮点类型数据位数保留
-&gt;&gt;&gt; import fpformat
-&gt;&gt;&gt; a= 0.0030000000005
-&gt;&gt;&gt; b=fpformat.fix(a,6)
-&gt;&gt;&gt; print b
-  0.003000
-对浮点数四舍五入,主要使用到round函数
-&gt;&gt;&gt; from decimal import *
-&gt;&gt;&gt; a =&quot;2.26&quot;
-&gt;&gt;&gt; b =&quot;2.29&quot;
-&gt;&gt;&gt; c = Decimal(a) - Decimal(b)
-&gt;&gt;&gt; print c
-  -0.03
-&gt;&gt;&gt; c / Decimal(a) * 100
-  Decimal(&apos;-1.327433628318584070796460177&apos;)
-&gt;&gt;&gt; Decimal(str(round(c / Decimal(a) * 100, 2)))
-  Decimal(&apos;-1.33&apos;)
-</code></pre><h2 id="进制转换"><a href="#进制转换" class="headerlink" title="进制转换"></a>进制转换</h2><p>有些时候需要作不同进制转换，可以参考下面的例子(%x 十六进制,%d 十进制,%o 八进制)</p>
-<pre><code>&gt;&gt;&gt; num = 10
-&gt;&gt;&gt; print &quot;Hex = %x,Dec = %d,Oct = %o&quot; %(num,num,num)
-  Hex = a,Dec = 10,Oct = 12
-</code></pre><h2 id="Python调用系统命令或者脚本"><a href="#Python调用系统命令或者脚本" class="headerlink" title="Python调用系统命令或者脚本"></a>Python调用系统命令或者脚本</h2><pre><code>使用 os.system() 调用系统命令 , 程序中无法获得到输出和返回值
-&gt;&gt;&gt; import os
-&gt;&gt;&gt; os.system(&apos;ls -l /proc/cpuinfo&apos;)
-&gt;&gt;&gt; os.system(&quot;ls -l /proc/cpuinfo&quot;)
-  -r--r--r-- 1 root root 0  3月 29 16:53 /proc/cpuinfo
-  0
-
-使用 os.popen() 调用系统命令, 程序中可以获得命令输出，但是不能得到执行的返回值
-&gt;&gt;&gt; out = os.popen(&quot;ls -l /proc/cpuinfo&quot;)
-&gt;&gt;&gt; print out.read()
-  -r--r--r-- 1 root root 0  3月 29 16:59 /proc/cpuinfo  
-
-使用 commands.getstatusoutput() 调用系统命令, 程序中可以获得命令输出和执行的返回值
-&gt;&gt;&gt; import commands
-&gt;&gt;&gt; commands.getstatusoutput(&apos;ls /bin/ls&apos;)
-  (0, &apos;/bin/ls&apos;)
-</code></pre><p>##Python 读写文件</p>
-<pre><code>一次性读入文件到列表，速度较快，适用文件比较小的情况下
-track_file = &quot;track_stock.conf&quot;
-fd = open(track_file)
-content_list = fd.readlines()
-fd.close()
-for line in content_list:
-    print line  
-
-逐行读入，速度较慢,适用没有足够内存读取整个文件(文件太大)
-fd = open(file_path)
-fd.seek(0)
-title = fd.readline()
-keyword = fd.readline()
-uuid = fd.readline()
-fd.close()  
-
-写文件 write 与 writelines 的区别   
-
-Fd.write(str) : 把str写到文件中，write()并不会在str后加上一个换行符
-Fd.writelines(content) : 把content的内容全部写到文件中,原样写入，不会在每行后面加上任何东西
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/cookie/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1380,397 +864,6 @@ Fd.writelines(content) : 把content的内容全部写到文件中,原样写入�
 <p>从HTTP/1.1起，默认都开启了Keep-Alive，保持连接特性，简单地说，当一个网页打开完成后，客户端和服务器之间用于传输HTTP数据的TCP连接不会关闭，如果客户端再次访问这个服务器上的网页，会继续使用这一条已经建立的连接</p>
 <p> Keep-Alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间</p>
 
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/正则表达式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/10/正则表达式/" itemprop="url">正则表达式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-10T09:44:22+08:00">
-                2015-02-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>本文转载自<a href="http://www.cnblogs.com/huxi/archive/2010/07/04/1771073.html" target="_blank" rel="external">这里</a><br>，参考<a href="http://www.jb51.net/tools/zhengze.html" target="_blank" rel="external">这篇文章</a>补充了一些内容</p>
-<p>##基础</p>
-<p>###正则表达式到底是什么东西？<br>在编写处理字符串的程序或网页时，经常会有查找符合某些复杂规则的字符串的需要。<strong>正则表达式</strong>就是用于描述这些规则的工具。换句话说，正则表达式就是记录文本规则的代码。</p>
-<p>很可能你使用过linux下的<strong>通配符(wildcard)</strong>，也就是<code>*</code>和<code>?</code>。如果你想查找某个目录下的所有的txt文档的话，你会搜索<code>*.txt</code>。在这里，<code>*</code>会被解释成任意的字符串。和通配符类似，正则表达式也是用来进行文本匹配的工具，只不过比起通配符，它能更精确地描述你的需求——当然，代价就是更复杂——比如你可以编写一个正则表达式，用来查找<em>所有以0开头，后面跟着2-3个数字，然后是一个连字号<code>&quot;-&quot;</code>，最后是7或8位数字的字符串</em>(像<em>010-12345678</em>或<em>0376-7654321</em>)。</p>
-<blockquote>
-<p>字符是计算机软件处理文字时最基本的单位，可能是字母，数字，标点符号，空格，换行符，汉字等等。字符串是0个或更多个字符的序列。文本也就是文字，字符串。说某个字符串匹配某个正则表达式，通常是指这个字符串里有一部分（或几部分分别）能满足表达式给出的条件。</p>
-</blockquote>
-<p>正则表达式并不是Python的一部分。正则表达式是用于处理字符串的强大工具，拥有自己独特的语法以及一个独立的处理引擎，效率上可能不如str自带的方法，但功能十分强大。得益于这一点，在提供了正则表达式的语言里，正则表达式的语法都是一样的，区别只在于不同的编程语言实现支持的语法数量不同；但不用担心，不被支持的语法通常是不常用的部分。如果已经在其他语言里使用过正则表达式，只需要简单看一看就可以上手了。</p>
-<p>下图展示了使用正则表达式进行匹配的流程：</p>
-<p><img src="/img/re_simple.png" alt=""></p>
-<p>正则表达式的大致匹配过程是：依次拿出表达式和文本中的字符比较，如果每一个字符都能匹配，则匹配成功；一旦有匹配不成功的字符则匹配失败。如果表达式中有量词或边界，这个过程会稍微有一些不同，但也是很好理解的，看下图中的示例以及自己多使用几次就能明白。</p>
-<p>下图列出了Python支持的正则表达式元字符和语法：</p>
-<p><img src="/img/pyre.png" alt=""></p>
-<p>###数量词的贪婪模式与非贪婪模式<br>正则表达式通常用于在文本中查找匹配的字符串。Python里数量词默认是贪婪的（在少数语言里也可能是默认非贪婪），总是尝试匹配尽可能多的字符；非贪婪的则相反，总是尝试匹配尽可能少的字符。例如：正则表达式<code>&quot;ab*&quot;</code>如果用于查找<code>&quot;abbbc&quot;</code>，将找到<code>&quot;abbb&quot;</code>。而如果使用非贪婪的数量词<code>&quot;ab*?&quot;</code>，将找到<code>&quot;a&quot;</code>。</p>
-<p>###反斜杠的困扰<br>与大多数编程语言相同，正则表达式里使用<code>&quot;\&quot;</code>作为转义字符，这就可能造成反斜杠困扰。假如你需要匹配文本中的字符<code>&quot;\\&quot;</code>，那么使用编程语言表示的正则表达式里将需要4个反斜杠<code>&quot;\\\\&quot;</code>：前两个和后两个分别用于在编程语言里转义成反斜杠，转换成两个反斜杠后再在正则表达式里转义成一个反斜杠。Python里的原生字符串很好地解决了这个问题，这个例子中的正则表达式可以使用r”\“表示。同样，匹配一个数字的”\d”可以写成r”\d”。有了原生字符串，你再也不用担心是不是漏写了反斜杠，写出来的表达式也更直观。</p>
-<p>###匹配模式<br>正则表达式提供了一些可用的匹配模式，比如忽略大小写、多行匹配等，这部分内容将在Pattern类的工厂方法<code>re.compile(pattern[, flags])</code>中一起介绍。</p>
-<p>##re模块</p>
-<p>###开始使用re<br>Python通过re模块提供对正则表达式的支持。使用re的一般步骤是先将正则表达式的字符串形式编译为Pattern实例，然后使用Pattern实例处理文本并获得匹配结果（一个Match实例），最后使用Match实例获得信息，进行其他的操作。</p>
-<pre><code># encoding: UTF-8
-import re
-
-# 将正则表达式编译成Pattern对象
-pattern = re.compile(r&apos;hello&apos;)
-
-# 使用Pattern匹配文本，获得匹配结果，无法匹配时将返回None
-match = pattern.match(&apos;hello world!&apos;)
-
-if match:
-    # 使用Match获得分组信息
-    print match.group()
-
-### 输出 ###
-# hello
-</code></pre><p><strong>re.compile(strPattern[, flag]):</strong></p>
-<p>这个方法是Pattern类的工厂方法，用于将字符串形式的正则表达式编译为Pattern对象。 第二个参数<code>flag</code>是匹配模式，取值可以使用按位或运算符’|’表示同时生效，比如re.I | re.M。另外，你也可以在regex字符串中指定模式，比如<code>re.compile(&#39;pattern&#39;, re.I | re.M)</code>与<code>re.compile(&#39;(?im)pattern&#39;)</code>是等价的。</p>
-<p>可选值有：</p>
-<ul>
-<li>I(re.IGNORECASE): 忽略大小写（括号内是完整写法，下同）</li>
-<li>M(MULTILINE): 多行模式，改变’^’和’$’的行为（参见上图）</li>
-<li>S(DOTALL): 点任意匹配模式，改变’.’的行为</li>
-<li>L(LOCALE): 使预定字符类 \w \W \b \B \s \S 取决于当前区域设定</li>
-<li>U(UNICODE): 使预定字符类 \w \W \b \B \s \S \d \D 取决于unicode定义的字符属性</li>
-<li><p>X(VERBOSE): 详细模式。这个模式下正则表达式可以是多行，忽略空白字符，并可以加入注释。以下两个正则表达式是等价的：</p>
-<pre><code>a = re.compile(r&quot;&quot;&quot;\d +  # the integral part
-                   \.    # the decimal point
-                   \d *  # some fractional digits&quot;&quot;&quot;, re.X)
-b = re.compile(r&quot;\d+\.\d*&quot;)
-</code></pre></li>
-</ul>
-<p>re提供了众多模块方法用于完成正则表达式的功能。这些方法可以使用Pattern实例的相应方法替代，唯一的好处是少写一行re.compile()代码，但同时也无法复用编译后的Pattern对象。这些方法将在Pattern类的实例方法部分一起介绍。如上面这个例子可以简写为：</p>
-<pre><code>m = re.match(r&apos;hello&apos;, &apos;hello world!&apos;)
-print m.group()
-</code></pre><p>re模块还提供了一个方法escape(string)，用于将string中的正则表达式元字符如*/+/?等之前加上转义符再返回，在需要大量匹配元字符时有那么一点用。</p>
-<h3 id="Match"><a href="#Match" class="headerlink" title="Match"></a>Match</h3><p>Match对象是一次匹配的结果，包含了很多关于此次匹配的信息，可以使用Match提供的可读属性或方法来获取这些信息。</p>
-<p>属性：</p>
-<ul>
-<li>string: 匹配时使用的文本。</li>
-<li>re: 匹配时使用的Pattern对象。</li>
-<li>pos: 文本中正则表达式开始搜索的索引。值与Pattern.match()和Pattern.seach()方法的同名参数相同。</li>
-<li>endpos: 文本中正则表达式结束搜索的索引。值与Pattern.match()和Pattern.seach()方法的同名参数相同。</li>
-<li>lastindex: 最后一个被捕获的分组在文本中的索引。如果没有被捕获的分组，将为None。</li>
-<li>lastgroup: 最后一个被捕获的分组的别名。如果这个分组没有别名或者没有被捕获的分组，将为None。</li>
-</ul>
-<p>方法：</p>
-<ul>
-<li>group([group1, …]): </li>
-</ul>
-<p>获得一个或多个分组截获的字符串；指定多个参数时将以元组形式返回。group1可以使用编号也可以使用别名；编号0代表整个匹配的子串；不填写参数时，返回group(0)；没有截获字符串的组返回None；截获了多次的组返回最后一次截获的子串。</p>
-<ul>
-<li>groups([default]): </li>
-</ul>
-<p>以元组形式返回全部分组截获的字符串。相当于调用group(1,2,…last)。default表示没有截获字符串的组以这个值替代，默认为None。</p>
-<ul>
-<li>groupdict([default]): </li>
-</ul>
-<p>返回以有别名的组的别名为键、以该组截获的子串为值的字典，没有别名的组不包含在内。default含义同上。</p>
-<ul>
-<li>start([group]): </li>
-</ul>
-<p>返回指定的组截获的子串在string中的起始索引（子串第一个字符的索引）。group默认值为0。</p>
-<ul>
-<li>end([group]): </li>
-</ul>
-<p>返回指定的组截获的子串在string中的结束索引（子串最后一个字符的索引+1）。group默认值为0。</p>
-<ul>
-<li>span([group]): </li>
-</ul>
-<p>返回(start(group), end(group))。</p>
-<ul>
-<li>expand(template): </li>
-</ul>
-<p>将匹配到的分组代入template中然后返回。template中可以使用\id或\g<id>、\g<name>引用分组，但不能使用编号0。\id与\g<id>是等价的；但\10将被认为是第10个分组，如果你想表达\1之后是字符’0’，只能使用\g<1>0。</1></id></name></id></p>
-<pre><code>import re
-m = re.match(r&apos;(\w+) (\w+)(?P&lt;sign&gt;.*)&apos;, &apos;hello world!&apos;)
-
-print &quot;m.string:&quot;, m.string
-print &quot;m.re:&quot;, m.re
-print &quot;m.pos:&quot;, m.pos
-print &quot;m.endpos:&quot;, m.endpos
-print &quot;m.lastindex:&quot;, m.lastindex
-print &quot;m.lastgroup:&quot;, m.lastgroup
-
-print &quot;m.group(1,2):&quot;, m.group(1, 2)
-print &quot;m.groups():&quot;, m.groups()
-print &quot;m.groupdict():&quot;, m.groupdict()
-print &quot;m.start(2):&quot;, m.start(2)
-print &quot;m.end(2):&quot;, m.end(2)
-print &quot;m.span(2):&quot;, m.span(2)
-print r&quot;m.expand(r&apos;\2 \1\3&apos;):&quot;, m.expand(r&apos;\2 \1\3&apos;)
-
-### output ###
-# m.string: hello world!
-# m.re: &lt;_sre.SRE_Pattern object at 0x016E1A38&gt;
-# m.pos: 0
-# m.endpos: 12
-# m.lastindex: 3
-# m.lastgroup: sign
-# m.group(1,2): (&apos;hello&apos;, &apos;world&apos;)
-# m.groups(): (&apos;hello&apos;, &apos;world&apos;, &apos;!&apos;)
-# m.groupdict(): {&apos;sign&apos;: &apos;!&apos;}
-# m.start(2): 6
-# m.end(2): 11
-# m.span(2): (6, 11)
-# m.expand(r&apos;\2 \1\3&apos;): world hello!
-</code></pre><p>###Pattern<br>Pattern对象是一个编译好的正则表达式，通过Pattern提供的一系列方法可以对文本进行匹配查找。</p>
-<p>Pattern不能直接实例化，必须使用re.compile()进行构造。</p>
-<p>Pattern提供了几个可读属性用于获取表达式的相关信息：</p>
-<ul>
-<li>pattern: 编译时用的表达式字符串。</li>
-<li>flags: 编译时用的匹配模式。数字形式。</li>
-<li>groups: 表达式中分组的数量。</li>
-<li><p>groupindex: 以表达式中有别名的组的别名为键、以该组对应的编号为值的字典，没有别名的组不包含在内。</p>
-<pre><code>import re
-p = re.compile(r&apos;(\w+) (\w+)(?P&lt;sign&gt;.*)&apos;, re.DOTALL)
-
-print &quot;p.pattern:&quot;, p.pattern
-print &quot;p.flags:&quot;, p.flags
-print &quot;p.groups:&quot;, p.groups
-print &quot;p.groupindex:&quot;, p.groupindex
-
-### output ###
-# p.pattern: (\w+) (\w+)(?P&lt;sign&gt;.*)
-# p.flags: 16
-# p.groups: 3
-# p.groupindex: {&apos;sign&apos;: 3}
-</code></pre></li>
-</ul>
-<p>实例方法[ | re模块方法]：</p>
-<ul>
-<li>match(string[, pos[, endpos]]) | re.match(pattern, string[, flags]): </li>
-</ul>
-<p>这个方法将从string的pos下标处起尝试匹配pattern；如果pattern结束时仍可匹配，则返回一个Match对象；如果匹配过程中pattern无法匹配，或者匹配未结束就已到达endpos，则返回None。</p>
-<p>pos和endpos的默认值分别为0和len(string)；re.match()无法指定这两个参数，参数flags用于编译pattern时指定匹配模式。 </p>
-<p>注意：这个方法并不是完全匹配。当pattern结束时若string还有剩余字符，仍然视为成功。想要完全匹配，可以在表达式末尾加上边界匹配符’$’。 </p>
-<p>示例参见2.1小节。</p>
-<ul>
-<li>search(string[, pos[, endpos]]) | re.search(pattern, string[, flags]): </li>
-</ul>
-<p>这个方法用于查找字符串中可以匹配成功的子串。从string的pos下标处起尝试匹配pattern，如果pattern结束时仍可匹配，则返回一个Match对象；若无法匹配，则将pos加1后重新尝试匹配；直到pos=endpos时仍无法匹配则返回None。 </p>
-<p>pos和endpos的默认值分别为0和len(string))；re.search()无法指定这两个参数，参数flags用于编译pattern时指定匹配模式。 </p>
-<pre><code># encoding: UTF-8 
-import re 
-
-# 将正则表达式编译成Pattern对象 
-pattern = re.compile(r&apos;world&apos;) 
-
-# 使用search()查找匹配的子串，不存在能匹配的子串时将返回None 
-# 这个例子中使用match()无法成功匹配 
-match = pattern.search(&apos;hello world!&apos;) 
-
-if match: 
-    # 使用Match获得分组信息 
-    print match.group() 
-
-### 输出 ### 
-# world
-</code></pre><ul>
-<li>split(string[, maxsplit]) | re.split(pattern, string[, maxsplit]): </li>
-</ul>
-<p>按照能够匹配的子串将string分割后返回列表。maxsplit用于指定最大分割次数，不指定将全部分割。 </p>
-<pre><code>import re
-
-p = re.compile(r&apos;\d+&apos;)
-print p.split(&apos;one1two2three3four4&apos;)
-
-### output ###
-# [&apos;one&apos;, &apos;two&apos;, &apos;three&apos;, &apos;four&apos;, &apos;&apos;]
-</code></pre><ul>
-<li>findall(string[, pos[, endpos]]) | re.findall(pattern, string[, flags]): </li>
-</ul>
-<p>搜索string，以列表形式返回全部能匹配的子串。 </p>
-<pre><code>import re
-
-p = re.compile(r&apos;\d+&apos;)
-print p.findall(&apos;one1two2three3four4&apos;)
-
-### output ###
-# [&apos;1&apos;, &apos;2&apos;, &apos;3&apos;, &apos;4&apos;]
-</code></pre><ul>
-<li>finditer(string[, pos[, endpos]]) | re.finditer(pattern, string[, flags]): </li>
-</ul>
-<p>搜索string，返回一个顺序访问每一个匹配结果（Match对象）的迭代器。 </p>
-<pre><code>import re
-
-p = re.compile(r&apos;\d+&apos;)
-for m in p.finditer(&apos;one1two2three3four4&apos;):
-    print m.group(),
-
-### output ###
-# 1 2 3 4
-</code></pre><ul>
-<li>sub(repl, string[, count]) | re.sub(pattern, repl, string[, count]): </li>
-</ul>
-<p>使用repl替换string中每一个匹配的子串后返回替换后的字符串。</p>
-<p>当repl是一个字符串时，可以使用\id或\g<id>、\g<name>引用分组，但不能使用编号0。 </name></id></p>
-<p>当repl是一个方法时，这个方法应当只接受一个参数（Match对象），并返回一个字符串用于替换（返回的字符串中不能再引用分组）。<br>count用于指定最多替换次数，不指定时全部替换。 </p>
-<pre><code>import re
-
-p = re.compile(r&apos;(\w+) (\w+)&apos;)
-s = &apos;i say, hello world!&apos;
-
-print p.sub(r&apos;\2 \1&apos;, s)
-
-def func(m):
-    return m.group(1).title() + &apos; &apos; + m.group(2).title()
-
-print p.sub(func, s)
-
-### output ###
-# say i, world hello!
-# I Say, Hello World!
-</code></pre><ul>
-<li>subn(repl, string[, count]) |re.sub(pattern, repl, string[, count]): </li>
-</ul>
-<p>返回 (sub(repl, string[, count]), 替换次数)。 </p>
-<pre><code>import re
-
-p = re.compile(r&apos;(\w+) (\w+)&apos;)
-s = &apos;i say, hello world!&apos;
-
-print p.subn(r&apos;\2 \1&apos;, s)
-
-def func(m):
-    return m.group(1).title() + &apos; &apos; + m.group(2).title()
-
-print p.subn(func, s)
-
-### output ###
-# (&apos;say i, world hello!&apos;, 2)
-# (&apos;I Say, Hello World!&apos;, 2)
-</code></pre>
           
         
       
@@ -2595,11 +1688,584 @@ We are no longer the knights who say Ni! We are now the knights who say ekki-ekk
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/04/scrapy的一些知识点/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/04/scrapy的一些知识点/" itemprop="url">scrapy的一些知识点</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-04T11:23:27+08:00">
+                2015-02-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li><p>###运行spider，将爬取到的信息用JSON形式存到scraped_data.json文件中</p>
+<pre><code>scrapy crawl my_spider -o scraped_data.json
+</code></pre></li>
+<li><p>###在scrapy shell里面打印返回的html</p>
+<pre><code>response.body
+</code></pre></li>
+<li><p>###创建一个Spider，我们必须继承<code>scrapy.Spider</code>类(或者别的爬虫类)，并且定义以下3个属性</p>
+<ul>
+<li>name：用于区别Spider。 该名字必须是唯一的，您不可以为不同的Spider设定相同的名字。</li>
+<li>start_urls：包含了Spider在启动时进行爬取的url列表。 因此，第一个被获取到的页面将是其中之一(每个url都会被爬取)。 <code>后续的URL则从初始的URL获取到的数据中提取</code>。</li>
+<li>parse() 是spider的一个方法。 被调用时，<code>每个初始URL完成下载后生成的 Response 对象将会作为唯一的参数传递给该函数</code>。 该方法负责解析返回的数据(response data)，提取数据(生成item)以及生成需要进一步处理的URL的 Request 对象。parse只是初始url的回调函数，可以定义别的回调函数来处理后序的链接。</li>
+</ul>
+</li>
+<li><p>###scrapy shell</p>
+<pre><code>scrapy shell &quot;http://www.dmoz.org/Computers/Programming/Languages/Python/Books/&quot;
+</code></pre><blockquote>
+<p>当您在终端运行Scrapy时，请一定记得给url地址加上<code>引号</code>，否则包含参数的url(例如 &amp; 字符)会导致Scrapy运行失败。</p>
+</blockquote>
+</li>
+<li><p>###Item 对象是自定义的python字典。 您可以使用标准的字典语法来获取到其每个字段的值。(字段即是我们之前用Field赋值的属性):</p>
+<pre><code>&gt;&gt;&gt; item = DmozItem()
+&gt;&gt;&gt; item[&apos;title&apos;] = &apos;Example title&apos;
+&gt;&gt;&gt; item[&apos;title&apos;]
+&apos;Example title&apos;
+</code></pre></li>
+<li><p>###<code>scrapy.cfg</code> 存放的目录被认为是 项目的根目录 。该文件中包含python模块名的字段定义了项目的设置</p>
+</li>
+<li><h3 id="Link-Extractors-是用于从网页-scrapy-http-Response-中抽取会被follow的链接的对象。"><a href="#Link-Extractors-是用于从网页-scrapy-http-Response-中抽取会被follow的链接的对象。" class="headerlink" title="Link Extractors 是用于从网页(scrapy.http.Response )中抽取会被follow的链接的对象。"></a>Link Extractors 是用于从网页(scrapy.http.Response )中抽取会被follow的链接的对象。</h3><pre><code>scrapy.contrib.linkextractors import LinkExtractor
+</code></pre></li>
+<li><p>###log服务<br>Scrapy提供了log功能。您可以通过 scrapy.log 模块使用。当前底层实现使用了 Twisted logging ，不过可能在之后会有所变化。</p>
+</li>
+<li><p>###使用FormRequest.from_response()方法模拟用户登录<br>通常网站通过 <input type="hidden"> 实现对某些表单字段（如数据或是登录界面中的认证令牌等）的预填充。 使用Scrapy抓取网页时，如果想要预填充或重写像用户名、用户密码这些表单字段， 可以使用 FormRequest.from_response() 方法实现。下面是使用这种方法的爬虫例子:</p>
+<pre><code>import scrapy
+
+class LoginSpider(scrapy.Spider):
+    name = &apos;example.com&apos;
+    start_urls = [&apos;http://www.example.com/users/login.php&apos;]
+
+    def start_requests(self):
+        return scrapy.FormRequest.from_response(
+            &quot;url&quot;,
+            formdata={&apos;username&apos;: &apos;john&apos;, &apos;password&apos;: &apos;secret&apos;},
+            callback=self.after_login
+        )
+
+    def after_login(self, response):
+        # check login succeed before going on
+        if &quot;authentication failed&quot; in response.body:
+            self.log(&quot;Login failed&quot;, level=log.ERROR)
+            return
+
+        # continue scraping with authenticated session...
+</code></pre></li>
+<li><p>###Scrapy是以广度优先还是深度优先进行爬取的呢<br>默认情况下，Scrapy使用 LIFO 队列来存储等待的请求。简单的说，就是 深度优先顺序 。深度优先对大多数情况下是更方便的。如果您想以 广度优先顺序 进行爬取，你可以设置以下的设定:</p>
+<pre><code>DEPTH_PRIORITY = 1
+SCHEDULER_DISK_QUEUE = &apos;scrapy.squeue.PickleFifoDiskQueue&apos;
+SCHEDULER_MEMORY_QUEUE = &apos;scrapy.squeue.FifoMemoryQueue&apos;
+</code></pre></li>
+<li><p>###避免被禁止(ban)<br>有些网站实现了特定的机制，以一定规则来避免被爬虫爬取。 与这些规则打交道并不容易，需要技巧，有时候也需要些特别的基础。 如果有疑问请考虑联系 商业支持 。</p>
+<p>  下面是些处理这些站点的建议(tips):</p>
+<ul>
+<li>使用user agent池，轮流选择之一来作为user agent。池中包含常见的浏览器的user agent(google一下一大堆)</li>
+<li>禁止cookies(参考 COOKIES_ENABLED)，有些站点会使用cookies来发现爬虫的轨迹。</li>
+<li>设置下载延迟(2或更高)。参考 DOWNLOAD_DELAY 设置。</li>
+<li>如果可行，使用 <a href="http://www.googleguide.com/cached_pages.html" target="_blank" rel="external">Google cache</a> 来爬取数据，而不是直接访问站点。</li>
+<li>使用IP池。例如免费的 <a href="https://www.torproject.org/" target="_blank" rel="external">Tor</a>项目 或付费服务(<a href="http://proxymesh.com/" target="_blank" rel="external">ProxyMesh</a>)。</li>
+<li>使用高度分布式的下载器(downloader)来绕过禁止(ban)，您就只需要专注分析处理页面。这样的例子有: <a href="http://crawlera.com/" target="_blank" rel="external">Crawlera</a></li>
+</ul>
+</li>
+<li><p>###禁止重试<br>对失败的HTTP请求进行重试会减慢爬取的效率，尤其是当站点响应很慢(甚至失败)时， 访问这样的站点会造成超时并重试多次。这是不必要的，同时也占用了爬虫爬取其他站点的能力。</p>
+<p>  禁止重试:</p>
+<pre><code>RETRY_ENABLED = False
+</code></pre></li>
+<li>###使用相对Xpaths</li>
+</ul>
+<p>如果你使用嵌套的选择器，并使用起始为 <code>/</code> 的XPath，那么该XPath将对文档使用绝对路径，而且对于你调用的 Selector 不是相对路径。</p>
+<p>比如，假设你想提取在 <code>&lt;div&gt;</code>元素中的所有 <code>&lt;p&gt;</code>元素。首先，你将先得到所有的 <code>&lt;div&gt;</code> 元素:</p>
+<pre><code>&gt;&gt;&gt; divs = response.xpath(&apos;//div&apos;)
+</code></pre><p>开始时，你可能会尝试使用下面的错误的方法，<strong>因为它其实是从整篇文档中，而不仅仅是从那些 <code>&lt;div&gt;</code> 元素内部提取所有的 <code>&lt;p&gt;</code>元素</strong>:</p>
+<pre><code>&gt;&gt;&gt; for p in divs.xpath(&apos;//p&apos;):  # this is wrong - gets all &lt;p&gt; from the whole document
+...     print p.extract()
+</code></pre><p>下面是比较合适的处理方法(注意 .//p XPath的点前缀):</p>
+<pre><code>&gt;&gt;&gt; for p in divs.xpath(&apos;.//p&apos;):  # extracts all &lt;p&gt; inside
+...     print p.extract()
+</code></pre><p>另一种常见的情况将是提取所有直系 <code>&lt;p&gt;</code>的结果:</p>
+<pre><code>&gt;&gt;&gt; for p in divs.xpath(&apos;p&apos;):
+...     print p.extract()
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/03/python的-classmethod-修饰符/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/03/python的-classmethod-修饰符/" itemprop="url">python的@classmethod 修饰符</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-03T14:37:00+08:00">
+                2015-02-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>通常情况下，如果我们要使用一个类的方法，那我们只能将一个类实体化成一个对象，进而调用对象使用方法。</p>
+<pre><code>class Hello(object):
+    def __init__:
+        ...
+
+    def print_hello(self):
+        print &quot;Hello&quot;
+</code></pre><p> 要用 print_hello() 就得：</p>
+<pre><code>hlo = Hello()
+hlo.print_hello()
+输出：Hello
+</code></pre><p>如果用了 @classmethod 就简单了：</p>
+<pre><code>class Hello(object):
+    def __init__:
+        ...
+
+    @classmethod
+    def print_hello(cls):
+        print &quot;Hello&quot;
+</code></pre><p>要用的话直接：</p>
+<pre><code>Hello.print_hello()
+Hello
+</code></pre><p>注意：@classmethod 仅仅适用于单独的，与类本身的数据结构无关函数，其实用了它的函数，与使用普通函数无异，甚至不能在参数里加入 self，如果要在其中使用类的数据结构，仍然需要将类实例化一次才可以，所以要小心使用。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/03/每天一个python小程序-7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/03/每天一个python小程序-7/" itemprop="url">每天一个python小程序(7)--敏感词</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-03T14:34:54+08:00">
+                2015-02-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>敏感词文本文件 filtered_words.txt，里面的内容为以下内容，当用户输入敏感词语时，则打印出 Freedom，否则打印出 Human Rights。</p>
+<p>love</p>
+<p>sex</p>
+<p>jiangge</p>
+<p>bitch</p>
+</blockquote>
+<p>代码中有两种从txt文件中获取敏感词的方法，有一种被注释掉了，因为用这种方法获得的list最后会有一个空的字符串，导致下面find的时候一直会匹配成功，感兴趣的同学可以去掉注释试一下（同时需要注释掉注释下面的4行）</p>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
+
+def get_sensitive_word(filepath):
+    f = open(filepath, &apos;r&apos;)
+    #data = f.read()
+    #filt = data.split(&apos;\n&apos;) 这个方法得到的序列中最后有一个空的字符串，导致匹配一直成功
+    words = []
+    for word in f:
+        #strip删除字符序列，这里是删除word中的&apos;\n&apos;
+        words.append(word.strip(&apos;\n&apos;))
+    f.close()
+    return words
+
+def filter_word(words):
+    flag = False
+    text = raw_input(&apos;please input: &apos;)
+    for word in words:
+        if text.find(word) != -1:
+            flag = True
+
+    if flag:
+        print &apos;freedom&apos;
+    else:
+        print &apos;human rights&apos;
+
+if __name__ == &apos;__main__&apos;:
+    filepath = &apos;filtered_words.txt&apos;
+    words = get_sensitive_word(filepath)
+    filter_word(words)
+</code></pre><p>完整项目见<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.11" target="_blank" rel="external">这里</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/15/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/17/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/15/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/17/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2645,7 +2311,7 @@ We are no longer the knights who say Ni! We are now the knights who say ekki-ekk
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">203</span>
+                <span class="site-state-item-count">199</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

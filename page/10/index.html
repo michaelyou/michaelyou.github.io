@@ -286,434 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/24/TCP是一种流协议/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/24/TCP是一种流协议/" itemprop="url">TCP是一种流协议</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-24T10:58:19+08:00">
-                2015-03-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
-                    <span itemprop="name">TCP/IP</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>之前写过一篇是<a href="http://michaelyou.github.io/2015/03/13/tcp%E6%98%AF%E6%B5%81%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83-%E6%8B%86%E5%8C%85%E5%92%8C%E7%B2%98%E5%8C%85/" target="_blank" rel="external">tcp是流的一些思考–拆包和粘包</a>，是我自己对这个问题的一些认识，毕竟见识浅薄，所言不成系统。今天看到了之前看过的一篇文章，正是对这个问题的一些深入解释，特转载于此，与大家共享。</p>
-<p>转载自《TCP/IP高效编程 改善网络程序的44个技巧》–技巧6：记住TCP是一种流协议</p>
-<hr>
-<p>TCP是一种流协议（stream protocol）。这就意味着数据是以字节流的形式传递给接收者的，没有固有的”报文”或”报文边界”的概念。从这方面来说，读取TCP数据就像从串行端口读取数据一样–无法预先得知在一次指定的读调用中会返回多少字节。</p>
-<p>为了说明这一点，我们假设在主机A和主机B的应用程序之间有一条TCP连接，主机A上的应用程序向主机B发送一条报文。进一步假设主机A有两条报文要发送，并两次调用send来发送，每条报文调用一次。很自然就会想到从主机A向主机B发送的两条报文是作为两个独立实体，在各自的分组中发送的，如图2-25所示。</p>
-<p><img src="/img/发送两条报文的错误类型.png" alt="图2-25　发送两条报文的错误模型"></p>
-<p>但不幸的是，实际的数据传输过程很可能不会遵循这个模型。主机A上的应用程序会调用send，我们假设这条写操作的数据被封装在一个分组中传送给B。实际上，send通常只是将数据复制到主机A的TCP/IP栈中，就返回了。由TCP来决定（如果有的话）需要立即发送多少数据。做这种决定的过程很复杂，取决于很多因素，比如发送窗口（当时主机B能够接收的数据量），拥塞窗口（对网络拥塞的估计），路径上的最大传输单元（沿着主机A和B之间的网络路径一次可以传输的最大数据量），以及连接的输出队列中有多少数据。更多与此有关的内容请参见技巧15。图2-26只显示了主机A的TCP封装数据时可能使用的诸多方法中的4种。在图2-26中，M11和M12表示M1的第一和第二部分，M21和M22与之类似。如图2-26所示，TCP不一定会将一条报文的全部内容都放在一个分组中传送出去。</p>
-<p><img src="/img/封装两条报文可能采用的4种方式.png" alt="图2-26　封装两条报文可能采用的4种方式"></p>
-<p>现在，我们从主机B应用程序的角度来看这种情形。总的来说，主机B应用程序任意一次调用recv时，都不会对TCP发送给它的数据量做任何假设。比如，当主机B应用程序读取第一条报文时，可能会出现下列4种结果。</p>
-<blockquote>
-<p>　实际上，可能的结果不止4种，但我们忽略了出错和EOF之类的结果。我们还假设应用程序读取了所有可读的数据。</p>
-</blockquote>
-<ol>
-<li><p>没有数据可读，应用程序阻塞，或者recv返回一条指示说明没有数据可读。到底会发生什么情况取决于套接字是否标识为阻塞，以及主机B的操作系统为系统调用recv指定了什么样的语义。</p>
-</li>
-<li><p>应用程序获取了报文M1中的部分而不是全部数据。比如，发送端TCP像图2-26D那样对数据进行分组就会发生这种情况。</p>
-</li>
-<li><p>应用程序获取了报文M1中所有的数据，除此之外没有任何其他内容。如果像图2-26A那样对数据分组就会发生这种情况。</p>
-</li>
-<li><p>应用程序获取了报文M1的所有数据，以及报文M2的部分或全部数据。如果像图2-26B或图2-26C那样对数据进行分组就会发生这种情况。</p>
-</li>
-</ol>
-<p>注意，这里还有一个定时问题。如果主机B的应用程序在主机A发送了第二条报文之后一段时间内都没有读取第一条报文，那么这两条报文都会成为可读的。这就和图2-26B所示情况相同了。这些描述说明，通常，在任意指定时刻，可读的数据量都是不确定的。</p>
-<p>需要再次说明的是，TCP是一个流协议（stream protocol），尽管数据是以IP分组的形式传输的，但<strong>分组中的数据量与send调用中传送给TCP多少数据并没有直接关系</strong>。而且，接收程序也没有什么可靠的方法可以判断数据是如何分组的，因为在两次recv调用之间可能会有多个分组到来。</p>
-<blockquote>
-<p>即使接收端应用程序的响应非常及时，也可能会发生这种情况。例如，一个分组丢失了（参见技巧12，在当今的因特网中，这是非常常见的情况），而且后继分组都安全到达，TCP会将后继分组中的数据保存起来，直到重传第一个分组并正确收到为止。此时，所有数据对应用程序都是可用的。</p>
-</blockquote>
-<p>TCP会记录它发送了多少字节，以及确认的字节，但它不会记录这些字节是如何分组的。实际上，有些实现在重传丢失分组的时候传送的数据可能比原来的多一些或少一些。这就足以支撑下面再次重复说明的内容了。</p>
-<blockquote>
-<p>对TCP应用程序来说，就没有”分组”这种概念。如果应用程序的设计与TCP对数据的分组方式有所关联，就应该考虑重新设计这个应用程序了。</p>
-</blockquote>
-<p>既然任意一次指定的读操作中返回的数据量都是不可预测的，就必须在应用程序中做好应对这种情况的准备。通常这不是什么问题。比如说，我们可能在用fgets这样标准的I/O库程序读取数据。在这种情况下，fgets会将字节流划分成行。图3-6显示了一个这样的例子。在其他情况下的确需要关注报文边界问题，而这些情况下边界都是由应用程序级维护的。</p>
-<p><strong>最简单的情况就是定长报文</strong>。在这种情况下，只需要读取报文中固定数量的字节就可以了。根据前面的讨论，读操作返回的字节数可能小于sizeof(msg)（图2-26D），所以只进行</p>
-<pre><code>recv(s, msg, sizeof(msg), 0); 
-</code></pre><p>这样的简单调用是不够的。图2-27显示了处理这种情况的标准方法。</p>
-<p><img src="/img/函数readn.png" alt=""></p>
-<p><img src="/img/函数readn续.png" alt="图2-27　函数readn"></p>
-<p>函数readn的用法与read非常相似，但在读到len字节，并从对等实体收到EOF，或出现错误之前，它是不会返回的。我们将其定义如下。</p>
-<pre><code>#include &quot;etcp.h&quot;  
-
-int readn( SOCKET s, char *buf, size_t len );  
-
-                                                            返回：读取的字节数，出错时返回-1  
-</code></pre><p>readn使用的逻辑与从串行端口，或者从其他基于流的、在任意指定时间内可读取数据量都未知的源端，读取指定数量的字节所使用的逻辑一样，这不足为奇。实际上，在所有这些情况下都可以，也经常使用readn（用int代替SOCKET，用read代替recv）。</p>
-<p>如果recv调用被信号中断，第11行和第12行的if语句</p>
-<pre><code>if ( error == EINTR)        /* interrupted? */   
-    continue;               /* restart the read*/  
-</code></pre><p>会重启recv调用。有些系统会自动重启被中断的系统调用，这种系统就不需要这两行程序了。从另一个角度来看，这两行代码也不会带来什么问题，因此为了实现最大限度的可移植性，最好还是把它们放在那里。</p>
-<p>对必须支持可变长报文的应用程序来说，有两种可用的方法。第一种，可以用记录结束标记来分隔记录。如前所述，使用fgets这样标准的I/O程序将报文分成单个行时，就会发生这种情况。使用标准I/O程序时，很自然地会将新行作为记录结束标记使用。但使用这种方法通常会有一些问题。首先，除非在报文主体中从未用到记录结束标记，否则发送程序就要在报文中扫描这些标记，对其进行转义，或者编码，以免将其误认作记录结束标记。比如，如果将记录分隔字符RS作为记录结束标记使用，发送端就要搜索报文主体，找到所有RS字符，并对其进行转义，比如在前面加上一个\。这就意味着要转移数据以便为转义字符腾出位置。当然，还要对出现的所有转义字符进行转义。因此，如果用\作转义字符的话，就要将报文主体中出现的所有\都改成\。</p>
-<p>在接收端，必须再次对整条报文进行扫描，这次要移除转义字符，并搜索（未转义的）记录结束标记。使用记录结束标记要对整条报文扫描两次，所以最好只在那些有”自然”记录结束标记的情况下使用，比如用换行符分隔文本行记录的时候。</p>
-<p>另外一种处理可变记录的方法是在每条报文前面加上一个首部，这个首部（至少）包含下面的报文长度，如图2-28所示。</p>
-<p><img src="/img/可变长记录的格式.png" alt="图2-28　可变长记录的格式"></p>
-<p>接收端应用程序分两部分读取报文。首先读取定长的报文首部，从首部解析出可变部分的长度，然后读取可变长部分。图2-29显示了一种简单的情况，其中首部只包含了记录的长度。</p>
-<p><img src="/img/读取可变长记录的函数.png" alt="图2-29　读取可变长记录的函数readvrec"></p>
-<p><strong>读取记录长度</strong></p>
-<p><strong>6-8</strong>  将记录长度读入reclen中，如果readn返回的长度不等于interger类型的大小，readvrec就返回0（EOF），如果出错就返回 1。</p>
-<p><strong>9</strong>  将记录长度从网络字节序转换为主机字节序。更多相关内容请参见技巧28。</p>
-<p><strong>查看是否装得下记录</strong></p>
-<p><strong>10-27</strong> 查看调用程序的缓冲区大小，验证它能否装下整条记录。如果缓冲区中没有足够的空间，就依次将长度为len的片段读入缓冲区，并将记录丢弃。丢弃记录之后，将errno设置为EMSGSIZE，readvrec返回 1。</p>
-<p><strong>读取记录</strong></p>
-<p><strong>29-32</strong> 最后，读取记录本身。根据readn返回的是错误、不足计数还是成功返回，readvrec会向调用程序返回 1、0或者reclen。</p>
-<p>readvrec是个很有用的函数，会在其他一些技巧中用到，所以将其定义记录如下。</p>
-<pre><code>#include &quot;etcp. h&quot;  
-
-int readvrec( SOCKET s, char *buf, size_t len );  
-
-                                                        返回：读取的字节数，或者在出错时返回-1  
-</code></pre><p>图2-30显示了一个用readvrec从TCP连接中读取变长记录，并将其写入stdout的简单服务器代码。</p>
-<p><img src="/img/说明readvrec用法的服务器程序.png" alt=""></p>
-<p><img src="/img/说明readvrec用法的服务器程序.png" alt="图2-30　vrs--说明readvrec用法的服务器程序"></p>
-<p><strong>10-17</strong> 初始化服务器，并接受一个连接。</p>
-<p><strong>20-24</strong> 调用readvrec读取下一个变长记录。如果出错，打印一条诊断信息，并读取下一条记录。如果readvrec返回一个EOF，就打印一条提示消息，服务器退出。</p>
-<p><strong>26</strong> 将记录写入stdout。</p>
-<p>图2-31显示了对应的客户端程序，这个程序从其标准输入读取报文，附加上报文长度，然后将其发送给服务器。</p>
-<p><img src="/img/发送可变长报文的客户端程序.png" alt="图2-31　vrc--发送可变长报文的客户端程序"></p>
-<p><strong>定义分组结构</strong></p>
-<p><strong>6-10</strong> 定义packet结构，调用send时用它来装载报文及其长度。数据类型u_int32_t是一个无符号的32比特整数。由于Windows没有定义这种数据类型，所以在Windows版本的skel.h中有它的typedef。</p>
-<blockquote>
-<p>对这个例子来说，还应该弄清楚另一个潜在的问题。假定编译器会严格按照我们的指令没有任何填充地将数据封装在一个结构中。因为第二个元素是一个字节数组，所以在大多数系统中这种假设都是有效的，但要小心，对编译器封装数据的方式进行的假设可能会引发一些问题。技巧24对其他一些同时发送两个或多个不同数据段的方法进行了讨论，那时会再次讨论这个问题。</p>
-</blockquote>
-<p><strong>连接、读取并逐行发送</strong></p>
-<p><strong>12</strong> 客户端通过调用tcp_client连接到服务器。</p>
-<p><strong>13-21</strong> 调用fgets从stdin中读取一行数据，并将其放入报文分组的buf字段中。行的长度由对strlen的调用决定，将这个值转换成网络字节序后，放入报文分组的reclen字段中。最后，调用send向服务器发送分组。</p>
-<p>发送这些由两个或多个部分组成的报文的另一种方法请参见技巧24。</p>
-<p>在sparc上启动服务器vrs，然后在bsd上启动客户端vrc，来测试这些程序。将程序的运行并排显示出来，就可以看到客户端的输入，以及相应的服务器输出了。第4行还对错误消息进行了换行显示。</p>
-<p><img src="/img/shiyanjieguo.png" alt=""></p>
-<p>服务器缓冲区有10字节，所以发送11字节1, …, 0, <lf>时，readvrec会返回一条错误。</lf></p>
-<p>##小结</p>
-<p>初级网络程序员最常犯的错误之一就是无法理解TCP传送的是一个没有记录边界概念的字节流。这一点很重要，可以总结为TCP中没有用户可见的”分组”概念，它只是传送了一个字节流，我们无法准确地预测在一个特定的读操作中会返回多少字节。在这个技巧中，还对应用程序处理这种情况时所使用的几种策略进行了研究。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/24/理解面向连接和无连接协议之间的区别/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/24/理解面向连接和无连接协议之间的区别/" itemprop="url">理解面向连接和无连接协议之间的区别</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-24T09:55:32+08:00">
-                2015-03-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
-                    <span itemprop="name">TCP/IP</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>转载自《TCP/IP高效编程 改善网络程序的44个技巧》–技巧1</p>
-<hr>
-<p>网络编程中最基本的概念就是面向连接（<code>connection-oriented</code>）和无连接（<code>connectionless</code>）协议。尽管本质上来说，两者之间的区别并不难理解，但对那些刚刚开始进行网络编程的人来说，却是个很容易混淆的问题。这个问题与上下文有些关联：很显然，如果两台计算机要进行通信，就必须以某种形式”连接”起来，那”无连接通信”又是什么意思呢？</p>
-<p>答案是：面向连接和无连接指的都是<code>协议</code>。也就是说，<strong>这些术语指的并不是物理介质本身，而是用来说明如何在物理介质上传输数据的</strong>。面向连接和无连接协议可以，而且通常也确实会共享同一条物理介质。</p>
-<p>如果两者的区别与承载数据的物理介质无关，又和什么有关呢？<strong>它们的本质区别在于，对无连接协议来说，每个分组的处理都独立于所有其他分组，而对面向连接的协议来说，协议实现则维护了与后继分组有关的状态信息</strong>。</p>
-<p>无连接协议中的分组被称为数据报（datagram），每个分组都是独立寻址，并由应用程序发送的（但还请参考技巧30）。从协议的角度来看，每个数据报都是一个独立的实体，与在两个相同的对等实体之间传送的任何其他数据报都没有关系。</p>
-<blockquote>
-<p>这并不是说从应用程序的角度来看，数据报也是独立的。简单的请求/应答协议，就是客户端向服务器发送一条请求，并收到一条应答，如果应用程序实现的功能比简单的请求/应答协议稍微复杂一点儿，就很可能需要维护数据报之间的状态。但问题的重点在于状态是由应用程序，而不是协议来维护的。图3-9显示了一个无连接服务器实例，在这个例子中，服务器维护了客户端发来的数据报之间的状态。</p>
-</blockquote>
-<p>通常这就意味着客户端和服务器不会进行长期的对话–客户端发起一条请求，服务器回送一个应答。如果稍后客户端发起了另一条请求，协议会认为这是与第一个事务无关的独立事务。</p>
-<p>这还意味着协议很可能是不可靠的。也就是说，网络会尽最大努力传送每一个数据报，但并不保证数据报不丢失、不延迟或者不错序传输。</p>
-<p>另一方面，面向连接的协议则维护了分组之间的状态，使用这种协议的应用程序通常都会进行长期的对话。记住这些状态，协议就可以提供可靠的传输。比如，发送端可以记住哪些数据已经发送出去了但还未被确认，以及数据是什么时候发送的。如果在某段时间间隔内没有收到确认，发送端可以重传数据。接收端可以记住已经收到了哪些数据，并将重复的数据丢弃。如果分组不是按序到达的，接收端可以将其保存下来，直到逻辑上先于它的分组到达为止。</p>
-<p>典型的面向连接协议有三个阶段。第一阶段，在对等实体间建立连接。接下来是数据传输阶段，在这个阶段中，数据在对等实体间传输。最后，当对等实体完成数据传输时，连接被拆除。</p>
-<p>一种标准的类比是：使用面向连接的协议就像打电话，而使用无连接协议就像寄信。给朋友寄信时，每封信都是一个独立寻址且自包含的实体。邮局在处理这些信件时不会考虑到两个通信者之间的任何其他信件。邮局不会维护以往通信者的历史记录–也就是说，它不会维护信件之间的状态。邮局也不保证信件不丢失、不延迟、不错序。这种方式就对应于无连接协议发送数据报的方式。</p>
-<blockquote>
-<p>[Haverlock, 2000]指出用明信片进行类比会更合适一些，因为写错地址的信件会被退回发信人，而（和典型的无连接协议数据报一样）明信片则不会。</p>
-</blockquote>
-<p>现在来看看不是给朋友寄信，而是打电话时会发生些什么事情。首先，拨朋友的号码来发起呼叫。朋友应答，会说”嗨”之类的话，然后我们回应：”嗨，萨丽。我是亨利。”我们和朋友聊一会儿，然后互说再见并挂机。这是面向连接协议中发生的典型状况。在连接建立阶段，一端与其对等实体联系，交换初始问候信息，对会话中要用到的一些参数和选项进行沟通，然后连接进入数据传输阶段。</p>
-<p>在电话交谈的过程中，两端用户都知道他们在和谁说话，因此没必要不停地说”这是亨利在跟萨丽说话”。也没必要在每次说话之前都拨一次朋友的电话号码–我们的电话已经连接起来了。同理，在面向连接协议的数据传输阶段，也没必要说明我们自己或对等实体的地址。连接为我们维护的状态中包含了这些地址。我们只要发送数据就行了，不需要考虑寻址或其他与协议相关的问题。</p>
-<p>就像用电话交谈一样，连接的任一端完成数据的传输时，都要通知其对等实体。两端都完成传输时，要依次将连接拆除。</p>
-<blockquote>
-<p>这种类比虽然很形象，但并不是非常贴切的。电话系统有实际的物理连接。而我们的”连接”则完全是想象的–它只是由两端记录的状态构成的。为了说明这一点，我们来看看当一个空闲连接一端的主机崩溃并重启时会发生什么情况。还有连接存在吗？从重启主机的角度来看，肯定是没有了。它对先前的连接一无所知。但它原来的对等实体仍然认为自己是连接着的，因为它仍然维护着与连接有关的状态，没有发生什么使那个状态失效的事件。</p>
-</blockquote>
-<p>既然无连接协议有这么多的缺点，大家可能会奇怪，为什么还要使用这种协议呢？我们会看到，在很多情况下，使用无连接协议构建应用程序都是有意义的。比如，使用无连接协议可以很方便地支持一对多和多对一通信，而面向连接协议通常都需要多个独立的连接才能做到。但更重要的是，无连接协议是构建面向连接协议的基础。为了更具体地说明这个问题，也为了把讨论转回到本书的话题中来，我们来看看TCP/IP协议族。在技巧14中我们会看到，TCP/IP基于一个４层的协议栈，如图2-1所示。</p>
-<p><img src="/img/简化的TCPIP协议栈.png" alt="图2-1　简化的TCP/IP协议栈"></p>
-<p>栈的底部是接口层，直接与硬件相连。栈的顶部是应用程序，比如Telnet、ftp和其他标准的以及用户编写的应用程序。如图所示，TCP和UDP都是构建在IP之上的。因此，IP是构建整个TCP/IP协议族的基础。但IP提供的是一种尽力而为的、不可靠的无连接服务。它接收来自其上层的分组，将它们封装在一个IP分组中，根据路由为分组选择正确的硬件接口，从这个接口将分组发送出去。一旦将分组发送出去了，IP就不再关心这个分组了。和所有无连接协议一样，它将分组发送出去之后就不再记得这个分组了。</p>
-<p>这种简单性也是IP的主要优点。因为它对底层的物理介质没有作任何假设，所以在任何能够承载分组的物理链路上都可以运行IP。例如，IP可以运行在简单的串行链路、以太网和令牌环LAN、X.25和使用ATM（<code>Asychronous Transfer Mode，异步转移模式</code>）的WAN、CDPD（<code>Cellular Digital Packet Data，无线蜂窝数字分组数据</code>）网，以及很多其他网络上。尽管这些网络技术之间有很大的差异，但IP对它们一视同仁，除了认为它们可以转发分组之外没有对其作任何假设。这种机制隐含了很深的意义。IP可以运行在任何能够承载分组的网络上，所以整个TCP/IP协议族也可以。</p>
-<p>现在我们来看看TCP是怎样利用这种简单的无连接服务来提供可靠的面向连接服务的。TCP的分组被称为段（segment），是放在IP数据报中发送的，因此，根本无法假定这些分组会抵达目的地，更不用说保证分组无损坏且以原来的顺序到达了。为了提供这种可靠性，TCP向基本的IP服务中添加了三项功能。首先，它为TCP段中的数据提供了校验和。这样有助于确保抵达目的地的数据在传输过程中不会被网络损坏。第二，<strong>它为每字节分配了一个序列号</strong>，这样，如果数据抵达目的地时真的错序了，接收端也能够按照恰当的顺序将其重装起来。</p>
-<blockquote>
-<p>当然，TCP并没有为每字节都附加一个序列号。实际上，每个TCP段的首部都包含了段中第一字节的序列号。这样，就隐含地知道了段中其他字节的序列号。</p>
-</blockquote>
-<p>第三，TCP提供了一种确认-重传机制，以确保最终每个段都会被传送出去。</p>
-<p>确认/重试机制是到目前为止我们讨论的三种附加机制中最复杂的一种，我们来研究一下它是怎样工作的。</p>
-<blockquote>
-<p>这里我们忽略了几个细节，基本没有涉及TCP协议的众多细微之处，以及如何用它们来提供健壮可靠的传输机制。RFC 793[Postel, 1981b]和RFC 1122[Braden, 1989]中有完整的细节描述。[Stevens, 1994]中的阐述则更容易为人接受。RFC 813[Clark, 1982]对 TCP窗口和确认机制进行了概略的讨论。</p>
-</blockquote>
-<p>TCP连接的每一端都维护了一个接收窗口（<code>receive window</code>），接收窗口就是可以从对等实体接收的数据序列号范围。最小值表示窗口的左边界，是所期望的下一字节的序列号。最大值表示窗口的右边界，是TCP缓冲区空间所能容纳字节的最大编号。使用接收窗口而不只是所期望的下一字节计数器，就可以通过流量控制来提高可靠性。流量控制机制可以防止TCP传输的数据使其对等实体的缓冲区空间溢出。</p>
-<p>TCP段到达时，序列号在接收窗口范围之外的所有数据都会被丢弃。其中包括先前已经收到的数据（序列号在接收窗口左边的数据），以及没有缓冲区空间存储的数据（序列号在接收窗口右边的数据）。如果段中第一个可接受字节不是所期望的下一字节，就说明这个段是错序的，大部分TCP应用程序都会将其放入队列，直到缺少的数据到达为止。如果段中第一个可接受字节是所期望的下一字节，就通知应用程序有数据可读，并在所期望的下一字节序列号上加上段中本次接受的字节数，对其进行更新。此时窗口向右滑动本次接受字节数的长度。最后，TCP向对等实体发送一条ACK，其中携带了它所期望的下一字节序列号。</p>
-<p>比如，在图2-2A中，虚线框表示的接收窗口显示，所期望的下一字节序列号为4，而TCP希望接收9字节（4～12）。图2-2B显示的是收到字节4、5、6和7之后的接收窗口。窗口向右滑动了4个序列号，TCP的ACK会说明它接下来所期望的是序列号8。</p>
-<p><img src="/img/TCP接收窗口.png" alt="图2-2 TCP接收窗口"></p>
-<p>同样是这种情况，现在从TCP发送端的角度来看。除了接收窗口之外，每个TCP还维护了一个发送窗口（<code>send window</code>）。发送窗口被划分成两部分：已发送但还未被确认的字节，以及可以发送但还未发送的字节。假设字节1～3已经被确认了，图2-3A显示的是与图2-2A中接收窗口相对应的发送窗口。字节4～7发送之后，确认之前，发送窗口如图2-3B所示。TCP还可以发送字节8～12而无须等待来自对等实体的ACK。发送了字节4～7之后，TCP会启动一个RTO（<code>Retransmission Timeout，重传超时</code>）定时器。如果在定时器超时之前这四个字节没有被确认，TCP就认为它们丢失了，并重新传送这四个字节。</p>
-<blockquote>
-<p>很多实现并不记录一个特定的段中发送了哪些字节，因此重传段中包含的字节数可能会比原来的多。例如，如果字节8和9在RTO定时器超时之前发送出去了，这些应用程序就会重传字节4～9。</p>
-</blockquote>
-<p>我们要注意这样一个事实：RTO定时器超时并不意味着原来的数据没有到达目的地。有可能是ACK丢失了，或者原来的段在网络中延迟的时间太长，以至于在其ACK到达之前RTO定时器就超时了。但这并不会造成什么问题，因为如果原来的数据确实到达了，那么重传的数据就会处于接收端TCP接收窗口范围之外，会被丢弃。</p>
-<p>字节4～7确认后，发送端TCP会将其丢弃，并将发送窗口向右移动，如图2-3C所示。</p>
-<p><img src="TCP发送窗口.png" alt="图2-3　TCP发送窗口"></p>
-<p>对于编写应用程序的程序员来说，TCP提供了一种可靠的面向连接协议。更多关于可靠的具体含义的讨论请参见技巧9。</p>
-<p>另一方面，UDP为编写应用程序的程序员提供了一种不可靠的无连接服务。事实上，UDP只向底层的IP协议中添加了两项功能。首先，它提供了一个可选的校验和来检测数据的损坏情况。尽管IP也有校验和，但它只对IP分组首部进行计算，所以，TCP和UDP也都提供了校验和来保护它们自己的首部和数据。UDP向IP添加的第二项特性就是端口的概念。</p>
-<p>IP地址（这些地址通常都是以因特网标准的点分十进制表示法给出的，请参见技巧2）用来将一个IP数据报传送给一台特定的主机。数据报到达目的主机时，还需要将其数据传送给恰当的应用程序。例如，一个UDP分组的目标可能是回声服务，而另一个的目标则可能是时间查询服务。端口提供了一种将数据多路分解到正确目的应用程序的方式。每个TCP和UDP套接字都有一个与之相关的端口。应用程序可以通过显式的bind调用来设置这个端口，也可以由操作系统为其选择。分组到达时，内核会搜索其套接字列表，查找一个与分组中的协议、地址和端口号相匹配的套接字。如果找到了匹配的套接字，就由指定的协议（在我们所讨论的情形中，就是TCP或UDP）来处理数据，并将这些数据提供给所有打开了匹配套接字的应用程序。</p>
-<blockquote>
-<p>如果有多个进程或线程打开了这个套接字，那么其中任何一个都可以读取数据，但读过一次之后，数据对其他进程或线程来说就不可用了。</p>
-</blockquote>
-<p>回到与电话/寄信的类比中来，我们可以把TCP连接中的网络地址当作一个办公室总机的电话号码，把端口号当作办公室中某台正被呼叫的特定电话的分机号。同理，可以将UDP地址当作一座公寓楼的地址，并把端口号当作公寓楼大厅中的个人邮箱。</p>
-<p>##小结</p>
-<p>在这个技巧中，我们研究了无连接和面向连接协议的区别。我们看到，不可靠的无连接数据报协议是构建可靠的面向连接协议的基础，我们还简单介绍了可靠的TCP协议是如何构建在不可靠的IP协议上的。</p>
-<p>我们还注意到，<strong>对TCP来说，连接完全是想象的。它是由端点所记忆的状态组成的，并不存在”物理”连接</strong>，而打电话的时候是有物理连接的。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/22/IO和NIO/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1954,11 +1526,401 @@ int readvrec( SOCKET s, char *buf, size_t len );
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/17/能够关闭（close）一个套接字，为何还使用shutdown/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/17/能够关闭（close）一个套接字，为何还使用shutdown/" itemprop="url">能够关闭（close）一个套接字，为何还使用shutdown</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-17T23:22:17+08:00">
+                2015-03-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li><p>只有一个最后一个活动关闭时，close才释放网络断点。这意味着如果复制一个套接字（如采用dup），要直到关闭了最后一个引用它的文件描述符才会释放这个套接字。而shutdown允许使一个套接字处于不活动状态，和引用它的文件描述符无关</p>
+</li>
+<li><p>有时可以很方便地关闭套接字双向传输中的一个方向。例如，如果想让所通信的进程能够确定数据传输何时结束，可以关闭该套接字的写段，然而通过该套接字读端仍可以继续接受数据</p>
+</li>
+</ol>
+<p><strong>注意</strong>：</p>
+<p>在unix中调用了shutdown后，以shutdown（s, 0）为例，此函数为关闭s的接收端，unix会刷新输入队列，以丢弃应用程序还未读取的所有数据。如果有新数据到达，TCP会进行ACK，然后悄悄地将其丢弃。因为应用程序再也无法接收数据了</p>
+<p>shutdown（s，1）关闭连接的发送端。将套接字标识为无法发送任何额外的数据，后继所有试图对套接字进行的写操作都会出错。将发送缓冲区中所有的数据都发送出去之后，TCP会向其对等实体发送一个FIN，通知它没有其他数据了。这被称为半关闭（half close）</p>
+<p>只有关闭连接的发送端被称为半关闭，它虽然也发送FIN，但此FIN与close的FIN有差别，这个FIN表示的是“我已经完成了数据的传送，因此发送一个FIN到另一端，但我还想接收另一端发来的消息，直到他给我发来文件结束（FIN）</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/16/海量数据处理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/16/海量数据处理/" itemprop="url">海量数据处理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-16T17:04:51+08:00">
+                2015-03-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>转载自<a href="http://blog.csdn.net/v_july_v/article/details/6685962" target="_blank" rel="external">这里</a></p>
+<p>##海量日志数据，提取出某日访问百度次数最多的那个IP。</p>
+<p>算法思想：分而治之+Hash</p>
+<ol>
+<li>IP地址最多有2^32=4G种取值情况，所以不能完全加载到内存中处理； </li>
+<li>可以考虑采用“分而治之”的思想，按照IP地址的Hash(IP)%1024值，把海量IP日志分别存储到1024个小文件中。这样，每个小文件最多包含4MB个IP地址； </li>
+<li>对于每一个小文件，可以构建一个IP为key，出现次数为value的Hash map，同时记录当前出现次数最多的那个IP地址；</li>
+<li>可以得到1024个小文件中的出现次数最多的IP，再依据常规的排序算法得到总体上出现次数最多的IP；</li>
+</ol>
+<p>##给定a、b两个文件，各存放50亿个url，每个url各占64字节，内存限制是4G，让你找出a、b文件共同的url？</p>
+<p><strong>方法</strong>：可以估计每个文件安的大小为5G×64=320G，远远大于内存限制的4G。所以不可能将其完全加载到内存中处理。考虑采取分而治之的方法。</p>
+<ol>
+<li>遍历文件a，对每个url求取<code>hash(url)%1000</code>，然后根据所取得的值将url分别存储到1000个小文件中(每个小文件存放的是经过<code>hash(url)%1000</code>计算后结果相同的url)，记为<code>a1a2a3...a999</code>。这样每个小文件的大约为300M。</li>
+</ol>
+<ul>
+<li><p>遍历文件b，采取和a相同的方式将url分别存储到1000小文件中，记为<code>b1b2b3...b999</code>。这样处理后，所有可能相同的url都在对应的小文件中，<code>a1-&gt;b1，a2-&gt;b2，...，a999-&gt;b999</code>，不对应的小文件不可能有相同的url(相同的url的<code>hash(url)%1000</code>的值也必然相等)。然后我们只要求出1000对小文件中相同的url即可。</p>
+</li>
+<li><p>求每对小文件中相同的url时，可以把其中一个小文件的url存储到<code>hash_set</code>中。然后遍历另一个小文件的每个url，看其是否在刚才构建的<code>hash_set</code>中，如果是，那么就是共同的url，存到文件里面就可以了。</p>
+</li>
+</ul>
+<p>注意点：</p>
+<ol>
+<li>hash后要判断每个文件大小，如果hash分的不均衡有文件较大，还应继续hash分文件，换个hash算法第二次再分较大的文件，一直分到没有较大的文件为止。这样文件标号可以用A1-2表示（第一次hash编号为1，文件较大所以参加第二次hash，编号为2）</li>
+<li>由于1存在，第一次hash如果有大文件，不能用直接set的方法。建议对每个文件都先用字符串自然顺序排序，然后具有相同hash编号的（如都是1-3，而不能a编号是1，b编号是1-1和1-2），可以直接从头到尾比较一遍。对于层级不一致的，如a1，b有1-1，1-2-1，1-2-2，层级浅的要和层级深的每个文件都比较一次，才能确认每个相同的url。</li>
+</ol>
+<p>##有10个文件，每个文件1G，每个文件的每一行存放的都是用户的query，每个文件的query都可能重复。要求你按照query的频度排序。</p>
+<p>方案1：</p>
+<ol>
+<li>顺序读取10个文件，按照<code>hash(query)%10</code>的结果将query写入到另外10个文件中。这样新生成的文件每个的大小大约也1G（假设hash函数是随机的）。</li>
+</ol>
+<ul>
+<li>找一台内存在2G左右的机器，依次对1中生成的10个文件用<code>hash_map(query, query_count)</code>来统计每个query出现的次数。利用快速/堆/归并排序按照出现次数进行排序。将排序好的<code>query</code>和对应的<code>query_cout</code>输出到文件中。这样得到了10个排好序的文件。</li>
+<li>对这10个文件进行归并排序（内排序与外排序相结合）。</li>
+</ul>
+<p>方案2：</p>
+<p>一般query的总量是有限的，只是重复的次数比较多而已，可能对于所有的query，一次性就可以加入到内存了。这样，我们就可以采用trie树/hash_map等直接来统计每个query出现的次数，然后按出现次数做快速/堆/归并排序就可以了</p>
+<p>##寻找热门查询：</p>
+<p>搜索引擎会通过日志文件把用户每次检索使用的所有检索串都记录下来，每个查询串的长度为1-255字节。假设目前有一千万个记录，这些查询串的重复读比较高，虽然总数是1千万，但是如果去除重复和，不超过3百万个。一个查询串的重复度越高，说明查询它的用户越多，也就越热门。请你统计最热门的10个查询串，要求使用的内存不能超过1G。</p>
+<ol>
+<li>先对这批海量数据预处理，在O（N）的时间内用Hash表完成统计；</li>
+<li>借助堆这个数据结构，找出Top K，时间复杂度为<code>N&#39;*logK</code>。即，借助堆结构，我们可以在log量级的时间内查找和调整/移动。因此，维护一个K(该题目中是10)大小的小根堆，然后遍历300万的Query，分别和根元素进行对比所以，我们最终的时间复杂度是：<code>O（N） + N&#39;*O（logK）</code>，（N为1000万，N’为300万）。</li>
+</ol>
+<p>##有一个1G大小的一个文件，里面每一行是一个词，词的大小不超过16字节，内存限制大小是1M。返回频数最高的100个词。</p>
+<p>方案1：</p>
+<ol>
+<li>顺序读文件中，对于每个词x，取<code>hash(x)%5000</code>，然后按照该值存到5000个小文件中。这样每个文件大概是200k左右。如果其中的有的文件超过了1M大小，还可以按照类似的方法继续往下分，直到分解得到的小文件的大小都不超过1M。</li>
+</ol>
+<ul>
+<li>对每个小文件，统计每个文件中出现的词以及相应的频率（可以采用trie树/hash_map等），并取出出现频率最大的100个词（可以用含100个结点的最小堆），并把100词及相应的频率存入文件，这样又得到了5000个文件。</li>
+<li>把这5000个文件进行归并（类似于归并排序）排序。</li>
+</ul>
+<p>##在2.5亿个整数中找出不重复的整数，内存不足以容纳这2.5亿个整数。</p>
+<p><strong>方案1</strong>：采用2-Bitmap（每个数分配2bit，00表示不存在，01表示出现一次，10表示多次，11无意义）进行，共需内存2^32*2bit=1GB内存，还可以接受。然后扫描这2.5亿个整数，查看Bitmap中相对应位，如果是00变01，01变10，10保持不变。所描完事后，查看bitmap，把对应位是01的整数输出即可。</p>
+<p><strong>方案2</strong>：也可采用上题类似的方法，进行划分小文件的方法。然后在小文件中找出不重复的整数，并排序。然后再进行归并，注意去除重复的元素。</p>
+<p>##腾讯面试题：给40亿个不重复的unsigned int的整数，没排过序的，然后再给一个数，如何快速判断这个数是否在那40亿个数当中？</p>
+<p><strong>方案1</strong>：申请512M(<code>512*1024*1024*8 = 40亿bit</code>)的内存，一个bit位代表一个unsigned int值。读入40亿个数，设置相应的bit位，读入要查询的数，查看相应bit位是否为1，为1表示存在，为0表示不存在。</p>
+<p><strong>方案2</strong>：这个问题在《编程珠玑》里有很好的描述，大家可以参考下面的思路，探讨一下：</p>
+<p>因为2^32为40亿多，所以给定一个数可能在，也可能不在其中；<br>这里我们把40亿个数中的每一个用32位的二进制来表示<br>假设这40亿个数开始放在一个文件中。</p>
+<p>然后将这40亿个数分成两类:</p>
+<ol>
+<li>最高位为0</li>
+<li>最高位为1</li>
+</ol>
+<p>并将这两类分别写入到两个文件中，其中一个文件中数的个数&lt;=20亿，而另一个&gt;=20亿（这相当于折半了）；与要查找的数的最高位比较并接着进入相应的文件再查找</p>
+<p>再然后把这个文件为又分成两类:</p>
+<ol>
+<li>次最高位为0</li>
+<li>次最高位为1</li>
+</ol>
+<p>并将这两类分别写入到两个文件中，其中一个文件中数的个数&lt;=10亿，而另一个&gt;=10亿（这相当于折半了）；</p>
+<p>与要查找的数的次最高位比较并接着进入相应的文件再查找。</p>
+<p>…….</p>
+<p>以此类推，就可以找到了,而且时间复杂度为O(logn)，方案2完。</p>
+<p>附：这里，再简单介绍下，位图方法：</p>
+<blockquote>
+<p>使用位图法判断整形数组是否存在重复<br>判断集合中存在重复是常见编程任务之一，当集合中数据量比较大时我们通常希望少进行几次扫描，这时双重循环法就不可取了。</p>
+<p>位图法比较适合于这种情况，它的做法是按照集合中最大元素max创建一个长度为max+1的新数组，然后再次扫描原数组，遇到几就给新数组的第几位置上1，如遇到5就给新数组的第六个元素置1，这样下次再遇到5想置位时发现新数组的第六个元素已经是1了，这说明这次的数据肯定和以前的数据存在着重复。这种给新数组初始化时置零其后置一的做法类似于位图的处理方法故称位图法。它的运算次数最坏的情况为2N。如果已知数组的最大值即能事先给新数组定长的话效率还能提高一倍。</p>
+</blockquote>
+<p>##海量数据分布在100台电脑中，想个办法高效统计出这批数据的TOP10。</p>
+<p>方案1：</p>
+<ol>
+<li>在每台电脑上求出TOP10，可以采用包含10个元素的堆完成（TOP10小，用最大堆，TOP10大，用最小堆）。比如求TOP10大，我们首先取前10个元素调整成最小堆，如果发现，然后扫描后面的数据，并与堆顶元素比较，如果比堆顶元素大，那么用该元素替换堆顶，然后再调整为最小堆。最后堆中的元素就是TOP10大。</li>
+</ol>
+<ul>
+<li>求出每台电脑上的TOP10后，然后把这100台电脑上的TOP10组合起来，共1000个数据，再利用上面类似的方法求出TOP10就可以了。</li>
+</ul>
+<p>##怎么在海量数据中找出重复次数最多的一个？</p>
+<p><strong>方案1</strong>：先做hash，然后求模映射为小文件，求出每个小文件中重复次数最多的一个，并记录重复次数。然后找出上一步求出的数据中重复次数最多的一个就是所求（具体参考前面的题）。</p>
+<p>##上千万或上亿数据（有重复），统计其中出现次数最多的前N个数据。</p>
+<p><strong>方案1</strong>：上千万或上亿的数据，现在的机器的内存应该能存下。所以考虑采用hash_map/搜索二叉树/红黑树等来进行统计次数。然后就是取出前N个出现次数最多的数据了，可以用堆机制完成。</p>
+<p>##1000万字符串，其中有些是重复的，需要把重复的全部去掉，保留没有重复的字符串。请怎么设计和实现？</p>
+<p><strong>方案1</strong>：这题用trie树比较合适，hash_map也应该能行。</p>
+<p>##一个文本文件，大约有一万行，每行一个词，要求统计出其中最频繁出现的前10个词，请给出思想，给出时间复杂度分析。</p>
+<p><strong>方案1</strong>：这题是考虑时间效率。用trie树统计每个词出现的次数，时间复杂度是<code>O(n*le)</code>（le表示单词的平准长度）。然后是找出出现最频繁的前10个词，可以用堆来实现，前面的题中已经讲到了，时间复杂度是<code>O(n*lg10)</code>。所以总的时间复杂度，是<code>O(n*le)</code>与<code>O(n*lg10)</code>中较大的哪一个。</p>
+<p>##一个文本文件，找出前10个经常出现的词，但这次文件比较长，说是上亿行或十亿行，总之无法一次读入内存，问最优解。</p>
+<p><strong>方案1</strong>：首先根据用hash并求模，将文件分解为多个小文件，对于单个文件利用上题的方法求出每个文件件中10个最常出现的词。然后再进行归并处理，找出最终的10个最常出现的词。</p>
+<p>##100w个数中找出最大的100个数。</p>
+<p><strong>方案1</strong>：在前面的题中，我们已经提到了，用一个含100个元素的最小堆完成。复杂度为O(100w*lg100)。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/9/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/11/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/9/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/11/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2004,7 +1966,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">203</span>
+                <span class="site-state-item-count">199</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

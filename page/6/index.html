@@ -286,310 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/14/pip升级安装过的包/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/14/pip升级安装过的包/" itemprop="url">pip升级安装过的包</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-14T13:44:47+08:00">
-                2015-05-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>不知道为什么pip –help不显示升级安装包的命令</p>
-<p>其实很简单，加上-U选项就是升级这个模块</p>
-<p>for example:</p>
-<pre><code>pip install -U setuptools
-</code></pre><p>这个操作就是升级setuptools模块</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/14/git在网络代理下的使用/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/14/git在网络代理下的使用/" itemprop="url">git在网络代理下的使用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-14T13:27:41+08:00">
-                2015-05-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/git/" itemprop="url" rel="index">
-                    <span itemprop="name">git</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>公司的测试环境不允许直接连外网，所以想从测试机连到外网只能用代理。配置好代理后导出环境变量即可：</p>
-<pre><code>export http_proxy=http://10.10.1.2:8080
-export https_proxy=http://10.10.1.2:8080
-</code></pre><p>网络可以正常使用，但是我发现，git用不了了，好捉鸡啊，没有了git还干个毛线啊，自己各种上网找方案，折腾了一天都没搞定，最后还是请教了同事，发现自己这个基础啊，实在太差了！</p>
-<p>Git 可以使用四种主要的协议来传输数据：本地传输(file)，ssh 协议，Git 协议和 HTTPS 协议。</p>
-<p>明显的区别就是你clone用的url的前缀是不同的。</p>
-<blockquote>
-<p>本地协议：git clone file:///opt/git/project.git</p>
-<p>SSH协议：git clone ssh://user@server/project.git</p>
-<p>HTTPS协议：git clone <a href="http://example.com/gitproject.git" target="_blank" rel="external">http://example.com/gitproject.git</a></p>
-<p>GIT协议：git clone git@github.com:username/project.git</p>
-</blockquote>
-<p>我们平时用的是一般是github提供的服务，从<a href="www.github.com">github网站</a>上看，github提供了<a href="https://help.github.com/articles/which-remote-url-should-i-use/" target="_blank" rel="external">git协议和https协议</a></p>
-<p><img src="/img/github.png" alt=""></p>
-<p>我们clone的时候一般就是用红圈中的地址，但是这个地址是git协议的，而我的电脑是通过代理登录的只支持http和https，所以当然不能使用git</p>
-<p>有人会问，我能不能导出<code>ssh_proxy</code>和<code>git_proxy</code>呢？当然，前提是你的代理服务器支持这样做。如果你的代理服务器不支持，而你又没有办法去改，那你可以<strong>不用git@开头的url，而是使用https开头的url</strong></p>
-<p><strong>完</strong></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/08/python线程初探/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3068,11 +2764,384 @@ In addition, the following special forms using leading or trailing underscores a
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/27/django-session的使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/27/django-session的使用/" itemprop="url">Django--session的使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-27T22:00:40+08:00">
+                2015-04-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>外面下大雨，回不去了，记录一下刚刚使用django的session遇到的一个问题。</p>
+<p>想要让用户注册之后能够返回到注册之前的页面，这样就要记住之前的url，我想用session来保存url，思路是对的，但是实施的时候却总是实现不了。</p>
+<p>各种assert False，还是没能看出来，没办法只能继续看文档，果然让我找到了这个</p>
+<blockquote>
+<p>flush()</p>
+<p>Delete the current session data from the session and delete the session cookie. This is used if you want to ensure that the previous session data can’t be accessed again from the user’s browser (for example, the django.contrib.auth.logout() function calls it).</p>
+</blockquote>
+<p>这是session的flush方法，用来清除会话的，注意最后一句，调用auth.logout()就会自动调用flush方法，原来如此</p>
+<p>我在log_in这个函数的第一句就写了<code>auth.logout(request)</code>，难怪老是在session发现不了定义的字段。</p>
+<p>有困难找官方文档</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/27/python-对象的拷贝/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/27/python-对象的拷贝/" itemprop="url">python 对象的拷贝</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-27T19:12:42+08:00">
+                2015-04-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##小例子</p>
+<pre><code>&gt;&gt;&gt; a = [1, 2, &apos;a&apos;]
+&gt;&gt;&gt; b = a
+&gt;&gt;&gt; a
+[1, 2, &apos;a&apos;]
+&gt;&gt;&gt; b
+[1, 2, &apos;a&apos;]
+&gt;&gt;&gt; a.append(&apos;b&apos;)
+&gt;&gt;&gt; a
+[1, 2, &apos;a&apos;, &apos;b&apos;]
+&gt;&gt;&gt; b
+[1, 2, &apos;a&apos;, &apos;b&apos;]
+</code></pre><p>可以看出，赋值号“=”是引用，即a 和 b 是指向一个对象。</p>
+<p>如何实现对象的拷贝呢，python 有 copy模块。</p>
+<p>##用法</p>
+<pre><code>import copy
+对象2 = copy.copy(对象1)
+</code></pre><p>##例子</p>
+<pre><code>&gt;&gt;&gt; a = [1, 2, &apos;a&apos;]
+&gt;&gt;&gt; b = copy.copy(a)
+&gt;&gt;&gt; a
+[1, 2, &apos;a&apos;]
+&gt;&gt;&gt; b
+[1, 2, &apos;a&apos;]
+&gt;&gt;&gt; a.append(&apos;b&apos;)
+&gt;&gt;&gt; a
+[1, 2, &apos;a&apos;, &apos;b&apos;]
+&gt;&gt;&gt; b
+[1, 2, &apos;a&apos;]
+</code></pre><p>##问题</p>
+<pre><code>&gt;&gt;&gt; a = [[1, 2], [&apos;a&apos;, &apos;b&apos;]]
+&gt;&gt;&gt; b = copy.copy(a)
+&gt;&gt;&gt; a
+[[1, 2], [&apos;a&apos;, &apos;b&apos;]]
+&gt;&gt;&gt; b
+[[1, 2], [&apos;a&apos;, &apos;b&apos;]]
+&gt;&gt;&gt; a[1].append(&apos;c&apos;)
+&gt;&gt;&gt; a
+[[1, 2], [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;]]
+&gt;&gt;&gt; b
+[[1, 2], [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;]]
+&gt;&gt;&gt; a.append((3,4,5))
+&gt;&gt;&gt; a
+[[1, 2], [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;], (3, 4, 5)]
+&gt;&gt;&gt; b
+[[1, 2], [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;]]
+</code></pre><p> 可以看出：copy 可以实现浅层拷贝，可以通过copy.deepcoppy(）来实现深层拷贝。</p>
+<p>##深拷贝</p>
+<pre><code>&gt;&gt;&gt; a = [[1, 2], [&apos;a&apos;, &apos;b&apos;]]
+&gt;&gt;&gt; b = copy.deepcopy(a)
+&gt;&gt;&gt; a
+[[1, 2], [&apos;a&apos;, &apos;b&apos;]]
+&gt;&gt;&gt; b
+[[1, 2], [&apos;a&apos;, &apos;b&apos;]]
+&gt;&gt;&gt; a[1].append(&apos;hello&apos;)
+&gt;&gt;&gt; a
+[[1, 2], [&apos;a&apos;, &apos;b&apos;, &apos;hello&apos;]]
+&gt;&gt;&gt; b
+[[1, 2], [&apos;a&apos;, &apos;b&apos;]]
+</code></pre><p>##对象三要素</p>
+<p>python中的对象包含三要素:id, type, value</p>
+<ol>
+<li>id 用来标识唯一一个对象</li>
+<li>type标识对象的类型</li>
+<li>value用来设置对象的值。</li>
+</ol>
+<p><code>is</code> 判断是否是一个对象，是使用id来判断的。</p>
+<p><code>==</code> 是判断a对象的值是否是b对象的值，默认调用它的<code>__eq__</code>方法。</p>
+<p>###例子</p>
+<pre><code>&gt;&gt;&gt; a = [1, 2, &apos;a&apos;]
+&gt;&gt;&gt; b = a
+&gt;&gt;&gt; c = copy.copy(a)
+&gt;&gt;&gt; a is b
+True
+&gt;&gt;&gt; a is c
+False
+</code></pre><p><code>&quot;b  = a&quot;</code> 是引用 指向的一个对象，所以<code>a is b</code> 返回 True</p>
+<p><code>&quot;c = copy.copy(a)&quot;</code>  c是a的拷贝，不是指向一个对象，返回False </p>
+<pre><code>&gt;&gt;&gt; a == c
+True
+</code></pre><p>但是他们的值确实是相同的</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -3118,7 +3187,7 @@ In addition, the following special forms using leading or trailing underscores a
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">203</span>
+                <span class="site-state-item-count">199</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

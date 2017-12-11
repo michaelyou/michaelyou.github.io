@@ -286,315 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/25/使用traceback追踪异常/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/25/使用traceback追踪异常/" itemprop="url">使用traceback追踪异常</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-25T21:34:20+08:00">
-                2015-05-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>调试代码的时候，简单的try—except语句只能告诉我们哪里出了错，但是错误的根源可能在多个函数之前，所以我们有必要知道出现错误时的堆栈情况。python提供了traceback模块来帮助我们打印堆栈。</p>
-<p>一般来说程序都是将信息写入log，所以这里以写入log为例</p>
-<pre><code>import class
-import logging
-
-if __name__==&quot;__main__&quot;:
-    logging.basicConfig(filename=&apos;trace.log&apos;)
-    try:
-        excep_class.except_fun(excep_args)
-    except:
-        s=traceback.format_exc()
-        logging.error(s)
-</code></pre><p>这样就可以打印出程序发生异常时，堆栈的信息。</p>
-<pre><code>---Traceback (most recent call last):
-  File &quot;/usr/lib/python2.7/dist-packages/keystoneclient/middleware/auth_token.py&quot;, line 578, in __call__
-    token_info = self._validate_user_token(user_token, env)
-  File &quot;/usr/lib/python2.7/dist-packages/keystoneclient/middleware/auth_token.py&quot;, line 838, in _validate_user_token
-    raise InvalidUserToken(&apos;Token authorization failed&apos;)
-InvalidUserToken: Token authorization failed
-</code></pre><p>这里是一段出错信息，可以明显地看出，最上面的是最早调用的函数，上面的函数调用下面的函数，最后一个是最终出错的地方。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/25/mac-os快捷键/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/25/mac-os快捷键/" itemprop="url">mac-os快捷键</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-25T12:39:26+08:00">
-                2015-05-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mac/" itemprop="url" rel="index">
-                    <span itemprop="name">mac</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><code>Ctrl + a</code>        光标移动到行首（Ahead of line），相当于通常的Home键</p>
-<p><code>Ctrl + e</code>        光标移动到行尾（End of line）</p>
-<p><code>Ctrl + w</code>   剪切光标前一个单词</p>
-<p><code>Alt + ←</code>          光标单词间向左移动</p>
-<p><code>Alt + →</code>         光标单词间向右移动</p>
-<p>##系统快捷键<br><code>command + ctrl +f</code> 应用程序全屏</p>
-<p><img src="http://7xj6cl.com1.z0.glb.clouddn.com/mac_quick.png" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/22/Django国际化遇到的神坑/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2280,11 +1971,315 @@ def horizon_nav(context):
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/14/pip升级安装过的包/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/14/pip升级安装过的包/" itemprop="url">pip升级安装过的包</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-14T13:44:47+08:00">
+                2015-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>不知道为什么pip –help不显示升级安装包的命令</p>
+<p>其实很简单，加上-U选项就是升级这个模块</p>
+<p>for example:</p>
+<pre><code>pip install -U setuptools
+</code></pre><p>这个操作就是升级setuptools模块</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/14/git在网络代理下的使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/14/git在网络代理下的使用/" itemprop="url">git在网络代理下的使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-14T13:27:41+08:00">
+                2015-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/git/" itemprop="url" rel="index">
+                    <span itemprop="name">git</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>公司的测试环境不允许直接连外网，所以想从测试机连到外网只能用代理。配置好代理后导出环境变量即可：</p>
+<pre><code>export http_proxy=http://10.10.1.2:8080
+export https_proxy=http://10.10.1.2:8080
+</code></pre><p>网络可以正常使用，但是我发现，git用不了了，好捉鸡啊，没有了git还干个毛线啊，自己各种上网找方案，折腾了一天都没搞定，最后还是请教了同事，发现自己这个基础啊，实在太差了！</p>
+<p>Git 可以使用四种主要的协议来传输数据：本地传输(file)，ssh 协议，Git 协议和 HTTPS 协议。</p>
+<p>明显的区别就是你clone用的url的前缀是不同的。</p>
+<blockquote>
+<p>本地协议：git clone file:///opt/git/project.git</p>
+<p>SSH协议：git clone ssh://user@server/project.git</p>
+<p>HTTPS协议：git clone <a href="http://example.com/gitproject.git" target="_blank" rel="external">http://example.com/gitproject.git</a></p>
+<p>GIT协议：git clone git@github.com:username/project.git</p>
+</blockquote>
+<p>我们平时用的是一般是github提供的服务，从<a href="www.github.com">github网站</a>上看，github提供了<a href="https://help.github.com/articles/which-remote-url-should-i-use/" target="_blank" rel="external">git协议和https协议</a></p>
+<p><img src="/img/github.png" alt=""></p>
+<p>我们clone的时候一般就是用红圈中的地址，但是这个地址是git协议的，而我的电脑是通过代理登录的只支持http和https，所以当然不能使用git</p>
+<p>有人会问，我能不能导出<code>ssh_proxy</code>和<code>git_proxy</code>呢？当然，前提是你的代理服务器支持这样做。如果你的代理服务器不支持，而你又没有办法去改，那你可以<strong>不用git@开头的url，而是使用https开头的url</strong></p>
+<p><strong>完</strong></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2330,7 +2325,7 @@ def horizon_nav(context):
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">203</span>
+                <span class="site-state-item-count">199</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
