@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="linux,c," />
+  <meta name="keywords" content="c," />
 
 
 
@@ -94,19 +94,19 @@
 
 
 
-<meta name="description" content="###这是EMC的一道面试题 #include&amp;lt;stdio.h&amp;gt; #include&amp;lt;unistd.h&amp;gt;  int main() {     fork() &amp;amp;&amp;amp; fork() || fork();  //这句话共创建几个进程？     return 0         } 本题有两个知识点：  对逻辑运算符的理解 对fork的理解  如果是A &amp;amp;&amp;am">
-<meta name="keywords" content="linux,c">
+<meta name="description" content="这是EMC的一道面试题12345678#include&amp;lt;stdio.h&amp;gt;#include&amp;lt;unistd.h&amp;gt;int main()&amp;#123;    fork() &amp;amp;&amp;amp; fork() || fork();  //这句话共创建几个进程？    return 0        &amp;#125; 本题有两个知识点：  对逻辑运算符的理解 对fork的理解  如果是A &amp;">
+<meta name="keywords" content="c">
 <meta property="og:type" content="article">
-<meta property="og:title" content="fork">
+<meta property="og:title" content="fork-面试题">
 <meta property="og:url" content="http://yoursite.com/2015/01/19/fork/index.html">
 <meta property="og:site_name" content="Youmai の Blog">
-<meta property="og:description" content="###这是EMC的一道面试题 #include&amp;lt;stdio.h&amp;gt; #include&amp;lt;unistd.h&amp;gt;  int main() {     fork() &amp;amp;&amp;amp; fork() || fork();  //这句话共创建几个进程？     return 0         } 本题有两个知识点：  对逻辑运算符的理解 对fork的理解  如果是A &amp;amp;&amp;am">
+<meta property="og:description" content="这是EMC的一道面试题12345678#include&amp;lt;stdio.h&amp;gt;#include&amp;lt;unistd.h&amp;gt;int main()&amp;#123;    fork() &amp;amp;&amp;amp; fork() || fork();  //这句话共创建几个进程？    return 0        &amp;#125; 本题有两个知识点：  对逻辑运算符的理解 对fork的理解  如果是A &amp;">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/fork.png">
-<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta property="og:updated_time" content="2017-12-11T11:26:59.188Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="fork">
-<meta name="twitter:description" content="###这是EMC的一道面试题 #include&amp;lt;stdio.h&amp;gt; #include&amp;lt;unistd.h&amp;gt;  int main() {     fork() &amp;amp;&amp;amp; fork() || fork();  //这句话共创建几个进程？     return 0         } 本题有两个知识点：  对逻辑运算符的理解 对fork的理解  如果是A &amp;amp;&amp;am">
+<meta name="twitter:title" content="fork-面试题">
+<meta name="twitter:description" content="这是EMC的一道面试题12345678#include&amp;lt;stdio.h&amp;gt;#include&amp;lt;unistd.h&amp;gt;int main()&amp;#123;    fork() &amp;amp;&amp;amp; fork() || fork();  //这句话共创建几个进程？    return 0        &amp;#125; 本题有两个知识点：  对逻辑运算符的理解 对fork的理解  如果是A &amp;">
 <meta name="twitter:image" content="http://yoursite.com/img/fork.png">
 
 
@@ -142,7 +142,7 @@
 
 
 
-  <title>fork | Youmai の Blog</title>
+  <title>fork-面试题 | Youmai の Blog</title>
   
 
 
@@ -305,7 +305,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">fork</h1>
+          <h1 class="post-title" itemprop="name headline">fork-面试题</h1>
         
 
         <div class="post-meta">
@@ -377,16 +377,8 @@
       
 
       
-        <p>###这是EMC的一道面试题</p>
-<pre><code>#include&lt;stdio.h&gt;
-#include&lt;unistd.h&gt;
-
-int main()
-{
-    fork() &amp;&amp; fork() || fork();  //这句话共创建几个进程？
-    return 0        
-}
-</code></pre><p>本题有两个知识点：</p>
+        <h3 id="这是EMC的一道面试题"><a href="#这是EMC的一道面试题" class="headerlink" title="这是EMC的一道面试题"></a>这是EMC的一道面试题</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line">    fork() &amp;&amp; fork() || fork();  <span class="comment">//这句话共创建几个进程？</span></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>        </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>本题有两个知识点：</p>
 <ul>
 <li>对逻辑运算符的理解</li>
 <li>对fork的理解</li>
@@ -424,8 +416,6 @@ int main()
     <footer class="post-footer">
       
         <div class="post-tags">
-          
-            <a href="/tags/linux/" rel="tag"># linux</a>
           
             <a href="/tags/c/" rel="tag"># c</a>
           
@@ -504,8 +494,17 @@ int main()
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/img/lufei.jpeg"
@@ -520,7 +519,7 @@ int main()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">194</span>
+                <span class="site-state-item-count">193</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -591,6 +590,22 @@ int main()
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#这是EMC的一道面试题"><span class="nav-number">1.</span> <span class="nav-text">这是EMC的一道面试题</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

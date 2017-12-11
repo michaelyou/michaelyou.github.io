@@ -286,177 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/21/在Python中正确使用Unicode/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/21/在Python中正确使用Unicode/" itemprop="url">在Python中正确使用Unicode</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-21T21:23:49+08:00">
-                2015-01-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>正确处理文本，特别是正确处理Unicode。是个老生常谈的问题，有时甚至会难倒经验丰富的开发者。并不是因为这个问题很难，而是因为对软件中的文本，开发者没有正确理解一些关键概念及其表示方法。在StackOverflow上搜索关于 <a href="http://stackoverflow.com/search?q=unicodedecodeerror" target="_blank" rel="external">UnicodeDecodeError</a>相关的问题，可以看到很多人都有这样的误解。这些错误的概念可以追溯到Unicode出现之前。那时许多现今的开发者还没入职，也包括我自己。如果这些错误的概念没有散布开来，其实不是个问题。现在很多人都有这些错误概念，部分原因是因为有些非常流行的语言传播，甚至固化了这些错误概念，使得纠正起来反而变得很困难。</p>
-<p>根据对Unicode的支持情况，编程语言可以划分为4类：</p>
-<ul>
-<li>在Unicode出现或流行之前编写的语言。C和C++就属于这一类。这类语言对unicode的支持参差不齐。或没有内置到语言中，或很难正确的使用。因此开发者常常会用错。</li>
-<li>对Unicode支持稍好一点。这些语言在Unicode广泛流行后才出现的，但语言中对unicode的操作方式是严重错误的。虽然这些语言诞生较晚，但依然含有第一类语言中的所有缺点。以我的经验，其中代表语言就是PHP。尽管还有其他语言也同样糟糕。</li>
-<li>对Unicode支持基本正确，但有少数致命缺点的语言。这一类语言比较“现代”，且能理解Unicode，但依然无法让开发者正确的处理unicode，导致在这些语言中对unicode会出现一些严重不足。让我很沮丧的是，Python 2.x就属于这一类（下文会详细介绍）。</li>
-<li>能正确处理Unicode的语言。这些语言完全支持Unicode，可以用Unicode方便快速的完成任务，且不易出错。Java和.NET平台就属于这一类语言。<br>那么，Unicode到底是什么，我们在Unicode上犯了哪些错误？Joel这篇 <a href="http://www.joelonsoftware.com/articles/Unicode.html" target="_blank" rel="external">The absolute minimum every software developer absolutely, positively must know about unicode</a> 绝对是每个软件开发者必须阅读的文章。为了为简洁起见，以及照顾那些天生耐心不够的朋友，我会在本文中对其进行总结。</li>
-</ul>
-<p>##字符和字节</p>
-<p>基本事实是，若想正确的处理文本，就必须了解字符的抽象概念。不严谨的定义一下，字符表示的是文本中的单个符号。更重要的是，一个字符不是一个字节。我再强调一遍！一个字符不是一个字节！！！而且，一个字符有许多表示方法，不同的表示方法会使用不同的字节数。就像前面我说的那样，字符就是文本中最小的单元。</p>
-<p>Unicode以大家都认可的方式定义了一系列的字符。可以将Unicode理解成一个字符数据库，每个字符都与唯一的数字关联，称为code point。这样，英文大写字母A的codepoint是<font color="red"> <code>U+0041</code></font> 。而欧元符号的codepoint是 <font color="red"><code>U+20A0</code></font> ，其他类似。一个文本字符串就是这样一系列的codepoint，表示字符串中每个字符元素。</p>
-<p>当然，你迟早会需要储存和传输这些理论上的Unicode字符串。如果选择一种其他人可以理解的方式以字节方式进行表示，就可以以大家都理解的方式互相发送文本。这里就需要引入字符编码（encoding）。</p>
-<p>字符编码是在理想的字符和实际的字节表示方法之间的映射。这种映射无需面面俱到，即在某种编码中也许无法表示一些特定的字符。同时也无须为每个字符使用相同的内存空间，譬如某些字符使用单字节编码，而其他字符需要多个字节。</p>
-<p>由于同一个字符的字节表现形式不止一种。这意味着当遇到了一串字节，如果不知道使用的是什么编码，即使知道这些字节表示的是文本，也不知道是什么意思。所能做的就是猜使用的编码。简而言之，字节不是文本。即使忘了文中介绍的所有内容，也要记住这句话。为了读写文本，归根结底就是要知道其中使用的编码方式，不管是从约定、标识信息、或是其他方法得知。</p>
-<p>##Python是如何处理Unicode</p>
-<p>从这里开始介绍Python的Unicode支持。在Python的类型层次中，有3种不同的字符串类型：“unicode”，表示Unicode字符串（文本字符串）、“str”，表示字节字符串（二进制数据）；“basestring”。表示前两种字符串类型的父类。在我看来，Python在这里犯了一个错误，根据前面的定义，这让Python成为第三类语言，而没有成为第四类。</p>
-<p>我用了很长的篇幅苦口婆心的强调字节和字符在本质上是不同的东西，只有通过字符编码才能互相转换。但不幸的是，Python犯了两个互不相关的错误，轻轻松松的就会让你忘掉这些。</p>
-<p>第一个错误的严重性值得商榷：即将一串字节视为字符串。是否应该这样做还有争议。Java和,NET认为这样做是不对的，而其他一些语言却持有相反的态度。无论如何，你可能希望对文本进行某些操作，如正则匹配、字符串替代等。将这些操作应用到字节序列上都是没有意义的。而Python将字节序列作为另一种类型的字符串对待，允许在这两者上执行同样的操作。</p>
-<p>第二个错误的严重性大一些，Python试图在字节串和字符串之间以不为人所察觉的方式进行转化。在不同的转换中，在条件允许的情况下，Python会试图在字节串和unicode字符串直接进行转换。例如将字节串和unicode字节串连接到一起时。根据前面的介绍，不使用encoding就在不同类型之间进行转换是没有意义的。所以Python依赖一个“默认编码”，该编码由 <font color="red"><code>sys.setdefaultencoding()</code></font> 指定。在大多数平台上，默认的是ASCII编码。但对于所有转换，使用这种编码几乎都是错误的。如果不手动指定编码就调用 <font color="red"><code>str()</code></font> 或 <font color="red"><code>unicode()</code></font> ，或是函数以字符串作为参数，但传递的是其他类型的参数时，都会使用这个默认编码。</p>
-<p>走出这个unicode困境的一个解决办法是，调用<font color="red"><code>sys.setdefaultencoding()</code></font> 将默认的编码设置为真正会用到的编码。但这样仅仅是将问题隐藏起来，虽然这样刚开始能解决一些文本处理问题。但缺乏实际可行性，因为许多应用，特别是网络应用，在不同的地方会使用不同的文本编码。</p>
-<p>正确的解决方法是修改代码，以正确的方式处理文本。下面是一些应该做到的指导性意见：</p>
-<ul>
-<li>所有文本字符串都应该是unicode类型，而不是str类型。如果处理的是文本，而变量类型是str，这就是bug了！</li>
-<li>若要将字节串解码成字符串，需要使用正确的解码，即 <font color="red">var.decode(encoding) </font>（如， <font color="red"><code>var.decode(&#39;utf-8&#39;)</code></font> ）。将文本字符串编码成字节，使用var.encode(encoding)。</li>
-<li>永远不要对unicode字符串使用 <font color="red">str()</font> ，也不要在不指定编码的情况下就对字节串使用 <font color="red">unicode()</font> 。</li>
-<li>当应用从外部读取数据时，应将其视为字节串，即str类型的，接着调用 <font color="red"><code>.decode()</code></font> 将其解释成文本。同样，在将文本发送到外部时，总是对文本调用 <font color="red"><code>.encode()</code></font> 。</li>
-<li>如果代码中使用字符串字面值来表示文本，总是应该含有’u’前缀。但实际上，永远不要在代码中定义原始的字符串字面值。不管怎样，我自己是很讨厌这一条，也许其他人也和我一样吧。</li>
-</ul>
-<p>顺便说一句，Python 3修复了这些问题，可以正确的处理unicode和字符串，这样Python就完全位于第四类中了，更多信息参见官方的 更新说明 中关于Unicode的部分。</p>
-<p>希望这些内容能帮到你，如果对unicode到底是什么，如何处理unicode有疑惑的话，现在应该都清楚了。下次遇到 <font color="red"><code>UnicodeEncodeError</code></font> 或 <font color="red"><code>UnicodeDecodeError</code></font> 错误时，就应该完全知道问题出在哪，也知道如何去修复这些问题！</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/21/网络基础-一些小面试题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -960,7 +789,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/01/19/fork/" itemprop="url">fork</a></h1>
+                <a class="post-title-link" href="/2015/01/19/fork/" itemprop="url">fork-面试题</a></h1>
         
 
         <div class="post-meta">
@@ -1034,16 +863,8 @@
       
         
           
-            <p>###这是EMC的一道面试题</p>
-<pre><code>#include&lt;stdio.h&gt;
-#include&lt;unistd.h&gt;
-
-int main()
-{
-    fork() &amp;&amp; fork() || fork();  //这句话共创建几个进程？
-    return 0        
-}
-</code></pre><p>本题有两个知识点：</p>
+            <h3 id="这是EMC的一道面试题"><a href="#这是EMC的一道面试题" class="headerlink" title="这是EMC的一道面试题"></a>这是EMC的一道面试题</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line">    fork() &amp;&amp; fork() || fork();  <span class="comment">//这句话共创建几个进程？</span></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>        </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>本题有两个知识点：</p>
 <ul>
 <li>对逻辑运算符的理解</li>
 <li>对fork的理解</li>
@@ -1976,6 +1797,170 @@ int _tmain(int argc, _TCHAR* argv[])
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/14/scrapy防止被ban的策略/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/14/scrapy防止被ban的策略/" itemprop="url">scrapy防止被ban的策略</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-14T10:37:02+08:00">
+                2015-01-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>转载自<a href="http://blog.csdn.net/u012150179/article/details/35774323" target="_blank" rel="external">这里</a></p>
+<h1 id="1-设置download-delay"><a href="#1-设置download-delay" class="headerlink" title="1. 设置download_delay"></a>1. 设置download_delay</h1><p>   他的作用主要是设置下载的等待时间，大规模集中的访问对服务器的影响最大，相当于短时间中增大服务器负载。下载等待时间长，不能满足短时间大规模抓取的要求，太短则大大增加了被ban的几率。如果你的爬虫工作的好好的，突然掉线了，并且得到了类似下面的错误：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">twisted.internet.error.ConnectionRefusedError</div></pre></td></tr></table></figure>
+<p>不妨试着将<code>download_delay</code>设置的大一点。</p>
+<p>使用注意：</p>
+<p><code>download_delay</code>可以设置在settings.py中，也可以在spider中设置</p>
+<h1 id="2-禁止cookies"><a href="#2-禁止cookies" class="headerlink" title="2. 禁止cookies"></a>2. 禁止cookies</h1><p>所谓cookies，是指某些网站为了辨别用户身份而储存在用户本地终端（Client Side）上的数据（通常经过加密），禁止cookies也就防止了可能使用cookies识别爬虫轨迹的网站得逞。</p>
+<p>使用：</p>
+<p>在settings.py中设置COOKIES_ENABLES=False。也就是不启用cookies middleware，不向web server发送cookies</p>
+<h1 id="3-使用user-agent池"><a href="#3-使用user-agent池" class="headerlink" title="3. 使用user agent池"></a>3. 使用user agent池</h1><p>所谓的user agent，是指包含浏览器信息、操作系统信息等的一个字符串，也称之为一种特殊的网络协议。服务器通过它判断当前访问对象是浏览器、邮件客户端还是网络爬虫。在request.headers可以查看user agent。如下，使用scrapy shell查看：</p>
+<pre><code>scrapy shell http://michaelyou.github.io
+</code></pre><p>输出request.headers可以得到如下信息</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">In [<span class="number">1</span>]: request.headers</div><div class="line">Out[<span class="number">1</span>]: </div><div class="line">&#123;<span class="string">'Accept'</span>: <span class="string">'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'</span>,</div><div class="line"><span class="string">'Accept-Encoding'</span>: <span class="string">'gzip,deflate'</span>,</div><div class="line"><span class="string">'Accept-Language'</span>: <span class="string">'en'</span>,</div><div class="line"><span class="string">'User-Agent'</span>: <span class="string">'Scrapy/0.24.4 (+http://scrapy.org)'</span>&#125;</div></pre></td></tr></table></figure>
+<p>由此得到,scrapy本身是使用Scrapy/0.24.4来表明自己身份的。这也就暴露了自己是爬虫的信息。解决方法如下：</p>
+<p>首先编写自己的UserAgentMiddle中间件，在spider目录下新建rotate_useragent.py,代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*-coding:utf-8-*-</span></div><div class="line"></div><div class="line"><span class="keyword">from</span> scrapy <span class="keyword">import</span> log</div><div class="line"></div><div class="line"><span class="string">"""避免被ban策略之一：使用useragent池。</span></div><div class="line"><span class="string"></span></div><div class="line"><span class="string">使用注意：需在settings.py中进行相应的设置。</span></div><div class="line"><span class="string">"""</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> random</div><div class="line"><span class="keyword">from</span> scrapy.contrib.downloadermiddleware.useragent <span class="keyword">import</span> UserAgentMiddleware</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">RotateUserAgentMiddleware</span><span class="params">(UserAgentMiddleware)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, user_agent=<span class="string">''</span>)</span>:</span></div><div class="line">        self.user_agent = user_agent</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span><span class="params">(self, request, spider)</span>:</span></div><div class="line">        ua = random.choice(self.user_agent_list)</div><div class="line">        <span class="keyword">if</span> ua:</div><div class="line">            <span class="comment">#显示当前使用的useragent</span></div><div class="line">            <span class="keyword">print</span> <span class="string">"********Current UserAgent:%s************"</span> %ua</div><div class="line"></div><div class="line">            <span class="comment">#记录</span></div><div class="line">            log.msg(<span class="string">'Current UserAgent: '</span>+ua, level=<span class="string">'INFO'</span>)</div><div class="line">            request.headers.setdefault(<span class="string">'User-Agent'</span>, ua)</div><div class="line"></div><div class="line">    <span class="comment">#the default user_agent_list composes chrome,I E,firefox,Mozilla,opera,netscape</span></div><div class="line">    <span class="comment">#for more user agent strings,you can find it in http://www.useragentstring.com/pages/useragentstring.php</span></div><div class="line">    user_agent_list = [\</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (X11; CrOS i686 2268.111.0) AppleWebKit/536.11 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.1 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.77.34.5 Safari/537.1"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1084.9 Safari/536.5"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.0) AppleWebKit/536.5 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1084.36 Safari/536.5"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 5.1) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_0) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1061.0 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.24 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24"</span></div><div class="line">       ]</div></pre></td></tr></table></figure>
+<p>建立user agent池（user_agent_list）并在每次发送request之前从agent池中随机选取一项设置request的User_Agent。编写的UserAgent中间件的基类为UserAgentMiddle。</p>
+<p>除此之外，要在settings.py(配置文件)中禁用默认的useragent并启用重新实现的User Agent。配置方法如下：</p>
+<h1 id="取消默认的useragent-使用新的useragent"><a href="#取消默认的useragent-使用新的useragent" class="headerlink" title="取消默认的useragent,使用新的useragent"></a>取消默认的useragent,使用新的useragent</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">DOWNLOADER_MIDDLEWARES = &#123;</div><div class="line">        <span class="string">'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware'</span> : <span class="keyword">None</span>,</div><div class="line">        <span class="string">'CSDNBlogCrawlSpider.spiders.rotate_useragent.RotateUserAgentMiddleware'</span> :<span class="number">400</span></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h1 id="4-使用IP池"><a href="#4-使用IP池" class="headerlink" title="4. 使用IP池"></a>4. 使用IP池</h1><p>web server应对爬虫的策略之一就是直接将你的IP或者是整个IP段都封掉禁止访问，这时候，当IP封掉后，转换到其他的IP继续访问即可。</p>
+<p>可以使用Scrapy+Tor+polipo</p>
+<p>配置方法与使用教程请点<a href="http://pkmishra.github.io/blog/2013/03/18/how-to-run-scrapy-with-TOR-and-multiple-browser-agents-part-1-mac/" target="_blank" rel="external">这里</a>。</p>
+<h1 id="5-分布式爬取"><a href="#5-分布式爬取" class="headerlink" title="5. 分布式爬取"></a>5. 分布式爬取</h1><p>有时间再补充</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -2026,7 +2011,7 @@ int _tmain(int argc, _TCHAR* argv[])
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">194</span>
+                <span class="site-state-item-count">193</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
