@@ -286,392 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/01/纯代码学习twisted/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/01/纯代码学习twisted/" itemprop="url">纯代码学习twisted</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-01T18:06:50+08:00">
-                2015-02-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##响应connectionMade事件 </p>
-<pre><code>#encoding=utf-8
-#!/usr/bin/python
-&quot;&quot;&quot;
-在Protocol中响应connectionMade事件
-运行此服务器程序。
-测试程序使用telnet localhost 8007
-&quot;&quot;&quot;
-from twisted.internet.protocol import Protocol,Factory
-from twisted.internet import reactor
-
-class QOTD(Protocol):
-    def connectionMade(self):
-        # 向客户端发送一行数据
-        self.transport.write(&quot;welcome to jcodeer.cublog.cn\r\n&quot;)
-        self.transport.loseConnection()
-
-f = Factory()
-f.protocol = QOTD
-reactor.listenTCP(8007,f)
-reactor.run()
- 输出：
- Trying 0.0.0.0...
- Connected to 0.
- Escape character is &apos;^]&apos;.
- welcome to jcodeer.cublog.cn
- Connection closed by foreign host.
-</code></pre><p>##响应lineReceived事件 </p>
-<pre><code>#encoding=utf-8
-#!/usr/bin/python
-&quot;&quot;&quot;
-使用LineReceiver接收以行为单位客户端发送过来的数据。
-LineReceiver继承自Protocol.protocol.
-sendLine向客户端发送一行数据
-&quot;&quot;&quot;
-from twisted.protocols.basic import LineReceiver
-from twisted.internet.protocol import Protocol,Factory
-from twisted.internet import reactor
-
-class Answer(LineReceiver):
-    answers = {&quot;How are you?&quot;:&quot;Fine&quot;,None:&quot;I don&apos;t know what you mean&quot;}
-    def lineReceived(self,line):
-        if self.answers.has_key(line):
-            self.sendLine(self.answers[line])
-        else:
-            self.sendLine(self.answers[None])
-
-f = Factory()
-f.protocol = Answer
-reactor.listenTCP(8007,f)
-reactor.run()
-输出：
-Trying 0.0.0.0...
-Connected to 0.
-Escape character is &apos;^]&apos;.
-How are you?
-Fine
-how are you
-I don&apos;t know what you mean
-good
-I don&apos;t know what you mean
-</code></pre><p>##在Factory中添加配置 </p>
-<pre><code>#encoding=utf-8
-#!/usr/bin/python
-&quot;&quot;&quot;
-Protocol使用Factory中的配置
-&quot;&quot;&quot;
-from twisted.internet.protocol import Protocol
-from twisted.internet.protocol import Factory
-from twisted.internet import reactor
-
-# 定义Protocol
-class Qotd(Protocol):
-    def connectionMade(self):
-        self.transport.write(self.factory.quote + &quot;\r\n&quot;)
-        self.transport.loseConnection()
-# 定义Factory
-class QotdFactory(Factory):
-    protocol = Qotd
-    def __init__(self,quote = None):
-        self.quote = quote or &quot;An apple a day keeps the doctor away&quot;
-
-reactor.listenTCP(8007,QotdFactory(&quot;jcodeer.cublog.cn&quot;))
-reactor.run()
-输出：
-Trying 0.0.0.0...
-Connected to 0.
-Escape character is &apos;^]&apos;.
-jcodeer.cublog.cn
-Connection closed by foreign host.
-</code></pre><p>##创建时间戳服务器</p>
-<pre><code>#encoding=utf-8
-#!/usr/bin/python
-&quot;&quot;&quot;
-日志服务器
-只打印当前的时间戳
-startFactory： 打开日志文件
-stopFactory: 关闭日志文件
-lineReceived： 向日志中添加内容
-&quot;&quot;&quot;
-from twisted.internet.protocol import Protocol
-from twisted.internet.protocol import Factory
-from twisted.internet import reactor
-from twisted.protocols.basic import LineReceiver
-
-class LoggingProtocol(LineReceiver):
-    def lineReceived(self,line):
-        from time import gmtime,strftime 
-        self.factory.fp.write(strftime(&quot;%d%m%Y%S%M%H&quot;,gmtime())+ &quot;\n&quot;)
-
-class LogfileFactory(Factory):
-    protocol = LoggingProtocol
-    def __init__(self,filename):
-        self.file = filename
-    def startFactory(self):
-        self.fp = open(self.file,&quot;a&quot;)
-    def stopFactory(self):
-        self.fp.close()
-
-reactor.listenTCP(8007,LogfileFactory(&quot;log.txt&quot;))
-reactor.run()
-</code></pre><p>##响应dataReceived事件</p>
-<pre><code>#encoding=utf-8
-#!/usr/bin/python
-&quot;&quot;&quot;
-接收来自客户端的数据，并打印到标准输出设备
-测试程序
-telnet localhost 8007
-连接后，客户端的输入的全部数据显示到服务器的标准输出上。
-&quot;&quot;&quot;
-from twisted.internet.protocol import Protocol
-from twisted.internet.protocol import Factory
-from twisted.internet import reactor
-from sys import stdout
-
-class Echo(Protocol):
-    def dataReceived(self,data):
-        stdout.write(data)
-
-f = Factory()
-f.protocol = Echo
-reactor.listenTCP(8007,f)
-reactor.run()
-</code></pre><p>##客户端程序发送消息 </p>
-<pre><code>#encoding=utf-8
-#!/usr/bin/python
-&quot;&quot;&quot;
-客户端程序
-1.连接上服务器后，打印欢迎信息
-2.第1秒后发送一条消息
-3.第2秒后发送断开连接命令。
-&quot;&quot;&quot;
-from twisted.internet.protocol import Protocol
-from twisted.internet.protocol import Factory
-from twisted.internet import reactor
-from twisted.internet.protocol import ClientCreator
-class MessageSend(Protocol):
-    def connectionMade(self):
-        # 连接上服务器后，打印出欢迎信息
-        self.transport.write(&quot;Hello Server,I am the client\n&quot;)
-    def sendMessage(self,msg):
-        # 发送一条消息
-        self.transport.write(&quot;MESSAGE:%s\n&quot; % msg)
-
-def gotProtocol(p):
-    p.sendMessage(&quot;Hello server&quot;)
-    # 添加两个延迟函数，分别在1秒之后，两秒之后运行。
-    reactor.callLater(1,p.sendMessage,&quot;This is send in a second&quot;)
-    reactor.callLater(2,p.transport.loseConnection)
-
-
-c = ClientCreator(reactor,MessageSend)
-c.connectTCP(&quot;localhost&quot;,8007).addCallback(gotProtocol)
-reactor.run()
-</code></pre><p>##客户端几个时间响应 </p>
-<pre><code>#encoding=utf-8
-#!/usr/bin/python
-&quot;&quot;&quot;
-客户端的几个事件响应
-startConnecting 正在连接服务器
-buildProtocol 已连接上服务器，创建Protocol
-clientConnectionLost 与主机失去连接
-clientConnectionFailed　与主机连接失败
-&quot;&quot;&quot;
-from twisted.internet.protocol import Protocol
-from twisted.internet.protocol import ClientFactory
-from twisted.internet import reactor
-from sys import stdout
-
-class Echo(Protocol):
-    def dataReceived(self,data):
-        stdout.write(data)
-
-class EchoClientFactory(ClientFactory):
-    def startedConnecting(self,connector):
-        print(&quot;Start to connect&quot;)
-    def buildProtocol(self,addr):
-        print(&quot;build protocol&quot;)
-        return Echo()
-    def clientConnectionLost(self,connector,reason):
-        print(&quot;client connection lost&quot; + str(reason))
-    def clientConnectionFailed(self,connector,reason):
-        print(&quot;client connection failed&quot; + str(reason))
-
-reactor.connectTCP(&quot;localhost&quot;,8007,EchoClientFactory())
-reactor.run()
-</code></pre><p>##自动连接服务器 </p>
-<pre><code># -*- coding:cp936 -*-
-#!/usr/bin/env python
-&quot;&quot;&quot;
-客户端的几个事件响应
-startConnecting 正在连接服务器
-buildProtocol 已连接上服务器，创建Protocol
-clientConnectionLost 与主机失去连接
-clientConnectionFailed　与主机连接失败
-添加自动连接功能，当连接主机失败后；再次进行连接
-当与主机连接失败后，再次进行连接；
-&quot;&quot;&quot;
-from twisted.internet.protocol import Protocol
-from twisted.internet.protocol import ClientFactory
-from twisted.internet.protocol import ReconnectingClientFactory
-from twisted.internet import reactor
-from sys import stdout
-
-class Echo(Protocol):
-    def dataReceived(self,data):
-        stdout.write(data)
-
-class EchoClientFactory(ClientFactory):
-    def startedConnecting(self,connector):
-        print(&quot;Start to connect&quot;)
-    def buildProtocol(self,addr):
-        print(&quot;build protocol&quot;)
-        return Echo()
-    def clientConnectionLost(self,connector,reason):
-        print(&quot;client connection lost&quot; + str(reason))
-        # 与主机断开连接后，将自动进行连接
-        ReconnectingClientFactory.clientConnectionLost(self,connector,reason)
-    def clientConnectionFailed(self,connector,reason):
-        print(&quot;client connection failed&quot; + str(reason))
-        # 当连接失败后，自动进行连接
-        ReconnectingClientFactory.clientConnectionFailed(self,connector,reason)
-
-reactor.connectTCP(&quot;localhost&quot;,8007,EchoClientFactory())
-reactor.run()
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/01/python试题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1397,1314 +1011,6 @@ s.makefile()
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第十四部分-Deferred用于同步环境/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/第十四部分-Deferred用于同步环境/" itemprop="url">第十四部分 Deferred用于同步环境</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T22:18:36+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文在<a href="http://krondo.com/?p=2205" target="_blank" rel="external">这里</a></p>
-<p>##介绍<br>这部分我们要介绍Deferred的另外一个功能。便于讨论，我们设定如下情景：假设由于众多的内部网请求一个外部诗歌下载服务器，但由于这个外部下载服务器性能太差或请求负荷太重。因此，我们不想将所有的内部请求全部发送到外部服务器。我们的处理办法是，在中间添加一个缓存代理。当一个请求来到后，我们可以从中间缓存代理中找到缓存的备份（如果有缓存）或者直接从外部服务器获得。部署图如图30所示：</p>
-<p><img src="/img/缓存代理服务器.png" alt="图30 缓存代理服务器"></p>
-<p>考虑到，客户端端发送请求来时，此缓存代理可能会将本地的缓冲的诗歌取出并回复，也有可能需要异步等待外部诗歌下载服务器的诗歌回复。如此一来，就会出现这样的情景：客户端发送来的请求，缓存代理处理请求可能是同步也可能是异步。</p>
-<p>要解决这个需要，就用到了Deferred的另一个特性，即可以在将Deferred返回前就激活这个Deferred。之所以可以这样做，是因为你可以在一个已经激活的deferred上添加回调处理函数。一个非常值得注意的是：已经被激活的deferred可以立即激活新添加的回调处理函数。图31表示一个已经激活的deferred：</p>
-<p><img src="/img/已经激活的deferred.png" alt="图31 已经激活的deferred"></p>
-<p>如果在此时，我们再为其另一对callback/errback，那么会立即激活新的回调并执行。如图32</p>
-<p><img src="/img/同一个deferred在添加新的回调之后.png" alt="图32 同一个deferred在添加新的回调之后"></p>
-<p>后面的callback回调被执行，是因为前面的callback执行成功。如果其执行失败，那么接下来执行的将是新添加的errback回调。</p>
-<p>我们可以通过 twisted-deferred/defer-11.py 示例来检测我们这里说到的特性。其中第二组例子，演示了deferred中的pause与unpause函数的功能，即可以暂停一个已经激活的deferred对其回调链上回调的激活。并可以用unpause来解除暂停设置。这两个函数同样完成了在回调中继续产生deferred期间的控制。</p>
-<p>##代理 1.0版本<br>让我们来看看第一个版本的缓存代理的实现twisted-server-1/poetry-proxy.py。由于该服务器既作为服务器向客户端请求提供本地缓存的诗歌，同时也要作为向外部诗歌下载服务器提出下载请求的客户端。因此，其有两套协议/工厂，一套实现服务器角色，另一套实现客户端角色。<br>首先我们先来看看ProxyService的实现部分：</p>
-<pre><code>class ProxyService(object):
-    poem = None # the cached poem
-    def __init__(self, host, port):
-        self.host = host
-        self.port = port
-    def get_poem(self):
-        if self.poem is not None:
-            print &apos;Using cached poem.&apos;
-            return self.poem
-        print &apos;Fetching poem from server.&apos;
-        factory = PoetryClientFactory()
-        factory.deferred.addCallback(self.set_poem)
-        from twisted.internet import reactor
-        reactor.connectTCP(self.host, self.port, factory)
-        return factory.deferred
-    def set_poem(self, poem):
-        self.poem = poem
-        return poem
-</code></pre><p>主要的函数是get_poem。如果缓存中没有请求的诗歌，那么就会建立连接从外部服务器中异步取得而返回一个deferred，并将取得的诗歌放到缓冲区中。相反，若缓冲区中存在请求的诗歌，则直接返回诗歌。</p>
-<p>我们如何来处理这样一个返回值不确定的函数呢，让我们来看看实现服务器角色的协议/工厂：</p>
-<pre><code>class PoetryProxyProtocol(Protocol):
-    def connectionMade(self):
-        d = maybeDeferred(self.factory.service.get_poem)
-        d.addCallback(self.transport.write)
-        d.addBoth(lambda r: self.transport.loseConnection())
-class PoetryProxyFactory(ServerFactory):
-    protocol = PoetryProxyProtocol
-    def __init__(self, service):
-        self.service = service
-</code></pre><p>这里使用了maybeDeferred函数解决了这个问题。此函数的功能就是如果作为其参数返回值为defer，那么其不作任何处理，原样将defer返回。但如何返回值不是defer而是一个值（正如我们的缓存代理将本地缓冲的诗歌返回一样），那么这个maybeDeferred会将该值重新打包成一个已经激活的deferred返回，注意是已经激活的deferred。当然，如果返回的是一个异常，其也会将其打包成一个已经激活的deferred，只不过就不是通过callback而是errback激活的。</p>
-<p>##代理 2.0版本<br>前面我们已经提到，有另一种替代方法来实现这一机制。这在 twisted-server-2/poetry-proxy.py 中很好的说明了。即我们可以返回一个已经激活的defer，放在这儿就是如果缓存代理中有请求的诗歌，那么就通过返回一个激活的deferred：</p>
-<pre><code>def get_poem(self):
-    if self.poem is not None:
-        print &apos;Using cached poem.&apos;
-        # return an already-fired deferred
-        return succeed(self.poem)
-    print &apos;Fetching poem from server.&apos;
-    factory = PoetryClientFactory()
-    factory.deferred.addCallback(self.set_poem)
-    from twisted.internet import reactor
-    reactor.connectTCP(self.host, self.port, factory)
-    return factory.deferred
-</code></pre><p>如果我们去看succeed的源码会发现，其只是在返回一个deferred之前，将其激活。同样，如果想要返回一个以失败的方式激活的deferred，可以调用函数defer.fail<br>在这个版本中，由于get_poem返回的是deferred而不像前一个版本存在不确定性因素。因此协议实现就无需使用maybeDeferred：</p>
-<pre><code>class PoetryProxyProtocol(Protocol):
-    def connectionMade(self):
-        d = self.factory.service.get_poem()
-        d.addCallback(self.transport.write)
-        d.addBoth(lambda r: self.transport.loseConnection())
-</code></pre><p>##总结<br>这个部分我们学习到了deferred可以在返回之前被激活，这样我们就可以将其用于同步环境中。并且我们已经知道了有两种方法来实现。其一是使用maybeDeferred函数，其二是使用succeed/fail。两者返回的都是deferred，不同的是前者返回的可能是异步的也可能是同步的，而后者返回的肯定是同步的，即已经激活。</p>
-<p>Deferred可以在激活后添加新的回调也间接说明了我们在第九部分提到的，deferred中会在最后一个回调中遇到未处理异常，并在此deferred被垃圾回收（即其已经没有任何外界引用）时才将该异常的情况打印出来。即deferred回在其销毁前一直持有异常，等待可能还会添加进来的回调来处理。</p>
-<p>我们已经将deferred中的大部分功能都介绍完了，当然Twisted开发人员可能不会增强deferred的功能。我们下一部分将讲讲Twisted的其它内容。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第十三部分-使用Deferred新功能实现新客户端/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/第十三部分-使用Deferred新功能实现新客户端/" itemprop="url">第十三部分 使用Deferred新功能实现新客户端</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T22:17:10+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文见<a href="http://krondo.com/?p=2159" target="_blank" rel="external">这里</a></p>
-<p>##介绍<br>回忆下第10部分中的客户端5.1版。客户端使用一个Deferred来管理所有的回调链，其中包括一个格式转换引擎的调用。在那个版本中，这个引擎的实现是同步的。（即等待其执行再切到其它函数或任务中）<br>现在我们想实现一个新的客户端，其使用我们在第十二部分实现的格式服务器提供的格式转换服务。但这里有一个问题需要说清楚：由于格式转换服务是通过网络获取的，因此我们需要使用异步I/O。这也就意味着我们获取格式转换服务的API必须是异步实现的。换句话说，try_to_cummingsify回调将会在新客户端中返回一个 deferred。</p>
-<p>如果在一个deferred的回调链中的一个回函数又返回了一个 deferred会发生什么现象呢？我们规定前一个deferred为外层deferred，而后者则为内层deferred。假设回调N在外层deferred中返回一个内层的deferred。意味着这个回调宣称“我是一个异步函数，结果不会立即出现！”。由于外层的deferred需要调用回调链中下一个callback或errback并将回调N的结果传下去，因此，其必须等待直到内层deferred被激活。当然了，外层的deferred不可能处于阻塞状态，因为控制权此时已经转交给了reactor并且阻塞了。</p>
-<p>那么外层的deferred如何知晓何时恢复执行呢？很简单，在内层deferred上添加callback或errback即可（即激活内层的deferred）。因此，当内层deferrd被激活时，外层的deferred恢复其回调链的执行。当内层deferred回调执行成功，那么外层deferred会调用第N+1个callback回调。相反，如果内层deferred执行失败，那么外层deferred会调用第N+1个errback回调。</p>
-<p>图28形象地解释说明了这一过程：</p>
-<p><img src="/img/内层与外层deferred的交互.png" alt="图28 内层与外层deferred的交互"></p>
-<p>在这个图示中，外层的deferred有四个callback/errback对。当外围的deferred被激活后，其第一个callback回调返回了一个deferred（即内层deferred）。从这里开始，外层的deferred停止激活其回调链并且将控制权交还给了reactor（当然是在给内层deferred添加callback/errback之后）。过了一段时间之后，内层deferred被激活，然后执行它的回调链并执行完毕后恢复外层deferred的回调执行过程。注意到，外层deferred是无法激活内层deferred的。这是不可能的，因为外层的deferred根本就无法获知内层的deferred何时能把结果准备好及结果内容是什么。相反，外层的deferred只可能等待（当然是异步方式）内部deferred的激活。</p>
-<p>注意到外层deferred的产生内层deferred的回调的连线是黑色的而不是红色或蓝色，这是因为我们在内层deferred激活之前是无法获知此回调返回的结果是执行成功还执行失败。只有在内层deferred激活时，我们才能决定下一个回调是callback还是errback。</p>
-<p>图29从reactor的角度来说明了外层与内层deferred的执行序列：</p>
-<p><img src="/img/控制权的转换.png" alt="图29 控制权的转换"></p>
-<p>这也许是Deferred类最为复杂的功能，但无需担心你可能会花费大量时间来理解它。我们将在示例twisted-deferred/defer-10.py中说明如何使用它。这个例子中，我们创建了两个外层deferred，一个使用了简单的回调，另一个其中的一个回调返回了一个内部deferred。通过阅读这段代码，我们可以发现外层deferred是在内层deferred激活后才开始继续执行回调链的。</p>
-<p>##客户端版本6.0<br>我们将使用新学的deferred嵌套来重写我们的客户端来使用由服务器提供的样式转换服务。其实现代码在<br><a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-6/get-poetry.py#L1" target="_blank" rel="external">twisted-client-6/get-poetry.py</a>中。与前几个版本一样，协议与工厂都没有改变。但我们添加了进行格式转换服务请求的协议与工厂实现。下面是协议实现代码：</p>
-<pre><code>class TransformClientProtocol(NetstringReceiver):
-    def connectionMade(self):
-        self.sendRequest(self.factory.xform_name, self.factory.poem)
-    def sendRequest(self, xform_name, poem):
-        self.sendString(xform_name + &apos;.&apos; + poem)
-    def stringReceived(self, s):
-        self.transport.loseConnection()
-        self.poemReceived(s)
-    def poemReceived(self, poem):
-        self.factory.handlePoem(poem)
-</code></pre><p>使用NetstringReceiver作为基类可以很简单地实现我们的协议。只要连接一旦建立我们就发出格式转换服务的请求。当我们得到格式转换之后的诗歌后交给工厂进行处理，下面是工厂代码：</p>
-<pre><code>class TransformClientFactory(ClientFactory):
-    protocol = TransformClientProtocol
-    def __init__(self, xform_name, poem):
-        self.xform_name = xform_name
-        self.poem = poem
-        self.deferred = defer.Deferred()
-    def handlePoem(self, poem):
-        d, self.deferred = self.deferred, None
-        d.callback(poem)
-    def clientConnectionLost(self, _, reason):
-        if self.deferred is not None:
-            d, self.deferred = self.deferred, None
-            d.errback(reason)
-    clientConnectionFailed = clientConnectionLost
-</code></pre><p>值得注意的是，工厂是如何处理两种类型错误：连接失败与在诗歌未全部接收完就中断连接。并且clientConncetionLost可能会在我们已经接收完诗歌后激活执行（即连接断开了），但在这种情况下，self.deferred已经是个None值，这利益于handePoem中对deferredr 处理。</p>
-<p>这个工厂创建了一个deferred并且最后激活了它，这在Twisted编程中是一个好的习惯，即</p>
-<blockquote>
-<p>通常情况下，一个对象创建了一个deferred，那么它应当负责激活它。</p>
-</blockquote>
-<p>除了格式转换工厂外，还有一个Proxy类开包装了具体创建一个TCP连接到格式转换服务器：</p>
-<pre><code>class TransformProxy(object):
-    &quot;&quot;&quot;
-    I proxy requests to a transformation service.
-    &quot;&quot;&quot;
-    def __init__(self, host, port):
-        self.host = host
-        self.port = port
-    def xform(self, xform_name, poem):
-        factory = TransformClientFactory(xform_name, poem)
-        from twisted.internet import reactor
-        reactor.connectTCP(self.host, self.port, factory)
-        return factory.deferred
-</code></pre><p>这个类提供了一个xform接口，以让其它程序请求格式转换服务。这样一来其它代码只需要提出请求并得到一个deferred，而无需考虑什么端口与IP地址之类的问题。<br>剩下的代码除了try_to_cummingsify外都没有改变：</p>
-<pre><code>def try_to_cummingsify(poem):
-    d = proxy.xform(&apos;cummingsify&apos;, poem)
-    def fail(err):
-        print &gt;&gt;sys.stderr, &apos;Cummingsify failed!&apos;
-        return poem
-    return d.addErrback(fail)
-</code></pre><p>这个作为外层deferred的回调返回了一个内层的deferred，但我们仍然需要更改main方法，除了创建了一个Proxy对象。由于try_to_cummingsify已经是deferred回调链中的一部分，因此其早已使用了异步方式。因此我们说main函数无需更改。</p>
-<p>你可能注意到return d.addErrback(fail)这句，其它它等于</p>
-<pre><code>d.addErrback(fail)
-return d
-</code></pre><p>##结束语<br>这一部分我们学习了关于deferred如何透明地完成了回调链内部再次处理deferred。并由此，我们可以无需考虑内部实现细节并放心地在外部deferred上添加回调。</p>
-<p>在第十四部分，我们将讲解deferred的另外一个特性。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第十二部分-改进诗歌下载服务器/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/第十二部分-改进诗歌下载服务器/" itemprop="url">第十二部分 改进诗歌下载服务器</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T22:00:48+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>#第十二部分 改进诗歌下载服务器<br>原文在<a href="http://krondo.com/?p=2101" target="_blank" rel="external">这里</a><br>新的服务器实现<br>这里我们要新写一个Twisted版的服务器。然后，再来讨论一些Deferred的新功能。</p>
-<p>在第九、十部分，我们提出了诗歌转换引擎这个概念。由于其实现太过简单，因此我们用随机选择来模拟了可能会出现转换失败的情景。但如果转换引擎位于服务器端，那么当服务器宕机就会出现真实的转换失败的情景了。<br>因此，在这部分我们要实现一个诗歌样式转换服务器，然后在一个部分，我们会重写我们的诗歌下载客户端来使用这一服务并且学习Deferred的新功能。</p>
-<p>##设计协议<br>到目前为止，服务器端与客户端之间的交互都是单向的。但样式转换服务需要两者进行双向交互-客户端将原始式样的诗歌发送给乳服务器，然后服务器将转换格式并将其发送给对应的客户端。因此，我们需要使用、或自己实现一个协议来实现这种交互。<br>我们设计服务器端可以提供若干种转换服务，而让客户端来进行选择。因此客户端需要向服务器端发送两部分信息：转换方式名与诗歌原始内容。服务器只是将转换格式之后的诗歌发送给客户端。这里使用到了简单的运程调用。</p>
-<p>Twisted支持需要种协议来解决这个问题：XML-RPC,Perspective Broker,AMP。<br>但介绍使用其中任何一种都需要大量的时间，因此我们使用自己实现的协议。我们约定客户端发送内容格式如下：</p>
-<p><strong>转换名称.诗歌内容</strong></p>
-<p>我们将其以netstring格式编码，当然服务器回发的信息也是以netstring格式编码。由于netstring使用了length-encoding，因此客户端能够识别出服务器没有将完整诗歌回发的情况。如果你尝试一下前面的协议，其无法检测到中途中断传输的情况。</p>
-<p>##代码<br>新的服务器实现代码在twisted-server-1/transformedpoetry.py中。首先，我们定义了一个TransformService类：</p>
-<pre><code>class TransformService(object):
-    def cummingsify(self, poem):
-        return poem.lower()
-</code></pre><p>这里我们仅仅实现了一种转换方法，我们可以不回新格式转换方法。有一个重要的地方需要注意：格式转换服务与具体协议的实现是完全分分离的。将协议逻辑与服务逻辑分开是Twisted编程中常见的模式。这样做可以通过多种协议实现同一种服务，以增加了代码的重用性。</p>
-<p>下面看看factory的实现代码：</p>
-<pre><code>class TransformFactory(ServerFactory):
-    protocol = TransformProtocol
-    def __init__(self, service):
-        self.service = service
-    def transform(self, xform_name, poem):
-        thunk = getattr(self, &apos;xform_%s&apos; % (xform_name,), None)
-        if thunk is None: # no such transform
-            return None
-        try:
-            return thunk(poem)
-        except:
-            return None # transform failed
-    def xform_cummingsify(self, poem):
-        return self.service.cummingsify(poem)
-</code></pre><p>factory提供了一个transform的函数，protocol就是用它来代表客户端连接请求进行诗歌格式转换。</p>
-<p>如果发现没有客户端请求的转换方法或转换失败，那么返回None。和TransformService一样，factory与具体的协议逻辑实现也是相互独立的。</p>
-<p>有一个地方需要引起注意：我们通过xfomr_前缀式方法来获取服务方法。这种方法在Twisted中很常见，尽管前缀经常发生变化，并且他们经常是依赖于独立于factory的一个对象（如此处的 TransformService）这是一种防止客户端使用蓄意恶性代码来让服务器端执行的方法。这种方法也提供了实现由服务提供具体协议代理的机制。<br>下面是协议实现代码：</p>
-<pre><code>class TransformProtocol(NetstringReceiver):
-    def stringReceived(self, request):
-        if &apos;.&apos; not in request: # bad request
-            self.transport.loseConnection()
-            return
-        xform_name, poem = request.split(&apos;.&apos;, 1)
-        self.xformRequestReceived(xform_name, poem)
-    def xformRequestReceived(self, xform_name, poem):
-        new_poem = self.factory.transform(xform_name, poem)
-        if new_poem is not None:
-            self.sendString(new_poem)
-        self.transport.loseConnection()
-</code></pre><p>在这个协议的实现中，我们通过继承NetstringReceiver来利用了Twisted对netstrings的实现。基类很好的处理了编码与解码功能，我们需要做的就是实现stringReceived方法。换句话说，stringReceived接收的参数是客户端编码之后的诗歌，而无需我们再去添加额外的编码信息。而且基类同样管理着缓冲区，即当一首诗歌完整接收完再进行解码。</p>
-<p>如果一切进展正常的话，我们会使用NetstringReceiver的 sendString方法来将格式转换成功后的诗歌发送给客户端。</p>
-<p>注意我们是如何通过定义xformRequestReceived方法将收到的信息一步步推向更高的抽象层而实现了Twisted的模式。</p>
-<p>##一个简单的客户端<br>我们会在下一个部分来实现相应的客户端，这里使用一个简单的脚本来实现客户端，代码位于twisted-server-1/transform-test中。如果你运行服务器端于11000端口：</p>
-<pre><code>python twisted-server-1/transformedpoetry.py --port 11000
-</code></pre><p>相应的运行脚本为：</p>
-<pre><code>./twisted-server-1/transform-test 11000
-</code></pre><p>那么你会看到如下输出（经过netstring编码）：</p>
-<pre><code>15:here is my poem,
-</code></pre><p>##讨论<br>在这个部分介绍了如下几个方面内容：</p>
-<ol>
-<li>双向通信</li>
-<li>基于Twisted已有的协议实现新协议</li>
-<li>将协议实现与服务功能实现独立分开</li>
-</ol>
-<p>双向通信的基本机制是很简单的。我们使用前面服务器端与客户端使用的相同的技术来写与读数据，唯一不同的是我们这次两者都使用了（读与写）。当然，一个复杂的协议需要复杂的代码来处理接收到的数据流与格式化输出的信息。这也是为什么使用已经存在的协议的原因。</p>
-<p>如果你开始觉得写简单的协议已经很上手了，那么最好就开始看看Twisted对不同协议的实现。尽管写一些简单的协议有助理解Twisted的编程风格，但在一个真实的程序中，最好是复用那些已经实现并证明性能良好的协议。</p>
-<p>最后一点是将协议解析逻辑与服务实现逻辑分开，这是Twisted编程中非常重要的一个模式。我们这个服务器程序只是一个演示，你可以想象一下真实的网络服务是相当复杂的。通过将服务与协议逻辑分开，你可以通过复用已有的服务代码来运行于其它的协议实现上。</p>
-<p>图27展示了一个格式转换服务器通过两种协议提供格式转换服务（当然，我们的服务器只提供了一种协议）：</p>
-<p><img src="/img/提供两种协议支持的格式转换服务器.png" alt="图27 提供两种协议支持的格式转换服务器"></p>
-<p>虽然在图27中使用了两种协议，但他们也许是只有几个协议属性不同。factory共享相同的服务。这样实现了代码的复用。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第十一部分：改进诗歌下载服务器/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/第十一部分：改进诗歌下载服务器/" itemprop="url">第十一部分：改进诗歌下载服务器</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T21:59:42+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>#第十一部分：改进诗歌下载服务器<br>原文在<a href="http://krondo.com/?p=2048" target="_blank" rel="external">这里</a></p>
-<p>##诗歌下载服务器<br>到目前为止，我们已经学习了大量关于诗歌下载客户端的Twisted的知识，接下来，我们使用Twisted重新实现我们的服务器端。利益于Twisted的抽象机制，接下来你会发现我们前面已经几乎全部学习到这部分知识了。其实现源码在<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-server-1/fastpoetry.py#L1" target="_blank" rel="external">twisted-server-1/fastpoetry.py</a>中。之所以称其为fastpoetry是因为其并没有任何延迟的传输诗歌。注意到，其代码量比客户端少多了。</p>
-<p>让我们一部分一部分地来看服务端的实现，首先是poetryProtocol：</p>
-<pre><code>class PoetryProtocol(Protocol):
-    def connectionMade(self):
-        self.transport.write(self.factory.poem)
-        self.transport.loseConnection()
-</code></pre><p>如同客户端的实现，服务器端使用Protocol来管理连接（在这里，连接是由客户端发起的）。这里的Protocol实现了我们的诗歌下载逻辑的服务器端。由于我们协议逻辑处理的是单向的，服务器端的Protocol只负责发送数据。如果你访问服务器端，协议请求服务器在连接建立后立即发送诗歌，因此我实现了connectionMade方法，其会在Protocol中创建一个连接时被激活执行。</p>
-<p>这个方法告诉Transport做两件事：将整首诗歌发送出去然后关闭连接。当然，这两个动作都是同步操作。因此调用write函数也可以说成“一定要将整首诗歌发送到客户端”，调用loseConnection意味着“一旦将要求下载的诗歌发送完毕就关掉这个连接”。</p>
-<p>也许你看到了，Protocol是从Factory中获得诗歌内容的：</p>
-<pre><code>class PoetryFactory(ServerFactory):
-    protocol = PoetryProtocol
-    def __init__(self, poem):
-        self.poem = poem
-</code></pre><p>这么简单！除了创建PoetryProtocol工厂的仅有的工作是存储要发送的诗歌。<br>注意到我们继承了ServerFactory而不是ClientFactory。这是因为服务器是要被动地监听连接状态而不是像客户端一样去主动的创建。我们何以如此肯定呢？因为我们使用了listenTCP方法，其描述文档声明factory参数必须是ServerFactory类型的。</p>
-<p>我们在main函数中调用了listenTCP函数：<br>    def main():<br>        options, poetry_file = parse_args()<br>        poem = open(poetry_file).read()<br>        factory = PoetryFactory(poem)<br>        from twisted.internet import reactor<br>        port = reactor.listenTCP(options.port or 0, factory,nterface=options.iface)<br>        print ‘Serving %s on %s.’ % (poetry_file, port.getHost())<br>        reactor.run()</p>
-<p>其做了三件事：</p>
-<ol>
-<li>读取我们要发呈现的诗歌</li>
-<li>创建PoetryFactory并传入这首诗歌</li>
-<li>使用listenTCP来让Twisted监听指定的端口，并使用我们提供的factory来为每个连接创建一个protocol</li>
-</ol>
-<p>剩下的工作就是reactor来运转事件循环了。你可以使用前面任何一个客户端来测试这个服务器。</p>
-<p>##讨论<br>回忆下第五部分中的图8与图9.这两张图说明了一个协议在Twisted创建一个连接后如何创建一个协议并初始化它的。其实对于Twisted在其监听的端口处接听到一个连接之后的整个处理机制也是如此。这也是为什么connectTCP与listenTCP都需要一个factory参数的原因。</p>
-<p>我们在图9中没有展示是的，connectionMake其实也是Protocol初始化的一部分。无论在哪儿都一样（Dave是想说，connectionMade都会在Protocol初始化时执行），但我们在客户端处没有用到这个方法。并且我们在客户端的协议实现中的方法并没有在服务器处用到。因此，如果我们有这个需要，可以创建一个共享式的单一PoetryProtocol供客户端与服务器端使用。这各方式在Twisted经常见到。例如，NetstringReceiver protocol即能读从一个连接中读也能向一个连接中写netstrings。</p>
-<p>我们略去了写从低层来实现服务器端的内容，但我们仍要来思考一下下面发生的事情。首先，调用listenTCP来告诉Twisted创建一个 listening socket 并将其添加到事件循环中。在 listening socket 有事件发生并不意味有数据要读，而是说明有客户端在等待连接自己。</p>
-<p>Twisted会自动接受连接请求，并创建一个新客户端式连接来连接客户端与服务器（中间桥梁）。这个新的连接也要加入事件循环中，并且Twisted为其创建了一个Transport与一个专门为这个连接服务的PoetryProtocol。因此，Protocol实例总是连接到客户端式的socket，而不是监听式socket。<br>我们可以在图26中形象地看到这一结果：</p>
-<p><img src="/img/服务器端的网络连接.png" alt="图26：服务器端的网络连接"></p>
-<p>在图中，有三个客户端连接到服务器。每个Transport代表一个client socket，加上listening socket总共是四个被select循环监听的文件描述符（file descriptor).当一个客户端断开与其相关的transport的连接时，对应的PoetryProtocol也会被解引用并当作垃圾被回收。而PoetryFactory只要我们还在监听新的连接就会一直不停地工作（即PoetryFactory不会将PoetryProtocol会随着一个连接的断开而被销毁）。</p>
-<p>如果我们提供的诗歌很短的话，那么这些client socket与其相关的各种对象的生命期也就很短。但也有可能会是一台相当繁忙的服务器以至于同时有千百个客户端同时请求较长的诗歌。那没关系，因为Twisted并没有连接建立的限制。当然，当下载量持续的增加，在某个结点处，你会发现已经到达了OS的上限。对于那些高下载量的服务器，仔细的检测与测试是每天都必须的工作。</p>
-<p>并且Twisted在监听端口的数量上亦无限制。实际上，一个单一的Twisted线程可以监听数个端口并为其提供不同的服务（通过使用不同的factory作为listenTCP的参数即可）。并且经过精心的设计，使用一个Twisted线程来提供多个服务还是使用多个Twisted线程来实现可以推迟到部署阶段来做决定。</p>
-<p>我们这个版本的服务器有些功能是没有的。首先，它无法产生任何日志来帮助我们调试和分析网络出现的问题。另外，服务器也不是做为一个守护进程来运行，很容易通过ctrl+c来中止其执行。我们将会在第十二部分来分析这部分内容。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第十部分：增强defer功能的客户端/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/第十部分：增强defer功能的客户端/" itemprop="url">第十部分：增强defer功能的客户端</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T21:58:07+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文在<a href="http://krondo.com/?p=1956" target="_blank" rel="external">这里</a></p>
-<p>##版本5.0<br>现在我们将要向诗歌下载客户端添加一些新的处理逻辑，包括在第九部分提到要添加的功能。不过，首先我要说明一点：我并不知道如何实现Byronification引擎。那超出了我的编程能力范围。取而代之的，我想实现一个简单的功能，即Cummingsifier。其只是将诗歌内容转换成小写字母：</p>
-<pre><code>def cummingsify(poem)
-    return poem.lower()
-</code></pre><p>这个方法如此之简单以至于它永远不会出错。版本5.0的实现代码在<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-5/get-poetry.py#L1" target="_blank" rel="external">twisted-client-5/get-poetry.py</a>文件中。我们使用了修改后的 cummingsify，其会随机地选择以下行为：</p>
-<ol>
-<li>返回诗歌的小写版本</li>
-<li>抛出一个GibberishError异常</li>
-<li>抛出一个ValueError</li>
-</ol>
-<p>这样，我们便模拟出来一个会因为各种意料不到的问题而执行失败的复杂算法。其它部分的仅有的改变在方法<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-5/get-poetry.py#L119" target="_blank" rel="external">poetry_main</a>中：</p>
-<pre><code>def poetry_main():
-    addresses = parse_args()
-    from twisted.internet import reactor
-    poems = []
-    errors = []
-    def try_to_cummingsify(poem):
-        try:
-            return cummingsify(poem)
-        except GibberishError:
-            raise
-        except:
-            print &apos;Cummingsify failed!&apos;
-            return poem
-    def got_poem(poem):
-        print poem
-        poems.append(poem)
-    def poem_failed(err):
-        print &gt;&gt;sys.stderr, &apos;The poem download failed.&apos;
-        errors.append(err)
-    def poem_done(_):
-        if len(poems) + len(errors) == len(addresses):
-            reactor.stop()
-    for address in addresses:
-        host, port = address
-        d = get_poetry(host, port)
-        d.addCallback(try_to_cummingsify)
-        d.addCallbacks(got_poem, poem_failed)
-        d.addBoth(poem_done)
-    reactor.run()
-</code></pre><p>因此，当从服务器上下载一首诗歌时，可能会出现如下情况：</p>
-<ol>
-<li>打印诗歌的小写版本</li>
-<li>打印 ”Cummingsify failed“并附上原始形式的诗歌</li>
-<li>打印”The peom download failed”。</li>
-</ol>
-<p>为了实现下面内容的效果，你可以打开多个服务器或开一个服务器而打开此程序次，直到你观察到所有不同的结果，当然也尝试一下去连接一个没有服务器值守的端口。</p>
-<p>图19是我们给deferred添加回调后形成的callback/errback链：</p>
-<p><img src="/img/deferred中的回调链.png" alt="图19 deferred中的回调链"></p>
-<p>注意到，”pass-throug”errback通过addCallback添加到链中。它会将任何其接收到的Failure传递给下一个errback（即poem_failed函数）。因此poem_failed函数可以处理来自get_poetry与try_to_commingsify两者的failure。下面让我们来分析下deferred可能会出现的激活情况，图20说明了我们能够下载到诗歌并且try_to_commingsify成功执行的路线图：</p>
-<p><img src="/img/成功下载到诗歌并且成功变换其格式.png" alt="图20 成功下载到诗歌并且成功变换其格式"></p>
-<p>在这种情况中，没有回调执行失败，因此控制权一直在callback中流动。注意到poem_done收到的结果是None，这是因为它并没有返回任何值。如果我们想让后续的回调都能触及到诗歌内容，只要显式地让got_poem返回诗歌即可。</p>
-<p>图21说明了我们在成功下载到诗歌后，但在try_to_cummingsify中抛出了GibberishError：</p>
-<p><img src="/img/成功下载到诗歌但出现了GibberishError.png" alt="图21 成功下载到诗歌但出现了GibberishError"></p>
-<p>由于try_to_cummingsify回调抛出了GibberishError，所以控制权转移到了errback链，即poem_fail回调被调用并传入的捕获的异常作为其参数。</p>
-<p>由于poem_failed并没有抛出获异常或返回一个Failure，因此在它执行完后，控制权又回到了callback链中。如果我们想让poem_fail完全处理好传进来的错误，那么返回一个None是再好不过的做法了。相反，如果我们只想让poem_failed采取一部分行动，但继续传递这个错误，那么我们需要改写poem_failed，即将参数err作为返回值返回。如此一来，控制权交给了下一个errback回调。</p>
-<p>注意到，迄今为止，got_poem与poem_failed都不可能出现执行失败的情况，因此errback链上的poem_done是不可能被激活的。但在任何情况下这样做都是安全的，这体现了“防御式”编程的思想。比如在got_poem或poem_failed出现了bugs，那么这样做就不会让这个bugs的影响进入Twisted的核心代码区。鉴于上面的描述，可以看出addBoth类型于try/except中的finally语句。</p>
-<p>下面我们再来看看第三种可能情况，即成功下载到诗歌但try_to_cummingsify抛出了VauleError，如图22：</p>
-<p><img src="/img/成功下载到诗歌当cummingsify执行失败.png" alt="图22：成功下载到诗歌当cummingsify执行失败"></p>
-<p>除了got_poem得到是原始式样的诗歌而不是小写版的外，与图20描述的情况完全相同。当然，控制权还是在try_to_cummingsif中进行了转移，即使用了try/except捕获了ValueError并返回了原始式样的诗歌。而这一切deferred并不知晓。<br>最后，我们来看看当试图连接一个无服务器值守的端口会出现什么情况，如图23所示：</p>
-<p><img src="/img/连接服务器失败.png" alt="图23 连接服务器失败"></p>
-<p>由于poem_failed返回了一个None，因此控权又回到了callback链中。</p>
-<p>##版本5.1<br>在版本5.0中我们使用普通的try/except来捕获try_to_cummingsify中的异常，而没有让deferred来捕获这个异常。这其实并没有什么错误，但下面我们将采取一种新的方式来处理异常。</p>
-<p>设想一下，我们让deferred来捕获 GibberishError 与ValueError 异常，并将其传递到errback链中进行处理。如果要保留原有的行为，那么需要下面的errback来判断错误类型是否为Valuerror，如果是，那么返回原始式样的诗歌，这样一来，控制权再次回到callback链中并将原始式样的诗歌打印出来。</p>
-<p>但有一个问题：errback并不会得到原始诗歌内容 。它只会得到由cummingsify抛出的vauleError异常。为了让errback处理这个错误，我们需要重新设计它来接收到原始式样的诗歌。</p>
-<p>一种方法是改变cummingsify以让异常信息中包含原始式样的诗歌。这也正是我们在5.1版本中做的，其代码实现在<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-5/get-poetry-1.py#L1" target="_blank" rel="external">twisted-client-5/get-poetry-1.py</a>中。我们改写ValueError异常为CannotCummingsify异常，其能将诗歌作为其第一个参数来传递。</p>
-<p>如果cummingsify中外部模块中一个真实存在的函数，那么其最好是通过另一个函数来捕获非GibberishError并抛出一个CannotCummingsify异常。这样，我们的poetry_main就成为：</p>
-<pre><code>def poetry_main():
-    addresses = parse_args()
-    from twisted.internet import reactor
-    poems = []
-    errors = []
-    def cummingsify_failed(err):
-        if err.check(CannotCummingsify):
-            print &apos;Cummingsify failed!&apos;
-            return err.value.args[0]
-        return err
-    def got_poem(poem):
-        print poem
-        poems.append(poem)
-    def poem_failed(err):
-        print &gt;&gt;sys.stderr, &apos;The poem download failed.&apos;
-        errors.append(err)
-    def poem_done(_):
-        if len(poems) + len(errors) == len(addresses):
-            reactor.stop()
-    for address in addresses:
-        host, port = address
-        d = get_poetry(host, port)
-        d.addCallback(cummingsify)
-        d.addErrback(cummingsify_failed)
-        d.addCallbacks(got_poem, poem_failed)
-        d.addBoth(poem_done)
-</code></pre><p>而新的deferred结构如图24所示：</p>
-<p><img src="/img/版本5.1的deferrd调用链结构.png" alt="图24：版本5.1的deferrd调用链结构"></p>
-<p>来看看cummingsify_failed的errback回调：</p>
-<pre><code>def cummingsify_failed(err):
-    if err.check(CannotCummingsify):
-        print &apos;Cummingsify failed!&apos;
-        return err.value.args[0]
-    return err
-</code></pre><p>我们使用了Failure中的<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/python/failure.py#L305" target="_blank" rel="external">check</a>方法来确认嵌入在Failure中的异常是否是CannotCummingsify的实例。如果是，我们返回异常的第一个参数（即原始式样诗歌）。因此，这样一来返回值就不是一个Failure了，控制权也就又回到callback链中了。否则（即异常不是CannotCummingsify的实例），我们返回一个Failure，即将错误传递到下一个errback中。</p>
-<p>图25说明了当我们捕获一个CannotCummingsify时的调用过程：</p>
-<p><img src="/img/捕获一个CannotCummingsify异常.png" alt="图25：捕获一个CannotCummingsify异常"></p>
-<p>因此，当我们使用deferrd时，可以选择使用try/except来捕获异常，也可以让deferred来将异常传递到errback回调链中进行处理。</p>
-<p>##总结：<br>在这个部分，我们增强了客户端的Deferred的功能，实现了异常与结果在callback/errback链中“路由”。（你可以将各个回调看作成路由器，然后根据传入参数的情况来决定其返回值进入下一个stage的哪条链，或者说控制权进入下一个stage的哪个类型的回调）。虽然示例程序是虚构出来的，但它揭示了控制权在deferred的回调链中交错传递具体方向依赖于返回值的类型。</p>
-<p>那我们是不是已经对deferred无所不知了？不，我们还会在下面的部分继续讲解deferred的更多的功能。但在第十一部分，我们先不讲这部分内容，而是实现我们的Twisted版本的诗歌下载服务器。</p>
-<p>##练习</p>
-<ol>
-<li>Figure 25 shows one of the four possible ways the deferreds in client 5.1 can fire. Draw the other three.</li>
-<li><p>Use the <a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/deferred-simulator.py#L1" target="_blank" rel="external">deferred simulator</a> to simulate all possible firings for clients 5.0 and 5.1. To get you started, this simulator program can represent the case where the try_to_cummingsify function succeeds in client 5.0:</p>
-<pre><code>r poem p
-r None r None
-r None r None
-</code></pre></li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第九部分：第二个小插曲，Deferred/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/第九部分：第二个小插曲，Deferred/" itemprop="url">第九部分：第二个小插曲，Deferred</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T21:56:42+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文在<a href="http://krondo.com/?p=1825" target="_blank" rel="external">这里</a></p>
-<p>##更多关于回调的知识<br>稍微停下来再思考一下回调的机制。尽管对于以Twisted方式使用Deferred写一个简单的异步程序已经非常了解了，但Deferred提供更多的是只有在比较复杂环境下才会用到的功能。因此，下面我们自己想出一些复杂的环境，以此来观察当使用回调编程时会遇到哪些问题。然后，再来看看deferred是如何解决这些问题的。</p>
-<p>因此，我们为诗歌下载客户端添加了一个假想的功能。设想一些计算机科学家发明了一种新诗歌关联算法，<br>Byronification引擎。这个漂亮的算法根据一首诗歌生成一首使用Lord Byron式的同样的诗歌。另外，专家们提供了其Python的接口，即：</p>
-<pre><code>class IByronificationEngine(Interface): 
-    def byronificate(poem):
-        &quot;&quot;&quot;
-        Return a new poem like the original, but in the style of Lord Byron.
-        Raises GibberishError if the input is not a genuine poem.
-        &quot;&quot;&quot;
-</code></pre><p>像大多数高尖端的软件一样，其实现都存在着许多bugs。这意外着除了已知的异常外，这个byronificate 方法可能会抛出一些专家当时没有预料到的异常出来。</p>
-<p>我们还可以假设这个引擎能够非常快的动作以至于我们可以在主线程中调用到而无需考虑使用reactor。下面是我们想让程序实现的效果：</p>
-<ol>
-<li>尝试下载诗歌</li>
-<li>如果下载失败，告诉用户没有得到诗歌</li>
-<li>如果下载到诗歌，则转交给Byronificate处理引擎一份</li>
-<li>如果引擎抛出GibberishError，告诉用户没有得到诗歌</li>
-<li>如果引擎抛出其它异常，则将原始式样的诗歌立给用户</li>
-<li>如果我们得到这首诗歌，则打印它</li>
-<li>结束程序</li>
-</ol>
-<p>这里设计是当遇到GibberishError异常则表示没有得到诗歌，因此我们直接告诉用户下载失败即可。这也许对调试没什么用处，但我们的用户关心的只是我们下载到诗歌没有。另一方面，如果引擎因为一些其它的原因而出现处理失败，那么我们将原始诗歌交给用户。毕竟，有诗歌呈现总比没有好，虽然不是用户想要的Byron样式。</p>
-<p>下面是同步模式的代码：</p>
-<pre><code>try:
-    poem = get_poetry(host, port) # synchronous get_poetry
-except:
-    print &gt;&gt;sys.stderr, &apos;The poem download failed.&apos;
-else:
-    try:
-        poem = engine.byronificate(poem)
-    except GibberishError:
-        print &gt;&gt;sys.stderr, &apos;The poem download failed.&apos;
-    except:
-        print poem # handle other exceptions by using the original poem
-    else:
-        print poem
-sys.exit()
-</code></pre><p>这段代码可能经过一些重构会更加简单，但已经足以说明上面的逻辑流程。我们想升级那些最近使用deferred的客户端来使用这个功能。但这部分内容我准备把它放在第十部分。现在，我们来考虑一下，用版本3.1来实现这个功能，最后一个没有使用deferred的客户端。假设我们无需考虑处理异常，那么只是改变一下got_poem回调即可：</p>
-<pre><code>def got_poem(poem):
-    poems.append(byron_engine.byronificate(poem))
-    poem_done()
-</code></pre><p>那么如果byronificate抛出GibberishError异常或其它异常会发生什么呢？看看第六部分的图11,我们可以得到：</p>
-<ol>
-<li>这个异常会传播到工厂中的poem_finished回调，即激活got_poem的方法</li>
-<li>由于poem_finished并没有捕获这个异常，因此其会传递到protocol中的poemReceive函数</li>
-<li>然后来到connectionLost函数，仍然在protocol中</li>
-<li>然后就来到Twisted的核心区，最后止步于reactor。</li>
-</ol>
-<p>前面已经了解到，reactor会捕获异常并记录它而不是“崩溃”掉。但它却不会告诉用户我们的诗歌下载失败的消息。reactor并不知道任何诗歌或GibberishErrors的信息，它只是一段被设计成适应所有网络类型的通用代码，即便与诗歌无关的网络服务。（Dave这里想强调的是reactor只是做一些具有普遍意义的事情，不会单独去处理特定的问题，例如这里原GibberishErrors异常）</p>
-<p>注意异常是如何顺着调用链传递到具有通用性代码区域。并且看到，在got_poem后面任何一步都没有可望以我们客户端的具体要求来处理异常的。这与同步代码中的方式恰恰相反。</p>
-<p>图15揭示了一个同步客户端的调用栈：</p>
-<p><img src="/img/同步调用栈.png" alt="图15：同步调用栈"></p>
-<p>main函数是最高层，意味着它可以触及整个程序，它为什么要存在，并且它是如何在整体上表现的。典型的，main函数可以触及到用户在命令行输入想让程序做什么的参数。并且它还有一个特殊的目的：为一个命令行式的客户端打印结果。</p>
-<p>socket的connet函数，恰恰相反，其为最低层。它所知道的就是提供到指定地址的连接。它并不知道另一端是什么及我们为什么要进行连接。但connect有通用性，不管你因为何种服务要进行网络连接都可以使用它。</p>
-<p>get_poetry在中间，它知道要取一些诗歌，但并不知道如果得不到诗歌会发生什么。因此，从connect抛出的异常会向上传递，从低层的具有通用性的代码区到高层的具有针对性的代码区，直到其传递到知道如何处理这个异常的代码区。</p>
-<p>现在，我们再回来看看对3.1版的假想功能的实现。我们在图16里对调用栈进行了分析，当然只是说明了其中关键的函数：</p>
-<p><img src="/img/异步调用栈.png" alt="图16 异步调用栈"></p>
-<p>现在问题非常清晰了：在回调中，低层的代码（reactor）调用高层的代码，其甚至还会调用更高层的代码。因此一旦出现了异常，它并不会立即被其附件（在调用栈中可触及）的代码捕获，当然附近的代码也不可能处理它。由于异常每向上传递一次，就越靠近低层那些更加不知如何处理该异常的代码。</p>
-<p>一旦异常来到Twisted的核心代码区，游戏也就结束了。异常并不会被处理，只是被记录下来。因此我们在以最原始的回调方式使用回调时（不使用deferred），必须在其进入Twisted之间很好地处理各种异常，至少是我们知道的那些在我们自己设定的规则下会产生的异常。当然其也应该包括那些由我们自己的BUG产生的异常。</p>
-<p>由于bug可能存在于我们代码中的每个角落，因此我们必须将每个回调都放入try/except中，这样一来所有的异常都才有可能被捕获。这对于我们的errback同样适用，因为errback中也可能含有bugs。</p>
-<p>##Deferred的优秀架构<br>最终还得由Deferred来帮我们解决这类问题。当一个deferred激活了一个callback或errback时，它就会捕获各种由回调抛出的异常。换句话说，deferred扮演了try/except模块，这样一来，只要我们使用deferred就无需自己来实现这一层了。那deferred是如何解决这个问题的？很简单，它传递异常给在其链上的下一个errback。</p>
-<p>我们添加到deferred中的第一个errback回调来处理任何出错信息，信息是在deferred的errback函数调用时发出的。但第二个errback会处理任何由第一个errback或第一个callback抛出的异常，并一直按这种规则传递下去。<br>回忆下<a href="http://michaelyou.github.io/img/Deferred.png" target="_blank" rel="external">图12</a>.我们假设第一对callback/errback是stage0,下面则是stage1，stage2。。。依次类推。</p>
-<p>对于stage N来说，如果其callback或errback出错，那么stage N+1的errback就会被调用并收到一个Failure对象作为参数，同时stage N+1的callback就不会被调用了。</p>
-<p>通过将回调函数产生的异常向在链中传递，deferred将异常抛向了高层代码。这也意味着调用deferred的callback与errback永远不会在调用都本身处引发异常（只要你仅激活deferred一次），因此，底层的代码可以放心的激活deferred而无需担心会引发异常。相反，高层代码通过向deferred中添加errback（使用addErrback）来捕获异常。</p>
-<p>在同步代码中，异常会在其被捕获而停止传递，那么一个errback如何发出其捕获了异常这一信号呢？同样很简单：不再引发异常。这样一来，执行权就转移到了callback中来。因此对于stage N来说，不管是callback还是errback成功执行而没有抛出异常，那么stage N+1的callback就会被调用，同样，stage N+1的errback就不会被调用了。</p>
-<p>我们来总结一下吧：</p>
-<ol>
-<li>一个deferred有一个callback/errback对链，它们以添加到deferred中的顺序依次排列</li>
-<li>stage 0，即第一对errback/callbac，会在deferred激活时调用，具体调用那个看激活deferred的方式，若是通过.errback激活，则调用errback；同样若是通过.callback激活则调用callback。（这里的errback/callback实际是指通过addBoth添加的函数）</li>
-<li>如果stage N执行出现异常，则stage N+1的errback被调用，并且其参数即为stage N出现的异常</li>
-<li>同样，如果stage N成功，即没有抛出异常，则N+1的callback被调用，其第一个参数为stage N的返回值。</li>
-</ol>
-<p>图17更加直观的描述上述操作：</p>
-<p><img src="/img/deferred中的控制流程.png" alt="图17：deferred中的控制流程"></p>
-<p>绿色的线表示callback和errback成功执行没抛出异常，而红线表示出现了异常。这些线不仅说明了控制流程还说明了异常与返回值在链中流动的情况。图17显示了所有deferred能出现的可能路径，但实际只有一条路径会存在。图18显示了一条可能的路径：</p>
-<p><img src="/img/可能的deferred激活路线.png" alt="图18：可能的deferred激活路线"></p>
-<p>图18中，deferred的.callback函数被调用了，因此激活了stage 0的callback。这个callback成功的执行而没有抛出异常，因此控制权传给了stage 1的callback。但这个callbac执行失败而抛出异常，因此控制权传给了stage 2的errback。errback成功的处理了异常，而没有再抛出异常，因此控制权传给了stage 3的callback，并且将errback的返回值作为第一个参数传了进来（即stage 3的callback中）。</p>
-<p>图18中，可以看出，最后一个stage上的所有的回调出现异常时，都由下一层的errback来捕获并处理，但如果最后一个stage的callback或errback执行失败而抛出异常，怎么办呢？那么这个异常就会成为unhandled（未处理）。</p>
-<p>在同步代码中，未处理的异常会导致解释器崩溃，在原始方式使用回调的代码中未处理异常会由reactor捕获并记录下来。那么未处理异常出现在deferred中会怎样呢？让我们来做个试验。运行<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/defer-unhandled.py#L1" target="_blank" rel="external">twisted-deferred/defer-unhandled.py</a>试试。下面是输出：</p>
-<pre><code>Finished
-Unhandled error in Deferred: Traceback (most recent call last):
-...
---- &lt;exception caught here&gt; ---
-...
-exceptions.Exception: oops
-</code></pre><p>如下几点需要引起我们的注意：</p>
-<ol>
-<li>最后一个print函数成功执行，意味着程序并没有因为出现未处理异常而崩溃。</li>
-<li>其只是将跟踪栈打印出来，而没有宕掉解释器</li>
-<li>跟踪栈的内容告诉我们deferred在何处捕获了异常</li>
-<li>“’Unhandle”的字符在“Finished”之后出现。</li>
-</ol>
-<p>之所以出现第4条是因为，这个消息只有在deferred被垃圾回收时才会打印出来。我们将在下面的部分看到其中的原因。</p>
-<p>在同步代码中，我们可以使用raise来重新抛出一个异常而无需其它参数。同样，我们也可以在errback中这样做。deferred通过以下两点来判断callback/errback是否执行成功：</p>
-<ol>
-<li>callback/errback “raise”一个异常，或</li>
-<li>callbakc/errback返回一个Failure对象</li>
-</ol>
-<p>因为errback的第一个参数就是一个Failure，因此一个errback可以在进行完其处理后可以再次抛出这个Failure。</p>
-<p>##Callbacks与Errbacks，成对出现<br>上面讨论内容中的一个问题必须要清楚：你添加callback与errback到一个defered的顺序会决定这个deferred的的整体运行情况。另一个必须搞清楚的是：在一个deferred中callback与errback往往是成对出现。有四个方法可以向一个deferred的回调链中添加callback/errback对：</p>
-<ol>
-<li>addCallbacks</li>
-<li>addCallback</li>
-<li>addErrback</li>
-<li>addBoth</li>
-</ol>
-<p>很明显的是，第一个与第四个是向链中添加函数对。当然中间两个也向链中添加函数对。AddCallback向链中添加一个显式的callback函数与一个隐式的”pass-through“函数（实在想不出一个对应的词）。一个pass-through函数只是虚设的函数，只将其第一个参数返回。由于errback回调函数的第一个参数是Failure，因此一个“path-through”的errback总是执行“失败”，即将异常传给下个errback回调。</p>
-<p>##deferred模拟器<br>这部分内容，没有译。其主要是帮助理解deferred，但你会发现，读其中的代码，根本更好的理解deferred。主要是我还没有理解，嘿嘿。所以就不知为不知吧。</p>
-<p>##总结</p>
-<p>经过这些对回调的考虑，发现由于回调式编程改变了低层代码与高层代码的关系，因此让回调产生的异常直接抛到栈中并不件好事。Deferred通过将异常捕获然后将其顺着回调链传递来解决了这个问题。</p>
-<p>我们同样意识到，原始数据（返回值）在链中被传递。结合这个两事实也就带来了这样一种场景：根据每个stage收到的结果的不同，deferred在callback与errback链中来回交错传递数据并执行。</p>
-<p>我们将在第十部分使用些学到的知识来更新我们的客户端。</p>
-<p>##练习</p>
-<ol>
-<li>Inspect the implementation of each of the four methods on the Deferred which add callbacks and errbacks. Verify that all methods add a callback/errback pair.</li>
-<li><p>Use the deferred simulator to investigate the difference between this code:</p>
-<pre><code>deferred.addCallbacks(my_callback, my_errback)
-</code></pre></li>
-</ol>
-<p>and this code:</p>
-<pre><code>deferred.addCallback(my_callback)
-deferred.addErrback(my_errback)
-</code></pre><p>Recall that the last two methods add implicit pass-through functions as one member of the pair.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/如何重命名scrapy下载的图片/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2875,11 +1181,1483 @@ class MyImagesPipeline(ImagesPipeline):
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/29/scrapy如何获取完整的url/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/29/scrapy如何获取完整的url/" itemprop="url">scrapy如何获取完整的url</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-29T20:31:07+08:00">
+                2015-01-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>用scrapy抓取网页的时候，有时抓取到的并不是完整的url，而是url的后面部分。例如，完整的url是<code>http://michaelyou.github.io/categories/scrapy/</code>，我们抓到的只是<code>/categories/scrapy/</code>,这个时候如何获取完整的url呢？或者说，如何将完整的url拼出来呢？</p>
+<p>解决方法如下：</p>
+<ul>
+<li><p>首先在我们的spider文件头上加上：</p>
+<pre><code>from scrapy.utils.response import get_base_url
+from scrapy.utils.url import urljoin_rfc
+</code></pre></li>
+<li><p>第二步在我们定义的parse函数中加上：</p>
+<pre><code>#这一句便是取url的开头部分
+base_url = get_base_url(response)
+#省略若干行
+#这一句是取url的后面部分
+relative_url = sel.xpath(&apos;***&apos;).extract()[0]
+#将两部分合并
+item[&apos;link&apos;] = urljoin_rfc(base_url, relative_url)
+</code></pre></li>
+</ul>
+<p>严重提醒：</p>
+<p>在求<code>relative_url</code>时，我们在<code>extract()</code>后面加了<code>[0]</code>,因为<code>extract()</code>取出来的是一个数组，而函数<code>urljoin_rfc</code>需要的参数是字符串，所以要从数组中将值取出来，这时的数组内只有一个值，<code>index=0</code>，所以加上了<code>[0]</code>.很多人忘记了加<code>[0]</code>,最后导致合并的时候失败。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/29/MongoDB教程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/29/MongoDB教程/" itemprop="url">MongoDB教程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-29T12:05:18+08:00">
+                2015-01-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>详细的教程请点<a href="http://www.yiibai.com/mongodb/" target="_blank" rel="external">这里</a></p>
+<p>mongodb的数据格式是JSON(严格来说是binary JSON)，所以它与javascript的亲和性很强</p>
+<ul>
+<li>mongod是服务器，mongo是客户端，mongo + db名称将连接到运行的mongod实例</li>
+<li><p>单纯执行mongo命令，会进入test数据库</p>
+<ul>
+<li>show dbs命令显示当前数据库列表</li>
+<li>show collections显示当前数据库的collection列表</li>
+<li>db.collection_name.find()会显现这个collection的内容<br>  *使用find()的时候，由于shell默认显示20个数据，所以会出现has more的提示，这时如果想要继续查看数据，可以键入<code>it</code>命令</li>
+<li>use + db_name可以切换数据库</li>
+<li><p>如果想要删除数据库 <mydb>,  那么 dropDatabase() 命令如下：</mydb></p>
+<pre><code>&gt;use mydb
+switched to db mydb
+&gt;db.dropDatabase()
+&gt;{ &quot;dropped&quot; : &quot;mydb&quot;, &quot;ok&quot; : 1 }
+</code></pre></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/28/笔试题总结4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/28/笔试题总结4/" itemprop="url">笔试题总结4</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-28T19:36:16+08:00">
+                2015-01-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>nux的crontab定时执行任务：<br>基本格式为：</p>
+<p>*　　*　　*　　*　　*　　command </p>
+<p>分　时　日　 月 周　 命令 </p>
+<p>第1列表示分钟1～59 每分钟用<code>*</code>或者<code>*/1</code>表示 </p>
+<p>第2列表示小时1～23（0表示0点） </p>
+<p>第3列表示日期1～31 </p>
+<p>第4列表示月份1～12</p>
+<p>第5列标识号星期0～6（0表示星期天） </p>
+<p>第6列要运行的命令</p>
+<hr>
+<pre><code>Class A;
+Class B;
+void F() {
+        A a;
+        B b;
+}
+</code></pre><blockquote>
+<p>在函数F中，本地变量a和b的构造函数(constructor)和析构函数(destructor)的调用顺序是:D</p>
+<p>A.b构造 a构造 a析构 b析构</p>
+<p>B.a构造 a析构 b构造 b析构</p>
+<p>C.b构造 a构造 b析构 a析构</p>
+<p>D.a构造 b构造 b析构 a析构</p>
+</blockquote>
+<p>解释：按变量声明顺序构造对象，然后入栈<br>按相反顺序出栈，析构对象。</p>
+<hr>
+<blockquote>
+<p>一棵有124个叶节点的完全二叉树，最多有（B）个节点。</p>
+<p>A.247</p>
+<p>B.248</p>
+<p>C.249</p>
+<p>D.250</p>
+</blockquote>
+<p>解释：n0 = n2 + 1，于是度为2的结点个数123个<br>完全二叉树中度为1结点个数最多1个</p>
+<p>因此该完全二叉树中结点最多有123+1+124=248个</p>
+<p>最少的话就是度为1的节点是0个，共有节点247个</p>
+<hr>
+<blockquote>
+<p>在排序方法中，元素比较次数与元素的初始排列无关的是（D）</p>
+<p>A.Shell 排序</p>
+<p>B.归并排序</p>
+<p>C.直接插入排序</p>
+<p>D.选择排序</p>
+</blockquote>
+<p>解释：选择排序无视队列原来是否有序，他自己都会再排一遍，所以它的时间复杂度一直是最差的O（n2），最好情况和最差情况一样.每一趟从待排序的数据元素中选出最小（或最大）的一个元素，顺序放在已排好序的数列的最后，直到全部待排序的数据元素排完。 选择排序是不稳定的排序方法</p>
+<hr>
+<blockquote>
+<p>给定如下代码： int x[4]={0}; int y[4]={1}; 数组x和y的值为（B）</p>
+<p>A.{0，0，0，0}，{1，1，1，1}</p>
+<p>B.{0，0，0，0}，{1，0，0，0}</p>
+<p>C.{0，不确定}，{1，不确定}</p>
+<p>D.与编译器相关</p>
+<hr>
+<p>如何判断一个单项链表中是否有环：</p>
+</blockquote>
+<p>解答：<br> 用两个指针，pSlow，pFast，就是一个慢一个快</p>
+<p>   慢的一次跳一步</p>
+<p>   快的一次跳两步</p>
+<p>   往链表末端移动。如果pFast==NULL，则说明链表没有环，如果pSlow==pFast，则说明链表存在环。</p>
+<hr>
+<blockquote>
+<p>-7的二进制补码为：11111001</p>
+</blockquote>
+<p>解释：正数的补码是自身，负数的补码是原码的高位不变，数值位取反加1</p>
+<hr>
+<blockquote>
+<p>中断响应时间是指（ C ）。</p>
+<p>A.从中断处理开始到中断处理结束所用的时间</p>
+<p>B.从发出中断请求到中断处理结束所用的时间</p>
+<p>C.从发出中断请求到进进中断处理所用的时间</p>
+<p>D.从中断处理结束到再次中断请求的时间</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>在下列排序方法中，不稳定的方法有 C</p>
+<p>A.归并排序与基数排序</p>
+<p>B.插进排序与希尔排序</p>
+<p>C.堆排序与快速排序</p>
+<p>D.选择排序与冒泡排序</p>
+</blockquote>
+<p><img src="/img/排序算法总结.png" alt="排序算法总结"></p>
+<hr>
+<blockquote>
+<p>下面的排序算法中，初始数据集的排列顺序对算法的性能无影响的是 B</p>
+<p>A.插入排序</p>
+<p>B.堆排序</p>
+<p>C.冒泡排序</p>
+<p>D.快速排序</p>
+</blockquote>
+<p>解释：有影响就是这个排序算法最好情况和最差情况的时间复杂度不同。对于无影响，我们只要找最好情况和最差情况时间复杂度一样的算法就可以了，所以是堆排序</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/27/面试题总结3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/27/面试题总结3/" itemprop="url">笔试题总结3</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-27T15:08:28+08:00">
+                2015-01-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>下列关于线程说法错误的是（B）</p>
+<p>A.耗时的操作使用线程，提高程序响应</p>
+<p>B.耗内存的操作使用线程，提高内存利用率</p>
+<p>C.多CPU的系统使用线程，提高CPU利用率</p>
+<p>D.并行操作使用线程，如c/s架构中服务端程序为每个客户端请求创建一个线程来响应</p>
+</blockquote>
+<p>解释：多线程可以提高CPU利用率，不能提高内存利用率</p>
+<hr>
+<blockquote>
+<p>个数约为 50k 的数列需要从小到大排序， 数列特征是基本逆序 （多数数字从大到小，个别乱序） ，以下哪种排序算法在事先不了解数列特征的情况下性能大概率最优（不考虑空间限制）_E__.</p>
+<p>A.冒泡排序</p>
+<p>B.改进冒泡排序</p>
+<p>C.选择排序</p>
+<p>D.快速排序</p>
+<p>E.堆排序</p>
+<p>F.插入排序</p>
+</blockquote>
+<p>解释：个数约为50K，基本可以秒杀一般的<code>冒泡</code>，<code>改进冒泡</code>，<code>选择</code>，<code>插入</code>等基本的排序。加上数列的特征是基本逆序，而快速排序的worst case就是基本逆序或者基本有序的情况。综上所述，堆排序应该是大概率最优的。</p>
+<hr>
+<blockquote>
+<p>下列方法中，<em>B__</em>不可以用来程序调优？</p>
+<p>A.改善数据访问方式以提升缓存命中率</p>
+<p>B.使用多线程的方式提高 I/O 密集型操作的效率</p>
+<p>C.利用数据库连接池替代直接的数据库访问</p>
+<p>C.利用迭代替代递归</p>
+<p>E.合并多个远程调用批量发送</p>
+<p>F.共享冗余数据提高访问效率</p>
+</blockquote>
+<p>解释：</p>
+<p>A缓存命中率提高，减少访问存储器的开销</p>
+<p>B多线程并不能使IO操作并行化。可以通过异步读写、合并读写、计算代替读写等方式优化。 I/O密集型问题一般是硬件层面的问题，比如硬盘，它的I/O就摆在那里，无论你在怎么多线程，瓶颈就在硬盘那，所以B的说法是不可行的。对于“I/O密集型”的应用程序可以采用I/O效率较高的SCSI硬盘，或者采用集群的方式。</p>
+<p>C可以减少连接和断开数据库的开销</p>
+<p>D可以减少运行时对程序栈进行操作的开销</p>
+<p>E减少远程调用的次数</p>
+<hr>
+<blockquote>
+<p>最小堆[0,3,2,5,7,4,6,8],在删除堆顶元素0之后，其结果是（C）</p>
+<p>A.[3，2，5，7，4，6，8]</p>
+<p>B.[2，3，5，7，4，6，8]</p>
+<p>C.[2，3，4，5，7，8，6]</p>
+<p>D.[2，3，4，5，6，7，8]</p>
+</blockquote>
+<p>解释：删除0之后，末尾8代替0的位置</p>
+<hr>
+<blockquote>
+<p>在CPU内存之间进行地址转换时，（B）将地址从虚拟（逻辑）地址空间映射到物理地址空间。</p>
+<p>A.TCB</p>
+<p>B.MMU</p>
+<p>C.CACHE</p>
+<p>D.DMA</p>
+</blockquote>
+<p>解释：MMU是Memory Management Unit的缩写，中文名是内存管理单元，它是中央处理器（CPU）中用来管理虚拟存储器、物理存储器的控制线路，同时也负责虚拟地址映射为物理地址，以及提供硬件机制的内存访问授权，多用户多进程操作系统。</p>
+<hr>
+<blockquote>
+<pre><code>#include&lt;stdio.h&gt;
+int main()                                                                    
+{
+    unsigned int a = 6;
+    int b = -20;
+    (a + b &gt; 6) ? printf(&quot;&gt;6\n&quot;) : printf(&quot;&lt;=6\n&quot;);
+    printf(&quot;%d\n&quot;, (a + b));
+    return 0;
+} 
+</code></pre><p>输出为：&gt;6<br>解释：执行a+b的时候会将b转换成无符号数，所得的结果也是无符号数，将会是一个很大的正数，自然是大于6的</p>
+</blockquote>
+<hr>
+<p>程序的局部变量存放在<code>栈区</code>，全局变量存放在<code>全局静态区</code>，动态申请的数据存放在<code>堆区</code></p>
+<hr>
+<blockquote>
+<p>用希尔(Shell)方法排序时,若关键字的初始排序杂乱无序,则排序效率就低(错)</p>
+</blockquote>
+<p>解释：希尔排序又称“缩小增量排序”，即每趟只对相同增量距离的关键字进行比较，这与关键字序列初始有序或无序无关</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/26/笔试题总结2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/26/笔试题总结2/" itemprop="url">笔试题总结2</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-26T22:39:49+08:00">
+                2015-01-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<blockquote>
+<p>下列关于网络编程错误的是？(D)</p>
+<p>A.UDP是不可靠服务</p>
+<p>B.主动关闭的一端会出现TIME_WAIT状态</p>
+<p>C.服务端编程会调用listen()，客户端也可以调用bind()</p>
+<p>D.TCP建立和关闭连接都只需要三次握手</p>
+<p>E.linux通过提供socket接口来进行网络编程</p>
+<p>F.长连接相对短连接可以节省建立连接的时间</p>
+</blockquote>
+<p>解释：D.TCP建立需要3次握手，关闭需要4此握手。<em>无连接的客户端可以调用bind来配置本地信息</em></p>
+<hr>
+<blockquote>
+<p>Linux系统中某个可执行文件属于root并且有setid，当一个普通用户mike运行这个程序时，产生的进程的有效用户和实际用户分别是<strong>A</strong>？</p>
+<p>A.root mike</p>
+<p>B.root rooy</p>
+<p>C.mike root</p>
+<p>D.mike mike</p>
+<p>E.deamon mike</p>
+<p>F.mike deamon</p>
+</blockquote>
+<p>解释：setuid的用途是允许普通用户完成一些任务，而完成这些任务需要特权和通常被禁止的访问权限。</p>
+<p>在实际应用中，通常用来允许普通用户以root用户的角色运行只有root帐号才能运行的程序或命令。</p>
+<p>当一个具有setid访问模式的文件被执行时，进程的有效UID将会变成文件所有者的UID，并使用该UID的访问权限来访问其他的文件和资源。</p>
+<p>由于可执行文件属于root，因此当程序设置了setid权限位时，普通用户会临时变成root权限，但实际用户任然是原来的mike。</p>
+<hr>
+<blockquote>
+<p>对于基本有序的序列，按照那种排序方式最快：(B)</p>
+<p>A.快速排序</p>
+<p>B.冒泡排序</p>
+<p>C.归并排序</p>
+<p>D.基数排序</p>
+</blockquote>
+<p>解释：而当待排序列已基本有序时，对冒泡排序来说是最好情况，对快速排序来说就是最差情况，而堆排序则最好最差都一样。因此本题答案是冒泡排序。</p>
+<hr>
+<blockquote>
+<p>若一棵二叉树具有10个度为2的结点，5个度为1的结点，则度为0的结点个数是：(B)</p>
+<p>A.10</p>
+<p>B.11</p>
+<p>C.12</p>
+<p>D.13</p>
+</blockquote>
+<p>解释：度为0的结点 = 度为2的结点 + 1</p>
+<p>在一棵树中，所有点的入度和出度的和相等，下面等式左边为出度，右边为入度（根节点入度为0， 其他节点入度为1）<br>10 <em> 2 + 5 </em> 1 = 10 + 5 + x -1</p>
+<p>x等于11</p>
+<hr>
+<blockquote>
+<p>上网时候发现网页不能访问，QQ使用正常，出现此问题可能的原因是：B</p>
+<p>A.网线问题</p>
+<p>B.DNS问题</p>
+<p>C.IP地址冲突</p>
+<p>D.网关错误</p>
+</blockquote>
+<p>解释：DNS是将域名解析成IP地址的服务。DNS发生问题时无法通过域名访问网页；但是直接通过IP地址连接的应用程序仍可以使用。</p>
+<hr>
+<blockquote>
+<p>二分查找树里查询一个关键字的最坏时间复杂度为(A)。</p>
+<p>A.O(n)</p>
+<p>B.O(nlogn)</p>
+<p>C.O(n^2)</p>
+<p>D.O(n^3)</p>
+<p>E.O(logn)</p>
+<p>F.不确定</p>
+</blockquote>
+<p>解释：二分查找最坏的情况是退化为线性查找，时间复杂度为O(n)</p>
+<hr>
+<blockquote>
+<p>设m和n都是int类型，那么以下for循环语句的执行情况是（A）</p>
+<pre><code>for (m = 0, n = -1; n = 0; m++, n++)
+     n++;
+</code></pre><p>A.循环体一次也不执行</p>
+<p>B.循环体执行一次</p>
+<p>C.有限次循环</p>
+<p>D.循环结束判断条件不合法</p>
+<p>E.运行出错</p>
+<p>F.是无限循环</p>
+</blockquote>
+<p>解释：for的条件判断为n = 0，该表达式永远返回0，即for循环不执行。</p>
+<hr>
+<blockquote>
+<p>从逻辑上可以把数据结构分为（C）两大类。</p>
+<p>A.动态结构，静态结构</p>
+<p>B.顺序结构，链式结构</p>
+<p>C.线性结构，非线性结构</p>
+<p>D.初等结构，构造型结构</p>
+</blockquote>
+<p>解释：数据结构在存储上（物理上）分为顺序结构和链式结构</p>
+<p>在逻辑上分为线性结构（如线性表中的数组，链表）和非线性结构（如：二叉树，图等）</p>
+<hr>
+<blockquote>
+<p>（B）二叉排序树可以得到一个从小到大的有序序列。</p>
+<p>A.先序遍历</p>
+<p>B.中序遍历</p>
+<p>C.后序遍</p>
+<p>D.层次遍历</p>
+</blockquote>
+<p>解释：二叉排序树的左子树节点都比该节点小，右子树节点都比该节点打<br>要得到一个从小到大的有序序列，就要按照 左 中 右的顺序遍历<br>符合该条件的遍历就是中序遍历</p>
+<hr>
+<blockquote>
+<p>Linux下的进程有哪三种状态？（B）</p>
+<p>A.精确态，模糊态和随机态</p>
+<p>B.运行态，就绪态和等待态</p>
+<p>C.准备态，执行态和退出态</p>
+<p>D.手动态，自动态和自由态</p>
+</blockquote>
+<p>解释：<br>运行状态：这个不用解释了吧，就是正在运行</p>
+<p>就绪状态：这个状态等待CPU 时间片的状态，一切准备就绪，随时可以执行，等 CPU 切换到该进程，该进程就会由就绪状态变为运行状态</p>
+<p>等待状态：其实就是未就绪状态，还有做一些准备工作或者等待资源</p>
+<hr>
+<blockquote>
+<p>以下关于传输层协议UDP的叙述中正确的（C）</p>
+<p>A.比较合适传输小的数据文件</p>
+<p>B.提高了高的可靠性</p>
+<p>C.提供了高的传输效率</p>
+<p>D.使用窗口机制来实现流量控制</p>
+</blockquote>
+<p>A.UDP协议是无连接的，传输效率高，适合传输视频流媒体等大的数据文件</p>
+<p>B.UDP无连接特性是降低了可靠性，提高了效率</p>
+<p>D.采用窗口机制的协议是TCP</p>
+<hr>
+<blockquote>
+<p>在Bash中，以下哪些说法是正确的（AD）</p>
+<p>A.$#表示参数的数量</p>
+<p>B.$$表示当前进程的名字</p>
+<p>C.$@表示当前进程的pid</p>
+<p>D.$?表示前一个命令的返回值</p>
+</blockquote>
+<p>解释：</p>
+<p>$#  参数的个数，不包括命令本身.</p>
+<p>$$  目前bash shell的进程编号</p>
+<p>$@  参数本身的列表，也不包括命令本身</p>
+<p>$?  上一个命令执行结束后传回值</p>
+<hr>
+<blockquote>
+<p>正则表达式A*B可以匹配（CD）</p>
+<p>A.A</p>
+<p>B.ACB</p>
+<p>C.AB</p>
+<p>D.AAB</p>
+</blockquote>
+<p>解释：*表示匹配前一个字符0次或无限次</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/26/笔试题总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/26/笔试题总结/" itemprop="url">笔试题总结1</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-26T17:02:27+08:00">
+                2015-01-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>应用程序PING发出的是什么报文（C）</p>
+<p>A.TCP请求报文</p>
+<p>B.TCP应答报文</p>
+<p>C.ICMP请求报文</p>
+<p>D.ICMP应答报文</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>语法分析器可以用于（C）</p>
+<p>A.识别语义错误</p>
+<p>B.识别语法和语义错误</p>
+<p>C.识别语法错误</p>
+<p>D.识别并修正语法，语义错误</p>
+</blockquote>
+<p>解释：语法分析器通常是作为编译器或解释器的组件出现的，它的作用是进行语法检查、并构建由输入的单片语组成的资料结构</p>
+<hr>
+<blockquote>
+<p>IPV6地址包含多少位（）</p>
+<p>A.16</p>
+<p>B.32</p>
+<p>C.64</p>
+<p>D.128</p>
+</blockquote>
+<p>解释：IPv6的128位地址通常写成8组，每组为四个十六进制数的形式。比如：<br>AD80:0000:0000:0000:ABAA:0000:00C2:0002 是一个合法的IPv6地址。</p>
+<hr>
+<blockquote>
+<p>如果在一个建立了TCP连接的socket上调用recv函数，返回值为0，则表示（B）</p>
+<p>A.对端发送了一段长度为0的数据</p>
+<p>B.对端关闭了连接</p>
+<p>C.还没有收到对端数据</p>
+<p>D.连接发生错误</p>
+</blockquote>
+<p>解释：recv返回0的唯一条件就是对端关闭了连接<br>在socket可读的情况下，当有异常发生的时候，read返回-1</p>
+<hr>
+<blockquote>
+<p>以下哪些不是内核对象（D）</p>
+<p>A.进程</p>
+<p>B.线程</p>
+<p>C.互斥器</p>
+<p>D.临界区</p>
+</blockquote>
+<p>解释：临界区是资源对象，只能被一个进程访问</p>
+<hr>
+<blockquote>
+<p>同一进程下的多个线程可以共享哪一种资源（B）</p>
+<p>A.stack</p>
+<p>B.data section</p>
+<p>C.register set</p>
+<p>D.thread ID</p>
+</blockquote>
+<p>解释：线程共享的环境包括：进程代码段、进程的公有数据(利用这些共享的数据，线程很容易的实现相互之间的通讯)、进程打开的文件描述符、信号的处理器、进程的当前目录和进程用户ID与进程组ID。</p>
+<hr>
+<blockquote>
+<p>对于Linux说法，下列说法正确的是（）</p>
+<p>A.线性访问内存非法时，当前线程会进入信号处理函数</p>
+<p>B.用mv命令移动文件时，文件的修改时间会发生变化</p>
+<p>C.ulimit -c设置的是函数调用栈的大小</p>
+<p>D.malloc函数是应用程序向操作系统申请内存的接口</p>
+</blockquote>
+<p>B.不会改变</p>
+<p>C.ulimit用于shell启动进程所占用的资源.-c size:设置core文件的最大值.单位:blocks</p>
+<hr>
+<blockquote>
+<p>在c++中，</p>
+<pre><code>const int i = 0; 
+int *j = (int *) &amp;i; 
+*j = 1; 
+printf(&quot;%d,%d&quot;, i, *j)
+</code></pre><p>输出是多少？(A)</p>
+<p>A.0，1</p>
+<p>B.1，1</p>
+<p>C.1，0</p>
+<p>D.0，0</p>
+</blockquote>
+<p>解释：const修饰的常量值具有不可变性,c++编译器通常会对该变量做优化处理，在编译时变量i的值为已知的，编译器直接将printf输出的变量i替换为0。尽管如此，编译器仍然会为变量i分配存储空间，通过修改内存的hack方式将变量i在内存中的值修改后并不影响printf的输出。</p>
+<p>gcc不会对此进行优化，所以如果用gcc来编译，输出就是1,1</p>
+<hr>
+<blockquote>
+<pre><code>  struct Date
+{
+    char a;
+    int b;
+    int64_t c;
+    char d;
+};
+</code></pre><p>Date data[2][10]; 在32位系统上，如果Data的地址是x，那么data[1][5].c的地址是（C）</p>
+<p>A.X+195</p>
+<p>B.X+365</p>
+<p>C.X+368</p>
+<p>D.X+215</p>
+</blockquote>
+<p>解释：</p>
+<pre><code>struct Date {      
+    char a;//起始位置0      
+    int b;//起始位置4      
+    int64_t c;//起始位置8      
+    char d;//起始位置16，
+    //考虑成员中自身对齐值最大的那个值是8. 16不是8的倍数，所以这个sturct的size是24.  
+};
+</code></pre><p>data[1][5]与data[0][0]相隔15个元素,data[1][5].c的地址是x+24*15+(4+4) = 368</p>
+<hr>
+<blockquote>
+<p>快速排序算法在序列已经有序的情况下的复杂度为（B）</p>
+<p>A.O(nlogn）</p>
+<p>B.O(n^2)</p>
+<p>C.O(n)</p>
+<p>D.O(n^2 logn)</p>
+</blockquote>
+<p>有序的情况是O(n2);无序的情况是O(nlog2n)</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/26/反转链表-带头结点/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/26/反转链表-带头结点/" itemprop="url">反转链表(带头结点)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-26T10:18:15+08:00">
+                2015-01-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##QUESTION<br>定义一个函数，输入一个链表的头结点，反转该链表并输出反转后链表的头结点。</p>
+<p>##SOLUTION<br><img src="/img/反转链表.png" alt="反转链表"></p>
+<p>反转这个单链表的基本思想是，不断地将后面的结点移到head后面来，下面以反转结点1和结点2作为例子：</p>
+<ul>
+<li>头结点的next指向结点2</li>
+<li>结点1的next指向结点3</li>
+<li>结点2的next指向结点1</li>
+</ul>
+<p>这样就完成了一次交换，顺序变成了head-&gt;结点2-&gt;结点1-&gt;结点3-&gt;结点4-&gt;NULL，下面我们进行相同的操作将结点3移到head之后，然后将结点4移到head之后，就完成了反转，下面是代码：</p>
+<pre><code>typedef struct Node
+{
+    int data;
+    struct Node *next;
+}*node;
+
+node reverse_list(node head)
+{
+    node p, q;
+    if(head == NULL)
+        return NULL;
+    printf(&quot;the old list is:&quot;);
+    print_list(head);
+
+    p = head-&gt;next;
+    while(p != NULL &amp;&amp; p-&gt;next != NULL)
+    {
+        q = p-&gt;next;
+        p-&gt;next = q-&gt;next;
+        q-&gt;next = head-&gt;next;
+        head-&gt;next = q;
+    }
+    return head； //可有可无   
+}
+</code></pre><p>题目的要求是返回新链表的头结点，在这里，新链表的头结点就是原来链表的头结点。所以最后一句是没有必要的，直接用head作为参数就可以打印链表。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/17/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/19/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/17/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/19/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2925,7 +2703,7 @@ class MyImagesPipeline(ImagesPipeline):
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">218</span>
+                <span class="site-state-item-count">203</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

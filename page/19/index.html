@@ -286,7 +286,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第八部分：使用Deferred的诗歌下载客户端/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/25/在O-1-时间删除链表结点/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -305,7 +305,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/01/30/第八部分：使用Deferred的诗歌下载客户端/" itemprop="url">第八部分：使用Deferred的诗歌下载客户端</a></h1>
+                <a class="post-title-link" href="/2015/01/25/在O-1-时间删除链表结点/" itemprop="url">在O(1)时间删除链表结点</a></h1>
         
 
         <div class="post-meta">
@@ -317,8 +317,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T14:52:49+08:00">
-                2015-01-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-25T21:13:55+08:00">
+                2015-01-25
               </time>
             
 
@@ -340,8 +340,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
                   </a>
                 </span>
 
@@ -379,786 +379,62 @@
       
         
           
-            <p>原文点<a href="http://krondo.com/?p=1778" target="_blank" rel="external">这里</a></p>
-<p>##客户端4.0<br>我们已经对deferreds有些理解了，现在我们可以使用它重写我们的客户端。你可以在twisted-client-4/get-poetry.py中看到它的实现。</p>
-<p>这里的get_poetry已经再也不需要callback与errback参数了。相反，返回了一个用户可能根据需要添加callbacks和errbacks的新deferred。</p>
-<pre><code>def get_poetry(host, port):
-    &quot;&quot;&quot;
-    Download a poem from the given host and port. This function
-    returns a Deferred which will be fired with the complete text of
-    the poem or a Failure if the poem could not be downloaded.
-    &quot;&quot;&quot;
-    d = defer.Deferred()
-    from twisted.internet import reactor
-    factory = PoetryClientFactory(d)
-    reactor.connectTCP(host, port, factory)
-    return d
-</code></pre><p>这里的工厂使用一个deferred而不callback/errback对来初始化。一旦我们获取到poem后或者没有连接到服务器上，deferred就会以返回一首诗歌或一个failure的被激活。<br>    class PoetryClientFactory(ClientFactory):</p>
-<pre><code>protocol = PoetryProtocol
-
-def __init__(self, deferred):
-    self.deferred = deferred
-
-def poem_finished(self, poem):
-    if self.deferred is not None:
-        d, self.deferred = self.deferred, None
-        d.callback(poem)
-
-def clientConnectionFailed(self, connector, reason):
-    if self.deferred is not None:
-        d, self.deferred = self.deferred, None
-        d.errback(reason)
-</code></pre><p>注意我们在deferred被激活后是如何销毁其引用的。这种方式普便存在于Twisted的源代码中，这样做可以保证我们不会激活一个deferred两次。这也为Python的垃圾回收带来的方便。</p>
-<p>这里仍然不用去改变poetryProtocol。我们只需要更新poetry_main函数即可：</p>
-<pre><code>def poetry_main():
-    addresses = parse_args()
-
-    from twisted.internet import reactor
-
-    poems = []
-    errors = []
-
-    def got_poem(poem):
-        poems.append(poem)
-
-    def poem_failed(err):
-        print &gt;&gt;sys.stderr, &apos;Poem failed:&apos;, err
-        errors.append(err)
-
-    def poem_done(_):
-        if len(poems) + len(errors) == len(addresses):
-            reactor.stop()
-
-    for address in addresses:
-        host, port = address
-        d = get_poetry(host, port)
-        d.addCallbacks(got_poem, poem_failed)
-        d.addBoth(poem_done)
-
-    reactor.run()
-
-    for poem in poems:
-        print poem
-</code></pre><p>注意我们是如何利用deferred的回调链在不考虑两个主要的callback与errback回调外，重构poem_done调用的。</p>
-<p>由于deferred在Twisted大量被使用，使用小写字母d来表示当前正在工作中的deferred已经成为惯例。</p>
-<p>##讨论<br>新版本的客户端与我们前面的同步版本的客户端一样，get_poetry得到的参数都是诗歌下载服务器的地址。同步版本返回的是诗歌内容，而异步版本返回的却是一个deferred。返回一个deferred是Twisted的APIs或用Twisted写的程序常见的，这样一来我们可以这样来理解deferred：</p>
-<p>一个Deferred代表了一个“异步的结果”或者“结果还没有到来”</p>
-<p>在图13中可以更加清晰地表达出两者之间的不同：</p>
-<p><img src="/img/同步VS异步.png" alt="图13：同步VS异步"></p>
-<p>异步函数返回一个deferred，对用户意味着：</p>
-<blockquote>
-<p>我是一个异步函数。不管你想要什么，可能现在马上都得不到。但当结果来到时，我会激活这个deferred的callback链并返回结果。或者当出错时，相应地激活errback链并返回出错信息。</p>
-</blockquote>
-<p>当然，这个函数是不能随意激活这个deferred的，因为它已经返回了。但这个函数已经启动了一系列事件，这些事件最终将会激活这个deferred。<br>因此，deferred是为适应异步模式的一种延迟函数返回的方式。函数返回一个deferred意味着其是异步的，代表着将来的结果，也是对将来能够返回结果的一种承诺。</p>
-<p>同步函数也能返回一个deferred，因此严格点说，返回deferred只说可能是异步的。我们会在将来的例子中看到同步函数返回deferred。</p>
-<p>由于deferred的行为已经很好的定义与理解，因此在实现自己的API时返回一个deferred更容易让其它的Twisted程序理解你的代码。如果没有deferred，可能每个人写的模块都使用不同的方式来处理回调。这要一来就增加了相互理解的工作量。</p>
-<p>当你使用Deferred时，你仍然在使用回调，它们仍然由reactor来调用。</p>
-<p>当首次学习Twisted时，经常犯的一个错误就是：会给deferred增加一些它本身不能实现的功能。尤其是：经常假设在deferred上添加一个函数就可以使其变成异步函数。这可能会让你产生这样的</p>
-<p>想法：在Twisted 中可以通过将os.system的函数添加到deferred的回调链中。<br>我认为，这可能是没有弄清楚异步编程的原因才产生这样的想法。由于Twisted代码使用了大量的deferred但却很少会涉及到reactor，可能会认为deferred做了大部分工作。如果你是从开始阅读这个系列的，你就会知道事情远不是这样。虽然Twisted是由众多部分组合在一起来工作的，但实现异步的主要工作都是由reactor来完成的。Deferred是一个很好的抽象概念，但前面几个例子中的客户端我们却没有使用它，而reactor却都用到了。</p>
-<p>来看看我们第一个回调激活时的跟踪栈信息。运行twisted-client-4/get-poetry-stack.py让其连接你打开的服务器，你会得到如下输出：</p>
-<pre><code>File &quot;twisted-client-4/get-poetry-stack.py&quot;, line 129, in
-poetry_main()
-File &quot;twisted-client-4/get-poetry-stack.py&quot;, line 122, in poetry_main
-reactor.run() ... # some more Twisted function calls
-protocol.connectionLost(reason) 
-File &quot;twisted-client-4/get-poetry-stack.py&quot;, line 59, in connectionLost 
-self.poemReceived(self.poem) 
-File &quot;twisted-client-4/get-poetry-stack.py&quot;, line 62, in poemReceived
-self.factory.poem_finished(poem)
-File &quot;twisted-client-4/get-poetry-stack.py&quot;, line 75, in poem_finished
-d.callback(poem) # here&apos;s where we fire the deferred 
-... # some more methods on Deferreds
-File &quot;twisted-client-4/get-poetry-stack.py&quot;, line 105, in got_poem
-traceback.print_stack()
-</code></pre><p>这很像版本2.0的跟踪栈，图14可以很好地说明具体的调用关系：</p>
-<p><img src="/img/deferred的回调.png" alt="图14 deferred的回调"></p>
-<p>这很类似于我们前面的Twisted客户端，虽然这张图的调用关系并不清晰而会你摸不着头脑。但我们先不深入分析这张图。有一个细节并没有在这张图上反映出来：</p>
-<p>callback链直到第二个回调poem_done激活前才将控制权还给reactor。</p>
-<p>通过使用deferred，我们在由Twisted中的reactor启动的回调中加入了一些自己的东西，但我们并没有改变异步程序的基础架构。回忆下回调编程的特点：</p>
-<ol>
-<li>在一个时刻，只会有一个回调在运行</li>
-<li>当reactor运行时，那我们自己的代码则得不到运行</li>
-<li>反之则反之</li>
-<li>如果我们的回调函数发生阻塞，那么整个程序就跟着阻塞掉了<br>在一个 deferred上追加一个回调并不会改变上面这些实事。尤其是，第4 条。因此当一个deferred激活时被阻塞，那么整个Twisted就会陷入阻塞中。因此我们会得到如下结论：</li>
-</ol>
-<blockquote>
-<p>Deferred只是解决回调函数管理问题的一种解决方案。它并不一种替代回调方式也不能将阻塞式的回调变成非阻塞式回调的。</p>
-</blockquote>
-<p>我通过构建一个添加阻塞式回调的deferred来验证最后一点。验证代码文件为twisted-deferred/defer-block.py。第二个callback通过使用time.sleep来达到阻塞的效果。如果你运行该代码来观察打印信息顺序时，你会发现deferred中阻塞回调仍然会阻塞掉。</p>
-<p>##总结<br>函数通过返回一个Deferred，向使用者暗示“我是采用异步方式的”并且当结果到来时会使用一种特殊的机制（在此处添加你的callback与errback）来获得返回结果。Defered被广泛地运用在Twisted的每个角落，当你浏览Twisted源码时你就会不停地遇到它。</p>
-<p>4.0版本客户端是第一个使用Deferred的Twisted版的客户端，其使用方法为在其异步函数中返回一个deferred来。可以使用一些Twisted的APIs来使客户端的实现更加清晰些，但我觉得它能够很好地体现出一个简单的Twisted程序是怎么写的了，至少对于客户端可以如此肯定。事实上，后面我们会重构我们的服务器端。</p>
-<p>但我们对Deferred的讲解还没有结束。使用如此少量的代码，Deferred就能提供如此之多的功能。我们将在第9部分探讨其更多的功能和功能背后的动机。</p>
-<p>##练习</p>
-<ol>
-<li>Update client 4.0 to timeout if the poem isn’t received after a given period of time. Fire the deferred’s errback with a custom exception in that case. Don’t forget to close the connection when you do.</li>
-<li>Update client 4.0 to print out the appropriate server address when a poem download fails, so the user can tell which server is the culprit. Don’t forget you can add extra positional- and keyword-arguments when you attach callbacks and errbacks.</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第七部分：小插曲，Deferred/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/第七部分：小插曲，Deferred/" itemprop="url">第七部分：小插曲，Deferred</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T14:32:17+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文点<a href="http://krondo.com/?p=1682" target="_blank" rel="external">这里</a></p>
-<p>##回调函数的后序发展</p>
-<p>在第六部分我们认识这样一个情况：回调是Twisted异步编程中的基础。除了与reactor交互外，回调可以安插在任何我们写的Twisted结构内。因此在使用Twisted或其它基于reactor的异步编程体系时，都意味需要将我们的代码组织成一系列由reactor循环可以激活的回调函数链。</p>
-<p>即使一个简单的get_poetry函数都需要回调，两个回调函数中一个用于处理正常结果而另一个用于处理错误。作为一个Twisted程序员，我们必须充分利用这一点。应该花点时间思考一下如何更好地使用回调及使用过程中会遇到什么困难。</p>
-<p>分析下3.1版本中的get_poetry函数：</p>
-<pre><code>...
-def got_poem(poem):
-    print poem
-    reactor.stop()
-def poem_failed(err):
-    print &gt;&gt;sys.stderr, &apos;poem download failed&apos;
-    print &gt;&gt;sys.stderr, &apos;I am terribly sorry&apos;
-    print &gt;&gt;sys.stderr, &apos;try again later?&apos;
-    reactor.stop()
-
-get_poetry(host, port, got_poem, poem_failed)
-
-reactor.run()
-</code></pre><p>我们想法很简单：</p>
-<ol>
-<li>如果完成诗歌下载，那么就打印它</li>
-<li>如果没有下载到诗歌，那就打印出错误信息</li>
-<li>上面任何一种情况出现，都要停止程序继续运行</li>
-</ol>
-<p>同步程序中处理上面的情况会采用如下方式：</p>
-<pre><code>...
-try:
-    poem = get_poetry(host, port) # the synchronous version of get_poetry
-except Exception, err:
-    print &gt;&gt;sys.stderr, &apos;poem download failed&apos;
-    print &gt;&gt;sys.stderr, &apos;I am terribly sorry&apos;
-    print &gt;&gt;sys.stderr, &apos;try again later?&apos;
-    sys.exit()
-else:
-    print poem
-    sys.exit()
-</code></pre><p>即callback类似else处理路径，而errback类似except处理路径。这意味着激活errback回调函数类似于同步程序中抛出一个异常，而激活一个callback意味着同步程序中的正常执行路径。</p>
-<p>两个版本有什么不同之外吗？可以明确的是，在同步版本中，Python解释器可以确保只要get_poetry抛出何种类型的异步都会执行except块。即只要我们相信Python解释器能够正确的解释执行Python程序，那么就可以相信异常处理块会在恰当的时间点被执行。</p>
-<p>不异步版本相反的是：poem_failed错误回调是由我们自己的代码激活并调用的，即<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-3/get-poetry-1.py#L66" target="_blank" rel="external">PeotryClientFactory</a>的<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-3/get-poetry-1.py#L77" target="_blank" rel="external">clientConnectFailed</a>函数。是我们自己而不是Python来确保当出错时错误处理代码能够执行。因此我们必须保证通过调用携带Failure对象的errback来处理任何可能的错误。</p>
-<p>否则，我们的程序就会因为等待一个永远不会出现的回调而止步不前。</p>
-<p>这里显示出了同步与异步版本的又一个不同之处。如果我们在同步版本中没有使用try/except捕获异步，那么Python解释器会为我们捕获然后关掉我们的程序并打印出错误信息。但是如果我们忘记抛出我们的异步异常（在本程序中是在PoetryClientFactory调用errback），我们的程序会一直运行下去，还开心地以为什么事都没有呢。</p>
-<p>显而易见，在异步程序中处理错误是相当重要的，甚至有些严峻。也可以说在异步程序中处理错误信息比处理正常的信息要重要的多，这是因为错误会以多种方式出现，而正确的结果出现的方式是唯一的。当使用Twisted编程时忘记处理异常是一个常犯的错误。</p>
-<p>关于上面同步程序代码的另一个默认实事是：else与except块两者只能是运行其中一个（假设我们的get_poetry没有在一个无限循环中运行）。Python解释器不会突然决定两者都运行或突发奇想来运行else块27次。对于通过Python来实现那样的动作是不可能的。</p>
-<p>但在异步程序中，我们要负责callback和errback的运行。因此，我们可能就会犯这样的错误：同时调用了callback与errback或激活callback27次。这对于使用get_poetry的用户来说是不幸的。虽然在描述文档中没有明确地说明，像try/except块中的else与except一样，对于每次调用get_poetry时callback与errback只能运行其中一个，不管是我们是否成功得下载完诗歌。</p>
-<p>设想一下，我们在调试某个程序时，我们提出了三次诗歌下载请求，但是得到有7次callback被激活和2次errback被激活。可能这时，你会下来检查一下，什么时候get_poetry激活了两次callback并且还抛出一个错误出来。</p>
-<p>从另一个视角来看，两个版本都有代码重复。异步的版本中含有两次reactor.stop，同步版本中含有两次sys.exit调用。我们可以重构同步版本如下：</p>
-<pre><code>...
-try:
-    poem = get_poetry(host, port) # the synchronous version of get_poetry
-except Exception, err:
-    print &gt;&gt;sys.stderr, &apos;poem download failed&apos;
-    print &gt;&gt;sys.stderr, &apos;I am terribly sorry&apos;
-    print &gt;&gt;sys.stderr, &apos;try again later?&apos;
-else:
-    print poem
-
-sys.exit()
-</code></pre><p>我们可以以同样的方式来重构异步版本吗？说实话，确实不太可能，因为callback与errback是两个不同的函数。难道要我们回到使用单一回调来实现重构吗？</p>
-<p>好下面是我们在讨论使用回调编程时的一些观点：</p>
-<ol>
-<li>激活errback是非常重要的。由于errback的功能与except块相同，因此用户需要确保它们的存在。他们并不可选项，而是必选项。</li>
-<li>不在错误的时间点激活回调与在正确的时间点激活回调同等重要。典型的用法是，callback与errback是互斥的即只能运行其中一个。</li>
-<li>使用回调函数的代码重构起来有些困难。<br>来下面的部分，我们还会讨论回调，但是已经可以明白为什么Twisted引入了deferred抽象机制来管理回调了。</li>
-</ol>
-<p>##Deferred<br>由于架设在异步程序中大量被使用，并且我们也看到了，正确的使用这一机制需要一些技巧。因此，Twisted开发者设计了一种抽象机制-Deferred-以让程序员在使用回调时更简便。</p>
-<p>一个Deferred有一对回调链，一个是为针对正确结果，另一个针对错误结果。新创建的Deferred的这两条链是空的。我们可以向两条链里分别添加callback与errback。其后，就可以用正确的结果或异常来激活Deferred。激活Deferred意味着以我们添加的顺序激活callback或errback。图12展示了一个拥有callback/errback链的Deferred对象：</p>
-<p><img src="/img/Deferred.png" alt="图12： Deferred"></p>
-<p>由于defered中不使用reactor，所以我们可以不用在事件循环中使用它。也许你在Deferred中发现一个seTimeout的函数中使用了reactor。放心，它将来将来的版本中删掉。</p>
-<p>下面是我们第一人使用deferred的例子<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/defer-1.py" target="_blank" rel="external">twisted-deferred/defer-1.py</a>:</p>
-<pre><code>from twisted.internet.defer import Deferred
-
-def got_poem(res):
-    print &apos;Your poem is served:&apos;
-    print res
-
-def poem_failed(err):
-    print &apos;No poetry for you.&apos;
-
-d = Deferred()
-
-# add a callback/errback pair to the chain
-d.addCallbacks(got_poem, poem_failed)
-
-# fire the chain with a normal result
-d.callback(&apos;This poem is short.&apos;)
-
-print &quot;Finished&quot;
-</code></pre><p>代码开始创建了一个新deferred，然后使用addCallbacks添加了callback/errback对，然后使用callback函数激活了其正常结果处理回调链。当然了，由于只含有一个回调函数还算不上链，但不要紧，运行它：</p>
-<pre><code>Your poem is served:
-This poem is short.
-Finished
-</code></pre><p>有几个问题需要注意：</p>
-<ol>
-<li>正如3.1版本中我们使用的callback/errback对，添加到deferred中的回调函数只携带一个参数，正确的结果或出错信息。其实，deferred支持回调函数可以有多个参数，但至少得有一个参数并且第一个只能是正确的结果或错误信息。</li>
-<li>我们向deferred添加的是回调函数对</li>
-<li>callbac函数携带仅有的一个参数即正确的结果来激活deferred</li>
-<li>从打印结果顺序可以看出，激活的deferred立即调用了回调。没有任何异步的痕迹。这是因为没有reactor参与导致的。</li>
-</ol>
-<p>好了，让我们来试试另外一种情况，<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/defer-2.py" target="_blank" rel="external">twisted-deferred/defer-2.py</a>激活了错误处理回调：</p>
-<pre><code>from twisted.internet.defer import Deferred
-from twisted.python.failure import Failure
-
-def got_poem(res):
-    print &apos;Your poem is served:&apos;
-    print res
-
-def poem_failed(err):
-    print &apos;No poetry for you.&apos;
-
-d = Deferred()
-
-# add a callback/errback pair to the chain
-d.addCallbacks(got_poem, poem_failed)
-
-# fire the chain with an error result
-d.errback(Failure(Exception(&apos;I have failed.&apos;)))
-
-print &quot;Finished&quot;
-</code></pre><p>运行它打印出的结果为：</p>
-<pre><code>No poetry for you.
-Finished
-</code></pre><p>激活errback链就调用errback函数而不是callback，并且传进的参数也是错误信息。正如上面那样，errback在deferred激活就被调用。<br>在前面的例子中，我们将一个Failure对象传给了errback。deferred会将一个Exception对象转换成Failure，因此我们可以这样写：</p>
-<pre><code>from twisted.internet.defer import Deferred
-
-def got_poem(res):
-    print &apos;Your poem is served:&apos;
-    print res
-
-def poem_failed(err):
-    print err.__class__
-    print err
-    print &apos;No poetry for you.&apos;
-
-d = Deferred()
-
-# add a callback/errback pair to the chain
-d.addCallbacks(got_poem, poem_failed)
-
-# fire the chain with an error result
-d.errback(Exception(&apos;I have failed.&apos;))
-</code></pre><p>运行结果如下：</p>
-<pre><code>twisted.python.failure.Failure [Failure instance: Traceback (failure with no frames): : I have failed. ]
-No poetry for you.
-</code></pre><p>这意味着在使用deferred时，我们可以正常地使用Exception。其中deferred会为我们完成向Failure的转换。</p>
-<p>下面我们来运行下面的代码看看会出现什么结果：</p>
-<pre><code>from twisted.internet.defer import Deferred
-def out(s): print s
-d = Deferred()
-d.addCallbacks(out, out)
-d.callback(&apos;First result&apos;)
-d.callback(&apos;Second result&apos;)
-print &apos;Finished&apos;
-</code></pre><p>输出结果：</p>
-<pre><code>First result Traceback (most recent call last): ... twisted.internet.defer.AlreadyCalledError
-</code></pre><p>很意外吧，也就是说deferred不允许别人激活它两次。这也就解决了上面出现的那个问题：一个激活会导致多个回调同时出现。而deferred设计机制控制住了这种可能，如果你非要在一个deferred上要激活多个回调，那么正如上面那样，会报异常错。<br>那deferred能帮助我们重构异步代码吗？考虑下面这个<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/defer-8.py" target="_blank" rel="external">例子twisted-deferred/defer-8.py</a>：</p>
-<pre><code>import sys
-
-from twisted.internet.defer import Deferred
-
-def got_poem(poem):
-    print poem
-    from twisted.internet import reactor
-    reactor.stop()
-
-def poem_failed(err):
-    print &gt;&gt;sys.stderr, &apos;poem download failed&apos;
-    print &gt;&gt;sys.stderr, &apos;I am terribly sorry&apos;
-    print &gt;&gt;sys.stderr, &apos;try again later?&apos;
-    from twisted.internet import reactor
-    reactor.stop()
-
-d = Deferred()
-
-d.addCallbacks(got_poem, poem_failed)
-
-from twisted.internet import reactor
-
-reactor.callWhenRunning(d.callback, &apos;Another short poem.&apos;)
-
-reactor.run()
-</code></pre><p>这基本上与我们上面的代码相同，唯一不同的是加进了reactor。我们在启动reactor后调用了<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/interfaces.py#L766" target="_blank" rel="external">callWhenRunning</a>函数来激活deferred。我们利用了callWhenRunning函数可以接收一个额外的参数给回调函数。多数Twisted的API都以这样的方式注册回调函数，包括向deferred添加callback的API。下面我们给deferred回调链添加第二个回调,<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-deferred/defer-9.py" target="_blank" rel="external">twisted-deferred/defer-9.py</a>：</p>
-<pre><code>import sys
-
-from twisted.internet.defer import Deferred
-
-def got_poem(poem):
-    print poem
-
-def poem_failed(err):
-    print &gt;&gt;sys.stderr, &apos;poem download failed&apos;
-    print &gt;&gt;sys.stderr, &apos;I am terribly sorry&apos;
-    print &gt;&gt;sys.stderr, &apos;try again later?&apos;
-
-def poem_done(_):
-    from twisted.internet import reactor
-    reactor.stop()
-
-d = Deferred()
-
-d.addCallbacks(got_poem, poem_failed)
-d.addBoth(poem_done)
-
-from twisted.internet import reactor
-
-reactor.callWhenRunning(d.callback, &apos;Another short poem.&apos;)
-
-reactor.run()
-</code></pre><p>addBoth函数向callback与errback链中添加了相同的回调函数。在这种方式下，deferred有可能也会执行errback链中的回调。这将在下面的部分讨论，只要记住后面我们还会深入讨论deferred。</p>
-<p>##总结：</p>
-<p>在这部分我们分析了回调编程与其中潜藏的问题。我们也认识到了deferred是如何帮我们解决这些问题的：</p>
-<ol>
-<li>我们不能忽视errback，在任何异步编程的API中都需要它。Deferred支持errbacks。</li>
-<li>激活回调多次可能会导致很严重的问题。Deferred只能被激活一次，这就类似于同步编程中的try/except的处理方法。</li>
-<li>含有回调的程序在重构时相当困难。有了deferred，我们就通过修改回调链来重构程序。</li>
-</ol>
-<p>关于deferred的故事还没有结束，后面还有大量的细节来讲。但对于使用它来重构我们的客户端已经够用的了，在第八部分将讲述这部分内容。</p>
-<p>##练习</p>
-<ol>
-<li>The last example ignores the argument to poem_done. Print it out instead. Make got_poem return a value and see how that changes the argument to poem_done.</li>
-<li>Modify the last two deferred examples to fire the errback chains. Make sure to fire the errback with an Exception.</li>
-<li>Read the docstrings for the <a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/defer.py#L189" target="_blank" rel="external">addCallback</a> and <a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/defer.py#L192" target="_blank" rel="external">addErrback</a> methods on Deferred.</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第六部分：抽象地利用Twisted/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/第六部分：抽象地利用Twisted/" itemprop="url">第六部分：抽象地利用Twisted</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T14:31:06+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文点<a href="http://krondo.com/?p=1595" target="_blank" rel="external">这里</a></p>
-<p>##打造可以复用的诗歌下载客户端<br>我们在实现客户端上已经花了大量的工作。最新版本的（2.0）客户端使用了Transports，Protocols和Protocol Factories，即整个Twisted的网络框架。但仍有大的改进空间。2.0版本的客户端只能在命令行里下载诗歌。这是因为PoetryClientFactory不仅要下载诗歌还要负责在下载完毕后关闭程序。但这对于”PeotryClientFactory“的确是一项分外的工作，因为它除了做好生成一个PoetryProtocol的实例和收集下载完毕的诗歌的工作外最好什么也别做。</p>
-<p>我需要一种方式来将诗歌传给开始时请求它的函数。在同步程序中我们会声明这样的API:</p>
-<pre><code>def get_poetry(host, post):
-    &quot;&quot;&quot;Return a poem from the poetry server at the given host and port.&quot;&quot;&quot;
-</code></pre><p>当然了，我们不能这样做。诗歌在没有全部下载完前上面的程序是需要被阻塞的，否则的话，就无法按照上面的描述那样去工作。但是这是一个交互式的程序，因此对于阻塞在socket是不会允许的。我们需要一种方式来告诉调用者何时诗歌下载完毕，无需在诗歌传输过程中将其阻塞。这恰好又是Twisted要解决的问题。Twisted需要告诉我们的代码何时socket上可以读写、何时超时等等。我们前面已经看到Twisted使用回调机制来解决问题。因此，我们也可以使用回调：</p>
-<pre><code>def get_poetry(host, port, callback):
-    &quot;&quot;&quot;
-    Download a poem from the given host and port and invoke
-
-      callback(poem)
-
-    when the poem is complete.
-    &quot;&quot;&quot;
-</code></pre><p>现在我们有一个可以与Twisted一起使用的异步API，剩下的工作就是来实现它了。<br>前面说过，我们有时会采用非Twisted的方式来写我们的程序。这是一次。你会在第七和八部分看到真正的Twisted方式（当然，它使用了抽象）。先简单点讲更晚让大家明白其机制。</p>
-<p>##客户端3.0<br>可以在<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-3/get-poetry.py" target="_blank" rel="external">twisted-client-3/get-poetry.py</a>看到3.0版本。这个版本实现了get_poetry方法：</p>
-<pre><code>def get_poetry(host, port, callback):
-    from twisted.internet import reactor
-    factory = PoetryClientFactory(callback)
-    reactor.connectTCP(host, port, factory)
-</code></pre><p>这个版本新的变动就是将一个回调函数传递给了PoetryClientFactory。这个Factory用这个回调来将下载完毕的诗歌传回去。</p>
-<pre><code>class PoetryClientFactory(ClientFactory):
-    protocol = PoetryProtocol
-
-    def __init__(self, callback):
-        self.callback = callback
-
-    def poem_finished(self, poem):
-        self.callback(poem)
-</code></pre><p>值得注意的是，这个版本中的工厂因其不用负责关闭reactor而比2.0版本的简单多了。它也将处理连接失败的工作除去了，后面我们会改正这一点。PoetryProtocol无需进行任何变动，我们就直接复用2.1版本的：</p>
-<pre><code>class PoetryProtocol(Protocol):
-    poem = &apos;&apos;
-    def dataReceived(self, data):
-        self.poem += data
-    def connectionLost(self, reason):
-        self.poemReceived(self.poem)
-    def poemReceived(self, poem):
-        self.factory.poem_finished(poem)
-</code></pre><p>通过这一变动，get_poetry,PoetryClientFactory与PoetryProtocol类都完全可以复用了。它们都仅仅与诗歌下载有关。所有启动与关闭reactor的逻辑都在main中实现：</p>
-<pre><code>def poetry_main():
-    addresses = parse_args()
-    from twisted.internet import reactor
-    poems = []
-    def got_poem(poem):
-        poems.append(poem)
-        if len(poems) == len(addresses):
-            reactor.stop()
-    for address in addresses:
-        host, port = address
-        get_poetry(host, port, got_poem)
-    reactor.run()
-    for poem in poems:
-        print poem
-</code></pre><p>因此，只要我们需要，就可以将这些可复用部分放在任何其它想实现下载诗歌功能的模块中。</p>
-<p>顺便说一句，当你测试3.0版本客户端时，可以重配置诗歌下载服务器来使用诗歌下载的快点。现在客户端下载的速度就不会像前面那样让人”应接不暇“了。</p>
-<p>##讨论<br>我们可以用图11来形象地展示回调的整个过程：</p>
-<p><img src="/img/回调过程.png" alt="图11 ：回调过程"></p>
-<p>图11是值得好好思考一下的。到现在为止，我们已经完整描绘了一个一直到向我们的代码发出信号的整个回调链条。但当你用Twisted写程序时，或其它交互式的系统时，这些回调中会包含一些我们的代码来回调其它的代码。换句话说，交互式的编程方式不会在我们的代码处止步（Dave的意思是说，我们的回调函数中可能还会回调其它别人实现的代码，即交互方式不会止步于我们的代码，这个方式会继续深入到框架的代码或其它第三方的代码）。</p>
-<p>当你在选择Twisted实现你的工程时，务必记住下面这几条。当你作出决定：</p>
-<blockquote>
-<p>I’m going to use Twisted!</p>
-</blockquote>
-<p>即代表你已经作出这样的决定：</p>
-<blockquote>
-<p>我将要构造我的程序如由reactorz牵引的一系列的异步回调链</p>
-</blockquote>
-<p>现在也许你还不会像我一样大声地喊出，但它确实是这样的。那就是Twisted的工作方式。</p>
-<p>貌似大部分Python程序与Python模块都是同步的。如果我们正在写一个同样需要下载诗歌的同步方式的程序，我可能会通过在我们的代码中添加下面几句来实现我们的同步方式的下载诗歌客户端版本：</p>
-<pre><code>...
-import poetrylib # I just made this module name up
-poem = poetrylib.get_poetry(host, port)
-...
-</code></pre><p>然后我们继续。如果我们决定不需要这个这业务那我们可以将这几行代码去掉就OK了。如果我们真的要用Twisted版本的get_poetry来实现同步程序，那么我们需要对异步方式中的回调进行大的改写。这里，我并不想说改写程序不好。而是想说，简单地将同步与异步的程序混合在一直是不行的。</p>
-<p>如果你是一个Twisted新手或初次接触异步编程，建议你在试图复用其它异步代码时先写点异步Twisted的程序。这样你不用去处理因需要考虑各个模块交互关系而带来的复杂情况下，感受一下Twisted的运行机制。</p>
-<p>如果你的程序原来就是异步方式，那么使用Twisted就再好不过了。Twisted与pyGTK和pyQT这两个基于reactor的GUI工具包实现了很好的可交互性。</p>
-<p>##异常问题的处理<br>在版本3.0中，我们没有去检测与服务器的连接失败的情况，这比在1.0版本中出现时带来的麻多得多。如果我们让3.0版本的客户端到一个不存在的服务器上下载诗歌，那么不是像1.0版本那样立刻程序崩溃掉而是永远处于等待状态中。</p>
-<p>clientConncetionFailed回调仍然会被调用，但是因为其在ClientFactory基类中什么也没有实现（若子类没有重写基类函数则使用基类的函数）。因此，got_poem回调将永远不会被激活，这样一来，reactor也不会停止了。我们已经在第2部分也遇到过这样一个不做任何事情的函数了。</p>
-<p>因此，我们需要解决这一问题，在哪儿解决呢？连接失败的信息会通过clientConnectionFailed函数传递给工厂对象，因此我们就从这个函数入手。但这个工厂是需要设计成可复用的，因此如何合理处理这个错误是依赖于工厂所使用的场景的。在一些应用中，丢失诗歌是很糟糕的;但另外一些应用场景下，我们只是尽量尝试，不行就从其它地方下载 。换句话说，使用get_poetry的人需要知道会在何时出现这种问题，而不仅仅是什么情况下会正常运行。在一个同步程序中，get_poetry可能会抛出一个异常并调用含有try/excep表达式的代码来处理异常。但在一个异步交互的程序中，错误信息也必须异步的传递出去。总之，在取得get_poetry之前，我们是不会发现连接失败这种错误的。下面是一种可能：</p>
-<pre><code>def get_poetry(host, port, callback):
-    &quot;&quot;&quot;
-    Download a poem from the given host and port and invoke
-
-      callback(poem)
-
-    when the poem is complete. If there is a failure, invoke:
-
-      callback(None)
-
-    instead.
-    &quot;&quot;&quot;
-</code></pre><p>通过检查回调函数的参数来判断我们是否已经完成诗歌下载。这样可能会避免客户端无休止运行下去的情况发生，但这样做仍会带来一些问题。首先，使用None来表示失败好像有点牵强。一些异步的API可能会将None而不是错误状态字作为默认返回值。其次，None值所携带的信息量太少。它不能告诉我们出的什么错，更不说可以在调试中为我呈现出一个跟踪对象了。好的，也可以尝试这样：</p>
-<pre><code>def get_poetry(host, port, callback):
-    &quot;&quot;&quot;
-    Download a poem from the given host and port and invoke
-
-      callback(poem)
-
-    when the poem is complete. If there is a failure, invoke:
-
-      callback(err)
-
-    instead, where err is an Exception instance.
-    &quot;&quot;&quot;
-</code></pre><p>使用Exception已经比较接近于我们的异步程序了。现在我们可以通过得到Exception来获得相比得到一个None多的多的出错信息了。正常情况下，在Python中遇到一个异常会得到一个跟踪异常栈以让我们来分析，或是为了日后的调试而打印异常信息日志。跟踪栈相当重要的，因此我们不能因为使用异步编程就将其丢弃。</p>
-<p>记住，我们并不想在回调激活时打印跟踪栈，那并不是出问题的地方。我们想得到是Exception实例用其被抛出的位置。</p>
-<p>Twisted含有一个抽象类称作Failure，如果有异常出现的话，其能捕获Exception与跟踪栈。</p>
-<p>Failure的描述文档说明了如何创建它。将一个Failure对象付给回调函数，我们就可以为以后的调试保存跟踪栈的信息了。</p>
-<p>在twisted-failure/failure-examples.py中有一些使用Failure对象的示例代码。它演示了Failure是如何从一个抛出的异常中保存跟踪栈信息的，即使在except块外部。我不用在创建一个Failure上花太多功夫。在第七部分中，我们将看到Twisted如何为我们完成这些工作。好了，看看下面这个尝试：</p>
-<pre><code>def get_poetry(host, port, callback):
-    &quot;&quot;&quot;
-    Download a poem from the given host and port and invoke
-      callback(poem)
-    when the poem is complete. If there is a failure, invoke:
-      callback(err)
-     instead, where err is a twisted.python.failure.Failure instance.
-    &quot;&quot;&quot;
-</code></pre><p>在这个版本中，我们得到了Exception和出现问题时的跟踪栈。这已经很不错了！<br>大多数情况下，到这个就OK了，但我们曾经遇到过另外一个问题。使用相同的回调来处理正常的与不正常的结果是一件莫名奇妙的事。通常情况下，我们在处理失败信息进，相比成功信息要进行不同的操作。在同步Python编程中，我们经常在处理失败与成功两种信息上采用不同的处理路径，即try/except处理方式：</p>
-<pre><code>try:
-    attempt_to_do_something_with_poetry()
-except RhymeSchemeViolation:
-    # the code path when things go wrong
-else:
-    # the code path when things go so, so right baby
-</code></pre><p>如果我们想保留这种错误处理方式，那么我们需要独立的代码来处理错误信息。那么在异步方式中，这就意味着一个独立的回调：</p>
-<pre><code>def get_poetry(host, port, callback, errback):
-    &quot;&quot;&quot;
-    Download a poem from the given host and port and invoke
-      callback(poem)
-    when the poem is complete. If there is a failure, invoke:
-      errback(err)
-    instead, where err is a twisted.python.failure.Failure instance.
-    &quot;&quot;&quot;
-</code></pre><p>##版本3.1<br>版本3.1实现位于twisted-client-3/get-poetry-1.py。改变是很直观的。PoetryClientFactory，获得了callback和errback两个回调，并且其中我们实现了clientConnectFailed：</p>
-<pre><code>class PoetryClientFactory(ClientFactory):
-    protocol = PoetryProtocol
-    def __init__(self, callback, errback):
-        self.callback = callback
-        self.errback = errback 
-    def poem_finished(self, poem):
-        self.callback(poem)
-    def clientConnectionFailed(self, connector, reason):
-        self.errback(reason)
-</code></pre><p>由于clientConncetFailed已经收到一个Failure对象（其作为reason参数）来解释为什么会发生连接失败，我们直接将其交给了errback回调函数。</p>
-<p>直接运行3.1版本（无需开启诗歌下载服务）的代码</p>
-<pre><code>python twisted-client-3/get-poetry-1.py 10004
-</code></pre><p>你会得到如下输出：</p>
-<pre><code>Poem failed: [Failure instance: Traceback (failure with no frames): : Connection was refused by other side: 111: Connection refused. ]
-</code></pre><p>这是由<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-3/get-poetry-1.py#L110" target="_blank" rel="external">poem_failed</a>回调中的print函数打印出来的。在这个例子中，Twisted只是简单将一个Exception传递给了我们而没有抛出它，因此这里我们并没有看到跟踪栈。因为这并不一个Bug，所以跟踪栈也不需要，Twisted只是想通知我们连接出错。</p>
-<p>##总结：<br>我们在第六部分学到：</p>
+            <p>##QUESTION<br>给定单项链表的头指针和一个结点指针，定义一个函数在O(1)时间删除该节点。</p>
+<p>##O(n)解法<br>O(n)解法就是常规的删除链表结点的做法。从链表的头结点开始，顺序遍历查找要删除的结点，并在链表中删除该结点。这种思路由于要顺序查找，时间复杂度自然就是O(n)了。</p>
+<p>之所以要从头开始查找，是因为我们需要得到将被删除的结点的前面一个结点。在单向链表中，结点中没有指向前一个结点的指针，所以只好从链表的头结点开始顺序查找。</p>
+<p>##O(1)解法<br>那是不是一定要得到被删除结点的前一个节点呢？答案是否定的。我们可以这样来删除一个结点，例子如下，别删除的结点为i，i的下一个结点为j：</p>
 <ul>
-<li>我们为Twisted程序写的API必须是异步的</li>
-<li>不能将同步与异步代码混合起来使用</li>
-<li>我们可以在自己的代码中写回调函数，正如Twisted做的那样</li>
-<li>并且，我们需要写处理错误信息的回调函数</li>
+<li>把j结点的内容复制到i结点，覆盖i结点的内容</li>
+<li>将i结点的next指向j结点的next</li>
+<li>删除j结点</li>
 </ul>
-<p>使用Twisted时，难道在写我们自己的API时都要额外的加上两个参数：正常的回调与出现错误时的回调。幸运的是，Twisted使用了一种机制来解决了这一问题，我们将在第七部分学习这部分内容。</p>
-<p>##练习</p>
-<ol>
-<li>Update client 3.1 to timeout if the poem isn’t received after a given period of time. Invoke the errback with a custom exception in that case. Don’t forget to close the connection when you do.</li>
-<li>Study the trap method on Failure objects. Compare it to the except clause in the try/except statement.</li>
-<li>Use print statements to verify that clientConnectionFailed is called after get_poetry returns.</li>
-</ol>
+<p>这里我们删除的虽然是j结点，但是得到的效果却是删除了i结点。</p>
+<p>还有一个问题，当我们删除的结点是尾结点时，尾结点的next是NULL，上述解法就不再适用，我们还是要顺序遍历后删除尾结点。</p>
+<p>代码如下：</p>
+<pre><code>typedef struct Node
+{
+    int data;
+    struct Node *next;
+}*node;
+
+/*在O(1)时间删除结点*/
+void DeleteNode(node &amp;pListHead, node pToBeDeleted)
+{
+    if(!pListHead || !pToBeDeleted)
+        return;
+
+    // 要删除的结点不是尾结点
+    if(pToBeDeleted-&gt;next!= NULL)
+    {
+        node pNext = pToBeDeleted-&gt;next;
+        pToBeDeleted-&gt;data= pNext-&gt;data;
+        pToBeDeleted-&gt;next = pNext-&gt;next;
+
+        delete pNext;
+        pNext = NULL;
+    }
+    // 链表只有一个结点，删除头结点（也是尾结点）
+    else if(pListHead == pToBeDeleted)
+    {
+        delete pToBeDeleted;
+        pToBeDeleted = NULL;
+        pListHead = NULL;
+    }
+    // 链表中有多个结点，删除尾结点
+    else
+    {
+        node pNode = pListHead;
+        while(pNode-&gt;next != pToBeDeleted)
+        {
+            pNode = pNode-&gt;next;            
+        }
+
+        pNode-&gt;next = NULL;
+        delete pToBeDeleted;
+        pToBeDeleted = NULL;
+    }
+}
+</code></pre><p>我们分析一下这个思路的时间复杂度。对于n-1个非尾结点而言，我们可以在O(1)时把下一个结点的内存复制覆盖要删除的结点，并删除下一个结点；对于尾结点而言，由于仍需要顺序查找，时间复杂度为O(n).因此总的时间复杂度为<code>[(n-1)*O(1)+O(n)]/n</code>,结果仍然是O(1),符合要求。</p>
 
           
         
@@ -1207,7 +483,7 @@ else:
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第五部分：由Twisted支持的诗歌客户端/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/25/二进制中1的个数/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -1226,7 +502,7 @@ else:
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/01/30/第五部分：由Twisted支持的诗歌客户端/" itemprop="url">第五部分：由Twisted支持的诗歌客户端 </a></h1>
+                <a class="post-title-link" href="/2015/01/25/二进制中1的个数/" itemprop="url">二进制中1的个数</a></h1>
         
 
         <div class="post-meta">
@@ -1238,8 +514,8 @@ else:
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T14:29:41+08:00">
-                2015-01-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-25T16:03:18+08:00">
+                2015-01-25
               </time>
             
 
@@ -1261,8 +537,8 @@ else:
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
                   </a>
                 </span>
 
@@ -1300,108 +576,63 @@ else:
       
         
           
-            <p>原文点<a href="http://krondo.com/?p=1522" target="_blank" rel="external">这里</a></p>
-<p>##抽象地构建客户端</p>
-<p>在第四部分中，我们构建了第一个使用Twisted的客户端。它确实能很好地工作，但仍有提高的空间。</p>
-<p>首先是，这个客户端竟然有创建网络端口并接收端口处的数据这样枯燥的代码。Twisted理应为我们实现这些例程性功能，省得我们每次写一个新的程序时都要去自己实现。Twisted这样做也将我们从像异步I/O操作中包括许多像异常处理这样的细节处理解放出来。更多的细节处理存在于多平台上运行我们的代码中。如果你那个下午有空，可以翻翻Twisted的WIN32实现源代码，看看里面有多少小针线是来处理跨平台的。</p>
-<p>另一问题是与错误处理有关。当运行版本1的Twisted客户端来从并没有提供服务的端口上下载诗歌时，它就会崩溃。我们是可以修正这个错误，但通过下面我们要介绍Twisted的APIs来处理这些类型的错误会更简单。</p>
-<p>最后，那个客户端也不能复用。如果有另一个模块需要通过我们的客户端下载诗歌呢？人家怎么知道你的诗歌已经下载完毕？我们不能用一个方法简单地将一首诗下载完成后再传给人家，而在之前让人家处于等待状态。这确实是一个问题，但我们不准备在这个部分解决这个问题—在未来的部分中一定会解决这个问题。</p>
-<p>我们将会使用一些高层次的APIs和接口来解决第一、二个问题。Twisted框架是由众多抽象层松散地组合起来的。因此，学习Twisted也就意味着需要学习这些层都提供什么功能，例如每层都有哪些APIs，接口和实例可供使用。接下来我们会通过剖析Twisted最最重要的部分来更好地感受一下Twisted都是怎么组织的。一旦你对Twisted的整个结构熟悉了，学习新的部分会简单多了。</p>
-<p>一般来说，每个Twisted的抽象都只与一个特定的概念相关。例如，第四部分中的客户端使用的IReadDescriptor，它就是“一个可以读取字节的文件描述符”的抽象。一个抽象往往会通过定义接口来指定那些想实现个抽象（也就是实现这个接口）对象的形为。在学习新的Twisted抽象概念时，最需要谨记的就是：</p>
-<p>多数高层次抽象都是在低层次抽象的基础上建立的，很少有另立门户的。</p>
-<p>因此，你在学习新的Twisted抽象概念时，始终要记住它做什么和不做什么。特别是，如果一个早期的抽象A实现了F特性，那么F特性不太可能再由其它任何抽象来实现。另外，如果另外一个抽象需要F特性，那么它会使用A而不是自己再去实现F。（通常的做法，B可能会通过继承A或获得一个指向A实例的引用）</p>
-<p>网络非常的复杂，因此Twisted包含很多抽象的概念。通过从低层的抽象讲起，我们希望能更清楚起看到在一个Twisted程序中各个部分是怎么组织起来的。</p>
-<p>##核心的循环体<br>第一个我们要学习的抽象，也是Twisted中最重要的，就是reactor。在每个通过Twisted搭建起来的程序中心处，不管你这个程序有多少层，总会有一个reactor循环在不停止地驱动程序的运行。再也没有比reactor提供更加基础的支持了。实际上，Twisted的其它部分（即除了reactor循环体）可以这样理解：它们都是来辅助X来更好地使用reactor，这里的X可以是提供Web网页、处理一个数据库查询请求或其它更加具体内容。尽管坚持像上一个客户端一样使用低层APIs是可能的，但如果我们执意那样做，那么我们必需自己来实现非常多的内容。而在更高的层次上，意味着我们可以少写很多代码。</p>
-<p>但是当在外层思考与处理问题叶。很容易就忘记了reactor的存在了。在任何一个常见大小的Twisted程序中 ，确实很少会有直接与reactor的APIs交互。低层的抽象也是一样（即我们很少会直接与其交互）。我们在上一个客户端中用到的文件描述符抽象，就被更高层的抽象更好的归纳而至于我们很少会在真正的Twisted程序中遇到。（他们在内部依然在被使用，只是我们看不到而已）</p>
-<p>至于文件描述符抽象的消息，这并不是一个问题。让Twisted掌舵异步I/O处理，这样我们就可以更加关注我们实际要解决的问题。但对于reactor不一样，它永远都不会消失。当你选择使用Twisted，也就意味着你选择使用Reactor模式，并且意味着你需要使用回调与多任务合作的“交互式”编程方式。如果你想正确地使用Twisted，你必须牢记reactor的存在。我们将在第六部分更加详细的讲解部分内容。但是现在要强调的是：</p>
-<p><a href="http://michaelyou.github.io/img/handle_events.png" target="_blank" rel="external">图5</a>与<a href="http://michaelyou.github.io/img/reactor%E5%90%AF%E7%94%A8%E5%9B%9E%E8%B0%83.png" target="_blank" rel="external">图6</a>是这个系列中最最重要的图</p>
-<p>我们还将用图来描述新的概念，但这两个图是需要你牢记在脑海中的。可以这样说，我在写Twisted程序时一直想着这两张图。</p>
-<p>在我们付诸于代码前，有三个新的概念需要阐述清楚：Transports,Protocols,Protocol Factoies</p>
-<p>##Transports<br>Transports抽象是通过Twisted中interfaces模块中ITransport接口定义的。一个Twisted的Transport代表一个可以收发字节的单条连接。对于我们的诗歌下载客户端而言，就是对一条TCP连接的抽象。但是Twisted也支持诸如Unix中管道和UDP。Transport抽象可以代表任何这样的连接并为其代表的连接处理具体的异步I/O操作细节。</p>
-<p>如果你浏览一下ITransport中的方法，可能找不到任何接收数据的方法。这是因为Transports总是在低层完成从连接中异步读取数据的许多细节工作，然后通过回调将数据发给我们。相似的原理，Transport对象的写相关的方法为避免阻塞也不会选择立即写我们要发送的数据。告诉一个Transport要发送数据，只是意味着：尽快将这些数据发送出去，别产生阻塞就行。当然，数据会按照我们提交的顺序发送。<br>通常我们不会自己实现一个Transport。我们会去实现Twisted提供的类，即在传递给reactor时会为我们创建一个对象实例。</p>
-<p>##Protocols<br>Twisted的Protocols抽象由interfaces模块中的IProtocol定义。也许你已经想到，Protocol对象实现协议内容。也就是说，一个具体的Twisted的Protocol的实现应该对应一个具体网络协议的实现，像FTP、IMAP或其它我们自己规定的协议。我们的诗歌下载协议，正如它表现的那样，就是在连接建立后将所有的诗歌内容全部发送出去并且在发送完毕后关闭连接。</p>
-<p>严格意义上讲，每一个Twisted的Protocols类实例都为一个具体的连接提供协议解析。因此我们的程序每建立一条连接（对于服务方就是每接受一条连接），都需要一个协议实例。这就意味着，Protocol实例是存储协议状态与间断性（由于我们是通过异步I/O方式以任意大小来接收数据的）接收并累积数据的地方。</p>
-<p>因此，Protocol实例如何得知它为哪条连接服务呢？如果你阅读IProtocol定义会发现一个makeConnection函数。这是一个回调函数，Twisted会在调用它时传递给其一个也是仅有的一个参数，即就是Transport实例。这个Transport实例就代表Protocol将要使用的连接。</p>
-<p>Twisted包含很多内置可以实现很多通用协议的Protocol。你可以在<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/protocols/basic.py" target="_blank" rel="external">twisted.protocols.basic</a>中找到一些稍微简单点的。在你尝试写新Protocol时，最好是看看Twisted源码是不是已经有现成的存在。如果没有，那实现一个自己的协议是非常好的，正如我们为诗歌下载客户端做的那样。</p>
-<p>##Protocol Factories<br>因此每个连接需要一个自己的Portocol，而且这个Protocol是我们自己定义类的实例。由于我们会将创建连接的工作交给Twisted来完成，Twisted需要一种方式来为一个新的连接制定一个合适的协议。制定协议就是Protocol Factories的 工作了。</p>
-<p>也许你已经猜到了，<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/interfaces.py#L1259" target="_blank" rel="external">Protocol Factory</a>的API由IProtocolFactory来定义，同样在<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/interfaces.py" target="_blank" rel="external">interfaces</a>模块中。Protocol Factory就是Factory模式的一个具体实现。buildProtocol方法在每次被调用时返回一个新Protocol实例。它就是Twisted用来为新连接创建新Protocol实例的方法。</p>
-<p>##诗歌下载客户端2.0：第一滴心血<br>好吧，让我们来看看由Twisted支持的诗歌下载客户端2.0。源码可以在这里<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-2/get-poetry.py" target="_blank" rel="external">twisted-client-2/get-poetry.py</a>。你可以像前面一样运行它，并得到相同的输出。这也是最后一个在接收到数据时打印其任务的客户端版本了。到现在为止，对于所有Twisted程序都是交替执行任务并处理相对较少数量数据的，应该很清晰了。我们依然通过print函数来展示在关键时刻在进行什么内容，但将来客户端不会在这样繁锁。</p>
-<p>在第二个版本中，sockets不会再出现了。我们甚至不需要引入socket模块也不用引用socket对象和文件描述符。取而代之的是，我们告诉reactor来创建到诗歌服务器的连接，代码如下面所示：</p>
-<pre><code>factory = PoetryClientFactory(len(addresses))
-
-from twisted.internet import reactor
-
-for address in addresses:
-    host, port = address
-    reactor.connectTCP(host, port, factory)
-</code></pre><p>我们需要关注的是connectTCP这个函数。前两个参数的含义很明显，不解释了。第三个参数是我们自定义的PoetryClientFactory类的实例对象。这是一个专门针对诗歌下载客户端的Protocol Factory，将它传递给reactor可以让Twisted为我们创建一个PeotryProtocol实例。</p>
-<p>值得注意的是，从一开始我们既没有实现Factory也没有去实现Protocol，不像在前面那个客户端中我们去实例化我们PoetrySocket类。我们只是继承了Twisted在<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/protocol.py" target="_blank" rel="external">twisted.internet.protocol</a> 中提供的基类。Factory的基类是<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/protocol.py#L24" target="_blank" rel="external">twisted.internet.protocol.Factory</a>，但我们使用客户端专用（即不像服务器端那样监听一个连接，而是主动创建一个连接）的ClientFactory子类来继承。</p>
-<p>我们同样利用了Twisted的Factory已经实现了buildProtocol方法这一优势来为我们所用。我们要在子类中调用基类中的实现：</p>
-<pre><code>def buildProtocol(self, address):
-    proto = ClientFactory.buildProtocol(self, address)
-    proto.task_num = self.task_num
-    self.task_num += 1
-    return proto
-</code></pre><p>基类怎么会知道我们要创建什么样的Protocol呢？注意，我们的PoetryClientFactory中有一个protocol类变量：</p>
-<pre><code>class PoetryClientFactory(ClientFactory):
-
-    task_num = 1
-
-    protocol = PoetryProtocol # tell base class what proto to build
-</code></pre><p>基类Factory的实现buildProtocol过程是：安装（创建一个实例）我们设置在protocol变量上的Protocol类与在这个实例（此处即PoetryProtocol的实例）的factory属性上设置一个产生它的Factory的引用（此处即实例化PoetryProtocol的PoetryClientFactory）。这个过程如图8所示：</p>
-<p><img src="/img/Protocol的生成过程.png" alt="图8：Protocol的生成过程"></p>
-<p>正如我们提到的那样，位于Protocol对象内的factory属性字段允许在都由同一个factory产生的Protocol之间共享数据。由于Factories都是由用户代码来创建的（即在用户的控制中），因此这个属性也可以实现Protocol对象将数据传递回一开始初始化请求的代码中来，这将在第六部分看到。</p>
-<p>值得注意的是，虽然在Protocol中有一个属性指向生成其的Protocol Factory，在Factory中也有一个变量指向一个Protocol类，但通常来说，一个Factory可以生成多个Protocol。</p>
-<p>在Protocol创立的第二步便是通过makeConnection与一个Transport联系起来。我们无需自己来实现这个函数而使用Twisted提供的默认实现。默认情况是，makeConnection将Transport的一个引用赋给（Protocol的）transport属性，同时置（同样是Protocol的）connected属性为True，正如图9描述的一样：</p>
-<p><img src="/img/Protocol遇到其Transport.png" alt="图9：Protocol遇到其Transport"></p>
-<p>一旦初始化到这一步后，Protocol开始其真正的工作—将低层的数据流翻译成高层的协议规定格式的消息。处理接收到数据的主要方法是dataReceived，我们的客户端是这样实现的：</p>
-<pre><code>def dataReceived(self, data):
-    self.poem += data
-    msg = &apos;Task %d: got %d bytes of poetry from %s&apos;
-    print  msg % (self.task_num, len(data), self.transport.getHost())
-</code></pre><p>每次dateReceved被调用就意味着我们得到一个新字符串。由于与异步I/O交互，我们不知道能接收到多少数据，因此将接收到的数据缓存下来直到完成一个完整的协议规定格式的消息。在我们的例子中，诗歌只有在连接关闭时才下载完毕，因此我们只是不断地将接收到的数据添加到我们的.poem属性字段中。</p>
-<p>注意我们使用了Transport的getHost方法来取得数据来自的服务器信息。我们这样做只是与前面的客户端保持一致。相反，我们的代码没有必要这样做，因为我们没有向服务器发送任何消息，也就没有必要知道服务器的信息了。</p>
-<p>我们来看一下dataReceved运行时的快照。在2.0版本相同的目录下有一个twisted-client-2/get-poetry-stack.py。它与2.0版本的不同之处只在于：</p>
-<pre><code>def dataReceived(self, data):
-    traceback.print_stack()
-    os._exit(0)
-</code></pre><p>这样一改，我们就能打印出跟踪堆栈的信息，然后离开程序，可以用下面的命令来运行它：</p>
-<pre><code>python twisted-client-2/get-poetry-stack.py 10000
-</code></pre><p>你会得到内容如下的跟踪堆栈：</p>
-<blockquote>
-<p>File “twisted-client-2/get-poetry-stack.py”, line 125, in</p>
-<p>poetry_main() </p>
-<p> … # I removed a bunch of lines here </p>
-<p>  File “…/twisted/internet/tcp.py”, line 463, in doRead # Note the doRead callback </p>
-<p>return self.protocol.dataReceived(data) </p>
-<p>File “twisted-client-2/get-poetry-stack.py”, line 58, in &gt;dataReceived traceback.print_stack() </p>
-</blockquote>
-<p>看见没，有我们在1.0版本客户端的doRead回调函数。我们前面也提到过，Twisted在建立新抽象层进会使用已有的实现而不是另起炉灶。因此必然会有一个IReadDescriptor的实例在辛苦的工作，它是由Twisted代码而非我们自己的代码来实现。如果你表示怀疑，那么就看看twisted.internet.tcp中的实现吧。如果你浏览代码会发现，由同一个类实现了IWriteDescriptor与ITransport。因此 IreadDescriptor实际上就是变相的Transport类。可以用图10来形象地说明dateReceived的回调过程： </p>
-<p><img src="/img/dateReceived回调过程 .img" alt="图10：dateReceived回调过程"></p>
-<p>一旦诗歌下载完成，PoetryProtocol就会通知它的PooetryClientFactory：</p>
-<pre><code>def connectionLost(self, reason):     
-  self.poemReceived(self.poem) 
-def poemReceived(self, poem):    
-  self.factory.poem_finished(self.task_num, poem)
-</code></pre><p>当transport的连接关闭时，conncetionLost回调会被激活。reason参数是一个<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/python/failure.py" target="_blank" rel="external">twisted.python.failure.Failure</a>的实例对象，其携带的信息能够说明连接是被安全的关闭还是由于出错被关闭的。我们的客户端因认为总是能完整地下载完诗歌而忽略了这一参数。</p>
-<p>工厂会在所有的诗歌都下载完毕后关闭reactor。再次重申：我们代码的工作就是用来下载诗歌-这意味我们的PoetryClientFactory缺少复用性。我们将在下一部分修正这一缺陷。值得注意的是，poem_finish回调函数是如何通过跟踪剩余诗歌数的：</p>
-<pre><code>...
-    self.poetry_count -= 1
-
-    if self.poetry_count == 0:
-        …
-</code></pre><p>如果我们采用多线程以让每个线程分别下载诗歌，这样我们就必须使用一把锁来管理这段代码以免多个线程在同一时间调用poem_finish。但是在交互式体系下就不必担心了。由于reactor只能一次启用一个回调。</p>
-<p>新的客户端实现在处理错误上也比先前的优雅的多，下面是PoetryClientFactory处理错误连接的回调实现代码：</p>
-<pre><code>def clientConnectionFailed(self, connector, reason):
-    print &apos;Failed to connect to:&apos;, connector.getDestination()
-    self.poem_finished()
-</code></pre><p>注意，回调是在工厂内部而不是协议内部实现。由于协议是在连接建立后才创建的，而工厂能够在连接未能成功建立时捕获消息。</p>
-<p>##结束语：<br>版本2的客户端使用的抽象对于那些Twisted高手应该非常熟悉。如果仅仅是为在命令行上打印出下载的诗歌这个功能，那么我们已经完成了。但如果想使我们的代码能够复用，能够被内嵌在一些包含诗歌下载功能并可以做其它事情的大软件中，我们还有许多工作要做，我们将在第六部分讲解相关内容。</p>
-<p>##练习</p>
-<ol>
-<li>Use callLater to make the client timeout if a poem hasn’t finished after a given interval. Use the loseConnection method on the transport to close the connection on a timeout, and don’t forget to cancel the timeout if the poem finishes on time.</li>
-<li>Use the stacktrace method to analyze the callback sequence that occurs when connectionLost is invoked.</li>
-</ol>
+            <p>题目：输入一个整数，求该整数的二进制表达中有多少个1。例如输入10，由于其二进制表示为1010，有两个1，因此输出2。</p>
+<p>##可能引起死循环的解法<br>一个很基本的想法是，我们先判断整数的最右边一位是不是1。接着把整数右移一位，原来处于右边第二位的数字现在被移到第一位了，再判断是不是1。这样每次 移动一位，直到这个整数变成0为止。现在的问题变成怎样判断一个整数的最右边一位是不是1了。很简单，如果它和整数1作与运算。由于1除了最右边一位以 外，其他所有位都为0。因此如果与运算的结果为1，表示整数的最右边一位是1，否则是0。</p>
+<p>代码如下：</p>
+<pre><code>///////////////////////////////////////////////////////////////////////
+// Get how many 1s in an integer&apos;s binary expression
+///////////////////////////////////////////////////////////////////////
+int NumberOf1_Solution1(int i)
+{
+      int count = 0;
+      while(i)
+      {
+            if(i &amp; 1)
+                  count ++;
+            i = i &gt;&gt; 1;
+      }
+      return count;
+}
+</code></pre><p>面试官会问，整数右移一位在数学上是和除以2是等价的。那可不可以把上面的代码中的右移运算符换成除以2呢？答案是否定的。因为除法的效率比移位运算要低的多，在实际编程中如果可以，应尽可能地用移位运算符代替乘除法。</p>
+<p>这个思路当输入i是正数时没有问题，但当输入的i是一个负数时，不但不能得到正确的1的个数，还将导致死循环。以负数0x80000000为例，右移一位 的时候，并不是简单地把最高位的1移到第二位变成0x40000000，而是0xC0000000。这是因为移位前是个负数，仍然要保证移位后是个负数， 因此移位后的最高位会设为1。如果一直做右移运算，最终这个数字就会变成0xFFFFFFFF而陷入死循环。</p>
+<p>##改进算法避免死循环<br>为了避免死循环，我们可以不右移输入的数字i。首先i和1做与运算，判断i的最低位是不是为1。接着把1左移一位得到2，再和i做与运算，就能判断i的次高位是不是1……这样反复左移，每次都能判断i的其中一位是不是1。基于此，我们得到如下代码：</p>
+<pre><code>///////////////////////////////////////////////////////////////////////
+// Get how many 1s in an integer&apos;s binary expression
+///////////////////////////////////////////////////////////////////////
+int NumberOf1_Solution2(int i)
+{
+      int count = 0;
+      unsigned int flag = 1;
+      while(flag)
+      {
+            if(i &amp; flag)
+                  count ++;
+            flag = flag &lt;&lt; 1;
+      }
+      return count;
+}
+</code></pre><p>##给面试官带来惊喜的解法<br>另外一种思路是如果一个整数不为0，那么这个整数至少有一位是1。如果我们把这个整数减去1，那么原来处在整数最右边的1就会变成0，原来在1后面的所有 的0都会变成1。其余的所有位将不受到影响。举个例子：一个二进制数1100，从右边数起的第三位是处于最右边的一个1。减去1后，第三位变成0，它后面 的两位0变成1，而前面的1保持不变，因此得到结果是1011。</p>
+<p>我们发现减1的结果是把从最右边一个1开始的所有位都取反了。这个时候如果我们再把原来的整数和减去1之后的结果做与运算，从原来整数最右边一个1那一位 开始所有位都会变成0。如1100&amp;1011=1000。也就是说，把一个整数减去1，再和原整数做与运算，会把该整数最右边一个1变成0。那么 一个整数的二进制有多少个1，就可以进行多少次这样的操作。</p>
+<p>这种思路对应的代码如下：</p>
+<pre><code>///////////////////////////////////////////////////////////////////////
+// Get how many 1s in an integer&apos;s binary expression
+///////////////////////////////////////////////////////////////////////
+int NumberOf1_Solution3(int i)
+{
+      int count = 0;
+      while (i)
+      {
+            ++ count;
+            i = (i - 1) &amp; i;
+      }
+      return count;
+}
+</code></pre><p>##扩展<br>扩展1：如何用一个语句判断一个整数是不是二的整数次幂？</p>
+<p>思路：一个整数如果是2的整数次方，那么它的二进制表示中有且只有一位是1，而其他所有位都是0.根据前面的分析，把这个整数减去1之后再和它自己做与运算，这个整数中唯一的1就会变成0.</p>
+<pre><code>n&amp;(n-1)==0;//二进制数只有一位位1，则该数是2的整数次幂.
+</code></pre><p>扩展2：输入两个整数m和n，计算需要改变m的二进制表示中的多少位才能得到n。比如10的二进制表示为1010,13的二进制表示为1101，需要改变1010中的3位才能得到1101.</p>
+<p>思路：我们可以分两步解决这个问题：第一步求这两个数的异或，第二步统计异或结果中1的位数。</p>
+<p>##总结<br>把一个整数减去1之后再和原来的整数做位与运算，得到的结果相当于是把整数的二进制表示中的最后一个1变成0.很多二进制的问题都可以用这个思路解决</p>
 
           
         
@@ -1450,7 +681,7 @@ def poemReceived(self, poem):
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第四部分：由Twisted支持的诗歌客户端/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/25/为什么求斐波拉切数列用递归不是一个好方法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -1469,7 +700,7 @@ def poemReceived(self, poem):
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/01/30/第四部分：由Twisted支持的诗歌客户端/" itemprop="url">第四部分：由Twisted支持的诗歌客户端</a></h1>
+                <a class="post-title-link" href="/2015/01/25/为什么求斐波拉切数列用递归不是一个好方法/" itemprop="url">为什么求斐波拉切数列用递归不是一个好方法</a></h1>
         
 
         <div class="post-meta">
@@ -1481,8 +712,8 @@ def poemReceived(self, poem):
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T14:28:13+08:00">
-                2015-01-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-25T15:14:32+08:00">
+                2015-01-25
               </time>
             
 
@@ -1504,8 +735,8 @@ def poemReceived(self, poem):
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
                   </a>
                 </span>
 
@@ -1543,102 +774,66 @@ def poemReceived(self, poem):
       
         
           
-            <p>原文点<a href="http://krondo.com/?p=1445" target="_blank" rel="external">这里</a></p>
-<p>##第一个twisted支持的诗歌服务器<br>尽管Twisted大多数情况下用来写服务器代码，为了一开始尽量从简单处着手，我们首先从简单的客户端讲起。</p>
-<p>让我们来试试使用Twisted的客户端。源码在<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-1/get-poetry.py" target="_blank" rel="external">twisted-client-1/get-poetry.py</a>。首先像前面一样要开启三个服务器：</p>
-<pre><code>python blocking-server/slowpoetry.py --port 10000 poetry/ecstasy.txt --num-bytes 30
-python blocking-server/slowpoetry.py --port 10001 poetry/fascination.txt
-python blocking-server/slowpoetry.py --port 10002 poetry/science.txt
-</code></pre><p>并且运行客户端：</p>
-<pre><code>python twisted-client-1/get-poetry.py 10000 10001 10002
-</code></pre><p>你会看到在客户端的命令行打印出：</p>
+            <p>##递归解法<br>教课书上一般都是用斐波拉切数列来说明递归，但是用递归的方法来求解斐波拉切数列并不是一个好的方法，这主要是效率的问题。</p>
+<pre><code>long fibonacci(unsigned int n)
+{
+    if(n &lt;= 0)
+        return 0;
+
+    if(n == 1)
+        return 1;
+
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+</code></pre><p>这个方法的低效体现在哪里呢？我们不妨来分析一下fibnacci(8)的求解过程：</p>
+<p><img src="/img/fibonacci.png" alt="fibonacci"></p>
+<p>我们不难发现在这棵树中很多结点是重复的，而且重复的结点数会随着n的增大而急剧增加，这意味着计算量会随着n的睁大而急剧增大。事实上，用递归计算的时间复杂度是以n的指数的方式递增的。</p>
+<p>##循环解法<br>在这里，递归的缺陷在于重复计算了很多项，为了避免重复计算，我们可以使用循环：</p>
+<pre><code>long fibonacci_iterator(unsigned int n)
+{
+    int result[2] = {0, 1};
+    if(n &lt; 2)
+        return result[n];
+
+    long fib_one = 0;
+    long fib_two = 1;
+
+    long fib_num = 0;
+    int i;
+    for(i = 2; i &lt;= n; i++) {
+        fib_num = fib_one + fib_two;
+        fib_one = fib_two;
+        fib_two = fib_num;
+    }
+
+    return fib_num;
+}
+</code></pre><p>##测试程序</p>
+<pre><code>#define n 50
+int main(int argc, char **argv)
+{
+    clock_t start, end;
+    double times = 0;
+
+    start = clock();
+    printf(&quot;fibonacci(%d) = %d\n&quot;, n, fibonacci(n));
+    end = clock();
+    times = (double)(end - start) / CLOCKS_PER_SEC;
+    printf(&quot;The fibonacci took %fs\n&quot;, times);
+    start = clock();
+    printf(&quot;fibonacci(%d) = %d\n&quot;, n, fibonacci_iterator(n));
+    end = clock();
+    times = (double)(end - start) / CLOCKS_PER_SEC;
+    printf(&quot;The fibonacci_iterator took %fs\n&quot;, times);
+}
+</code></pre><p>输出为:</p>
 <blockquote>
-<p>Task 1: got 60 bytes of poetry from 127.0.0.1:10000</p>
-<p>Task 2: got 10 bytes of poetry from 127.0.0.1:10001</p>
-<p>Task 3: got 10 bytes of poetry from 127.0.0.1:10002</p>
-<p>Task 1: got 30 bytes of poetry from 127.0.0.1:10000</p>
-<p>Task 3: got 10 bytes of poetry from 127.0.0.1:10002</p>
-<p>Task 2: got 10 bytes of poetry from 127.0.0.1:10001 </p>
-<p>… </p>
-<p>Task 1: 3003 bytes of poetry</p>
-<p>Task 2: 623 bytes of poetry</p>
-<p>Task 3: 653 bytes of poetry</p>
-<p>Got 3 poems in 0:00:10.134220</p>
+<p>fibonacci(50) = 12586269025</p>
+<p>The fibonacci took 203.040000s</p>
+<p>fibonacci(50) = 12586269025</p>
+<p>The fibonacci_iterator took 0.000000s</p>
 </blockquote>
-<p>和我们的没有使用Twisted的非阻塞模式客户端打印的内容接近。这并不奇怪，因为它们的工作方式是一样的。</p>
-<p>下面，我们来仔细研究一下它的源代码。</p>
-<p>注意：正如我在第一部分说到，我们开始学习使用Twisted时会使用一些低层Twisted的APIs。这样做是为揭去Twisted的抽象层，这样我们就可以从内向外的来学习Tiwsted。但是这就意味着，我们在学习中所使用的APIs在实际应用中可能都不会见到。记住这么一点就行：前面这些代码只是用作练习，而不是写真实软件的例子。</p>
-<p>可以看到，首先创建了一组<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-1/get-poetry.py#L53" target="_blank" rel="external">PoetrySocket</a>的实例。在<a href="http://github.com/jdavisp3/twisted-intro/blob/master/twisted-client-1/get-poetry.py#L53" target="_blank" rel="external">PoetrySocket</a>初始化时，其创建了一个网络socket作为自己的属性字段来连接服务器，并且选择了非阻塞模式：</p>
-<pre><code>self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-self.sock.connect(address)
-self.sock.setblocking(0)
-</code></pre><p>最终我们虽然会提高到不使用socket的抽象层次上，但这里我们仍然需要使用它。在创建完socket后，PoetrySocket通过方法addReader将自己传递给 reactor：</p>
-<pre><code># tell the Twisted reactor to monitor this socket for reading
-from twisted.internet import reactor
-reactor.addReader(self）
-</code></pre><p>这个方法给Twisted提供了一个文件描述符来监视要发送来的数据。为什么我们不传递给Twisted一个文件描述符或回调函数而是一个对象实例？并且Twisted内部没有任何与这个诗歌服务相关的代码，它怎么知道该如何与我们的对象实例交互？相信我，我已经查看过了，打开<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/interfaces.py" target="_blank" rel="external">twisted.internet.interface`s</a>模块，和我一起来搞清楚是怎么回事。</p>
-<p>##Twisted接口<br>在twisted内部有很多被称作接口的子模块。每个都定义了一组接口类。由于在8.0版本中，Twisted使用zope.interface作为这些类的基类。但我们这里并不来讨论它其中的细节。我们只关心其在Twisted的子类，就是你看到的那些。</p>
-<p>使用接口的核心目的之一就是文档化。作为一个python程序员，你肯定知道Duck Typing。（说实话我还真不懂这种编程，但通过查看资料，其实就是动态编程的思想，根据你的动作来确定你的类型）</p>
-<p>翻阅<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/interfaces.py" target="_blank" rel="external">twisted.internet.interfaces</a>找到方法的<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/interfaces.py#L810" target="_blank" rel="external">addReader</a>定义，它的定义在<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/interfaces.py#L801" target="_blank" rel="external">IReactorFDSet</a>中可以找到：</p>
-<pre><code>def addReader(reader):
-    &quot;&quot;&quot;
-    I add reader to the set of file descriptors to get read events for.
-    @param reader: An L{IReadDescriptor} provider that will be checked for
-                   read events until it is removed from the reactor with
-                   L{removeReader}.
-    @return: C{None}.
-    &quot;&quot;&quot;
-</code></pre><p><code>IReactorFDSet</code>是一个Twisted的reactor实现的接口。因此任何一个Twisted的reactor都会一个 addReader的方法，如同上面描述的一样工作。这个方法声明之所以没有self参数是因为它仅仅关心一个公共接口定义，self参数仅仅是接口实现时的一部分（在调用它时，也没有显式地传入一个self参数）。接口类永远不会被实例化或作为基类来继承实现。</p>
-<p>注意1：技术上讲，IReactorFDSet只会由reactor实现用来监听文件描述符。具我所知，现在所有已实现reactor都会实现这个接口。</p>
-<p>注意2：使用接口并不仅仅是为了文档化。zope.interface允许你显式地来声明一个类实现一个或多个接口，并提供运行时检查这些实现的机制。同样也提供代理这一机制，它可以动态地为一个没有实现某接口的类直接提供该接口。但我们这里就不做深入学习了。</p>
-<p>注意3：你可能已经注意到接口与最近添加到Python中虚基类的相似性了。这里我们并不去分析它们之间的相似性与差异。若你有兴趣，可以读读Ptyhon项目的创始人Glyph写的一篇关于这个话题的文章。</p>
-<p>根据文档的描述可以看出，addReader的reader参数是要实现<a href="http://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/internet/interfaces.py#L947" target="_blank" rel="external">IreadDescriptor</a>接口的。这也就意味我们的PoetrySocket也必须这样做。</p>
-<p>阅读接口模块我们可以看到下面这段代码：</p>
-<pre><code>class IReadDescriptor(IFileDescriptor):
-    def doRead():
-        &quot;&quot;&quot;
-        Some data is available for reading on your descriptor.
-        &quot;&quot;&quot;
-</code></pre><p>同时你会看到在我们的<code>PoetrySocket</code>类中有一个doRead方法。当其被Twisted的reactor调用时，就会采用异步的方式从socket中读取数据。因此，doRead其实就是一个回调函数，只是没有直接将其传递给reactor，而是传递一个实现此方法的对象实例。这也是Twisted框架中的惯例—不是直接传递实现某个接口的函数而是传递实现它的对象。这样我们通过一个参数就可以传递一组相关的回调函数。而且也可以让回调函数之间通过存储在对象中的数据进行通信。</p>
-<p>那在PoetrySocket中实现其它的回调函数呢？注意到IReadDescriptor是IFileDescriptor的一个子类。这也就意味任何一个实现IReadDescriptor都必须实现IFileDescriptor。若是你仔细阅读代码会看到下面的内容：</p>
-<pre><code>class IFileDescriptor(ILoggingContext):
-    &quot;&quot;&quot;
-    A file descriptor.
-    &quot;&quot;&quot;
-    def fileno():
-        ...
-    def connectionLost(reason):
-        ...
-</code></pre><p>我将文档描述省略掉了，但这些函数的功能从字面上就可以理解：fileno返回我们想监听的文件描述符，connectionLost是当连接关闭时被调用。你也看到了，PoetrySocket实现了这些方法。</p>
-<p>最后，IFileDescriptor继承了ILooggingContext，这里我不想再展现其源码。我想说的是，这就是为什么我们要实现一个logPrefix回调函数。你可以在interface模块中找到答案。</p>
-<p>注意：你也许注意到了，当连接关闭时，在doRead中返回了一个特殊的值。我是如何知道的？说实话，没有它程序是无法正常工作的。我是在分析Twisted源码中发现其它相应的方法采取相同的方法。你也许想好好研究一下：但有时一些文档或书的解释是错误的或不完整的。因此可能当你搞清楚怎么回事时，我们已经完成第五部分了呵呵。</p>
-<p>##更多关于回调的知识<br>我们使用Twisted的异步客户端和前面的没有使用Twisted的异步客户非常的相似。两者都要连接它们自己的socket，并以异步的方式从中读取数据。最大的区别在于：使用Twisted的客户端并没有使用自己的select循环-而使用了Twisted的reactor。<br>doRead回调函数是非常重要的一个回调。Twisted调用它来告诉我们已经有数据在socket接收完毕。我可以通过图7来形象地说明这一过程：</p>
-<p><img src="/img/doRead回调过程.png" alt="图7 doRead回调过程"></p>
-<p>每当回调被激活，就轮到我们的代码将所有能够读的数据读回来然后非阻塞式的停止。正如我们第三部分说的那样，Twisted是不会因为什么异常状况（如没有必要的阻塞）而终止我们的代码。那么我们就故意写个会产生异常状况的客户端看看到底能发生什么事情。可以在<code>twisted-client-1/get-poetry-broken.py</code>中看到源代码。这个客户端与你前面看到的同样有两个异常状况出现：</p>
-<ol>
-<li>这个客户端并不没有选择非阻塞式的socket</li>
-<li>doRead回调方法在socket关闭连接前一直在不停地读socket</li>
-<li><p>现在让我们运行一下这个客户端：</p>
-<pre><code>python twisted-client-1/get-poetry-broken.py 10000 10001 10002
-</code></pre></li>
-</ol>
-<p>我们出得到如同下面一样的输出：</p>
-<blockquote>
-<p>Task 1: got 3003 bytes of poetry from 127.0.0.1:10000</p>
-<p>Task 3: got 653 bytes of poetry from 127.0.0.1:10002</p>
-<p>Task 2: got 623 bytes of poetry from 127.0.0.1:10001</p>
-<p>Task 1: 3003 bytes of poetry</p>
-<p>Task 2: 623 bytes of poetry</p>
-<p>Task 3: 653 bytes of poetry</p>
-<p>Got 3 poems in 0:00:10.132753</p>
-</blockquote>
-<p>可能除了任务的完成顺序不太一致外，和我先阻塞式客户端是一样的。这是因为这个客户端是一个阻塞式的。</p>
-<p>由于使用了阻塞式的连接，就将我们的非阻塞式客户端变成了阻塞式的客户端。这样一来，我们尽管遭受了使用select的复杂但却没有享受到其带来的异步优势。<br>像诸如Twisted这样的事件循环所提供的多任务的能力是需要用户的合作来实现的。Twisted会告诉我们什么时候读或写一个文件描述符，但我们必须要尽可能高效而没有阻塞地完成读写工作。同样我们应该禁止使用其它各类的阻塞函数，如os.system中的函数。除此之外，当我们遇到计算型的任务（长时间占用CPU），最好是将任务切成若干个部分执行以让I/O操作尽可能地执行。</p>
-<p>你也许已经注意到这个客户端所花费的时间少于先前那个阻塞的客户端。这是由于这个在一开始就与所有的服务建立连接，由于服务是一旦连接建立就立即发送数据，而且我们的操作系统会缓存一部分发送过来但尚读不到的数据到缓冲区中（缓冲区大小是有上限的）。因此就明白了为什么前面那个会慢了：它是在完成一个后再建立下一个连接并接收数据。</p>
-<p>但这种小优势仅仅在小数据量的情况下才会得以体现。如果我们下载三首20M个单词的诗，那时OS的缓冲区会在瞬间填满，这样一来我们这个客户端与前面那个阻塞式客户端相比就没有什么优势可言了。</p>
-<p>##结束语<br>我没有过多地解释此部分第一个客户端的内容。你可能注意到了，connectionLost函数会在没有PoetrySocket等待诗歌后关闭reactor。由于我们的程序除了下载诗歌不提供其它服务，所以才会这样做。但它揭示了两个低层reactor的APIs：<code>removeReader</code>和<code>getReaders</code>。</p>
-<p>还有与我们客户端使用的Readers的APIs类同的Writers的APIs，它们采用相同的方式来监视我们要发送数据的文件描述符。可以通过阅读interfaces文件来获取更多的细节。读和写有各自的APIs是因为select函数需要分开这两种事件（读或写可以进行的文件描述符）。当然了，可以等待即能读也能写的文件描述符。</p>
-<p>第五部分，我们将使用Twisted的高层抽象方式实现另外一个客户端，并且学习更多的Twisted的接口与APIs。</p>
+<p>所以说，在这里用递归的话真是脑子被门夹了</p>
 
           
         
@@ -1687,7 +882,7 @@ reactor.addReader(self）
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第三部分：初步认识Twisted/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/24/重建二叉树/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -1706,7 +901,7 @@ reactor.addReader(self）
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/01/30/第三部分：初步认识Twisted/" itemprop="url">第三部分：初步认识Twisted</a></h1>
+                <a class="post-title-link" href="/2015/01/24/重建二叉树/" itemprop="url">重建二叉树</a></h1>
         
 
         <div class="post-meta">
@@ -1718,8 +913,8 @@ reactor.addReader(self）
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T12:25:59+08:00">
-                2015-01-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-24T21:31:11+08:00">
+                2015-01-24
               </time>
             
 
@@ -1741,8 +936,8 @@ reactor.addReader(self）
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
                   </a>
                 </span>
 
@@ -1780,705 +975,20 @@ reactor.addReader(self）
       
         
           
-            <p>可以从<a href="http://michaelyou.github.io/2015/01/30/%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%9ATwisted%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/" target="_blank" rel="external">这里</a>从头开始阅读这个系列。</p>
-<p>##用twisted的方式实现前面的内容<br>最终我们将使用<code>twisted</code>的方式来重新实现我们前面的异步模式客户端。不过，首先我们先稍微写点简单的twisted程序来认识一下<code>twisted</code>。<br>最最简单的twisted程序就是下面的代码，其在<code>twisted-intro</code>目录中的<code>basic-twisted/simple.py</code>中。</p>
-<pre><code>from twisted.internet import reactor
-reactor.run()
-</code></pre><p>可以用下面的命令来运行它：</p>
-<pre><code>python basic-twisted/simple.py
-</code></pre><p>正如在第二部分所说的那样，twisted是实现了Reactor模式的，因此它必然会有一个对象来代表这个reactor或者说是事件循环，而这正是twisted的核心。上面代码的第一行引入了reactor，第二行开始启动事件循环。</p>
-<p>这个程序什么事情也不做。除非你通过ctrl+c来终止它，否则它会一直运行下去。正常情况下，我们需要给出事件循环或者文件描述符来监视I/O（连接到某个服务器上，比如说我们那个诗歌服务器）。后面我们会来介绍这部分内容，现在这里的reactor被卡住了。值得注意的是，这里并不是一个在不停运行的简单循环。如果你在桌面上有个CPU性能查看器，可以发现这个循环体不会带来任何性能损失。实际上，这个reactor被卡住在第二部分图5的最顶端，等待永远不会到来的事件发生（更具体点说是一个调用select函数，却没有监视任何文件描述符)。</p>
-<p>下面我们会让这个程序丰富起来，不过事先要说几个结论：</p>
-<ol>
-<li>Twisted的reactor只有通过调用reactor.run()来启动。</li>
-<li>reactor循环是在其开始的进程中运行，也就是运行在主进程中。</li>
-<li>一旦启动，就会一直运行下去。reactor就会在程序的控制下（或者具体在一个启动它的线程的控制下）。</li>
-<li>reactor循环并不会消耗任何CPU的资源。</li>
-<li>并不需要显式的创建reactor，只需要引入就OK了。</li>
-</ol>
-<p>最后一条需要解释清楚。在Twisted中，reactor是Singleton（也是一种模式），即在一个程序中只能有一个reactor，并且只要你引入它就相应地创建一个。上面引入的方式这是twisted默认使用的方法，当然了，twisted还有其它可以引入reactor的方法。例如，可以使用<code>twisted.internet.pollreactor</code>中的系统调用来<code>poll</code> 来代替<code>select</code>方法。</p>
-<p>若使用其它的reactor，需要在引入<code>twisted.internet.reactor</code>前安装它。下面是安装<code>pollreactor</code>的方法：</p>
-<pre><code>from twisted.internet import pollreactor
-pollreactor.install()
-</code></pre><p>如果你没有安装其它特殊的reactor而引入了<code>twisted.internet.reactor</code>，那么Twisted会为你安装<code>selectreactor</code>。正因为如此，习惯性做法不要在最顶层的模块内引入reactor以避免安装默认reactor，而是在你要使用reactor的区域内安装。</p>
-<p>下面是使用 pollreactor重写上上面的程序，可以在basic-twisted/simple-poll.py文件中找到中找到：</p>
-<pre><code>from twited.internet import pollreactor
-pollreactor.install()
-from twisted.internet import reactor
-reactor.run()
-</code></pre><p>上面这段代码同样没有做任何事情。</p>
-<p>后面我们都会只使用默认的reactor，就单纯为了学习来说 ，所有的不同的reactor做的事情都一样。</p>
-<p>##你好，Twisted<br>我们得用Twisted来做什么吧。下面这段代码在reactor循环开始后向终端打印一条消息：</p>
-<pre><code>def hello():
-    print &apos;Hello from the reactor loop!&apos;
-    print &apos;Lately I feel like I\&apos;m stuck in a rut.&apos;
-from twisted.internet import reactor 
-reactor.callWhenRunning(hello)
-print &apos;Starting the reactor.&apos;
-reactor.run()
-</code></pre><p>这段代码可以在<code>basic-twisted/hello.py</code>中找到。运行它，会得到如下结果：</p>
-<pre><code>Starting the reactor. 
-Hello from the reactor loop!
-Lately I feel like I&apos;m stuck in a rut.
-</code></pre><p>仍然需要你手动来关掉程序，因为它在打印完毕后就又卡住了。</p>
-<p>值得注意的是，hello函数是在reactor启动后被调用的。这意味是reactor调用的它，也就是说Twisted在调用我们的函数。我们通过调用reactor的<code>callWhenRunning</code>函数，并传给它一个我们想调用函数的引用来实现hello函数的调用。当然，我们必须在启动reactor之前完成这些工作。</p>
-<p>我们使用回调来描述hello函数的引用。回调实际上就是交给Twisted（或者其它框架）的一个函数引用，这样Twisted会在合适的时间调用这个函数引用指向的函数，具体到这个程序中，是在reactor启动的时候调用。由于Twisted循环是独立于我们的代码，我们的业务代码与reactor核心代码的绝大多数交互都是通过使用Twisted的APIs回调我们的业务函数来实现的。</p>
-<p>我们可以通过下面这段代码来观察Twisted是如何调用我们代码的：</p>
-<pre><code>import traceback
-def stack():
-    print &apos;The python stack:&apos;
-    traceback.print_stack()
-from twisted.internet import reactor
-reactor.callWhenRunning(stack)
-reactor.run()
-</code></pre><p>这段代码的文件是 <code>basic-twisted/stack.py</code>。不出意外，它的输出是：</p>
+            <p>##题目</p>
 <blockquote>
-<p>The python stack: </p>
-<p>… reactor.run() &lt;– This is where we called the reactor </p>
-<p>… … &lt;– A bunch of Twisted function calls … </p>
-<p>traceback.print_stack() &lt;– The second line in the stack function</p>
+<p>输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字，例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，应该重构出如下二叉树：</p>
+<p><img src="/img/tree.png" alt="tree"></p>
 </blockquote>
-<p>不用考虑这其中的若干Twisted本身的函数。只需要关心reactor.run()与我们自己的函数调用之间的关系即可。</p>
-<p>有关回调的一些其它说明：</p>
-<p>Twisted并不是唯一使用回调的框架。许多历史悠久的框架都已在使用它。诸多GUI的框架也是基于回调来实现的，如GTK和QT。</p>
-<p>交互式程序的编程人员特别喜欢回调。也许喜欢到想嫁给它。也许已经这样做了。但下面这几点值得我们仔细考虑下：</p>
-<ol>
-<li>reactor模式是单线程的。</li>
-<li>像Twisted这种交互式模型已经实现了reactor循环，意味无需我们亲自去实现它。</li>
-<li>我们仍然需要框架来调用我们自己的代码来完成业务逻辑。</li>
-<li>因为在单线程中运行，要想跑我们自己的代码，必须在reactor循环中调用它们。</li>
-<li>reactor事先并不知道调用我们代码的哪个函数</li>
-</ol>
-<p>这样的话，回调并不仅仅是一个可选项，而是游戏规则的一部分。</p>
-<p>图6说明了回调过程中发生的一切：</p>
-<p><img src="/img/reactor启用回调.png" alt="图6 reactor启用回调"></p>
-<p>图6揭示了回调中的几个重要特性：</p>
-<ol>
-<li>我们的代码与Twisted代码运行在同一个进程中。</li>
-<li>当我们的代码运行时，Twisted代码是处于暂停状态的。</li>
-<li>同样，当Twisted代码处于运行状态时，我们的代码处于暂停状态。</li>
-<li>reactor事件循环会在我们的回调函数返回后恢复运行。</li>
-</ol>
-<p>在一个回调函数执行过程中，实际上Twisted的循环是被有效地阻塞在我们的代码上的。因此，因此我们应该确保回调函数不要浪费时间（尽快返回）。特别需要强调的是，我们应该尽量避免在回调函数中使用会阻塞I/O的函数。否则，我们将失去所有使用reactor所带来的优势。Twisted是不会采取特殊的预防措施来防止我们使用可阻塞的代码的，这需要我们自己来确保上面的情况不会发生。正如我们实际所看到的一样，对于普通网络I/O的例子，由于我们让Twisted替我们完成了异步通信，因此我们无需担心上面的事情发生。</p>
-<p>其它也可能会产生阻塞的操作是读或写一个非socket文件描述符（如管道）或者是等待一个子进程完成。</p>
-<p>如何从阻塞转换到非阻塞操作取决你具体的操作是什么，但是也有一些Twisted APIs会帮助你实现转换。值得注意的是，很多标准的Python方法没有办法转换为非阻塞方式。例如，os.system中的很多方法会在子进程完成前一直处于阻塞状态。这也就是它工作的方式。所以当你使用Twisted时，避开使用os.system。</p>
-<p>##退出Twisted<br>原来我们可以使用reactor的stop方法来停止Twisted的reactor。但是一旦reactor停止就无法再启动了。（Dave的意思是，停止就退出程序了），因此只有在你想退出程序时才执行这个操作。</p>
-<p>下面是退出代码，代码文件是<code>basic-twisted/countdown.py</code>：</p>
-<pre><code> 1 
- 2 class Countdown(object):
- 3 
- 4     counter = 5
- 5 
- 6     def count(self):
- 7         if self.counter == 0:
- 8             reactor.stop()
- 9         else:
-10             print self.counter, &apos;...&apos;
-11             self.counter -= 1
-12             reactor.callLater(1, self.count)
-13 
-14 from twisted.internet import reactor
-15 
-16 reactor.callWhenRunning(Countdown().count)
-17 
-18 print &apos;Start!&apos;
-19 reactor.run()
-20 print &apos;Stop!&apos;
-</code></pre><p>在这个程序中使用了callLater函数为Twisted注册了一个回调函数。callLater中的第二个参数是回调函数，第一个则是说明你希望在将来几秒钟时执行你的回调函数。那Twisted如何来在指定的时间执行我们安排好的的回调函数。由于程序并没有监听任何文件描述符，为什么它没有像前那些程序那样卡在select循环上？select函数，或者其它类似的函数，同样会接纳一个超时参数。如果在只提供一个超时参数值并且没有可供I/O操作的文件描述符而超时时间到时，select函数同样会返回。因此，如果设置一个0的超时参数，那么会无任何阻塞地立即检查所有的文件描述符集。<br>你可以将超时作为图5中循环等待中的一种事件来看待。并且Twisted使用超时事件来确保那些通过callLater函数注册的延时回调在指定的时间执行。或者更确切的说，在指定时间的前后会执行。如果一个回调函数执行时间过长，那么下面的延时回调函数可能会被相应的后延执行。Twisted的callLater机制并不为硬实时系统提供任何时间上的保证。</p>
-<p>下面是上面程序的输出：</p>
-<blockquote>
-<p>Start! </p>
-<p>5 … </p>
-<p>4 …</p>
-<p>3 … </p>
-<p>2 …</p>
-<p>1 … </p>
-<p>Stop!</p>
-<p>捕获它，Twisted</p>
-</blockquote>
-<p>由于Twisted经常会在回调中结束调用我们的代码，因此你可能会想，如果我们的回调函数中出现异常会发生什么状况。（Dave的意思是说，在结束我们的回调函数后会再次回到Twisted代码中，若在我们的回调中发生异常，那是不是异常会跑到Twisted代码中，而造成不可想象的后果 ）让我们来试试，在basic-twisted/exception.py中的程序会在一个回调函数中引发一个异常，但是这不会影响下一个回调：</p>
-<pre><code> 1 
- 2 def falldown():
- 3     raise Exception(&apos;I fall down.&apos;)
- 4 
- 5 def upagain():
- 6     print &apos;But I get up again.&apos;
- 7     reactor.stop()
- 8 
- 9 from twisted.internet import reactor
-10 
-11 reactor.callWhenRunning(falldown)
-12 reactor.callWhenRunning(upagain)
-13 
-14 print &apos;Starting the reactor.&apos;
-15 reactor.run()
-</code></pre><p>当你在命令行中运时，会有如下的输出：</p>
-<blockquote>
-<p>Starting the reactor. Traceback (most recent call last):</p>
-<p>… # I removed most of the traceback</p>
-<p>exceptions.Exception: I fall down.</p>
-<p>But I get up again.</p>
-</blockquote>
-<p>注意，尽管我们看到了因第一个回调函数引发异常而出现的跟踪栈，第二个回调函数依然能够执行。如果你将reactor.stop()注释掉的话，程序会继续运行下去。所以说，reactor并不会因为回调函数中出现失败（虽然它会报告异常）而停止运行。<br>网络服务器通常需要这种健壮的软件。它们通常不希望由于一个随机的Bug导致崩溃。也并不是说当我们发现自己的程序内部有问题时，就垂头丧气。只是想说Twisted能够很好的从失败的回调中返回并继续执行。</p>
-<p>##请继续讲解诗歌服务器<br>现在，我们已经准备好利用Twisted来搭建我们的诗歌服务器。在第4部分，我们会实现我们的异步模式的诗歌服务器的Twisted版。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第二部分：异步编程初探与reactor模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/第二部分：异步编程初探与reactor模式/" itemprop="url">第二部分：异步编程初探与reactor模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T11:17:20+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##低效的诗歌服务器来启发对Twisted机制的理解<br>这个系列是从<a href="http://michaelyou.github.io/2015/01/30/%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%9ATwisted%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/" target="_blank" rel="external">这里</a>开始的，欢迎你再次来到这里来。现在我们可能要写一些代码。在开始之前，我们都做出一些必要的假设。</p>
-<p>##关于对你的假设<br>在展开讨论前，我假设你已经有过用Python写同步程序的经历并且至少知道一点有关Python的Sockt编程的经验。如果你从没有写过Socket程序，或许你可以去看看<a href="http://docs.python.org/library/socket.html#module-socket" target="_blank" rel="external">Socket</a>模块的文档，尤其是后面的示例代码。如果你没有用过Python的话，那后面的描述对你来说可能比看周易还痛苦。</p>
-<p>##你所使用的计算机的情况（想的真周到，：））<br>我一般是在Linux上使用Twisted，这个系列的示例代码也是在Linux下完成的。首先声明的是我并没有故意让代码失去平台无关性，但我所讲述的一些内容确实可能仅仅适应于Linux和其它的类Unix（比如MAC OSX或FreeBSD）。WIndows是个奇怪诡异的地方（？？为什么这么评价Windows呢），如果你想尝试在它上面学习这个系列，抱歉，如果出了问题，我无法提供任何帮助。</p>
-<p>并且假设你已经安装了近期版本的Python和Twisted。我所提供的示例示例代码是基于<code>Python2.5</code>和<code>Twisted8.2.0</code>。</p>
-<p>你可以在单机上运行所有的示例代码，也可以在网络系统上运行它们。但是为了学习异步编程的机制，单机上学习是比较理想的。</p>
-<p>##获取代码的方法<br>使用git工具来获取Dave的最新示例代码。在shell或其它命令行上输入以下命令（假设已经安装git）：</p>
-<pre><code>git clone git://github.com/jdavisp3/twisted-intro.git
-</code></pre><p>下载结束后，解压并进入第一层文件夹（你可以看到有个README文件）。</p>
-<p>##低效的诗歌服务器<br>虽然CPU的处理速度远远快于网络，但网络的处理速度仍然比人脑快，至少比人类的眼睛快。因此，想通过网络来获得CPU的视角是很困难的，尤其是在单机的回环模式中数据流全速传输时，更是困难重重。</p>
-<p>我们所需要的是一个慢速低效诗歌服务器，其用人为的可变延时来体现影响结果。毕竟服务器要提供点东西吗，我们就提供诗歌好了。目录下面有个子目录专门存放诗歌用的。</p>
-<p>最简单的慢速诗歌服务器在<a href="https://github.com/jdavisp3/twisted-intro/blob/master/blocking-server/slowpoetry.py" target="_blank" rel="external">blocking-server/slowpoetry.py</a>中实现。你可用下面的方式来运行它。</p>
-<pre><code>python blocking-server/slowpoetry.py poetry/ecstasy.txt
-</code></pre><p>上面这个命令将启动一个阻塞的服务器，其提供“Ecstasy”这首诗。现在我们来看看它的源码内容，正如你所见，这里面并没有使用任何Twisted的内容，只是最基本的Socket编程操作。它每次只发送一定字节数量的内容，而每次中间延时一段时间。默认的是每隔0.1秒发送10个比特，你可以通过-delay和<br>-num-bytes参数来设置。例如每隔5秒发送50比特：</p>
-<pre><code>python blocking-server/slowpoetry.py --num-bytes 50 –delay 5poetry/ecstasy.txt
-</code></pre><p>当服务器启动时，它会显示其所监听的端口号。默认情况下，端口号是在可用端口号池中随机选择的。你可能想使用固定的端口号，那么无需更改代码，只需要在启动命令中作下修改就OK了，如下所示：</p>
-<pre><code>python blocking-server/slowpoetry.py --port 10000 poetry/ecstasy.txt
-</code></pre><p>如果你装有<code>netcat</code>工具，可以用如下命令来测试你的服务器（也可以用<code>telnet</code>）：</p>
-<pre><code>netcat localhost 10000
-</code></pre><p>如果你的服务器正常工作，那么你就可以看到诗歌在你的屏幕上慢慢的打印出来。对！你会注意到每次服务器都会发送过一行的内容过来。一旦诗歌传送完毕，服务器就会关闭这条连接。</p>
-<p>默认情况下，服务器只会监听本地回环的端口。如果你想连接另外一台机子的服务器，你可以指定其IP地址内容，命令行参数是<code>-iface</code>选项。</p>
-<p>不仅是服务器在发送诗歌的速度慢，而且读代码可以发现，服务器在服务一个客户端时其它连接进来的客户端只能处于等待状态而得不到服务。这的确是一个低效慢速的服务器，要不是为了学习，估计没有任何其它用处。</p>
-<p>##阻塞模式的客户端<br>在示例代码中有一个可以从多个服务器中顺序（一个接一个）地下载诗歌的阻塞模式的客户端。下面让这个客户端执行三个任务，正如第一个部分图1描述的那样。首先我们启动三个服务器，提供三首不同的诗歌。在命令行中运行下面三条命令：</p>
-<pre><code>python blocking-server/slowpoetry.py --port 10000 poetry/ecstasy.txt --num-bytes 30 
-python blocking-server/slowpoetry.py --port 10001 poetry/fascination.txt 
-python blocking-server/slowpoetry.py --port 10002 poetry/science.txt
-</code></pre><p>如果在你的系统中上面那些端口号有正在使用中，可以选择其它没有被使用的端口。注意，由于第一个服务器发送的诗歌是其它的三倍，这里我让第一个服务器使用每次发送30个字节而不是默认的10个字节，这样一来就以3倍于其它服务器的速度发送诗歌，因此它们会在几乎相同的时间内完成工作。</p>
-<p>现在我们使用阻塞模式的客户端来获取诗歌，运行如下所示的命令：</p>
-<pre><code>python blocking-client/get-poetry.py 10000 10001 10002
-</code></pre><p>如果你修改了上面服务口器的端口，你需要在这里时行相应的修改以保持一致。由于这个客户端采用的是阻塞模式，因此它会一首一首的下载，即只有在完成一首时才会开始下载另外一首。这个客户端会像下面这样打印出提示信息而不是将诗歌打印出来：</p>
-<blockquote>
-<p>Task 1: get poetry from: 127.0.0.1:10000</p>
-<p>Task 1: got 3003 bytes of poetry from 127.0.0.1:10000 in 0:00:10.126361 </p>
-<p>Task 2: get poetry from: 127.0.0.1:10001 </p>
-<p>Task 2: got 623 bytes of poetry from 127.0.0.1:10001 in 0:00:06.321777</p>
-<p>Task 3: get poetry from: 127.0.0.1:10002</p>
-<p>Task 3: got 653 bytes of poetry from 127.0.0.1:10002 in 0:00:06.617523</p>
-<p>Got 3 poems in 0:00:23.065661</p>
-</blockquote>
-<p>这图1最典型的文字版了，每个任务下载一首诗歌。你运行后可能显示的时间会与上面有所差别，并且也会随着你改变服务器的发送时间参数而改变。尝试着更改一下参数来观测一下效果。</p>
-<p>##异步模式的客户端<br>现在，我们来看看不用Twisted构建的异步模式的客户端。首先，我们先运行它试试。启动使用前面的三个端口来启动三个服务器。如果前面开启的还没有关闭，那就继续用它们好了。接下来，我们通过下面这段命令来启动我们的异步模式的客户端：</p>
-<pre><code>python async-client/get-poetry.py 10000 10001 10002 
-</code></pre><p>  你或许会得到类似于下面的输出：<br>&gt;</p>
-<blockquote>
-<p>Task 1: got 30 bytes of poetry from 127.0.0.1:10000 </p>
-<p>Task 2: got 10 bytes of poetry from 127.0.0.1:10001</p>
-<p>Task 3: got 10 bytes of poetry from 127.0.0.1:10002</p>
-<p>Task 1: got 30 bytes of poetry from 127.0.0.1:10000</p>
-<p>Task 2: got 10 bytes of poetry from 127.0.0.1:10001</p>
-<p>…</p>
-<p>Task 1: 3003 bytes of poetry</p>
-<p>Task 2: 623 bytes of poetry</p>
-<p>Task 3: 653 bytes of poetry</p>
-<p>Got 3 poems in 0:00:10.133169</p>
-</blockquote>
-<p>这次的输出可能会比较长，这是由于在异步模式的客户端中，每次接收到一段服务器发送来的数据都要打印一次提示信息，而服务器是将诗歌分成若干片段发送出去的。值得注意的是，这些任务相互交错执行，正如第一部分图3所示。</p>
-<p>尝试着修改服务器的设置（如将一个服务器的延时设置的长一点），来观察一下异步模式的客户端是如何针对变慢的服务器自动调节自身的下载来与较快的服务器保持一致。这正是异步模式在起作用。</p>
-<p>还需要值得注意的是，根据上面的设置，异步模式的客户端仅在10秒内完成工作，而同步模式的客户端却使用了23秒。现在回忆一下第一部分中图3与图4.通过减少阻塞时间，我们的异步模式的客户端可以在更短的时间里完成下载。诚然，我们的异步客户端也有些阻塞发生，那是由于服务器太慢了。由于异步模式的客户端可以在不同的服务器来回切换，它比同步模式的客户产生的阻塞就少得多。</p>
-<p>##更近一步的观察<br>现在让我们来读一下异步模式客户端的代码。注意其与同步模式客户端的差别：</p>
-<ol>
-<li>异步模式客户端一次性与全部服务器完成连接，而不像同步模式那样一次只连接一个。</li>
-<li>用来进行通信的Socket方法是非阻塞模的，这是通过调用setblocking(0来实现的。</li>
-<li>select模块中的select方法是用来识别是其监视的socket是否有完成数据接收的，如果没有<br>它就处于阻塞状态。</li>
-<li>当从服务器中读取数据时，会尽量多地从Sockt读取数据直到它阻塞为止，然后读下一个Sockt<br>接收的数据（如果有数据接收的话）。这意味着我们需要跟踪记录从不同服务器传送过来诗歌的接<br>收情况（因为，一首诗的接收并不是连续完成，所以需要保证每个任务的可连续性，就得有冗余<br>的信息来完成这一工作）。</li>
-</ol>
-<p>异步模式中客户端的核心就是最高层的循环体，即get_poetry函数。这个函数可以被拆分成两个步骤：</p>
-<ol>
-<li>使用select函数等待所有Socket，直到至少有一个socket有数据到来。</li>
-<li>对每个有数据需要读取的socket，从中读取数据。但仅仅只是读取有效数据，不能为了等待还没<br>来到的数据而发生阻塞。</li>
-<li>重复前两步，直到所有的socket被关闭。</li>
-</ol>
-<p>可以看出，同步模式客户端也有个循环体（在main函数内），但是这个循环体的每个迭代都是完成一首诗的下载工作。而在异步模式客户端的每次迭代过程中，我们可以完成所有诗歌的下载或者是它们中的一些。我们并不知道在一个迭代过程中，在下载那首诗，或者一次迭代中我们下载了多少数据。这些都依赖于服务器的发送速度与网络环境。我们只需要select函数告诉我们那个socket有数据需要接收，然后在保证不阻塞程序的前提下从其读取尽量多的数据。</p>
-<p>如果在服务器端口固定的条件下，同步模式的客户端并不需要循环体，只需要顺序罗列三个get_poetry<br>就可以了。但是我们的异步模式的客户端必须要有一个循环体来保证我们能够同时监视所有的socket端。这样我们就能在一次循环体中处理尽可能多的数据。</p>
-<p>这个利用循环体来等待事件发生，然后处理发生的事件的模型非常常见，而被设计成为一个模式：reactor模式。其图形化表示如图5所示：</p>
-<p><img src="/img/handle_events.png" alt="handle_events"></p>
-<p>这个循环就是个”reactor“（反应堆），因为它等待事件的发生然对其作为相应的反应。正因为如此，它也被称作事件循环。由于交互式系统都要进行I/O操作，因此这种循环也有时被称作select loop,这是由于select调用被用来等待I/O操作。因此，在本程序中的select循环中，一个事件的发生意味着一个socket端处有数据来到。值得注意的是，select并不是唯一的等待I/O操作的函数，它仅仅是一个比较古老的函数而已（因此才被用的如此广泛）。现在有一些新API可以完成select的工作而且性能更优，它们已经在不同的系统上实现了。不考虑性能上的因素，它们都完成同样的工作：监视一系列sockets（文件描述符）并阻塞程序，直到至少有一个准备好时行I/O操作。</p>
-<p>严格意义上来说，我们的异步模式客户端中的循环并不是reactor模式，因为这个循环体并没有独立于业务处理（在此是接收具体个服务器传送来的诗歌）之外。它们被混合在一起。一个真正reactor模式的实现是需要实现循环独立抽象出来并具有如下的功能：</p>
-<ol>
-<li>监视一系列与你I/O操作相关的文件描述符（description)</li>
-<li>不停地向你汇报那些准备好I/O操作的文件描述符</li>
-</ol>
-<p>一个设计优秀的reactor模式实现需要做到：</p>
-<ol>
-<li>处理所有不同系统会出现的I/O事件</li>
-<li>提供优雅的抽象来帮助你在使用reactor时少花些心思去考虑它的存在</li>
-<li>提供你可以在抽象层外（treactor实现）使用的公共协议实现。</li>
-</ol>
-<p>好了，我们上面所说的其实就是Twisted—健壮、跨平台实现了reactor模式并含有很多附加功能。</p>
-<p>在第三部分中，实现Twisted版的下载诗歌服务时，我们将开始写一些简单的Twisted程序。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/第一部分：Twisted理论基础/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/30/第一部分：Twisted理论基础/" itemprop="url">第一部分：Twisted理论基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T10:53:40+08:00">
-                2015-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/twisted/" itemprop="url" rel="index">
-                    <span itemprop="name">twisted</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##前言:<br>最近有人在Twisted邮件列表中提出诸如”为任务紧急的人提供一份Twisted介绍”的的需求。值得提前透露的是，这个序列并不会如他们所愿.尤其是介绍Twisted框架和基于Python 的异步编程而言，可能短时间无法讲清楚。因此,如果你时间紧急，这恐怕不是你想找的资料。</p>
-<p>我相信如果对异步编程模型一无所知，快速的介绍同样无法让你对其有所理解，至少你得稍微懂点基础知识吧。我已经用Twisted框架几年了，因此思考过我当初是怎么学习它(学得很慢)并发现学习它的最大难度并不在Twisted本身,而在于对其模型的理解，只有理解了这个模型，你才能更好去写和理解异步程序的代码。大部分Twisted的代码写得很清晰，其在线文档也非常棒（至少在开源软件这个层次上可以这么说）。但如果不理解这个模型，不管是读Twisted源码还是使用Twisted的代码更或者是相关文档，你都会感到非常的伤脑筋。</p>
-<p>因此，我会用前面几个部分来介绍这个模型以让你掌握它的机制，稍后会介绍一下Twisted的特点。实际上，一开始，我们并不会使用Twisted，相反，会使用简单的Python来说明一个异步模型是如何工作的。我们在初次学习Twisted的时，会从你平常都不会直接使用的底层的实现讲起。Twisted是一个高度抽象的体系，因此在使用它时，你会体会到其多层次性。但当你去学习尤其是尝试着理解它是如何工作时，这种为抽像而带来的多层次性会给你带来极大的理解难度。所以，我们准备来个从内到外，从低层开始学习它。</p>
-<p>##模型：<br>为了更好的理解异步编程模型的特点，我们来回顾一下两个大家都熟悉的模型。在阐述过程中，我们假设一个包含三个相互独立任务的程序。在此，除了规定这些任务都要完成自己工作外，我们先不作具体的解释，后面我们会慢慢具体了解它们。请注意：在此我用“任务”这个词，这意味着它需要完成一些事情。</p>
-<p>第一个模型是单线程的同步模型，如图1所示：</p>
-<p><img src="/img/同步模型.png" alt="图1 同步模型"></p>
-<p>这是最简单的编程方式。在一个时刻，只能有一个任务在执行，并且前一个任务结束后一个任务才能开始。如果任务都能按照事先规定好的顺序执行，最后一个任务的完成意味着前面所有的任务都已无任何差错地完成并输出其可用的结果—这是多么简单的逻辑。</p>
-<p>下面我们来呈现第二个模型，如图2所示：</p>
-<p><img src="/img/线程模型.png" alt="图2 线程模型"></p>
-<p>在这个模型中，每个任务都在单独的线程中完成。这些线程都是由操作系统来管理，若在多处理机、多核处理机的系统中可能会相互独立的运行，若在单处理机上，则会交错运行。关键点在于，在线程模式中，具体哪个任务执行由操作系统来处理。但编程人员则只需简单地认为：它们的指令流是相互独立且可以并行执行。虽然，从图示看起来很简单，实际上多线程编程是很麻烦的，你想啊，任务之间的要通信就要是线程之间的通信。线程间的通信那不是一般的复杂。什么邮箱、通道、共享内存、、、 唉：（<br>一些程序用多处理机而不是多线程来实现并行运算。虽然具体的编程细节是不同的，但对于我们要研究的模型来说是一样的。</p>
-<p>下面我们来介绍一下异步编程模型，如图3所示</p>
-<p><img src="/img/异步模型.png" alt="图3 异步模型"></p>
-<p>在这个模型中，任务是交错完成，值得注意的是：这是在单线程的控制下。这要比多线程模型简单多了，因为编程人员总可以认为只有一个任务在执行，而其它的在停止状态。虽然在单处理机系统中，线程也是像图3那样交替进行。但作为程序员在使用多线程时，仍然需要使用图2而不是图3的来思考问题，以防止程序在挪到多处理机的系统上无法正常运行（考虑到兼容性）。间单线程的异步程序不管是在单处理机还是在多处理机上都 能很好的运行。</p>
-<p>在异步编程模型与多线程模型之间还有一个不同：在多线程程序中，对于停止某个线程启动另外一个线程，其决定权并不在程序员手里而在操作系统那里，因此，程序员在编写程序过程中必须要假设在任何时候一个线程都有可能被停止而启动另外一个线程。相反，在异步模型中，一个任务要想运行必须显式放弃当前运行的任务的控制权。这也是相比多线程模型来说，最简洁的地方。<br>值得注意的是：将异步编程模型与同步模型混合在同一个系统中是可以的。但在介绍中的绝大多数时候，我们只研究在单个线程中的异步编程模型。</p>
-<p>##动机<br>我们已经看到异步编程模型之所以比多线程模型简单在于其单令流与显式地放弃对任务的控制权而不是被操作系统随机地停止。但是异步模型要比同步模型复杂得多。程序员必须将任务组织成序列来交替的小步完成。因此，若其中一个任务用到另外一个任务的输出，则依赖的任务（即接收输出的任务）需要被设计成为要接收系列比特或分片而不是一下全部接收。由于没有实质上的并行，从我们的图中可以看出，一个异步程序会花费一个同步程序所需要的时间，可能会由于异步程序的性能问题而花费更长的时间。</p>
-<p>因此，就要问了，为什么还要使用异步模型呢？ 在这儿，我们至少有两个原因。首先，如果有一到两个任务需要完成面向人的接口，如果交替执行这些任务，系统在保持对用户响应的同时在后台执行其它的任务。因此，虽然后台的任务可能不会运行的更快，但这样的系统可能会欢迎的多。<br>然而，有一种情况下，异步模型的性能会高于同步模型，有时甚至会非常突出，即在比较短的时间内完成所有的任务。这种情况就是任务被强行等待或阻塞，如图4所示：</p>
-<p><img src="/img/同步模型中出现阻塞.png" alt="图4 同步模型中出现阻塞"></p>
-<p>在图4中，灰色的部分代表这段时间某个任务被阻塞。为什么要阻塞一个任务呢？最直接的原因就是等待I/O的完成：传输数据或来自某个外部设备。一个典型的CPU处理数据的能力是硬盘或网络的几个数量级的倍数。因此，一个需要进行大I/O操作的同步程序需要花费大量的时间等待硬盘或网络将数据准备好。正是由于这个原因，同步程序也被称作为阻塞程序。</p>
-<p>从图4中可以看出，一个可阻塞的程序，看起来与图3描述的异步程序有点像。这不是个巧合。异步程序背后的最主要的特点就在于，当出现一个任务像在同步程序一样出现阻塞时，会让其它可以执行的任务继续执行，而不会像同步程序中那样全部阻塞掉。因此一个异步程序只有在没有任务可执行时才会出现“阻塞”，这也是为什么异步程序被称为非阻塞程序的原因。<br>任务之间的切换要不是此任务完成，要不就是它被阻塞。由于大量任务可能会被阻塞，异步程序等待的时间少于同步程序而将这些时间用于其它实时工作的处理（如与人打交道的接口），这样一来，前者的性能必然要高很多。</p>
-<p>与同步模型相比，异步模型的优势在如下情况下会得到发挥：</p>
-<ol>
-<li><p>有大量的任务，因此在一个时刻至少有一个任务要运行</p>
-</li>
-<li><p>任务执行大量的I/O操作，这样同步模型就会在因为任务阻塞而浪费大量的时间</p>
-</li>
-<li>任务之间相互独立，以至于任务内部的交互很少。</li>
-</ol>
-<p>这些条件大多在CS模式中的网络比较繁忙服务器端出现（如WEB服务器）。每个任务代表一个客户端进行接收请求并回复的I/O操作。客户的请求（相当于读操作）都是相互独立的。因此一个网络服务是异步模型的典型代表，这也是为什么twisted是第一个也是最棒的网络库。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/29/scrapy如何获取完整的url/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/29/scrapy如何获取完整的url/" itemprop="url">scrapy如何获取完整的url</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-29T20:31:07+08:00">
-                2015-01-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/scrapy/" itemprop="url" rel="index">
-                    <span itemprop="name">scrapy</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>用scrapy抓取网页的时候，有时抓取到的并不是完整的url，而是url的后面部分。例如，完整的url是<code>http://michaelyou.github.io/categories/scrapy/</code>，我们抓到的只是<code>/categories/scrapy/</code>,这个时候如何获取完整的url呢？或者说，如何将完整的url拼出来呢？</p>
-<p>解决方法如下：</p>
+<p>##答案</p>
 <ul>
-<li><p>首先在我们的spider文件头上加上：</p>
-<pre><code>from scrapy.utils.response import get_base_url
-from scrapy.utils.url import urljoin_rfc
-</code></pre></li>
-<li><p>第二步在我们定义的parse函数中加上：</p>
-<pre><code>#这一句便是取url的开头部分
-base_url = get_base_url(response)
-#省略若干行
-#这一句是取url的后面部分
-relative_url = sel.xpath(&apos;***&apos;).extract()[0]
-#将两部分合并
-item[&apos;link&apos;] = urljoin_rfc(base_url, relative_url)
-</code></pre></li>
+<li>前序遍历的第一个节点是树的根结点，所以<code>1</code>是树的根结点</li>
+<li>中序遍历的规则是：1.遍历左子树；2.根结点；3.遍历右子树。既然1是根结点，那么从中序遍历的输出可知：<code>4,7,2</code>在左子树中，<code>5,3,8,6</code>在右子树中</li>
+<li>前序遍历输出的第二个值是根结点的左子树的根结点，即<code>2</code>是左子树序列<code>4,7,2</code>的根结点，而在<code>2</code>左侧的<code>4,7</code>就是根结点<code>2</code>的左子树中的值了。同理<code>3</code>是根结点的右子树的根结点，<code>5</code>是以<code>3</code>为根结点的树的左子树中的值，<code>8,6</code>是右子树中的值</li>
+<li>下面只需要判断左子树中<code>4,7</code>和右子树中<code>8,6</code>的位置就可以了，易知，<code>4</code>是<code>2</code>的左儿子，<code>7</code>是<code>4</code>的右儿子。<code>6</code>是<code>3</code>的右儿子，<code>8</code>是<code>6</code>的左儿子。</li>
+<li>这是一个递归的过程，没分析一段，就将这一段当做一个完整的树来分析就很容易了</li>
 </ul>
-<p>严重提醒：</p>
-<p>在求<code>relative_url</code>时，我们在<code>extract()</code>后面加了<code>[0]</code>,因为<code>extract()</code>取出来的是一个数组，而函数<code>urljoin_rfc</code>需要的参数是字符串，所以要从数组中将值取出来，这时的数组内只有一个值，<code>index=0</code>，所以加上了<code>[0]</code>.很多人忘记了加<code>[0]</code>,最后导致合并的时候失败。</p>
+<p>实现的代码在<a href="https://github.com/michaelyou/data_structure/blob/master/tree.c" target="_blank" rel="external">这里Construct</a></p>
 
           
         
@@ -2527,7 +1037,7 @@ item[&apos;link&apos;] = urljoin_rfc(base_url, relative_url)
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/29/MongoDB教程/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/23/剑指offer-QUESTIONS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -2546,7 +1056,7 @@ item[&apos;link&apos;] = urljoin_rfc(base_url, relative_url)
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/01/29/MongoDB教程/" itemprop="url">MongoDB教程</a></h1>
+                <a class="post-title-link" href="/2015/01/23/剑指offer-QUESTIONS/" itemprop="url">剑指offer-QUESTIONS</a></h1>
         
 
         <div class="post-meta">
@@ -2558,8 +1068,8 @@ item[&apos;link&apos;] = urljoin_rfc(base_url, relative_url)
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-29T12:05:18+08:00">
-                2015-01-29
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-23T17:14:18+08:00">
+                2015-01-23
               </time>
             
 
@@ -2581,8 +1091,8 @@ item[&apos;link&apos;] = urljoin_rfc(base_url, relative_url)
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/数据库/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
                   </a>
                 </span>
 
@@ -2620,25 +1130,864 @@ item[&apos;link&apos;] = urljoin_rfc(base_url, relative_url)
       
         
           
-            <p>详细的教程请点<a href="http://www.yiibai.com/mongodb/" target="_blank" rel="external">这里</a></p>
-<p>mongodb的数据格式是JSON(严格来说是binary JSON)，所以它与javascript的亲和性很强</p>
+            <p>##sizeof<br>问：C++里定义一个空的类型，里面没有任何成员变量和成员函数。对该类型求sizeof，得到的结果是多少？</p>
+<p>答：1</p>
+<p>问：为什么不是0？</p>
+<p>答：空类型的实例中不包含任何信息，本来求sizeof应该是0，但是当我们声明该类型的实例的时候，它必须在内存中占有一定的空间，否则无法使用这些实例。至于占用多少内存，由编译器决定。Visual Studio中每个空类型的实例占用1字节的空间。</p>
+<p>问：如果在该类型中添加一个构造函数和析构函数，再对该类型求sizeof，得到的结果又是多少？</p>
+<p>答：和前面一样，还是1。调用构造函数和析构函数只需要知道函数的地址即可，而这些函数的地址只与类型相关，而与类型的实例无关，编译器也不会因为这两个函数而在实例内添加任何额外的信息。</p>
+<p>问：那如果把析构函数标记为虚函数呢？ </p>
+<p>答：C++编译器一旦发现一个类型中有虚函数，就会为该类型生成虚函数表，并在该类型的每一个实例中添加一个虚函数表的指针。在32位的机器上，一个指针占4字节的空间，因此求sizeof得到4；如果是64位的机器，一个指针占8字节的空间，因此求sizeof则得到8。</p>
+<p>##数组与指针<br>运行下面的代码，结果是什么？</p>
+<pre><code>int _tmain(int argc, _TCHAR* argv[])
+{
+    char str1[] = &quot;hello world&quot;;
+    char str2[] = &quot;hello world&quot;;
+
+    char* str3 = &quot;hello world&quot;;
+    char* str4 = &quot;hello world&quot;;
+
+    if(str1 == str2)
+        printf(&quot;str1 and str2 are same.\n&quot;);
+    else
+        printf(&quot;str1 and str2 are not same.\n&quot;);
+
+    if(str3 == str4)
+        printf(&quot;str3 and str4 are same.\n&quot;);
+    else
+        printf(&quot;str3 and str4 are not same.\n&quot;);
+
+    return 0;
+}
+</code></pre><p>str1和str2是两个字符串数组，我们会为它们分配两个长度为12个字节的空间，并把”hello world”的内容<strong><em>分别复制到数组</em></strong>中去。这是两个初始地址不同的数组，因此str1和str2的值也不相同，所以输出的第一行是”str1 and str2 are not same”。</p>
+<p>str3和str4是两个指针，我们无须为它们分配内存以存储字符串的内容，而只需要把它们指向”hello world”在内存中的地址就可以了。由于<strong><em>“hello world”是常量字符串，它在内存中只有一个拷贝，因此str3和str4指向的是同一个地址</em></strong>。所以比较str3和str4的值得到的结果是相同的，输出的第二行是”str3 and str4 are same”。</p>
+<p>##关于(&amp;a + 1)和<em>(a + 1)<br>    main()<br>    {<br>    int a[5]={1,2,3,4,5};<br>    int </em>ptr=(int <em>)(&amp;a+1);<br>    printf(“%d,%d”,</em>(a+1),*(ptr-1));<br>    }<br>程序输出为：2,5</p>
+<p>解释：</p>
+<p><code>*(a+1)</code>其实很简单就是指<code>a[1]</code>,输出为2.</p>
+<p>问题关键就在于第二个点，<code>*(ptr-1)</code>输出为多少？</p>
+<p>解释如下，<code>&amp;a+1</code>不是首地址+1，系统会认为加了一个整个a数组，偏移了整个数组a的大小（也就是5个int的大小）。所以<code>int *ptr=(int *)(&amp;a+1)</code>;其实ptr实际是<code>&amp;(a[5])</code>,也就是<code>a+5</code>.</p>
+<p>原因为何呢？</p>
+<p><code>&amp;a</code>是数组指针，其类型为<code>int(*)[5]</code>;<br>而指针加1要根据指针类型加上一定的值，不同类型的指针+1之后增加的大小不同，a是长度为5的int数组指针，所以要加<code>5*sizeof(int)</code>，所以ptr实际是a[5],但是ptr与<code>（&amp;a+1）</code>类型是不一样的，这点非常重要，所以ptr-1只会减去<code>sizeof(int*)</code>,a，&amp;a的地址是一样的，但意思就不一样了，a是数组首地址，也就是<code>a[0]</code>的地址，&amp;a是对象（数组）首地址，<code>a+1</code>是数组下一元素的地址，即<code>a[1]</code>,<code>&amp;a+1</code>是下一个对象的地址，即<code>a[5]</code>。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/23/c语言中整数的溢出/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/23/c语言中整数的溢出/" itemprop="url">c语言中整数的溢出</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-23T10:49:40+08:00">
+                2015-01-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##概念<br>c语言中存在两类整数算术运算，<code>有符号运算</code>和<code>无符号运算</code>。在<code>无符号运算</code>里，没有了<code>符号位</code>，所以是没有<code>溢出</code>的概念的。</p>
+<p>所有的无符号运算都是以2的n次方为模。如果算术运算符的一个操作数是有符号数，另一个是无符号数，那么有符号数会被转换为无符号数(表示范围小的总是被转换为表示范围大的)，那么溢出也不会发生。但是，当两个操作数都是有符号数时，溢出就有可能发生。而且溢出的结果是未定义的。当一个运算的结果发生溢出时，任何假设都是不安全的。</p>
+<p>##如何检测溢出<br>例如，假定a和b是两个非负的整型变量(有符号)，我们需要检查a+b是否溢出，一种想当然的方式是:</p>
+<pre><code>if (a + b &lt; 0)
+溢出
+</code></pre><p>实际上，在现实世界里，这并不能正常运行。当a+b确实发生溢出时，所有关于结果如何的假设均不可靠。比如，在某些机器的cpu，加法运算将设置一个内部寄存器为四种状态:正，负，零和溢出。在这种机器上，c编译器完全有理由实现以上的例子，使得a+b返回的不是负，而是这个内存寄存器的溢出状态。显然，if的判断会失败。</p>
+<p>一种正确的方式是将a和b都强制转换为无符号整数：</p>
+<pre><code>if ( (unsigned)a + (unsigned)b  &gt; INT_MAX)
+溢出
+</code></pre><p>这里的<code>INT_MAX</code>值为有符号整型的最大值。在一般的编译器里是一个预定义的常量。ANSI C在<code>limits</code>里定义了<code>INT_MAX</code>，值为</p>
+<blockquote>
+<p>2的31次方 - 1. </p>
+</blockquote>
+<p>不需要用到无符号算数运算的另一种可行方法是：</p>
+<pre><code>if (a &gt; INT_MAX - b)
+溢出
+</code></pre><p>PS : 有符号数的最高位(31位)为符号位，最高位为0的时候，表示正，为1的时候表示负。运算时，符号位不参加运算，但是如果两个数相加，30位需要进1时，那么即表示溢出。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/22/free函数解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/22/free函数解析/" itemprop="url">free函数解析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-22T21:29:18+08:00">
+                2015-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##代码</p>
+<pre><code>#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+#include&lt;string.h&gt;
+void GetMemory(char **p,int num)
+{
+    *p = malloc(num);
+}
+int main()
+{
+    char *str = NULL;   
+    GetMemory(&amp;str, 100);   
+
+    strcpy(str, &quot;hello&quot;);   
+    free(str);
+
+    if (str != NULL)
+    {
+        strcpy(str, &quot;world&quot;);
+    }   
+    printf(&quot;\n str is %s&quot;, str);
+    getchar();
+}
+</code></pre><p>打印出来的结果是：str is world</p>
+<p>##解释<br>本题主要考察了对free的理解，总结一下就是3点</p>
 <ul>
-<li>mongod是服务器，mongo是客户端，mongo + db名称将连接到运行的mongod实例</li>
-<li><p>单纯执行mongo命令，会进入test数据库</p>
-<ul>
-<li>show dbs命令显示当前数据库列表</li>
-<li>show collections显示当前数据库的collection列表</li>
-<li>db.collection_name.find()会显现这个collection的内容<br>  *使用find()的时候，由于shell默认显示20个数据，所以会出现has more的提示，这时如果想要继续查看数据，可以键入<code>it</code>命令</li>
-<li>use + db_name可以切换数据库</li>
-<li><p>如果想要删除数据库 <mydb>,  那么 dropDatabase() 命令如下：</mydb></p>
-<pre><code>&gt;use mydb
-switched to db mydb
-&gt;db.dropDatabase()
-&gt;{ &quot;dropped&quot; : &quot;mydb&quot;, &quot;ok&quot; : 1 }
-</code></pre></li>
+<li>free只是释放了malloc所申请的内存，并不改变指针的值</li>
+<li>由于指针所指向的内存已经被释放，所以其它代码有机会改写其中的内容，相当于该指针从此指向了自己无法控制的地方，也称为野指针</li>
+<li>为了避免失误，最好在free之后，将指针指向NULL</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/22/操作系统的一些知识/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/22/操作系统的一些知识/" itemprop="url">操作系统的一些知识</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-22T21:27:23+08:00">
+                2015-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>目录在linux文件系统中是以怎样的形式存在的：文件</li>
+<li>通过文件名存取文件时，文件系统内部的操作过程是通过:文件名在目录中查找对应的i节点，通过i节点存取文件数据。</li>
+<li>关于文件block，以下说法是正确的：<ul>
+<li>文件系统中存储的最小单位是块（Block）</li>
+<li>block越大，inode越少，适合存储文件大而少的文件系统</li>
+<li>block块可以用mkfs.ext3 -b来制定块的大小</li>
+<li>每个block最多存放一个文件，而当一个block存放不下的情况下，会占用下一个block</li>
 </ul>
 </li>
+<li>同一进程下的线程可以共享：<code>data section</code>，<code>file fd</code>，不可以共享：<code>stack</code>，<code>register set</code></li>
+<li>线程，进程，多任务：<ul>
+<li>线程是指进程内的一条执行线路，或者说是进程中可执行代码的单独单元，它是操作系统的基本调度单元。</li>
+<li>一个进程至少有一个线程，即主线程，也可以有多个线程协同工作。</li>
+<li>进程从主线程开始执行，进而可以创建一个或多个附加线程来执行该进程内的并发任务，这就是基于线程的多任务。</li>
+<li>线程和进程都可并发执行</li>
+<li>在linux系统中，线程是处理器调度的基本单位</li>
+<li>线程的粒度小于进程，通常多线程比多进程并发性更高</li>
 </ul>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/22/LRU/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/22/LRU/" itemprop="url">LRU</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-22T19:15:52+08:00">
+                2015-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##概念分析<br>LRU(Least Recent Used):最近最少使用，就是将最近最少使用的页淘汰掉，替换为新的页。核心思想是：如果一个页最近被访问了，那他之后被访问的概率也高；如果一个页最近没有被访问，那他之后也不会被访问。这道理其实说不通哈，但是LRU算法确实解决页访问的效率问题。</p>
+<p>##原理<br>下面是一个应用LRU算法的例子的流程图</p>
+<p><img src="/img/LRU.png" alt="LRU"></p>
+<p>下面简单讲解一下(需要在这里说明一下,LRU一般采用<code>链表方式</code>实现,便于快速移动数据位置,虽然图中使用似乎是数组方式):</p>
+<ul>
+<li>一开始,缓存池是空的,缓存池中插入数据时不用担心容量不足的事情.因此这个过程就是类似队列的FIFO(但不止这些);</li>
+<li>在第5步将E插入到缓存池中后,缓存池已经满了(当然实际应用中不会让到达缓存池的尺寸,一般到70%左右就要考虑淘汰机制了);</li>
+<li>当第6步将E插入缓存池的时候,发现缓存池已经满了,LRU会将最早加入到缓存池的数据淘汰掉(A,实在不要意思啊);</li>
+<li>第7步,从缓存池中访问C,C被访问,从时间点上是最近最近访问的,将C移动到链表的头部(C侥幸暂时远离被淘汰的边缘);</li>
+<li>第8步,将G插入缓存池中,G处于链表头部,B不幸被淘汰.</li>
+</ul>
+<p>大致的过程就是这样,关于淘汰机制只是后面的三步中会用到,画出前面六步的过程只是说明LRU插入元素的方式.在这个图中,我想大家应该可以明白为什么使用链表,而不使用数组(链表的插入和删除的时间复杂度都是O(1)).</p>
+<p>##优劣分析</p>
+<p>###命中率<br>命中率较高,不过偶发性的情况对LRU的命中影响很大,同时也会引入很多数据污染</p>
+<p>###复杂度<br>实现起来较为简单.</p>
+<p>###存储成本<br>几乎没有空间上浪费.</p>
+<p>###缺陷<br>仅仅从最近使用时间上考虑淘汰算法,没有考虑缓存单元的使用频率,可能会淘汰一些仍有价值的单元.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/21/在Python中正确使用Unicode/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/21/在Python中正确使用Unicode/" itemprop="url">在Python中正确使用Unicode</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-21T21:23:49+08:00">
+                2015-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>正确处理文本，特别是正确处理Unicode。是个老生常谈的问题，有时甚至会难倒经验丰富的开发者。并不是因为这个问题很难，而是因为对软件中的文本，开发者没有正确理解一些关键概念及其表示方法。在StackOverflow上搜索关于 <a href="http://stackoverflow.com/search?q=unicodedecodeerror" target="_blank" rel="external">UnicodeDecodeError</a>相关的问题，可以看到很多人都有这样的误解。这些错误的概念可以追溯到Unicode出现之前。那时许多现今的开发者还没入职，也包括我自己。如果这些错误的概念没有散布开来，其实不是个问题。现在很多人都有这些错误概念，部分原因是因为有些非常流行的语言传播，甚至固化了这些错误概念，使得纠正起来反而变得很困难。</p>
+<p>根据对Unicode的支持情况，编程语言可以划分为4类：</p>
+<ul>
+<li>在Unicode出现或流行之前编写的语言。C和C++就属于这一类。这类语言对unicode的支持参差不齐。或没有内置到语言中，或很难正确的使用。因此开发者常常会用错。</li>
+<li>对Unicode支持稍好一点。这些语言在Unicode广泛流行后才出现的，但语言中对unicode的操作方式是严重错误的。虽然这些语言诞生较晚，但依然含有第一类语言中的所有缺点。以我的经验，其中代表语言就是PHP。尽管还有其他语言也同样糟糕。</li>
+<li>对Unicode支持基本正确，但有少数致命缺点的语言。这一类语言比较“现代”，且能理解Unicode，但依然无法让开发者正确的处理unicode，导致在这些语言中对unicode会出现一些严重不足。让我很沮丧的是，Python 2.x就属于这一类（下文会详细介绍）。</li>
+<li>能正确处理Unicode的语言。这些语言完全支持Unicode，可以用Unicode方便快速的完成任务，且不易出错。Java和.NET平台就属于这一类语言。<br>那么，Unicode到底是什么，我们在Unicode上犯了哪些错误？Joel这篇 <a href="http://www.joelonsoftware.com/articles/Unicode.html" target="_blank" rel="external">The absolute minimum every software developer absolutely, positively must know about unicode</a> 绝对是每个软件开发者必须阅读的文章。为了为简洁起见，以及照顾那些天生耐心不够的朋友，我会在本文中对其进行总结。</li>
+</ul>
+<p>##字符和字节</p>
+<p>基本事实是，若想正确的处理文本，就必须了解字符的抽象概念。不严谨的定义一下，字符表示的是文本中的单个符号。更重要的是，一个字符不是一个字节。我再强调一遍！一个字符不是一个字节！！！而且，一个字符有许多表示方法，不同的表示方法会使用不同的字节数。就像前面我说的那样，字符就是文本中最小的单元。</p>
+<p>Unicode以大家都认可的方式定义了一系列的字符。可以将Unicode理解成一个字符数据库，每个字符都与唯一的数字关联，称为code point。这样，英文大写字母A的codepoint是<font color="red"> <code>U+0041</code></font> 。而欧元符号的codepoint是 <font color="red"><code>U+20A0</code></font> ，其他类似。一个文本字符串就是这样一系列的codepoint，表示字符串中每个字符元素。</p>
+<p>当然，你迟早会需要储存和传输这些理论上的Unicode字符串。如果选择一种其他人可以理解的方式以字节方式进行表示，就可以以大家都理解的方式互相发送文本。这里就需要引入字符编码（encoding）。</p>
+<p>字符编码是在理想的字符和实际的字节表示方法之间的映射。这种映射无需面面俱到，即在某种编码中也许无法表示一些特定的字符。同时也无须为每个字符使用相同的内存空间，譬如某些字符使用单字节编码，而其他字符需要多个字节。</p>
+<p>由于同一个字符的字节表现形式不止一种。这意味着当遇到了一串字节，如果不知道使用的是什么编码，即使知道这些字节表示的是文本，也不知道是什么意思。所能做的就是猜使用的编码。简而言之，字节不是文本。即使忘了文中介绍的所有内容，也要记住这句话。为了读写文本，归根结底就是要知道其中使用的编码方式，不管是从约定、标识信息、或是其他方法得知。</p>
+<p>##Python是如何处理Unicode</p>
+<p>从这里开始介绍Python的Unicode支持。在Python的类型层次中，有3种不同的字符串类型：“unicode”，表示Unicode字符串（文本字符串）、“str”，表示字节字符串（二进制数据）；“basestring”。表示前两种字符串类型的父类。在我看来，Python在这里犯了一个错误，根据前面的定义，这让Python成为第三类语言，而没有成为第四类。</p>
+<p>我用了很长的篇幅苦口婆心的强调字节和字符在本质上是不同的东西，只有通过字符编码才能互相转换。但不幸的是，Python犯了两个互不相关的错误，轻轻松松的就会让你忘掉这些。</p>
+<p>第一个错误的严重性值得商榷：即将一串字节视为字符串。是否应该这样做还有争议。Java和,NET认为这样做是不对的，而其他一些语言却持有相反的态度。无论如何，你可能希望对文本进行某些操作，如正则匹配、字符串替代等。将这些操作应用到字节序列上都是没有意义的。而Python将字节序列作为另一种类型的字符串对待，允许在这两者上执行同样的操作。</p>
+<p>第二个错误的严重性大一些，Python试图在字节串和字符串之间以不为人所察觉的方式进行转化。在不同的转换中，在条件允许的情况下，Python会试图在字节串和unicode字符串直接进行转换。例如将字节串和unicode字节串连接到一起时。根据前面的介绍，不使用encoding就在不同类型之间进行转换是没有意义的。所以Python依赖一个“默认编码”，该编码由 <font color="red"><code>sys.setdefaultencoding()</code></font> 指定。在大多数平台上，默认的是ASCII编码。但对于所有转换，使用这种编码几乎都是错误的。如果不手动指定编码就调用 <font color="red"><code>str()</code></font> 或 <font color="red"><code>unicode()</code></font> ，或是函数以字符串作为参数，但传递的是其他类型的参数时，都会使用这个默认编码。</p>
+<p>走出这个unicode困境的一个解决办法是，调用<font color="red"><code>sys.setdefaultencoding()</code></font> 将默认的编码设置为真正会用到的编码。但这样仅仅是将问题隐藏起来，虽然这样刚开始能解决一些文本处理问题。但缺乏实际可行性，因为许多应用，特别是网络应用，在不同的地方会使用不同的文本编码。</p>
+<p>正确的解决方法是修改代码，以正确的方式处理文本。下面是一些应该做到的指导性意见：</p>
+<ul>
+<li>所有文本字符串都应该是unicode类型，而不是str类型。如果处理的是文本，而变量类型是str，这就是bug了！</li>
+<li>若要将字节串解码成字符串，需要使用正确的解码，即 <font color="red">var.decode(encoding) </font>（如， <font color="red"><code>var.decode(&#39;utf-8&#39;)</code></font> ）。将文本字符串编码成字节，使用var.encode(encoding)。</li>
+<li>永远不要对unicode字符串使用 <font color="red">str()</font> ，也不要在不指定编码的情况下就对字节串使用 <font color="red">unicode()</font> 。</li>
+<li>当应用从外部读取数据时，应将其视为字节串，即str类型的，接着调用 <font color="red"><code>.decode()</code></font> 将其解释成文本。同样，在将文本发送到外部时，总是对文本调用 <font color="red"><code>.encode()</code></font> 。</li>
+<li>如果代码中使用字符串字面值来表示文本，总是应该含有’u’前缀。但实际上，永远不要在代码中定义原始的字符串字面值。不管怎样，我自己是很讨厌这一条，也许其他人也和我一样吧。</li>
+</ul>
+<p>顺便说一句，Python 3修复了这些问题，可以正确的处理unicode和字符串，这样Python就完全位于第四类中了，更多信息参见官方的 更新说明 中关于Unicode的部分。</p>
+<p>希望这些内容能帮到你，如果对unicode到底是什么，如何处理unicode有疑惑的话，现在应该都清楚了。下次遇到 <font color="red"><code>UnicodeEncodeError</code></font> 或 <font color="red"><code>UnicodeDecodeError</code></font> 错误时，就应该完全知道问题出在哪，也知道如何去修复这些问题！</p>
 
           
         
@@ -2678,7 +2027,7 @@ switched to db mydb
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/18/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/20/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/18/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/20/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2724,7 +2073,7 @@ switched to db mydb
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">218</span>
+                <span class="site-state-item-count">203</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

@@ -286,7 +286,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/28/笔试题总结4/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/21/网络基础-一些小面试题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -305,7 +305,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/01/28/笔试题总结4/" itemprop="url">笔试题总结4</a></h1>
+                <a class="post-title-link" href="/2015/01/21/网络基础-一些小面试题/" itemprop="url">网络基础-一些小面试题</a></h1>
         
 
         <div class="post-meta">
@@ -317,8 +317,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-28T19:36:16+08:00">
-                2015-01-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-21T21:05:12+08:00">
+                2015-01-21
               </time>
             
 
@@ -379,95 +379,922 @@
       
         
           
-            <p>nux的crontab定时执行任务：<br>基本格式为：</p>
-<p>*　　*　　*　　*　　*　　command </p>
-<p>分　时　日　 月 周　 命令 </p>
-<p>第1列表示分钟1～59 每分钟用<code>*</code>或者<code>*/1</code>表示 </p>
-<p>第2列表示小时1～23（0表示0点） </p>
-<p>第3列表示日期1～31 </p>
-<p>第4列表示月份1～12</p>
-<p>第5列标识号星期0～6（0表示星期天） </p>
-<p>第6列要运行的命令</p>
-<hr>
-<pre><code>Class A;
-Class B;
-void F() {
-        A a;
-        B b;
+            <ol>
+<li>get和post的区别<ul>
+<li>GET用于信息获取，而且应该是安全的和幂等的，POST表示可能修改变服务器上的资源的请求</li>
+<li>GET方式提交的数据最多只能是1024字节，理论上POST没有限制，可传较大量的数据</li>
+<li>POST提交，把提交的数据放置在是HTTP包的包体中，GET提交的数据会在地址栏中显示出来</li>
+</ul>
+</li>
+<li>一个广域网和一个局域网相连，需要的设备是<code>路由器</code>，<code>网关</code></li>
+<li>在Web开发中，如何实现会话的跟踪<ul>
+<li>隐藏表单域</li>
+<li>保存cookie</li>
+<li>URL复写</li>
+<li>session 机制</li>
+</ul>
+</li>
+<li>cookie和session<ul>
+<li>cookie数据存放在客户的浏览器上，session数据放在服务器上。</li>
+<li>session是针对每一个用户的，变量的值保存在服务器上，用一个sessionID来区分是哪个用户session变量</li>
+<li>保存这个session id的方式可以采用cookie</li>
+</ul>
+</li>
+<li>cookie 属性的一些描述：<ul>
+<li>expires: cookie的过期时间</li>
+<li>domain属性可以使多个web服务器共享cookie</li>
+<li>path属性指定与cookie关联在一起的网页</li>
+<li>secure: 如果secure 这个词被作为Set-Cookie 头的一部分，那么cookie 只能通过安全通道传输</li>
+</ul>
+</li>
+<li>dns域名劫持<ul>
+<li>如果dns把你想要解析的地方，解析为错误的另一个地方，这种现象叫做dns劫持</li>
+<li>如果知道该域名的真实IP地址，则可以直接用此IP代替域名后进行访问</li>
+<li>可以通过更换其它DNS解决域名劫持问题</li>
+</ul>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/21/linux-一些小面试题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/21/linux-一些小面试题/" itemprop="url">linux-一些小面试题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-21T21:03:48+08:00">
+                2015-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>创建.tar.gz的参数时c，解压的参数是x</li>
+<li><p>代码如下</p>
+<pre><code>int main 
+{
+    char *p = &quot;hello world&quot;;
+    return 0;   
+}
+</code></pre><p> p和”hello,world”存储在内存哪个区域？<br> 答：栈，只读存储区；根据C语言中的特性和定义，p是一个局部变量，而C语言中局部变量存在于栈中，”hello wrold”是一个字符串字面常量，因此存储于程序的只读存储区中，p在这里其实只是指向了”hello wrold”在只读存储区中的地址而已。</p>
+</li>
+<li>Linux中，一个端口能够接受tcp链接数量的理论上限是：无上限</li>
+<li>在OSI模型中，HTTP协议工作在第<code>6</code>层：<code>表示层</code>，交换机工作在第<code>2</code>层：<code>数据链路层</code></li>
+<li>查看linux系统运行了多长时间的命令是：uptime</li>
+<li>UNIX系统中进程由三部分组成：进程控制块，正文段和数据段。这意味着一个程序的正文与数据可以是分开的，这种分开的目的是为了<ul>
+<li>可共享内存</li>
+<li>可共享数据</li>
+<li>可重入</li>
+</ul>
+</li>
+<li>批处理操作系统的目的是：提高系统资源利用率</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/21/找出N个整数中最大的K个数/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/21/找出N个整数中最大的K个数/" itemprop="url">找出N个整数中最大的K个数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-21T21:02:50+08:00">
+                2015-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>顺序读取数组中的前K个元素，构建小根堆。</p>
+<p>小根堆的特点是根元素最小，并且一次调整（deleteMin）操作的时间复杂度为log(2,K)。</p>
+<p>接下来从数组中取下一个元素，如果该元素不比堆顶元素大，则丢弃；否则用它替换堆顶元素，然后调整小根堆。<br>当把数组中的元素全部读出来后，小根堆中保留的就是前K大的元素。</p>
+<p>初始建堆操作需要<code>K * log(2, k)</code>–这是最多的操作次数，从数组中读取后<code>N-K</code>个元素和堆顶元素一一比较，最坏的情况是每次都要替换堆顶元素，都要调整小根堆，复杂度为<code>(N-K) * log(2,K)</code>。总的复杂度为<code>O(N*log(2,K))</code>。</p>
+<p>###找出最小的k个数呢？<br>和最大的k个数的思想是相同的，只是这里建立的是是大根堆   </p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/19/fork/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/19/fork/" itemprop="url">fork</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-19T18:46:02+08:00">
+                2015-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>###这是EMC的一道面试题</p>
+<pre><code>#include&lt;stdio.h&gt;
+#include&lt;unistd.h&gt;
+
+int main()
+{
+    fork() &amp;&amp; fork() || fork();  //这句话共创建几个进程？
+    return 0        
+}
+</code></pre><p>本题有两个知识点：</p>
+<ul>
+<li>对逻辑运算符的理解</li>
+<li>对fork的理解</li>
+</ul>
+<p>如果是<code>A &amp;&amp; B || C</code>这样一个表达式，运行情况是怎样的呢？</p>
+<ul>
+<li>A为0，不再判断B，直接判断C</li>
+<li>A不为0<ul>
+<li>B为0，继续判断C</li>
+<li>B为1，不再判断C</li>
+</ul>
+</li>
+</ul>
+<p>fork调用的奇妙之处在于他被调用一次，会返回两个值</p>
+<ul>
+<li>在父进程中，返回新创建进程的ID</li>
+<li>在子进程中，返回0</li>
+</ul>
+<p>下面来分析<code>fork() &amp;&amp; fork() || fork()</code>创建了几个进程</p>
+<p><img src="/img/fork.png" alt="fork"></p>
+<p>很明显，<code>fork() &amp;&amp; fork() || fork()</code>创建了<code>4</code>个进程</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/18/c语言const总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/18/c语言const总结/" itemprop="url">c语言const总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-18T22:17:30+08:00">
+                2015-01-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>###前言：const意味着只读，凡修改了const不允许修改的东西，编译器报错</p>
+<p>##const修饰指针<br>const修饰指针可以分为如下的四种情况：</p>
+<pre><code>int b = 5;
+const int *a = &amp;b;          //情况1
+int const *a = &amp;b;          //情况2
+int* const a = &amp;b;          //情况3
+const int * const a = &amp;b;   //情况4
+</code></pre><p>而这四种情况，总结一下，其实只有两种情况：</p>
+<ul>
+<li>const位于<code>*</code>的左侧，则const是修饰指针所指向的变量，即指针指向为常量</li>
+<li>const位于<code>*</code>的右侧，const就是修饰指针本身，即指针本省是常量</li>
+</ul>
+<p><strong>本质</strong>：const在谁后面谁就不可修改，const在最前面则将其后移一位即可，二者等效</p>
+<p>所以<strong><em>情况1和情况2是相同的</em></strong>，都是指针所指向的内容为常量（const放在变量声明符的位置无关），这种情况下不允许通过指针改变指针指向的内容</p>
+<pre><code>int b = 5;
+const int *a = &amp;b;
+*a = 6;  //编译报错：错误：向只读位置‘*a’赋值
+</code></pre><p>如果想要改变*a的值怎么办呢？有两种方法</p>
+<pre><code>//方法一：改变b的值
+int b = 5；
+const int *a = &amp;b;
+b = 6;
+printf(&quot;%d&quot;, *a); //输出6
+
+
+//方法二：让*a指向别处
+int b = 5, c = 6;
+const int *a = &amp;b;
+a = &amp;c;
+printf(&quot;%d&quot;, *a);//输出6
+</code></pre><p>因为const int <em>a是说指针指向的内容为常量，指针本身并不是常量，所以可以不初始化<br>    const int </em>a; //正确</p>
+<p>情况3为指针本身为常量，这种情况下不能对指针本身的值进行更改，即指针初始化指向哪里，在指针的整个生命中都将指向那个地址，不会改变。但是指针指向的地址的内容不是常量。所以我们应该可以理解，情况3中的指针定义时必须初始化</p>
+<pre><code>int b = 5, c = 6;
+int *const a;  //在下面给a赋值时会出错：错误：向只读变量‘a’赋值
+int *const a = &amp;b;  //初始化
+*a = 6;  //正确，允许修改值
+printf(&quot;a new address is %d&quot;, a++); //编译出错：错误：令只读变量‘a’自增
+</code></pre><p>至于情况4，就是情况1和情况3的合体了，既不允许修改指针的值，也不允许修改指针指向的值</p>
+<p>##const修饰函数<br>如果以<code>指针传递</code>方式的函数返回值加const修饰，那么函数返回值（即指针）的内容不能被修改，该返回值只能被赋给加const修饰的同类型指针</p>
+<p>##同样都可以定义常量，const与#define相比有什么不同？<br>const相对于#define的有点在于：</p>
+<ul>
+<li>const常量有数据类型，而宏常量没有数据类型</li>
+<li>编译器可以对const常量进行类型安全检查，而对后者只进行字符替换，没有安全检查，而且在字符替换过程中可能会产生意想不到的错误（边际效应）</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/18/sizeof/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/18/sizeof/" itemprop="url">sizeof</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-18T22:16:44+08:00">
+                2015-01-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>###下面是一道笔试题：</p>
+<pre><code>#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+#include&lt;string.h&gt;
+
+struct {
+    short a1;
+    short a2;
+    short a3;
+}A;
+
+struct {
+    long a1;
+    short a2;
+}B;
+
+int main()
+{
+    char *ss1 = &quot;0123456789&quot;;
+    char ss2[] = &quot;0123456789&quot;;
+    char ss3[100] = &quot;0123456789&quot;;
+    int ss4[100];
+    char q1[] = &quot;abc&quot;;
+    char q2[] = &quot;a\n&quot;;
+    char *q3 = &quot;a\n&quot;;
+    char *str1 = (char *)malloc(100);
+    void *str2 = (void *)malloc(100);
+
+    printf(&quot;%d &quot;, sizeof(ss1)); //ss1是指针
+    printf(&quot;%d &quot;, sizeof(ss2)); //ss2是数组，计算到&quot;\0&quot;的位置，因此是(10+1)
+    printf(&quot;%d &quot;, sizeof(ss3)); //在内存中预分配的空间大小，100*1
+    printf(&quot;%d &quot;, sizeof(ss4));
+    printf(&quot;%d &quot;, sizeof(q1));
+    printf(&quot;%d &quot;, sizeof(q2));
+    printf(&quot;%d &quot;, sizeof(q3));
+    printf(&quot;%d &quot;, sizeof(A));
+    printf(&quot;%d &quot;, sizeof(B));
+    printf(&quot;%d &quot;, sizeof(str1));
+printf(&quot;%d &quot;, sizeof(str2));
+
+    return 0;
+}
+</code></pre><p>在64位linux系统上此程序的输出为：</p>
+<pre><code>8 11 100 400 4 3 8 6 16 8 8
+</code></pre><p>在32位机上的输出为：</p>
+<pre><code>4 11 100 400 4 3 4 6 8 4 4 
+</code></pre><p>解释：32位机器上long和int都是4字节，64位机器上，long是8字节，int是4字节</p>
+<p>###sizeof和strlen之间的区别<br>接上面的例子分析：</p>
+<pre><code>strlen(ss3)
+//结果为10，strlen内部实现是用一个循环计算字符串的长度，直到&quot;\0&quot;为止
+strlen(ss4)
+//错误，strlen的参数只能是char *,且必须是以&quot;\0&quot;结尾的
+</code></pre><p>###总结</p>
+<ul>
+<li>sizeof操作符的结果类型时size_t，它在头文件中的typedef为unsigned int类型。该类型保证能容纳实现所建立的最大对象的字节大小</li>
+</ul>
+<p>###再来一题</p>
+<pre><code>int GetSize(int data[]) 
+{   
+    return sizeof(data); 
+}
+
+int _tmain(int argc, _TCHAR* argv[])    
+{   
+    int data1[] = {1, 2, 3, 4, 5};   
+    int size1 = sizeof(data1);        
+
+    int* data2 = data1;  
+    int size2 = sizeof(data2);           
+    int size3 = GetSize(data1);          
+    printf(&quot;%d, %d, %d&quot;, size1, size2, size3);   
 }
 </code></pre><blockquote>
-<p>在函数F中，本地变量a和b的构造函数(constructor)和析构函数(destructor)的调用顺序是:D</p>
-<p>A.b构造 a构造 a析构 b析构</p>
-<p>B.a构造 a析构 b构造 b析构</p>
-<p>C.b构造 a构造 b析构 a析构</p>
-<p>D.a构造 b构造 b析构 a析构</p>
+<p>输出:“20, 4, 4”。data1是一个数组，sizeof(data1)是求数组的大小。这个数组包含5个整数，每个整数占4字节，因此总共是20字节。data2声明为指针，尽管它指向了数组data1的第一个数字，但它的本质仍然是一个指针。在32位系统上，对任意指针求sizeof，得到的结果都是4。<strong><em>在C/C++中，当数组作为函数的参数进行传递时，数组就自动退化为同类型的指针。因此尽管函数GetSize的参数data被声明为数组，但它会退化为指针，size3的结果仍然是4</em></strong>。—《剑指offer》P37</p>
 </blockquote>
-<p>解释：按变量声明顺序构造对象，然后入栈<br>按相反顺序出栈，析构对象。</p>
-<hr>
-<blockquote>
-<p>一棵有124个叶节点的完全二叉树，最多有（B）个节点。</p>
-<p>A.247</p>
-<p>B.248</p>
-<p>C.249</p>
-<p>D.250</p>
-</blockquote>
-<p>解释：n0 = n2 + 1，于是度为2的结点个数123个<br>完全二叉树中度为1结点个数最多1个</p>
-<p>因此该完全二叉树中结点最多有123+1+124=248个</p>
-<p>最少的话就是度为1的节点是0个，共有节点247个</p>
-<hr>
-<blockquote>
-<p>在排序方法中，元素比较次数与元素的初始排列无关的是（D）</p>
-<p>A.Shell 排序</p>
-<p>B.归并排序</p>
-<p>C.直接插入排序</p>
-<p>D.选择排序</p>
-</blockquote>
-<p>解释：选择排序无视队列原来是否有序，他自己都会再排一遍，所以它的时间复杂度一直是最差的O（n2），最好情况和最差情况一样.每一趟从待排序的数据元素中选出最小（或最大）的一个元素，顺序放在已排好序的数列的最后，直到全部待排序的数据元素排完。 选择排序是不稳定的排序方法</p>
-<hr>
-<blockquote>
-<p>给定如下代码： int x[4]={0}; int y[4]={1}; 数组x和y的值为（B）</p>
-<p>A.{0，0，0，0}，{1，1，1，1}</p>
-<p>B.{0，0，0，0}，{1，0，0，0}</p>
-<p>C.{0，不确定}，{1，不确定}</p>
-<p>D.与编译器相关</p>
-<hr>
-<p>如何判断一个单项链表中是否有环：</p>
-</blockquote>
-<p>解答：<br> 用两个指针，pSlow，pFast，就是一个慢一个快</p>
-<p>   慢的一次跳一步</p>
-<p>   快的一次跳两步</p>
-<p>   往链表末端移动。如果pFast==NULL，则说明链表没有环，如果pSlow==pFast，则说明链表存在环。</p>
-<hr>
-<blockquote>
-<p>-7的二进制补码为：11111001</p>
-</blockquote>
-<p>解释：正数的补码是自身，负数的补码是原码的高位不变，数值位取反加1</p>
-<hr>
-<blockquote>
-<p>中断响应时间是指（ C ）。</p>
-<p>A.从中断处理开始到中断处理结束所用的时间</p>
-<p>B.从发出中断请求到中断处理结束所用的时间</p>
-<p>C.从发出中断请求到进进中断处理所用的时间</p>
-<p>D.从中断处理结束到再次中断请求的时间</p>
-</blockquote>
-<hr>
-<blockquote>
-<p>在下列排序方法中，不稳定的方法有 C</p>
-<p>A.归并排序与基数排序</p>
-<p>B.插进排序与希尔排序</p>
-<p>C.堆排序与快速排序</p>
-<p>D.选择排序与冒泡排序</p>
-</blockquote>
-<p><img src="/img/排序算法总结.png" alt="排序算法总结"></p>
-<hr>
-<blockquote>
-<p>下面的排序算法中，初始数据集的排列顺序对算法的性能无影响的是 B</p>
-<p>A.插入排序</p>
-<p>B.堆排序</p>
-<p>C.冒泡排序</p>
-<p>D.快速排序</p>
-</blockquote>
-<p>解释：有影响就是这个排序算法最好情况和最差情况的时间复杂度不同。对于无影响，我们只要找最好情况和最差情况时间复杂度一样的算法就可以了，所以是堆排序</p>
 
           
         
@@ -516,7 +1343,7 @@ void F() {
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/27/面试题总结3/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/15/Missing-scheme-in-request-url/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -535,7 +1362,7 @@ void F() {
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/01/27/面试题总结3/" itemprop="url">笔试题总结3</a></h1>
+                <a class="post-title-link" href="/2015/01/15/Missing-scheme-in-request-url/" itemprop="url">exceptions.ValueError Missing scheme in request url h</a></h1>
         
 
         <div class="post-meta">
@@ -547,8 +1374,8 @@ void F() {
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-27T15:08:28+08:00">
-                2015-01-27
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-15T21:24:17+08:00">
+                2015-01-15
               </time>
             
 
@@ -570,8 +1397,8 @@ void F() {
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/面试/" itemprop="url" rel="index">
-                    <span itemprop="name">面试</span>
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
                   </a>
                 </span>
 
@@ -609,79 +1436,11 @@ void F() {
       
         
           
-            <blockquote>
-<p>下列关于线程说法错误的是（B）</p>
-<p>A.耗时的操作使用线程，提高程序响应</p>
-<p>B.耗内存的操作使用线程，提高内存利用率</p>
-<p>C.多CPU的系统使用线程，提高CPU利用率</p>
-<p>D.并行操作使用线程，如c/s架构中服务端程序为每个客户端请求创建一个线程来响应</p>
-</blockquote>
-<p>解释：多线程可以提高CPU利用率，不能提高内存利用率</p>
-<hr>
-<blockquote>
-<p>个数约为 50k 的数列需要从小到大排序， 数列特征是基本逆序 （多数数字从大到小，个别乱序） ，以下哪种排序算法在事先不了解数列特征的情况下性能大概率最优（不考虑空间限制）_E__.</p>
-<p>A.冒泡排序</p>
-<p>B.改进冒泡排序</p>
-<p>C.选择排序</p>
-<p>D.快速排序</p>
-<p>E.堆排序</p>
-<p>F.插入排序</p>
-</blockquote>
-<p>解释：个数约为50K，基本可以秒杀一般的<code>冒泡</code>，<code>改进冒泡</code>，<code>选择</code>，<code>插入</code>等基本的排序。加上数列的特征是基本逆序，而快速排序的worst case就是基本逆序或者基本有序的情况。综上所述，堆排序应该是大概率最优的。</p>
-<hr>
-<blockquote>
-<p>下列方法中，<em>B__</em>不可以用来程序调优？</p>
-<p>A.改善数据访问方式以提升缓存命中率</p>
-<p>B.使用多线程的方式提高 I/O 密集型操作的效率</p>
-<p>C.利用数据库连接池替代直接的数据库访问</p>
-<p>C.利用迭代替代递归</p>
-<p>E.合并多个远程调用批量发送</p>
-<p>F.共享冗余数据提高访问效率</p>
-</blockquote>
-<p>解释：</p>
-<p>A缓存命中率提高，减少访问存储器的开销</p>
-<p>B多线程并不能使IO操作并行化。可以通过异步读写、合并读写、计算代替读写等方式优化。 I/O密集型问题一般是硬件层面的问题，比如硬盘，它的I/O就摆在那里，无论你在怎么多线程，瓶颈就在硬盘那，所以B的说法是不可行的。对于“I/O密集型”的应用程序可以采用I/O效率较高的SCSI硬盘，或者采用集群的方式。</p>
-<p>C可以减少连接和断开数据库的开销</p>
-<p>D可以减少运行时对程序栈进行操作的开销</p>
-<p>E减少远程调用的次数</p>
-<hr>
-<blockquote>
-<p>最小堆[0,3,2,5,7,4,6,8],在删除堆顶元素0之后，其结果是（C）</p>
-<p>A.[3，2，5，7，4，6，8]</p>
-<p>B.[2，3，5，7，4，6，8]</p>
-<p>C.[2，3，4，5，7，8，6]</p>
-<p>D.[2，3，4，5，6，7，8]</p>
-</blockquote>
-<p>解释：删除0之后，末尾8代替0的位置</p>
-<hr>
-<blockquote>
-<p>在CPU内存之间进行地址转换时，（B）将地址从虚拟（逻辑）地址空间映射到物理地址空间。</p>
-<p>A.TCB</p>
-<p>B.MMU</p>
-<p>C.CACHE</p>
-<p>D.DMA</p>
-</blockquote>
-<p>解释：MMU是Memory Management Unit的缩写，中文名是内存管理单元，它是中央处理器（CPU）中用来管理虚拟存储器、物理存储器的控制线路，同时也负责虚拟地址映射为物理地址，以及提供硬件机制的内存访问授权，多用户多进程操作系统。</p>
-<hr>
-<blockquote>
-<pre><code>#include&lt;stdio.h&gt;
-int main()                                                                    
-{
-    unsigned int a = 6;
-    int b = -20;
-    (a + b &gt; 6) ? printf(&quot;&gt;6\n&quot;) : printf(&quot;&lt;=6\n&quot;);
-    printf(&quot;%d\n&quot;, (a + b));
-    return 0;
-} 
-</code></pre><p>输出为：&gt;6<br>解释：执行a+b的时候会将b转换成无符号数，所得的结果也是无符号数，将会是一个很大的正数，自然是大于6的</p>
-</blockquote>
-<hr>
-<p>程序的局部变量存放在<code>栈区</code>，全局变量存放在<code>全局静态区</code>，动态申请的数据存放在<code>堆区</code></p>
-<hr>
-<blockquote>
-<p>用希尔(Shell)方法排序时,若关键字的初始排序杂乱无序,则排序效率就低(错)</p>
-</blockquote>
-<p>解释：希尔排序又称“缩小增量排序”，即每趟只对相同增量距离的关键字进行比较，这与关键字序列初始有序或无序无关</p>
+            <p>用scrapy写的爬虫把抓到的图片下载下来时，报了这个错，从字面上看使我们的url除了问题，那究竟是什么错误呢？下面是错误的代码：</p>
+<pre><code>item[&apos;image_urls&apos;] = sel.xpath(&apos;.//*[@class=&quot;postmessage defaultpost&quot;]//img/@src&apos;).extract()[0]
+</code></pre><p>我们可以在shell里面试一下，这句代码是能够提取出正确的url的。但是提取出来的url却不是item需要的格式。<a href="http://stackoverflow.com/questions/8773732/downloading-pictures-with-scrapy" target="_blank" rel="external">stackoverflow上有关于这个问题的回答</a>，正确的写法应该是这个样子的：</p>
+<pre><code>item[&apos;image_urls&apos;] = [sel.xpath(&apos;.//*[@class=&quot;postmessage defaultpost&quot;]//img/@src&apos;).extract()[0]]
+</code></pre><p>解释一下,item的image_urls是一个字典，错误的代码中，它把图片的链接<code>http://*****.jpg</code>当作了一个字典，第一个元素自然是<code>h</code>,而它真实想要的是http一样的协议名，所以报错如上。只要在url外面加[]，整个url就会被当成整体，就能正常运行了</p>
 
           
         
@@ -730,7 +1489,7 @@ int main()
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/26/笔试题总结2/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/15/scrapy爬虫出现connection-refused的一个可能原因/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -749,7 +1508,7 @@ int main()
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/01/26/笔试题总结2/" itemprop="url">笔试题总结2</a></h1>
+                <a class="post-title-link" href="/2015/01/15/scrapy爬虫出现connection-refused的一个可能原因/" itemprop="url">scrapy爬虫出现connection refused的一个可能原因</a></h1>
         
 
         <div class="post-meta">
@@ -761,8 +1520,8 @@ int main()
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-26T22:39:49+08:00">
-                2015-01-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-15T09:30:28+08:00">
+                2015-01-15
               </time>
             
 
@@ -784,8 +1543,8 @@ int main()
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/面试/" itemprop="url" rel="index">
-                    <span itemprop="name">面试</span>
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
                   </a>
                 </span>
 
@@ -823,147 +1582,14 @@ int main()
       
         
           
-            <hr>
-<blockquote>
-<p>下列关于网络编程错误的是？(D)</p>
-<p>A.UDP是不可靠服务</p>
-<p>B.主动关闭的一端会出现TIME_WAIT状态</p>
-<p>C.服务端编程会调用listen()，客户端也可以调用bind()</p>
-<p>D.TCP建立和关闭连接都只需要三次握手</p>
-<p>E.linux通过提供socket接口来进行网络编程</p>
-<p>F.长连接相对短连接可以节省建立连接的时间</p>
-</blockquote>
-<p>解释：D.TCP建立需要3次握手，关闭需要4此握手。<em>无连接的客户端可以调用bind来配置本地信息</em></p>
-<hr>
-<blockquote>
-<p>Linux系统中某个可执行文件属于root并且有setid，当一个普通用户mike运行这个程序时，产生的进程的有效用户和实际用户分别是<strong>A</strong>？</p>
-<p>A.root mike</p>
-<p>B.root rooy</p>
-<p>C.mike root</p>
-<p>D.mike mike</p>
-<p>E.deamon mike</p>
-<p>F.mike deamon</p>
-</blockquote>
-<p>解释：setuid的用途是允许普通用户完成一些任务，而完成这些任务需要特权和通常被禁止的访问权限。</p>
-<p>在实际应用中，通常用来允许普通用户以root用户的角色运行只有root帐号才能运行的程序或命令。</p>
-<p>当一个具有setid访问模式的文件被执行时，进程的有效UID将会变成文件所有者的UID，并使用该UID的访问权限来访问其他的文件和资源。</p>
-<p>由于可执行文件属于root，因此当程序设置了setid权限位时，普通用户会临时变成root权限，但实际用户任然是原来的mike。</p>
-<hr>
-<blockquote>
-<p>对于基本有序的序列，按照那种排序方式最快：(B)</p>
-<p>A.快速排序</p>
-<p>B.冒泡排序</p>
-<p>C.归并排序</p>
-<p>D.基数排序</p>
-</blockquote>
-<p>解释：而当待排序列已基本有序时，对冒泡排序来说是最好情况，对快速排序来说就是最差情况，而堆排序则最好最差都一样。因此本题答案是冒泡排序。</p>
-<hr>
-<blockquote>
-<p>若一棵二叉树具有10个度为2的结点，5个度为1的结点，则度为0的结点个数是：(B)</p>
-<p>A.10</p>
-<p>B.11</p>
-<p>C.12</p>
-<p>D.13</p>
-</blockquote>
-<p>解释：度为0的结点 = 度为2的结点 + 1</p>
-<p>在一棵树中，所有点的入度和出度的和相等，下面等式左边为出度，右边为入度（根节点入度为0， 其他节点入度为1）<br>10 <em> 2 + 5 </em> 1 = 10 + 5 + x -1</p>
-<p>x等于11</p>
-<hr>
-<blockquote>
-<p>上网时候发现网页不能访问，QQ使用正常，出现此问题可能的原因是：B</p>
-<p>A.网线问题</p>
-<p>B.DNS问题</p>
-<p>C.IP地址冲突</p>
-<p>D.网关错误</p>
-</blockquote>
-<p>解释：DNS是将域名解析成IP地址的服务。DNS发生问题时无法通过域名访问网页；但是直接通过IP地址连接的应用程序仍可以使用。</p>
-<hr>
-<blockquote>
-<p>二分查找树里查询一个关键字的最坏时间复杂度为(A)。</p>
-<p>A.O(n)</p>
-<p>B.O(nlogn)</p>
-<p>C.O(n^2)</p>
-<p>D.O(n^3)</p>
-<p>E.O(logn)</p>
-<p>F.不确定</p>
-</blockquote>
-<p>解释：二分查找最坏的情况是退化为线性查找，时间复杂度为O(n)</p>
-<hr>
-<blockquote>
-<p>设m和n都是int类型，那么以下for循环语句的执行情况是（A）</p>
-<pre><code>for (m = 0, n = -1; n = 0; m++, n++)
-     n++;
-</code></pre><p>A.循环体一次也不执行</p>
-<p>B.循环体执行一次</p>
-<p>C.有限次循环</p>
-<p>D.循环结束判断条件不合法</p>
-<p>E.运行出错</p>
-<p>F.是无限循环</p>
-</blockquote>
-<p>解释：for的条件判断为n = 0，该表达式永远返回0，即for循环不执行。</p>
-<hr>
-<blockquote>
-<p>从逻辑上可以把数据结构分为（C）两大类。</p>
-<p>A.动态结构，静态结构</p>
-<p>B.顺序结构，链式结构</p>
-<p>C.线性结构，非线性结构</p>
-<p>D.初等结构，构造型结构</p>
-</blockquote>
-<p>解释：数据结构在存储上（物理上）分为顺序结构和链式结构</p>
-<p>在逻辑上分为线性结构（如线性表中的数组，链表）和非线性结构（如：二叉树，图等）</p>
-<hr>
-<blockquote>
-<p>（B）二叉排序树可以得到一个从小到大的有序序列。</p>
-<p>A.先序遍历</p>
-<p>B.中序遍历</p>
-<p>C.后序遍</p>
-<p>D.层次遍历</p>
-</blockquote>
-<p>解释：二叉排序树的左子树节点都比该节点小，右子树节点都比该节点打<br>要得到一个从小到大的有序序列，就要按照 左 中 右的顺序遍历<br>符合该条件的遍历就是中序遍历</p>
-<hr>
-<blockquote>
-<p>Linux下的进程有哪三种状态？（B）</p>
-<p>A.精确态，模糊态和随机态</p>
-<p>B.运行态，就绪态和等待态</p>
-<p>C.准备态，执行态和退出态</p>
-<p>D.手动态，自动态和自由态</p>
-</blockquote>
-<p>解释：<br>运行状态：这个不用解释了吧，就是正在运行</p>
-<p>就绪状态：这个状态等待CPU 时间片的状态，一切准备就绪，随时可以执行，等 CPU 切换到该进程，该进程就会由就绪状态变为运行状态</p>
-<p>等待状态：其实就是未就绪状态，还有做一些准备工作或者等待资源</p>
-<hr>
-<blockquote>
-<p>以下关于传输层协议UDP的叙述中正确的（C）</p>
-<p>A.比较合适传输小的数据文件</p>
-<p>B.提高了高的可靠性</p>
-<p>C.提供了高的传输效率</p>
-<p>D.使用窗口机制来实现流量控制</p>
-</blockquote>
-<p>A.UDP协议是无连接的，传输效率高，适合传输视频流媒体等大的数据文件</p>
-<p>B.UDP无连接特性是降低了可靠性，提高了效率</p>
-<p>D.采用窗口机制的协议是TCP</p>
-<hr>
-<blockquote>
-<p>在Bash中，以下哪些说法是正确的（AD）</p>
-<p>A.$#表示参数的数量</p>
-<p>B.$$表示当前进程的名字</p>
-<p>C.$@表示当前进程的pid</p>
-<p>D.$?表示前一个命令的返回值</p>
-</blockquote>
-<p>解释：</p>
-<p>$#  参数的个数，不包括命令本身.</p>
-<p>$$  目前bash shell的进程编号</p>
-<p>$@  参数本身的列表，也不包括命令本身</p>
-<p>$?  上一个命令执行结束后传回值</p>
-<hr>
-<blockquote>
-<p>正则表达式A*B可以匹配（CD）</p>
-<p>A.A</p>
-<p>B.ACB</p>
-<p>C.AB</p>
-<p>D.AAB</p>
-</blockquote>
-<p>解释：*表示匹配前一个字符0次或无限次</p>
+            <p>下载了别人的一个爬虫，跑的时候发现会出现connection refused的错误</p>
+<pre><code>Connection was refused by other side: 111: Connection refused.
+</code></pre><p>有时候还能继续跑，但是不一会儿就停了，代码很简单，至少scrapy.py不会有问题，哪有问题的应该就是setting了</p>
+<p>看了一下setting文件，里面DOWNLOADER_MIDDLEWARES启用了两个自定义的中间件：<code>CustomHttpProxyMiddleware</code>和<code>CustomUserAgentMiddleware</code>，其中<code>CustomUserAgentMiddleware</code>是用来模拟浏览器登陆的，<code>CustomHttpProxyMiddleware</code>则是防止网站对ip限制，使用代理进行抓取。不妨分别将二者注释掉再跑看看。最终发现果然是<code>CustomHttpProxyMiddleware</code>出了问题，那proxy.py里面是什么呢？</p>
+<pre><code>PROXIES = [
+{&quot;ip_port&quot;: &quot;127.0.0.1:8087&quot;},
+]
+</code></pre><p>127.0.0.1是本机的环回地址，同时也是goagent的代理ip，作者本意应该是使用goagent来做ip轮换的工作，但是没那么简单啊，你的goagent没有配置呢，所以用到127.0.0.1的时候网站自然不让你访问了</p>
 
           
         
@@ -1012,7 +1638,7 @@ int main()
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/26/笔试题总结/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/14/Scrapy的架构/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -1031,7 +1657,7 @@ int main()
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/01/26/笔试题总结/" itemprop="url">笔试题总结1</a></h1>
+                <a class="post-title-link" href="/2015/01/14/Scrapy的架构/" itemprop="url">scrapy的架构</a></h1>
         
 
         <div class="post-meta">
@@ -1043,8 +1669,8 @@ int main()
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-26T17:02:27+08:00">
-                2015-01-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-14T10:46:23+08:00">
+                2015-01-14
               </time>
             
 
@@ -1066,8 +1692,8 @@ int main()
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/面试/" itemprop="url" rel="index">
-                    <span itemprop="name">面试</span>
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
                   </a>
                 </span>
 
@@ -1105,116 +1731,45 @@ int main()
       
         
           
-            <blockquote>
-<p>应用程序PING发出的是什么报文（C）</p>
-<p>A.TCP请求报文</p>
-<p>B.TCP应答报文</p>
-<p>C.ICMP请求报文</p>
-<p>D.ICMP应答报文</p>
-</blockquote>
-<hr>
-<blockquote>
-<p>语法分析器可以用于（C）</p>
-<p>A.识别语义错误</p>
-<p>B.识别语法和语义错误</p>
-<p>C.识别语法错误</p>
-<p>D.识别并修正语法，语义错误</p>
-</blockquote>
-<p>解释：语法分析器通常是作为编译器或解释器的组件出现的，它的作用是进行语法检查、并构建由输入的单片语组成的资料结构</p>
-<hr>
-<blockquote>
-<p>IPV6地址包含多少位（）</p>
-<p>A.16</p>
-<p>B.32</p>
-<p>C.64</p>
-<p>D.128</p>
-</blockquote>
-<p>解释：IPv6的128位地址通常写成8组，每组为四个十六进制数的形式。比如：<br>AD80:0000:0000:0000:ABAA:0000:00C2:0002 是一个合法的IPv6地址。</p>
-<hr>
-<blockquote>
-<p>如果在一个建立了TCP连接的socket上调用recv函数，返回值为0，则表示（B）</p>
-<p>A.对端发送了一段长度为0的数据</p>
-<p>B.对端关闭了连接</p>
-<p>C.还没有收到对端数据</p>
-<p>D.连接发生错误</p>
-</blockquote>
-<p>解释：recv返回0的唯一条件就是对端关闭了连接<br>在socket可读的情况下，当有异常发生的时候，read返回-1</p>
-<hr>
-<blockquote>
-<p>以下哪些不是内核对象（D）</p>
-<p>A.进程</p>
-<p>B.线程</p>
-<p>C.互斥器</p>
-<p>D.临界区</p>
-</blockquote>
-<p>解释：临界区是资源对象，只能被一个进程访问</p>
-<hr>
-<blockquote>
-<p>同一进程下的多个线程可以共享哪一种资源（B）</p>
-<p>A.stack</p>
-<p>B.data section</p>
-<p>C.register set</p>
-<p>D.thread ID</p>
-</blockquote>
-<p>解释：线程共享的环境包括：进程代码段、进程的公有数据(利用这些共享的数据，线程很容易的实现相互之间的通讯)、进程打开的文件描述符、信号的处理器、进程的当前目录和进程用户ID与进程组ID。</p>
-<hr>
-<blockquote>
-<p>对于Linux说法，下列说法正确的是（）</p>
-<p>A.线性访问内存非法时，当前线程会进入信号处理函数</p>
-<p>B.用mv命令移动文件时，文件的修改时间会发生变化</p>
-<p>C.ulimit -c设置的是函数调用栈的大小</p>
-<p>D.malloc函数是应用程序向操作系统申请内存的接口</p>
-</blockquote>
-<p>B.不会改变</p>
-<p>C.ulimit用于shell启动进程所占用的资源.-c size:设置core文件的最大值.单位:blocks</p>
-<hr>
-<blockquote>
-<p>在c++中，</p>
-<pre><code>const int i = 0; 
-int *j = (int *) &amp;i; 
-*j = 1; 
-printf(&quot;%d,%d&quot;, i, *j)
-</code></pre><p>输出是多少？(A)</p>
-<p>A.0，1</p>
-<p>B.1，1</p>
-<p>C.1，0</p>
-<p>D.0，0</p>
-</blockquote>
-<p>解释：const修饰的常量值具有不可变性,c++编译器通常会对该变量做优化处理，在编译时变量i的值为已知的，编译器直接将printf输出的变量i替换为0。尽管如此，编译器仍然会为变量i分配存储空间，通过修改内存的hack方式将变量i在内存中的值修改后并不影响printf的输出。</p>
-<p>gcc不会对此进行优化，所以如果用gcc来编译，输出就是1,1</p>
-<hr>
-<blockquote>
-<pre><code>  struct Date
-{
-    char a;
-    int b;
-    int64_t c;
-    char d;
-};
-</code></pre><p>Date data[2][10]; 在32位系统上，如果Data的地址是x，那么data[1][5].c的地址是（C）</p>
-<p>A.X+195</p>
-<p>B.X+365</p>
-<p>C.X+368</p>
-<p>D.X+215</p>
-</blockquote>
-<p>解释：</p>
-<pre><code>struct Date {      
-    char a;//起始位置0      
-    int b;//起始位置4      
-    int64_t c;//起始位置8      
-    char d;//起始位置16，
-    //考虑成员中自身对齐值最大的那个值是8. 16不是8的倍数，所以这个sturct的size是24.  
-};
-</code></pre><p>data[1][5]与data[0][0]相隔15个元素,data[1][5].c的地址是x+24*15+(4+4) = 368</p>
-<hr>
-<blockquote>
-<p>快速排序算法在序列已经有序的情况下的复杂度为（B）</p>
-<p>A.O(nlogn）</p>
-<p>B.O(n^2)</p>
-<p>C.O(n)</p>
-<p>D.O(n^2 logn)</p>
-</blockquote>
-<p>有序的情况是O(n2);无序的情况是O(nlog2n)</p>
+            <p>下面是scrapy的架构图<br><img src="/img/scrapy_architecture.png" alt="scrapy architecture"></p>
+<p>##一. 组件</p>
+<ol>
+<li><code>Scrapy Engine（Scrapy引擎）</code>：Scrapy引擎是用来控制整个系统的数据处理流程，并进行事务处理的触发。更多的详细内容可以看下面的数据处理流程。</li>
+<li><code>Scheduler（调度）</code>：调度程序从Scrapy引擎接受请求并排序列入队列，并在Scrapy引擎发出请求后返还给他们。</li>
+<li><code>Downloader（下载器）</code>：下载器的主要职责是抓取网页并将网页内容返还给蜘蛛( Spiders)。</li>
+<li><code>Spiders（蜘蛛）</code>：蜘蛛是有Scrapy用户自己定义用来解析网页并抓取制定URL返回的内容的类，每个蜘蛛都能处理一个域名或一组域名。换句话说就是用来定义特定网站的抓取和解析规则。蜘蛛的整个抓取流程（周期）是这样的：<ol>
+<li>首先获取第一个URL的初始请求，当请求返回后调取一个回调函数。第一个请求是通过调用start_requests()方法。该方法默认从start_urls中的Url中生成请求，并执行解析来调用回调函数。</li>
+<li>在回调函数中，你可以解析网页响应并返回项目对象和请求对象或两者的迭代。这些请求也将包含一个回调，然后被Scrapy下载，然后有指定的回调处理。</li>
+<li>在回调函数中，你解析网站的内容，同程使用的是Xpath选择器（但是你也可以使用BeautifuSoup, lxml或其他任何你喜欢的程序），并生成解析的数据项。</li>
+<li>最后，从蜘蛛返回的项目通常会进驻到项目管道。</li>
+</ol>
+</li>
+<li><p><code>Item Pipeline（项目管道）</code>：项目管道的主要责任是负责处理有蜘蛛从网页中抽取的项目，他的主要任务是清晰、验证和存储数据。当页面被蜘蛛解析后，将被发送到项目管道，并经过几个特定的次序处理数据。每个项目管道的组件都是有一个简单的方法组成的Python类。他们获取了项目并执行他们的方法，同时他们还需要确定的是是否需要在项目管道中继续执行下一步或是直接丢弃掉不处理。项目管道通常执行的过程有：</p>
+<ol>
+<li>清洗HTML数据</li>
+<li>验证解析到的数据（检查项目是否包含必要的字段）</li>
+<li>检查是否是重复数据（如果重复就删除）</li>
+<li>将解析到的数据存储到数据库中</li>
+</ol>
+</li>
+<li><p><code>Downloader middlewares（下载器中间件）</code>：下载中间件是位于Scrapy引擎和下载器之间的钩子框架，主要是处理Scrapy引擎与下载器之间的请求及响应。它提供了一个自定义的代码的方式来拓展Scrapy的功能。下载中间器是一个处理请求和响应的钩子框架。他是轻量级的，对Scrapy尽享全局控制的底层的系统。</p>
+</li>
+<li><code>Spider middlewares（蜘蛛中间件）</code>:蜘蛛中间件是介于Scrapy引擎和蜘蛛之间的钩子框架，主要工作是处理蜘蛛的响应输入和请求输出。它提供一个自定义代码的方式来拓展Scrapy的功能。蛛中间件是一个挂接到Scrapy的蜘蛛处理机制的框架，你可以插入自定义的代码来处理发送给蜘蛛的请求和返回蜘蛛获取的响应内容和项目。</li>
+<li><code>Scheduler middlewares（调度中间件）</code>:调度中间件是介于Scrapy引擎和调度之间的中间件，主要工作是处从Scrapy引擎发送到调度的请求和响应。他提供了一个自定义的代码来拓展Scrapy的功能</li>
+</ol>
+<p>##二. 数据处理流程</p>
+<ol>
+<li>Scrapy的整个数据处理流程有Scrapy引擎进行控制，其主要的运行方式为：</li>
+<li>引擎打开一个域名，时蜘蛛处理这个域名，并让蜘蛛获取第一个爬取的URL。</li>
+<li>引擎从蜘蛛那获取第一个需要爬取的URL，然后作为请求在调度中进行调度。</li>
+<li>引擎从调度那获取接下来进行爬取的页面。</li>
+<li>调度将下一个爬取的URL返回给引擎，引擎将他们通过下载中间件发送到下载器。</li>
+<li>当网页被下载器下载完成以后，响应内容通过下载中间件被发送到引擎。</li>
+<li>引擎收到下载器的响应并将它通过蜘蛛中间件发送到蜘蛛进行处理。</li>
+<li>蜘蛛处理响应并返回爬取到的项目，然后给引擎发送新的请求。</li>
+<li>引擎将抓取到的项目项目管道，并向调度发送请求。</li>
+<li>系统重复第二部后面的操作，直到调度中没有请求，然后断开引擎与域之间的联系。</li>
+</ol>
 
           
         
@@ -1263,7 +1818,7 @@ printf(&quot;%d,%d&quot;, i, *j)
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/26/反转链表-带头结点/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/14/scrapy防止被ban的策略/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -1282,7 +1837,7 @@ printf(&quot;%d,%d&quot;, i, *j)
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/01/26/反转链表-带头结点/" itemprop="url">反转链表(带头结点)</a></h1>
+                <a class="post-title-link" href="/2015/01/14/scrapy防止被ban的策略/" itemprop="url">scrapy防止被ban的策略</a></h1>
         
 
         <div class="post-meta">
@@ -1294,8 +1849,8 @@ printf(&quot;%d,%d&quot;, i, *j)
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-26T10:18:15+08:00">
-                2015-01-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-14T10:37:02+08:00">
+                2015-01-14
               </time>
             
 
@@ -1317,8 +1872,8 @@ printf(&quot;%d,%d&quot;, i, *j)
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
                   </a>
                 </span>
 
@@ -1356,970 +1911,102 @@ printf(&quot;%d,%d&quot;, i, *j)
       
         
           
-            <p>##QUESTION<br>定义一个函数，输入一个链表的头结点，反转该链表并输出反转后链表的头结点。</p>
-<p>##SOLUTION<br><img src="/img/反转链表.png" alt="反转链表"></p>
-<p>反转这个单链表的基本思想是，不断地将后面的结点移到head后面来，下面以反转结点1和结点2作为例子：</p>
-<ul>
-<li>头结点的next指向结点2</li>
-<li>结点1的next指向结点3</li>
-<li>结点2的next指向结点1</li>
-</ul>
-<p>这样就完成了一次交换，顺序变成了head-&gt;结点2-&gt;结点1-&gt;结点3-&gt;结点4-&gt;NULL，下面我们进行相同的操作将结点3移到head之后，然后将结点4移到head之后，就完成了反转，下面是代码：</p>
-<pre><code>typedef struct Node
-{
-    int data;
-    struct Node *next;
-}*node;
-
-node reverse_list(node head)
-{
-    node p, q;
-    if(head == NULL)
-        return NULL;
-    printf(&quot;the old list is:&quot;);
-    print_list(head);
-
-    p = head-&gt;next;
-    while(p != NULL &amp;&amp; p-&gt;next != NULL)
-    {
-        q = p-&gt;next;
-        p-&gt;next = q-&gt;next;
-        q-&gt;next = head-&gt;next;
-        head-&gt;next = q;
-    }
-    return head； //可有可无   
-}
-</code></pre><p>题目的要求是返回新链表的头结点，在这里，新链表的头结点就是原来链表的头结点。所以最后一句是没有必要的，直接用head作为参数就可以打印链表。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/25/在O-1-时间删除链表结点/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/25/在O-1-时间删除链表结点/" itemprop="url">在O(1)时间删除链表结点</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-25T21:13:55+08:00">
-                2015-01-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##QUESTION<br>给定单项链表的头指针和一个结点指针，定义一个函数在O(1)时间删除该节点。</p>
-<p>##O(n)解法<br>O(n)解法就是常规的删除链表结点的做法。从链表的头结点开始，顺序遍历查找要删除的结点，并在链表中删除该结点。这种思路由于要顺序查找，时间复杂度自然就是O(n)了。</p>
-<p>之所以要从头开始查找，是因为我们需要得到将被删除的结点的前面一个结点。在单向链表中，结点中没有指向前一个结点的指针，所以只好从链表的头结点开始顺序查找。</p>
-<p>##O(1)解法<br>那是不是一定要得到被删除结点的前一个节点呢？答案是否定的。我们可以这样来删除一个结点，例子如下，别删除的结点为i，i的下一个结点为j：</p>
-<ul>
-<li>把j结点的内容复制到i结点，覆盖i结点的内容</li>
-<li>将i结点的next指向j结点的next</li>
-<li>删除j结点</li>
-</ul>
-<p>这里我们删除的虽然是j结点，但是得到的效果却是删除了i结点。</p>
-<p>还有一个问题，当我们删除的结点是尾结点时，尾结点的next是NULL，上述解法就不再适用，我们还是要顺序遍历后删除尾结点。</p>
-<p>代码如下：</p>
-<pre><code>typedef struct Node
-{
-    int data;
-    struct Node *next;
-}*node;
-
-/*在O(1)时间删除结点*/
-void DeleteNode(node &amp;pListHead, node pToBeDeleted)
-{
-    if(!pListHead || !pToBeDeleted)
-        return;
-
-    // 要删除的结点不是尾结点
-    if(pToBeDeleted-&gt;next!= NULL)
-    {
-        node pNext = pToBeDeleted-&gt;next;
-        pToBeDeleted-&gt;data= pNext-&gt;data;
-        pToBeDeleted-&gt;next = pNext-&gt;next;
-
-        delete pNext;
-        pNext = NULL;
-    }
-    // 链表只有一个结点，删除头结点（也是尾结点）
-    else if(pListHead == pToBeDeleted)
-    {
-        delete pToBeDeleted;
-        pToBeDeleted = NULL;
-        pListHead = NULL;
-    }
-    // 链表中有多个结点，删除尾结点
-    else
-    {
-        node pNode = pListHead;
-        while(pNode-&gt;next != pToBeDeleted)
-        {
-            pNode = pNode-&gt;next;            
-        }
-
-        pNode-&gt;next = NULL;
-        delete pToBeDeleted;
-        pToBeDeleted = NULL;
-    }
-}
-</code></pre><p>我们分析一下这个思路的时间复杂度。对于n-1个非尾结点而言，我们可以在O(1)时把下一个结点的内存复制覆盖要删除的结点，并删除下一个结点；对于尾结点而言，由于仍需要顺序查找，时间复杂度为O(n).因此总的时间复杂度为<code>[(n-1)*O(1)+O(n)]/n</code>,结果仍然是O(1),符合要求。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/25/二进制中1的个数/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/25/二进制中1的个数/" itemprop="url">二进制中1的个数</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-25T16:03:18+08:00">
-                2015-01-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>题目：输入一个整数，求该整数的二进制表达中有多少个1。例如输入10，由于其二进制表示为1010，有两个1，因此输出2。</p>
-<p>##可能引起死循环的解法<br>一个很基本的想法是，我们先判断整数的最右边一位是不是1。接着把整数右移一位，原来处于右边第二位的数字现在被移到第一位了，再判断是不是1。这样每次 移动一位，直到这个整数变成0为止。现在的问题变成怎样判断一个整数的最右边一位是不是1了。很简单，如果它和整数1作与运算。由于1除了最右边一位以 外，其他所有位都为0。因此如果与运算的结果为1，表示整数的最右边一位是1，否则是0。</p>
-<p>代码如下：</p>
-<pre><code>///////////////////////////////////////////////////////////////////////
-// Get how many 1s in an integer&apos;s binary expression
-///////////////////////////////////////////////////////////////////////
-int NumberOf1_Solution1(int i)
-{
-      int count = 0;
-      while(i)
-      {
-            if(i &amp; 1)
-                  count ++;
-            i = i &gt;&gt; 1;
-      }
-      return count;
-}
-</code></pre><p>面试官会问，整数右移一位在数学上是和除以2是等价的。那可不可以把上面的代码中的右移运算符换成除以2呢？答案是否定的。因为除法的效率比移位运算要低的多，在实际编程中如果可以，应尽可能地用移位运算符代替乘除法。</p>
-<p>这个思路当输入i是正数时没有问题，但当输入的i是一个负数时，不但不能得到正确的1的个数，还将导致死循环。以负数0x80000000为例，右移一位 的时候，并不是简单地把最高位的1移到第二位变成0x40000000，而是0xC0000000。这是因为移位前是个负数，仍然要保证移位后是个负数， 因此移位后的最高位会设为1。如果一直做右移运算，最终这个数字就会变成0xFFFFFFFF而陷入死循环。</p>
-<p>##改进算法避免死循环<br>为了避免死循环，我们可以不右移输入的数字i。首先i和1做与运算，判断i的最低位是不是为1。接着把1左移一位得到2，再和i做与运算，就能判断i的次高位是不是1……这样反复左移，每次都能判断i的其中一位是不是1。基于此，我们得到如下代码：</p>
-<pre><code>///////////////////////////////////////////////////////////////////////
-// Get how many 1s in an integer&apos;s binary expression
-///////////////////////////////////////////////////////////////////////
-int NumberOf1_Solution2(int i)
-{
-      int count = 0;
-      unsigned int flag = 1;
-      while(flag)
-      {
-            if(i &amp; flag)
-                  count ++;
-            flag = flag &lt;&lt; 1;
-      }
-      return count;
-}
-</code></pre><p>##给面试官带来惊喜的解法<br>另外一种思路是如果一个整数不为0，那么这个整数至少有一位是1。如果我们把这个整数减去1，那么原来处在整数最右边的1就会变成0，原来在1后面的所有 的0都会变成1。其余的所有位将不受到影响。举个例子：一个二进制数1100，从右边数起的第三位是处于最右边的一个1。减去1后，第三位变成0，它后面 的两位0变成1，而前面的1保持不变，因此得到结果是1011。</p>
-<p>我们发现减1的结果是把从最右边一个1开始的所有位都取反了。这个时候如果我们再把原来的整数和减去1之后的结果做与运算，从原来整数最右边一个1那一位 开始所有位都会变成0。如1100&amp;1011=1000。也就是说，把一个整数减去1，再和原整数做与运算，会把该整数最右边一个1变成0。那么 一个整数的二进制有多少个1，就可以进行多少次这样的操作。</p>
-<p>这种思路对应的代码如下：</p>
-<pre><code>///////////////////////////////////////////////////////////////////////
-// Get how many 1s in an integer&apos;s binary expression
-///////////////////////////////////////////////////////////////////////
-int NumberOf1_Solution3(int i)
-{
-      int count = 0;
-      while (i)
-      {
-            ++ count;
-            i = (i - 1) &amp; i;
-      }
-      return count;
-}
-</code></pre><p>##扩展<br>扩展1：如何用一个语句判断一个整数是不是二的整数次幂？</p>
-<p>思路：一个整数如果是2的整数次方，那么它的二进制表示中有且只有一位是1，而其他所有位都是0.根据前面的分析，把这个整数减去1之后再和它自己做与运算，这个整数中唯一的1就会变成0.</p>
-<pre><code>n&amp;(n-1)==0;//二进制数只有一位位1，则该数是2的整数次幂.
-</code></pre><p>扩展2：输入两个整数m和n，计算需要改变m的二进制表示中的多少位才能得到n。比如10的二进制表示为1010,13的二进制表示为1101，需要改变1010中的3位才能得到1101.</p>
-<p>思路：我们可以分两步解决这个问题：第一步求这两个数的异或，第二步统计异或结果中1的位数。</p>
-<p>##总结<br>把一个整数减去1之后再和原来的整数做位与运算，得到的结果相当于是把整数的二进制表示中的最后一个1变成0.很多二进制的问题都可以用这个思路解决</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/25/为什么求斐波拉切数列用递归不是一个好方法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/25/为什么求斐波拉切数列用递归不是一个好方法/" itemprop="url">为什么求斐波拉切数列用递归不是一个好方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-25T15:14:32+08:00">
-                2015-01-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##递归解法<br>教课书上一般都是用斐波拉切数列来说明递归，但是用递归的方法来求解斐波拉切数列并不是一个好的方法，这主要是效率的问题。</p>
-<pre><code>long fibonacci(unsigned int n)
-{
-    if(n &lt;= 0)
-        return 0;
-
-    if(n == 1)
-        return 1;
-
-    return fibonacci(n - 1) + fibonacci(n - 2);
-}
-</code></pre><p>这个方法的低效体现在哪里呢？我们不妨来分析一下fibnacci(8)的求解过程：</p>
-<p><img src="/img/fibonacci.png" alt="fibonacci"></p>
-<p>我们不难发现在这棵树中很多结点是重复的，而且重复的结点数会随着n的增大而急剧增加，这意味着计算量会随着n的睁大而急剧增大。事实上，用递归计算的时间复杂度是以n的指数的方式递增的。</p>
-<p>##循环解法<br>在这里，递归的缺陷在于重复计算了很多项，为了避免重复计算，我们可以使用循环：</p>
-<pre><code>long fibonacci_iterator(unsigned int n)
-{
-    int result[2] = {0, 1};
-    if(n &lt; 2)
-        return result[n];
-
-    long fib_one = 0;
-    long fib_two = 1;
-
-    long fib_num = 0;
-    int i;
-    for(i = 2; i &lt;= n; i++) {
-        fib_num = fib_one + fib_two;
-        fib_one = fib_two;
-        fib_two = fib_num;
-    }
-
-    return fib_num;
-}
-</code></pre><p>##测试程序</p>
-<pre><code>#define n 50
-int main(int argc, char **argv)
-{
-    clock_t start, end;
-    double times = 0;
-
-    start = clock();
-    printf(&quot;fibonacci(%d) = %d\n&quot;, n, fibonacci(n));
-    end = clock();
-    times = (double)(end - start) / CLOCKS_PER_SEC;
-    printf(&quot;The fibonacci took %fs\n&quot;, times);
-    start = clock();
-    printf(&quot;fibonacci(%d) = %d\n&quot;, n, fibonacci_iterator(n));
-    end = clock();
-    times = (double)(end - start) / CLOCKS_PER_SEC;
-    printf(&quot;The fibonacci_iterator took %fs\n&quot;, times);
-}
-</code></pre><p>输出为:</p>
-<blockquote>
-<p>fibonacci(50) = 12586269025</p>
-<p>The fibonacci took 203.040000s</p>
-<p>fibonacci(50) = 12586269025</p>
-<p>The fibonacci_iterator took 0.000000s</p>
-</blockquote>
-<p>所以说，在这里用递归的话真是脑子被门夹了</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/24/重建二叉树/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/24/重建二叉树/" itemprop="url">重建二叉树</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-24T21:31:11+08:00">
-                2015-01-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##题目</p>
-<blockquote>
-<p>输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字，例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，应该重构出如下二叉树：</p>
-<p><img src="/img/tree.png" alt="tree"></p>
-</blockquote>
-<p>##答案</p>
-<ul>
-<li>前序遍历的第一个节点是树的根结点，所以<code>1</code>是树的根结点</li>
-<li>中序遍历的规则是：1.遍历左子树；2.根结点；3.遍历右子树。既然1是根结点，那么从中序遍历的输出可知：<code>4,7,2</code>在左子树中，<code>5,3,8,6</code>在右子树中</li>
-<li>前序遍历输出的第二个值是根结点的左子树的根结点，即<code>2</code>是左子树序列<code>4,7,2</code>的根结点，而在<code>2</code>左侧的<code>4,7</code>就是根结点<code>2</code>的左子树中的值了。同理<code>3</code>是根结点的右子树的根结点，<code>5</code>是以<code>3</code>为根结点的树的左子树中的值，<code>8,6</code>是右子树中的值</li>
-<li>下面只需要判断左子树中<code>4,7</code>和右子树中<code>8,6</code>的位置就可以了，易知，<code>4</code>是<code>2</code>的左儿子，<code>7</code>是<code>4</code>的右儿子。<code>6</code>是<code>3</code>的右儿子，<code>8</code>是<code>6</code>的左儿子。</li>
-<li>这是一个递归的过程，没分析一段，就将这一段当做一个完整的树来分析就很容易了</li>
-</ul>
-<p>实现的代码在<a href="https://github.com/michaelyou/data_structure/blob/master/tree.c" target="_blank" rel="external">这里Construct</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/23/剑指offer-QUESTIONS/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/23/剑指offer-QUESTIONS/" itemprop="url">剑指offer-QUESTIONS</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-23T17:14:18+08:00">
-                2015-01-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/面试/" itemprop="url" rel="index">
-                    <span itemprop="name">面试</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##sizeof<br>问：C++里定义一个空的类型，里面没有任何成员变量和成员函数。对该类型求sizeof，得到的结果是多少？</p>
-<p>答：1</p>
-<p>问：为什么不是0？</p>
-<p>答：空类型的实例中不包含任何信息，本来求sizeof应该是0，但是当我们声明该类型的实例的时候，它必须在内存中占有一定的空间，否则无法使用这些实例。至于占用多少内存，由编译器决定。Visual Studio中每个空类型的实例占用1字节的空间。</p>
-<p>问：如果在该类型中添加一个构造函数和析构函数，再对该类型求sizeof，得到的结果又是多少？</p>
-<p>答：和前面一样，还是1。调用构造函数和析构函数只需要知道函数的地址即可，而这些函数的地址只与类型相关，而与类型的实例无关，编译器也不会因为这两个函数而在实例内添加任何额外的信息。</p>
-<p>问：那如果把析构函数标记为虚函数呢？ </p>
-<p>答：C++编译器一旦发现一个类型中有虚函数，就会为该类型生成虚函数表，并在该类型的每一个实例中添加一个虚函数表的指针。在32位的机器上，一个指针占4字节的空间，因此求sizeof得到4；如果是64位的机器，一个指针占8字节的空间，因此求sizeof则得到8。</p>
-<p>##数组与指针<br>运行下面的代码，结果是什么？</p>
-<pre><code>int _tmain(int argc, _TCHAR* argv[])
-{
-    char str1[] = &quot;hello world&quot;;
-    char str2[] = &quot;hello world&quot;;
-
-    char* str3 = &quot;hello world&quot;;
-    char* str4 = &quot;hello world&quot;;
-
-    if(str1 == str2)
-        printf(&quot;str1 and str2 are same.\n&quot;);
-    else
-        printf(&quot;str1 and str2 are not same.\n&quot;);
-
-    if(str3 == str4)
-        printf(&quot;str3 and str4 are same.\n&quot;);
-    else
-        printf(&quot;str3 and str4 are not same.\n&quot;);
-
-    return 0;
-}
-</code></pre><p>str1和str2是两个字符串数组，我们会为它们分配两个长度为12个字节的空间，并把”hello world”的内容<strong><em>分别复制到数组</em></strong>中去。这是两个初始地址不同的数组，因此str1和str2的值也不相同，所以输出的第一行是”str1 and str2 are not same”。</p>
-<p>str3和str4是两个指针，我们无须为它们分配内存以存储字符串的内容，而只需要把它们指向”hello world”在内存中的地址就可以了。由于<strong><em>“hello world”是常量字符串，它在内存中只有一个拷贝，因此str3和str4指向的是同一个地址</em></strong>。所以比较str3和str4的值得到的结果是相同的，输出的第二行是”str3 and str4 are same”。</p>
-<p>##关于(&amp;a + 1)和<em>(a + 1)<br>    main()<br>    {<br>    int a[5]={1,2,3,4,5};<br>    int </em>ptr=(int <em>)(&amp;a+1);<br>    printf(“%d,%d”,</em>(a+1),*(ptr-1));<br>    }<br>程序输出为：2,5</p>
-<p>解释：</p>
-<p><code>*(a+1)</code>其实很简单就是指<code>a[1]</code>,输出为2.</p>
-<p>问题关键就在于第二个点，<code>*(ptr-1)</code>输出为多少？</p>
-<p>解释如下，<code>&amp;a+1</code>不是首地址+1，系统会认为加了一个整个a数组，偏移了整个数组a的大小（也就是5个int的大小）。所以<code>int *ptr=(int *)(&amp;a+1)</code>;其实ptr实际是<code>&amp;(a[5])</code>,也就是<code>a+5</code>.</p>
-<p>原因为何呢？</p>
-<p><code>&amp;a</code>是数组指针，其类型为<code>int(*)[5]</code>;<br>而指针加1要根据指针类型加上一定的值，不同类型的指针+1之后增加的大小不同，a是长度为5的int数组指针，所以要加<code>5*sizeof(int)</code>，所以ptr实际是a[5],但是ptr与<code>（&amp;a+1）</code>类型是不一样的，这点非常重要，所以ptr-1只会减去<code>sizeof(int*)</code>,a，&amp;a的地址是一样的，但意思就不一样了，a是数组首地址，也就是<code>a[0]</code>的地址，&amp;a是对象（数组）首地址，<code>a+1</code>是数组下一元素的地址，即<code>a[1]</code>,<code>&amp;a+1</code>是下一个对象的地址，即<code>a[5]</code>。</p>
+            <p>转载自<a href="http://blog.csdn.net/u012150179/article/details/35774323" target="_blank" rel="external">这里</a></p>
+<p>#1. 设置download_delay</p>
+<p>   他的作用主要是设置下载的等待时间，大规模集中的访问对服务器的影响最大，相当于短时间中增大服务器负载。下载等待时间长，不能满足短时间大规模抓取的要求，太短则大大增加了被ban的几率。如果你的爬虫工作的好好的，突然掉线了，并且得到了类似下面的错误：</p>
+<pre><code>twisted.internet.error.ConnectionRefusedError
+</code></pre><p>不妨试着将download_delay设置的大一点。</p>
+<p>使用注意：</p>
+<p>download_delay可以设置在settings.py中，也可以在spider中设置</p>
+<p>#2. 禁止cookies</p>
+<p>所谓cookies，是指某些网站为了辨别用户身份而储存在用户本地终端（Client Side）上的数据（通常经过加密），禁止cookies也就防止了可能使用cookies识别爬虫轨迹的网站得逞。</p>
+<p>使用：</p>
+<p>在settings.py中设置COOKIES_ENABLES=False。也就是不启用cookies middleware，不向web server发送cookies</p>
+<p>#3. 使用user agent池<br>所谓的user agent，是指包含浏览器信息、操作系统信息等的一个字符串，也称之为一种特殊的网络协议。服务器通过它判断当前访问对象是浏览器、邮件客户端还是网络爬虫。在request.headers可以查看user agent。如下，使用scrapy shell查看：</p>
+<pre><code>scrapy shell http://michaelyou.github.io
+</code></pre><p>输出request.headers可以得到如下信息</p>
+<pre><code>In [1]: request.headers
+Out[1]: 
+{&apos;Accept&apos;: &apos;text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&apos;,
+&apos;Accept-Encoding&apos;: &apos;gzip,deflate&apos;,
+&apos;Accept-Language&apos;: &apos;en&apos;,
+&apos;User-Agent&apos;: &apos;Scrapy/0.24.4 (+http://scrapy.org)&apos;}
+</code></pre><p>由此得到,scrapy本身是使用Scrapy/0.24.4来表明自己身份的。这也就暴露了自己是爬虫的信息。解决方法如下：</p>
+<p>首先编写自己的UserAgentMiddle中间件，在spider目录下新建rotate_useragent.py,代码如下：</p>
+<pre><code># -*-coding:utf-8-*-
+
+from scrapy import log
+
+&quot;&quot;&quot;避免被ban策略之一：使用useragent池。
+
+使用注意：需在settings.py中进行相应的设置。
+&quot;&quot;&quot;
+
+import random
+from scrapy.contrib.downloadermiddleware.useragent import UserAgentMiddleware
+
+class RotateUserAgentMiddleware(UserAgentMiddleware):
+
+    def __init__(self, user_agent=&apos;&apos;):
+        self.user_agent = user_agent
+
+    def process_request(self, request, spider):
+        ua = random.choice(self.user_agent_list)
+        if ua:
+            #显示当前使用的useragent
+            print &quot;********Current UserAgent:%s************&quot; %ua
+
+            #记录
+            log.msg(&apos;Current UserAgent: &apos;+ua, level=&apos;INFO&apos;)
+            request.headers.setdefault(&apos;User-Agent&apos;, ua)
+
+    #the default user_agent_list composes chrome,I E,firefox,Mozilla,opera,netscape
+    #for more user agent strings,you can find it in http://www.useragentstring.com/pages/useragentstring.php
+    user_agent_list = [\
+        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 &quot;
+        &quot;(KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1&quot;,
+        &quot;Mozilla/5.0 (X11; CrOS i686 2268.111.0) AppleWebKit/536.11 &quot;
+        &quot;(KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 &quot;
+        &quot;(KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 &quot;
+        &quot;(KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.1 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.77.34.5 Safari/537.1&quot;,
+        &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1084.9 Safari/536.5&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.0) AppleWebKit/536.5 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1084.36 Safari/536.5&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (Windows NT 5.1) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_0) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1061.0 Safari/536.3&quot;,
+        &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.24 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24&quot;,
+        &quot;Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 &quot;
+        &quot;(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24&quot;
+       ]
+</code></pre><p>建立user agent池（user_agent_list）并在每次发送request之前从agent池中随机选取一项设置request的User_Agent。编写的UserAgent中间件的基类为UserAgentMiddle。</p>
+<p>除此之外，要在settings.py(配置文件)中禁用默认的useragent并启用重新实现的User Agent。配置方法如下：</p>
+<p>#取消默认的useragent,使用新的useragent<br>    DOWNLOADER_MIDDLEWARES = {<br>            ‘scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware’ : None,<br>            ‘CSDNBlogCrawlSpider.spiders.rotate_useragent.RotateUserAgentMiddleware’ :400<br>        }</p>
+<p>#4. 使用IP池<br>web server应对爬虫的策略之一就是直接将你的IP或者是整个IP段都封掉禁止访问，这时候，当IP封掉后，转换到其他的IP继续访问即可。</p>
+<p>可以使用Scrapy+Tor+polipo</p>
+<p>配置方法与使用教程请点<a href="http://pkmishra.github.io/blog/2013/03/18/how-to-run-scrapy-with-TOR-and-multiple-browser-agents-part-1-mac/" target="_blank" rel="external">这里</a>。</p>
+<p>#5. 分布式爬取<br>有时间再补充</p>
 
           
         
@@ -2359,7 +2046,7 @@ int main(int argc, char **argv)
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/19/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/21/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/19/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/21/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2405,7 +2092,7 @@ int main(int argc, char **argv)
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">218</span>
+                <span class="site-state-item-count">203</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
