@@ -286,843 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/15/删除list里的重复元素/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/15/删除list里的重复元素/" itemprop="url">删除list里的重复元素</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-15T14:21:26+08:00">
-                2015-03-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##方法一：先排序后比较大小</p>
-<pre><code>if List:
-    List.sort()
-last = List[-1]
-for i in range(len(List)-2, -1, -1):
-    if last==List[i]: 
-        del List[i]
-    else: 
-        last=List[i]
-</code></pre><p>问题：为什么要从后往前迭代呢？我们可以从list[0]开始啊，代码如下：</p>
-<pre><code>if List:
-    List.sort()
-begin = List[0]
-for i in range(1, len(list)):
-    if begin==List[i]: 
-        del List[i]
-    else: 
-        begin=List[i]
-</code></pre><p>运行一下，报错如下：</p>
-<pre><code>IndexError: list index out of range
-</code></pre><p>数组访问越界了！why？</p>
-<p>我们调用del删除list里的元素，相应的list的长度也会自动减小，但我们迭代的范围range(1, len(list))是一开始就计算好的，所以必然会越界。比如说：</p>
-<pre><code>li = [1,1,2,2,3,3,3,4,5,6]
-</code></pre><p>调用len计算得到li的长度为10，range(1,10)得到我们迭代的序列是1-9，但是当我们删除了li中的重复元素1,2,3之后，li的长度只剩下了6，可是我们依然会访问li[7]，因为访问序列一开始就计算好了，所以必然造成了越界。</p>
-<p>那从后向前是如何避免越界的呢？从后向前遍历，删除元素后，只是把这个元素之后的已经没有重复元素的序列向前移动一位，数组依然在变短，但这个时候是不会影响到我们向前遍历的。</p>
-<p>##方法二：使用set</p>
-<pre><code>&gt;&gt;&gt; li = [1,2,4,5,7,8,2,3,4,56,7]
-&gt;&gt;&gt; list(set(li))
-&gt;&gt;&gt; [1, 2, 3, 4, 5, 7, 8, 56]
-</code></pre><p>##方法三：使用列表综合</p>
-<pre><code>l1 = [&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;b&apos;,&apos;c&apos;,&apos;a&apos;,&apos;a&apos;]  
-l2 = []  
-[l2.append(i) for i in l1 if not i in l2]  
-print l2
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/13/tcp是流的一些思考-拆包和粘包/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/13/tcp是流的一些思考-拆包和粘包/" itemprop="url">tcp是流的一些思考--拆包和粘包</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-13T16:19:01+08:00">
-                2015-03-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
-                    <span itemprop="name">TCP/IP</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>假设应用层协议是http</p>
-<p>我从浏览器中访问了一个网站，网站服务器给我发了200k的数据。建立连接的时候，通告的MSS是50k，所以为了防止ip层分片，tcp每次只会发送50k的数据，一共发了4个tcp数据包。如果我又访问了另一个网站，这个网站给我发了100k的数据，这次tcp会发出2个包，问题是，客户端收到6个包，怎么知道前4个包是一个页面，后两个是一个页面。既然是tcp将这些包分开了，那tcp会将这些包重组吗，它送给应用层的是什么？</p>
-<p>这是我自己想的一个场景，正式一点讲的话，这个现象叫<strong>拆包</strong>。</p>
-<p>我们再考虑一个问题。</p>
-<p>tcp中有一个negal算法，用途是这样的：通信两端有很多小的数据包要发送，虽然传送的数据很少，但是流程一点没少，也需要tcp的各种确认，校验。这样小的数据包如果很多，会造成网络资源很大的浪费，negal算法做了这样一件事，当来了一个很小的数据包，我不急于发送这个包，而是等来了更多的包，将这些小包组合成大包之后一并发送，不就提高了网络传输的效率的嘛。这个想法收到了很好的效果，但是我们想一下，如果是分属于两个不同页面的包，被合并在了一起，那客户那边如何区分它们呢？</p>
-<p>这就是<strong>粘包</strong>问题。</p>
-<p>从粘包问题我们更可以看出为什么tcp被称为流协议，因为它就跟水流一样，是没有边界的，没有消息的边界保护机制，所以tcp只有流的概念，没有包的概念。</p>
-<p>我们还需要有两个概念</p>
-<ul>
-<li><strong>长连接</strong>： Client方与Server方先建立通讯连接，连接建立后不断开， 然后再进行报文发送和接收。</li>
-<li><strong>短连接</strong>：Client方与Server每进行一次报文收发交易时才进行通讯连接，交易完毕后立即断开连接。此种方式常用于一点对多点  通讯，比如多个Client连接一个Server.</li>
-</ul>
-<p>下面我们揭晓答案：</p>
-<ol>
-<li>我想象的关于粘包的场景是不对的，http连接是短连接，请求之后，收到回答，立马断开连接，不会出现粘包。</li>
-<li>拆包现象是有可能存在的</li>
-</ol>
-<p>##处理拆包<br>既然拆包现象可能存在，如果遇到了，那么该如何处理呢？这里提供两种方法</p>
-<ol>
-<li>通过包头+包长+包体的协议形式，当服务器端获取到指定的包长时才说明获取完整。 </li>
-<li>指定包的结束标识，这样当我们获取到指定的标识时，说明包获取完整。 </li>
-</ol>
-<p>##处理粘包<br>我们从上面的分析看到，虽然像http这样的短连接协议不会出现粘包的现象，但是一旦建立了长连接，粘包还是有可能会发生的。</p>
-<p>网上的处理方法有很多，这里不列举了，但大家看这些处理方法，都会发现，这些方法并不好，都会做一些牺牲。比如禁用negal算法，就是以网络性能作为牺牲。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/一些阿里面试题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/12/一些阿里面试题/" itemprop="url">一些阿里面试题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T20:17:38+08:00">
-                2015-03-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/面试/" itemprop="url" rel="index">
-                    <span itemprop="name">面试</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##内存泄露最终的结果在操作系统中的表现是什么？<br>内存泄漏形象的比喻是“操作系统可提供给所有进程的存储空间正在被某个进程榨干”，最终结果是<strong>程序运行时间越长，占用存储空间越来越多，最终用尽全部存储空间，整个系统崩溃。</strong>所以“内存泄漏”是从操作系统的角度来看的。这里的存储空间并不是指物理内存，而是指虚拟内存大小，这个虚拟内存大小取决于磁盘交换区设定的大小。由程序申请的一块内存，如果没有任何一个指针指向它，那么这块内存就泄漏了。</p>
-<p>从用户使用程序的角度来看，内存泄漏本身不会产生什么危害，作为一般的用户，根本感觉不到内存泄漏的存在。<strong>真正有危害的是内存泄漏的堆积，这会最终消耗尽系统所有的内存。</strong>从这个角度来说，一次性内存泄漏并没有什么危害，因为它不会堆积，而隐式内存泄漏危害性则非常大，因为较之于常发性和偶发性内存泄漏它更难被检测到。</p>
-<p>##malloc-free和new-delete的区别</p>
-<p>malloc-free是c/c++中的函数，new-delete是c++中的运算符</p>
-<p>##怎么知道http首部结束了？</p>
-<p>http首部由一个空行结束，也就是<code>\r\n\r\n</code>，表明了首部的结束和实体主体的开始。</p>
-<p>实体的主体部分包含一个由任意数据组成的数据块。并不是所有的报文都包含实体的主体部分。如<code>GET请求就不包含实体</code>。</p>
-<p>##tcpdump抓包是在哪一层？</p>
-<p>Linux下抓取报文的位置，是在链路层处理报文之后，交给网络层之前的位置。</p>
-<p>##同一端口可否同时被两个应用监听？<br>不可以，但是fork的子进程用netstat看确实和父进程监听在同一端口，但是这和两个独立的进程应该是有所区别的</p>
-<p>同一机器上的应用如果监听在同一端口，那socket的四元组就是一样的了，这是不可能的</p>
-<p>##查看命令的帮助文档的命令</p>
-<ul>
-<li>man是查看本地      </li>
-<li>info是查看在线</li>
-</ul>
-<p>##谁在决定是使用Big-endian，还是Little-endian？</p>
-<p>在计算存储中是CPU，也就是CPU的体系结构，还是有点抽象啊。比如x86的是小端，power-pc的是大端。</p>
-<p>##线性表的顺序结构和链表结构各有什么优缺点</p>
-<ul>
-<li><p>顺序结构：</p>
-<ul>
-<li>优点：易于查询，索引快 list[n]这样的操作，O(1)复杂度</li>
-<li>缺点：扩展性弱，不易删除、添加。</li>
-</ul>
-</li>
-<li><p>链表结构：</p>
-<ul>
-<li>优点：扩展性强，易于删除、添加</li>
-<li>缺点：不易于查询，索引慢，list[n]这样的操作，复杂度为O(n)</li>
-</ul>
-</li>
-</ul>
-<p>##shell的if和for语句</p>
-<p>if语句</p>
-<pre><code>if condition;
-then
-    commands
-fi
-</code></pre><p>for语句</p>
-<pre><code>for i in ***; do
-commands
-done
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/awk/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/12/awk/" itemprop="url">awk</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T20:15:22+08:00">
-                2015-03-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>awk是一款设计用于数据流的工具，可以进行高级文本处理。它颇有玩头的原因就在于可以对行和列进行操纵。awk有很多内建的功能，比如说数组，函数等，这是它和c语言的相同之处，灵活性是awk的最大优势。 另外，awk是一门语言哦，真的是一门语言，在<a href="http://news.163.com/15/0309/11/AK8TFD1P00014U9R.html" target="_blank" rel="external">TIOBE编程语言排行榜</a>中排名还在50之前呢。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/sed/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/12/sed/" itemprop="url">sed</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T20:13:45+08:00">
-                2015-03-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>sed是<strong>流编辑器</strong>(stream editor)的缩写。它是文本处理中不可或缺的工具，能够配合正则表达式使用，功能不同凡响。sed的一个众所周知的用法是进行文本替换</p>
-<p>##sed可以替换给定文本中的字符串<br>        sed ‘s/log/huhu/‘ ./time.sh //将log替换为huhu<br>或者</p>
-<pre><code>cat time.sh | sed &apos;s/log/huhu/&apos;  
-</code></pre><p>该命令从stdin读取输入。</p>
-<blockquote>
-<p>如果你用的是vi编辑器，你会发现它用于替换文本的命令和sed非常相似</p>
-</blockquote>
-<p>##保存被sed替换后的文件</p>
-<p>上面的命令，sed会打印出字符串被替换之后的文件，但是对于源文件，什么事情都没有发生，源文件内的字符串并没有被替换，如果想保存替换后的文件怎么办呢？</p>
-<p>这里分两个点来说</p>
-<ol>
-<li><p>想保留源文件，那么直接将输出重定向，生成新的文件即可</p>
-<pre><code>sed &apos;s/log/huhu/&apos; ./time.sh &gt; newfile
-</code></pre></li>
-<li><p>源文件不需要了，就在源文件上修改</p>
-<pre><code>sed -i &apos;s/log/huhu/&apos; ./time.sh
-</code></pre><p>加上-i参数后，就可以将替换结果保存在源文件</p>
-</li>
-</ol>
-<p>##替换全部，而不是每一行的第一个</p>
-<p>上面两个命令，细心的小伙伴会发现，它只替换每一行第一处符合模式的内容，如果要替换所有的内容，我们需要在命令的末尾加上参数g</p>
-<pre><code>sed &apos;s/log/huhu/g&apos; ./time.sh
-</code></pre><p>后缀/g意味着sed会替换每一处匹配。但是有时候我们只需要从第n处匹配开始替换，对此，我们可以使用/Ng选项。</p>
-<p>例如</p>
-<pre><code>[root@pc105 test]# echo thisthisthisthis | sed &apos;s/this/THIS/2g&apos;
-thisTHISTHISTHIS
-[root@pc105 test]# echo thisthisthisthis | sed &apos;s/this/THIS/3g&apos;
-thisthisTHISTHIS
-[root@pc105 test]# echo thisthisthisthis | sed &apos;s/this/THIS/4g&apos;
-thisthisthisTHIS
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/print0-xargs/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1910,6 +1073,809 @@ int main() {
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/linux系统性能调试-free命令/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/12/linux系统性能调试-free命令/" itemprop="url">linux系统性能调试--free命令</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T10:36:35+08:00">
+                2015-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>使用free命令可以查看系统中内存空间的大小。内存是以KB为单位来衡量的。例如用户可以用free命令来获取系统内存空间的大小信息，命令如下：</p>
+<pre><code>$ free 
+
+              Total  used   free  shared  buffers  cached 
+Mem:         95772  86748   9024   54480     5796   36164 
+-/+ buffers/cache:  44788  50984 
+Swap:       136512   7000 129512 
+</code></pre><p>在上面显示内容中：</p>
+<ul>
+<li>Mem行中的total栏显示了当前Linux正在使用的RAM总量。</li>
+<li>used栏显示的是被占用的内存空间，但Mem行与这一栏结合并不能产生最好的分析结果，因为其中包含了Linux分配给磁盘缓冲区的一部分分区。在大多数系统中，used栏显示的值和total栏的值相当。然而，我们可以核对used栏、-/+buffers/cache行对应的值来查看有多少内存处于使用状态（used栏、Swap栏对应的数值）。这一部分是作为内存来用的磁盘，而磁盘速度比内存慢，所以最好优先使用物理内存，交换内存则较少使用。–</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/10/网络编程调试/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/10/网络编程调试/" itemprop="url">网络编程调试</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-10T17:05:52+08:00">
+                2015-03-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##记录网络服务名和它们对应使用的端口号及协议</p>
+<pre><code>cat /etc/services
+</code></pre><p>##查看某个端口号的使用状态</p>
+<pre><code>lsof -i :6000 （查看哪个进程正在监听6000这个端口）
+lsof -i TCP:6000 （只显示监听此端口的TCP连接，上面不加选项的就是指TCP&amp;UDP）
+</code></pre><p>lsof命令还可以用来显示谁在使用某个文件或文件夹，例如：</p>
+<pre><code>lsof  /root/michael/unp（会显示谁当前在用/root/michael/unp文件夹）
+</code></pre><p>##netstat<br>netstat 默认情况下，绑定在INADDR_ANY的服务器的套接字是不列出来的，不过可以用 -a 选项改变默认设置（解释：不加-a选项，netstat命令不显示LISTEN状态的条目，所以如果需要显示LISTEN，就需要加上-a）。</p>
+<pre><code>netstat -apt（-p选项表示输出PID，-t选项表示监听tcp端口），这个命令可以很方便地显示套接字上程序的PID和名字
+
+netstat -apu：显示监听在udp端口的信息
+
+netstat -napt（加上-n选项表示以数字形式表示地址和端口号，而不是别名）
+
+netstat -nr：可以显示路由表
+
+netstat -i：可以获得计算机基本的网络接口信息
+</code></pre><p><strong>这些命令输出中的<code>*</code>是表示通配地址（INADDR_ANY）</strong></p>
+<p>Netstat 命令用于显示各种网络相关信息，如网络连接，路由表，接口状态 (Interface Statistics)，masquerade 连接，多播成员 (Multicast Memberships) 等等。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/09/百度的一些面试题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/09/百度的一些面试题/" itemprop="url">百度的一些面试题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-09T22:00:33+08:00">
+                2015-03-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>#ping是工作在哪一层的，用的什么协议<br>ping工作在IP层，用的是ICMP协议。traceroute也是基于ICMP协议</p>
+<p>#常用的即时通讯软件用的是什么协议</p>
+<ol>
+<li>QQ主要采用UDP，某些情况下采用TCP。</li>
+<li>其他IM大多数时候采用TCP，涉及到音频、视频传输会用到UDP</li>
+</ol>
+<p>#http状态码</p>
+<ul>
+<li>首位为1：这一类型的状态码，代表请求已被接受，需要继续处理。这类响应是临时响应，只包含状态行和某些可选的响应头信息，并以空行结束。由于 HTTP/1.0 协议中没有定义任何 1xx 状态码，所以除非在某些试验条件下，服务器禁止向此类客户端发送 1xx 响应。</li>
+<li>首位为2：成功</li>
+<li>首位为3：重定向</li>
+<li>首位为4：客户方错误</li>
+<li>首位为5：服务器错误</li>
+</ul>
+<p>#设有1000个元素,用二分法查找时,最大比较次数是</p>
+<p>10次 = [log2(1000)] + 1，方括号是取整等于9</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/07/epoll为什么高效/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/07/epoll为什么高效/" itemprop="url">epoll为什么高效</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-07T22:22:39+08:00">
+                2015-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##无需遍历整个fd集合<br>首先回忆一下select 模型，当有I/O 事件到来时，select 通知应用程序有事件到了快去处理，而应用程序必须轮询所有的fd集合，测试每个fd是否有事件发生，并处理事件；代码像下面这样：</p>
+<pre><code>int res = select(maxfd+1, &amp;readfds,NULL, NULL, 120);
+if (res &gt; 0)
+{
+    for (int i = 0; i &lt;MAX_CONNECTION; i++)
+    {
+       if (FD_ISSET(allConnection[i], &amp;readfds))
+       {
+           handleEvent(allConnection[i]);
+       }
+    }
+}
+// if(res == 0) handle timeout, res &lt; 0handle error
+</code></pre><p>Epoll 不仅会告诉应用程序有I/0事件到来，还会告诉应用程序相关的信息，这些信息是应用程序填充的，因此根据这些信息应用程序就能直接定位到事件，而不必遍历整个fd集合。</p>
+<pre><code>int res = epoll_wait(epfd, events, 20,120);
+for (int i = 0; i &lt; res;i++)
+{
+    handleEvent(events[n]);
+}
+</code></pre><p>##Epoll 关键数据结构<br>Epoll 速度快和其数据结构密不可分，其关键数据结构就是：</p>
+<pre><code>struct epoll_event {
+    __uint32_tevents;      // Epoll events
+    epoll_data_tdata;      // User data variable
+};
+typedef union epoll_data {
+    void *ptr;
+    int fd;
+    __uint32_t u32;
+    __uint64_t u64;
+} epoll_data_t;
+</code></pre><p>可见epoll_data 是一个 union 结构体 , 借助于它应用程序可以保存很多类型的信息 :fd 、指针等等。有了它，应用程序就可以直接定位目标了。</p>
+<p>别小看了这些效率的提高,在一个大规模并发的服务器中,轮询IO是最耗时间的操作之一。</p>
+<p>对比最早给出的阻塞IO的处理模型, 可以看到采用了多路复用IO之后, 程序可以自由的进行自己除了IO操作之外的工作, 只有到IO状态发生变化的时候由多路复用IO进行通知, 然后再采取相应的操作, 而不用一直阻塞等待IO状态发生变化了.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/07/epoll的事件触发方式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/07/epoll的事件触发方式/" itemprop="url">epoll的事件触发方式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-07T21:34:13+08:00">
+                2015-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>参考自<a href="http://blog.chinaunix.net/uid-24517549-id-4051156.html" target="_blank" rel="external">这里</a></p>
+<p>假如有这样一个例子：</p>
+<ol>
+<li>我们已经把一个用来从管道中读取数据的文件句柄(RFD)添加到epoll描述符</li>
+<li>这个时候从管道的另一端被写入了2KB的数据</li>
+<li>调用epoll_wait()，并且它会返回RFD，说明它已经准备好读取操作</li>
+<li>然后我们读取了1KB的数据</li>
+<li>调用epoll_wait()……</li>
+</ol>
+<p>##Edge Triggered 工作模式：<br>如果我们在第1步将RFD添加到epoll描述符的时候使用了EPOLLET标志，那么在第5步调用<code>epoll_wait()</code>之后将有可能会挂起，因为剩余的数据还存在于文件的输入缓冲区内，而且数据发出端还在等待一个针对已经发出数据的反馈信息。只有在监视的文件句柄上发生了某个事件的时候 ET 工作模式才会汇报事件。因此在第5步的时候，调用者可能会放弃等待仍在存在于文件输入缓冲区内的剩余数据。在上面的例子中，会有一个事件产生在RFD句柄上，因为在第2步执行了一个写操作，然后，事件将会在第3步被销毁。</p>
+<p>因为第4步的读取操作没有读空文件输入缓冲区内的数据，因此我们在第5步调用 <code>epoll_wait()</code>完成后，是否挂起是不确定的。epoll工作在ET模式的时候，必须使用<strong>非阻塞套接口</strong>，以避免由于一个文件句柄的阻塞读/阻塞写操作把处理多个文件描述符的任务饿死。最好以下面的方式调用ET模式的epoll接口，在后面会介绍避免可能的缺陷。</p>
+<ol>
+<li>基于非阻塞文件句柄</li>
+<li>只有当read()或者write()返回EAGAIN时才需要挂起，等待。但这并不是说每次read()时都需要循环读，直到读到产生一个EAGAIN才认为此次事件处理完成，当read()返回的读到的数据长度小于请求的数据长度时，就可以确定此时缓冲中已没有数据了，也就可以认为此事读事件已处理完成。</li>
+</ol>
+<p>##Level Triggered 工作模式<br>相反的，以LT方式调用epoll接口的时候，它就相当于一个速度比较快的poll()，并且无论后面的数据是否被使用，因此他们具有同样的职能。因为即使使用ET模式的epoll，在收到多个chunk的数据的时候仍然会产生多个事件。调用者可以设定EPOLLONESHOT标志，在 <code>epoll_wait()</code>收到事件后epoll会与事件关联的文件句柄从epoll描述符中禁止掉。因此当EPOLLONESHOT设定后，使用带有 EPOLL_CTL_MOD标志的<code>epoll_ctl()</code>处理文件句柄就成为调用者必须作的事情。</p>
+<p>##总结<br>LT(level triggered水平触发或条件触发)是epoll缺省的工作方式，并且同时支持block和no-block socket.在这种做法中，内核告诉你一个文件描述符是否就绪了，然后你可以对这个就绪的fd进行IO操作。如果你不作任何操作，内核还是会继续通知你的，所以，这种模式编程出错误可能性要小一点。传统的select/poll都是这种模型的代表．</p>
+<p>ET (edge-triggered边缘触发或事件触发)是高速工作方式，只支持no-block socket，它效率要比LT更高。ET与LT的区别在于，当一个新的事件到来时，ET模式下当然可以从<code>epoll_wait</code>调用中获取到这个事件，<strong>可是如果这次没有把这个事件对应的套接字缓冲区处理完，在这个套接字中没有新的事件再次到来时，在ET模式下是无法再次从epoll_wait调用中获取这个事件的。而LT模式正好相反，只要一个事件对应的套接字缓冲区还有数据，就总能从<code>epoll_wait</code>中获取这个事件。</strong><br>因此，LT模式下开发基于epoll的应用要简单些，不太容易出错。而在ET模式下事件发生时，如果没有彻底地将缓冲区数据处理完，则会导致缓冲区中的用户请求得不到响应。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -1960,7 +1926,7 @@ int main() {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">199</span>
+                <span class="site-state-item-count">194</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

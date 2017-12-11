@@ -286,816 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/27/CGI和WSGI/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/27/CGI和WSGI/" itemprop="url">CGI和WSGI</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-27T08:50:26+08:00">
-                2015-04-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>我对 CGI 的理解是利用程序的标准输入输出流，完成 HTTP 通信。HTTP 是文本协议，每次请求的文本以标准输入流的形式进入服务器端 CGI 程序，创建进程；然后进程的标准输出流作为响应 。</p>
-<p>WSGI 和 CGI 原理极其相似，但是是完全不同的实现。WSGI 是 Python 专用的协议，也是输入&amp;输出的方式传输文本流，但不是创建进程，而是对一个 WSGI 程序（callable 的对象，可以是函数也可以是实现了 <strong>call</strong> 的对象），将 request 作为参数传入（不再是纯文本，而是经过包装），同样将经过包装的 response 作为响应返回。request/response 的包装由 Python 标准库提供。</p>
-<p>二者都是标准，都有诸多实现。CGI 最为广泛，无论是二进制程序、perl 脚本、python 脚本还是 PHP 都可以以这样的原理提供 HTTP 服务；WSGI 在 Python 界也是公共标准，主流 Web 框架基本都有实现，例如 Bottle 的 bottle.Bottle （Application 对象）就实现了 WSGI 协议（见 <strong>call</strong> 方法）。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/26/django的QuerySets/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/26/django的QuerySets/" itemprop="url">Django的QuerySets</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-26T18:53:25+08:00">
-                2015-04-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>对象关系映射 (ORM) 使得与SQL数据库交互更为简单，不过也被认为效率不高，比原始的SQL要慢。<br>要有效的使用ORM，意味着需要多少要明白它是如何查询数据库的。本文我将重点介绍如何有效使用 <a href="https://docs.djangoproject.com/en/dev/topics/db/models/" target="_blank" rel="external">Django ORM</a>系统访问中到大型的数据集。</p>
-<p>##Django的queryset是惰性的</p>
-<p><strong>Django的queryset对应于数据库的若干记录（row）</strong>，通过可选的查询来过滤。例如，下面的代码会得到数据库中名字为‘Dave’的所有的人:<br>?</p>
-<pre><code>person_set = Person.objects.filter(first_name=&quot;Dave&quot;)
-</code></pre><p>上面的代码并没有运行任何的数据库查询。你可以使用person_set，给它加上一些过滤条件，或者将它传给某个函数，这些操作都不会发送给数据库。这是对的，因为数据库查询是显著影响web应用性能的因素之一。<br>要真正从数据库获得数据，你需要遍历queryset:<br>?</p>
-<pre><code>for person in person_set:
-    print(person.last_name)
-</code></pre><p>##Django的queryset是具有cache的</p>
-<p>当你遍历queryset时，所有匹配的记录会从数据库获取，然后转换成Django的model。这被称为<code>执行</code>（evaluation）。这些model会保存在queryset内置的cache中，这样如果你再次遍历这个queryset，你不需要重复运行通用的查询。<br>例如，下面的代码只会执行一次数据库查询：</p>
-<pre><code>pet_set = Pet.objects.filter(species=&quot;Dog&quot;)
-# The query is executed and cached.
-for pet in pet_set:
-    print(pet.first_name)
-# The cache is used for subsequent iteration.
-for pet in pet_set:
-    print(pet.last_name)
-</code></pre><p>##if语句会触发queryset的执行</p>
-<p>queryset的cache最有用的地方是可以有效的测试queryset是否包含数据，只有有数据时才会去遍历：</p>
-<pre><code>restaurant_set = Restaurant.objects.filter(cuisine=&quot;Indian&quot;)
-# `if`语句会触发queryset的执行。
-if restaurant_set:
-    # 遍历时用的是cache中的数据
-    for restaurant in restaurant_set:
-        print(restaurant.name)
-</code></pre><p>##QuerySet的常用API</p>
-<p>###去重<br>distinct方法的作用和SQL的distinct的作用是一样的，这里就不多说了</p>
-<pre><code>Author.objects.distinct()
-</code></pre><p>###序列化为JSON<br>和前端进行交互的时候，序列化成XML的情况还是比较少的，但是序列化成JSON格式的字符串的情况就比较多了，Django的ORM框架提供了values的方法来把实体序列化成json</p>
-<pre><code>Blog.objects.values()
-</code></pre><p>###序列化成数组<br>把对象序列化成数组元素的情况还真的是用的比较少</p>
-<pre><code>Entry.objects.values_list(&apos;id&apos;, &apos;headline&apos;)
-</code></pre><p>###从主表获取外键表的对象<br>在主表的实体上使用filter，然后再通过主表的实体获取外键的时候，Django会把主表的实体一并查询出来。但是有时候我们只希望从主表开始取数，但是只取外键表实体的信息，这个时候就可以用select_related方法了。第一个参数是主表的外键字段名称，第二个字段嘛。。。照抄就是了</p>
-<pre><code>g = Group.objects.select_related(&apos;room&apos;, &apos;subject&apos;)
-</code></pre><p>当然，也会有只希望拿主表信息，不想把外键字段取回来的情况，把参数设置为none就好了</p>
-<pre><code>without_relations = queryset.select_related(None)
-</code></pre><p>###处理从表对象<br>对于外键表来说，我们可以采用select_related的方法来进行处理。但是对于从表属性来说，就要用到另外一种方法了。（toppings是多对多的属性）</p>
-<pre><code>Pizza.objects.all().prefetch_related(&apos;toppings&apos;)
-</code></pre><p>同样的，不获取外键对象的话把参数设置为none就好了</p>
-<pre><code>non_prefetched = qs.prefetch_related(None)
-</code></pre><p>###ORM和SQL的混合：Extra方法<br>先看看Extra方法的一些例子</p>
-<p>####selec参数<br>    Entry.objects.extra(select={‘is_recent’: “pub_date &gt; ‘2006-01-01’”})</p>
-<p>####where参数<br>    Entry.objects.extra(where=[“foo=’a’ OR bar = ‘a’”, “baz = ‘a’”])</p>
-<p>####order_by参数<br>    q = q.extra(order_by = [‘-is_recent’])</p>
-<p>####paramas参数<br>    Entry.objects.extra(where=[‘headline=%s’], params=[‘Lennon’])<br>其实从官方给的例子看起来，Extra方法主要就是用于在ORM生成SQL的过程中内嵌SQL语句。例如希望在select 背后加入一句sql，例如select …,(select a from …)这种情况下的时候，用Extra方法就很好解决了</p>
-<p>###使用Defer和Only来过滤字段<br>select_related和prefetch_related方法分别用来过滤实体的外键属性和多对多属性，对于主表的字段属性过滤可以采用defer方法来少查询一些字段</p>
-<pre><code>Entry.objects.defer(&quot;headline&quot;, &quot;body&quot;)
-</code></pre><p>defer是排除哪些字段，而only是只查询哪些字段</p>
-<pre><code>Person.objects.only(&quot;name&quot;)
-</code></pre><p>###使用select_for_update来简化更新的过程<br>一般更新实体的时候，我们需要先把实体先查询出来，然后做出相应的更新，再做一次save操作</p>
-<pre><code>entity=Entry.objects.filter(...)[0]
-entity.name=xx
-entity.save()
-</code></pre><p>这个过程显得稍微有点繁琐，所以可以采用一种select_for_update来进行一些简化</p>
-<pre><code>entries = Entry.objects.select_for_update().filter(author=request.user)
-</code></pre><p>###使用get_or_create来简化创建对象的过程<br>同样的，有时候我们会需要先查询对象在不在数据库里面存储，假如没有的话就创建，有的话就取出</p>
-<pre><code>obj, created = Person.objects.get_or_create(first_name=&apos;John&apos;, last_name=&apos;Lennon&apos;,
-              defaults={&apos;birthday&apos;: date(1940, 10, 9)})
-</code></pre><p>不过个人觉得这个方法用到的情况很少。。。。</p>
-<p>###批量插入数据<br>    Entry.objects.bulk_create([<br>        Entry(headline=”Django 1.0 Released”),<br>        Entry(headline=”Django 1.1 Announced”),<br>        Entry(headline=”Breaking: Django is awesome”)<br>      ])<br>这玩意真的挺有用，具体的就不细说了</p>
-<p>###使用Count方法来进行统计<br>虽然做统计的话可以先把过滤完的对象查询出来，然后再len(xx)一下，但是这种做法会把数据库里面一堆一堆的暑假都查出来的(￣◇￣;)，所以当需要做count操作的时候还是老老实实的用sql的count语句，在Django里面的话做法如下</p>
-<pre><code>Entry.objects.filter(headline__contains=&apos;Lennon&apos;).count()
-</code></pre><p>###判断数据是否存在:exists<br>    rs=some_queryset.filter(pk=entry.pk).exists()</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/22/No-handlers-could-be-found-for-logger-keystoneclient-httpclient/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/22/No-handlers-could-be-found-for-logger-keystoneclient-httpclient/" itemprop="url">No handlers could be found for logger keystoneclient.httpclient</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-22T15:59:05+08:00">
-                2015-04-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/openstack/" itemprop="url" rel="index">
-                    <span itemprop="name">openstack</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>今天研究keystone的admin-url和public-url的问题，就把keystone的endpoint删掉了，再创建endpoint的时候就出现了这个错误，试着敲别的命令，发现也不能正常工作。</p>
-<p>如果你按照官方文档完整装过机的话，应该马上能定位到问题，但是苦逼的我并没有啊，在网上找到都是什么driver和添加环境变量的解决方法，根本没用。实在没办法，我就重装了一遍keystone，最后让我发现了问题所在。</p>
-<p>我们装keystone的时候，在创建service和endpoint之前，是需要导出<code>OS_SERVICE_TOKEN</code>和<code>OS_SERVICE_ENDPOINT</code>这两个环境变量的,这两个环境变量的值其实就临时充当了我们将要创建的service和endpoint，为什么是临时呢，因为export的环境变量在你关闭当前窗口之后就消失了，所以在导出了这两个环境变量之后我们需要立即创建service和endpoint。大家明白了吧，如果你遇到了这个错误，将这辆个环境变量导出就行了</p>
-<pre><code>export OS_SERVICE_TOKEN=ADMIN_TOKEN(和keystone.cfg中的admin_token值相同)
-export OS_SERVICE_ENDPOINT=http://controller:35357/v2.0
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/17/python去字典值的正确方法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/17/python去字典值的正确方法/" itemprop="url">python取字典值的正确方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-17T13:29:57+08:00">
-                2015-04-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>直接贴代码，代码用的是django的HttpRequest类的META属性，META是一个字典，key是http请求头的一些内容</p>
-<pre><code># BAD!    
-def ua_display_bad(request):
-    ua = request.META[&apos;HTTP_USER_AGENT&apos;]  # Might raise KeyError!
-    return HttpResponse(&quot;Your browser is %s&quot; % ua)
-
-# GOOD (VERSION 1)
-def ua_display_good1(request):
-    try:
-        ua = request.META[&apos;HTTP_USER_AGENT&apos;]
-    except KeyError:
-        ua = &apos;unknown&apos;
-    return HttpResponse(&quot;Your browser is %s&quot; % ua)
-
-# GOOD (VERSION 2)
-def ua_display_good2(request):
-    #key不存在，则用第二个参数赋值
-    ua = request.META.get(&apos;HTTP_USER_AGENT&apos;, &apos;unknown&apos;)
-    return HttpResponse(&quot;Your browser is %s&quot; % ua)
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/16/django-admin自定义字段标签/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/16/django-admin自定义字段标签/" itemprop="url">Django--admin自定义字段标签</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-16T21:40:45+08:00">
-                2015-04-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在编辑页面中，每个字段的标签都是从模块的字段名称生成的。 规则很简单： 用空格替换下划线；首字母大写。例如：Book模块中publication_date的标签是Publication date。</p>
-<p>然而，字段名称并不总是贴切的。有些情况下，你可能想自定义一个标签。 你只需在模块中指定verbose_name。</p>
-<p>举个例子，说明如何将Author.email的标签改为e-mail，中间有个横线。</p>
-<pre><code>class Author(models.Model):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=40)
-    email = models.EmailField(blank=True, verbose_name=&apos;e-mail&apos; )
-</code></pre><p>修改后重启服务器，你会在author编辑页面中看到这个新标签。</p>
-<p><strong>请注意，你不必把<code>verbose_name</code>的首字母大写，除非是连续大写（如：”USA state”）。Django会自动适时将首字母大写，并且在其它不需要大写的地方使用<code>verbose_name</code>的精确值。</strong></p>
-<p>最后还需注意的是，为了使语法简洁，你可以把它当作固定位置的参数传递。 这个例子与上面那个的效果相同。</p>
-<pre><code>class Author(models.Model):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=40)
-    email = models.EmailField(&apos;e-mail&apos;,  blank=True)
-</code></pre><p>但这不适用于ManyToManyField 和ForeignKey字段，因为它们第一个参数必须是模块类。 那种情形，必须显式使用<code>verbose_name</code>这个参数名称。</p>
-<p>–《the Django book 第六章 admin》</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/16/django-admin设置字段可选/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1954,6 +1144,804 @@ else:
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/MTV-开发模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/MTV-开发模式/" itemprop="url">MTV 开发模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T20:15:05+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>我们来花点时间考虑下 Django 数据驱动 Web 应用的总体设计。</p>
+<p>我们在前面章节提到过，Django 的设计鼓励松耦合及对应用程序中不同部分的严格分割。 遵循这个理念的话，要想修改应用的某部分而不影响其它部分就比较容易了。 在视图函数中，我们已经讨论了通过模板系统把业务逻辑和表现逻辑分隔开的重要性。 在数据库层中，我们对数据访问逻辑也应用了同样的理念。</p>
+<p>把<code>数据存取逻辑</code>、<code>业务逻辑</code>和<code>表现逻辑</code>组合在一起的概念有时被称为软件架构的<code>Model-View-Controller (MVC)</code>模式。 在这个模式中， <code>Model</code> 代表数据存取层，<code>View</code>代表的是系统中选择显示什么和怎么显示的部分，<code>Controller</code> 指的是系统中根据用户输入并视需要访问模型，以决定使用哪个视图的那部分。</p>
+<p>为什么用缩写？</p>
+<p>像 MVC 这样的明确定义模式的主要用于改善开发人员之间的沟通。 比起告诉同事，“让我们采用抽象的数据存取方式，然后单独划分一层来显示数据，并且在中间加上一个控制它的层”，一个通用的说法会让你收益，你只需要说：“我们在这里使用MVC模式吧。”。</p>
+<p>Django 紧紧地遵循这种 MVC 模式，可以称得上是一种 MVC 框架。 以下是 Django 中 M、V 和 C 各自的含义：</p>
+<ul>
+<li><p>M ，数据存取部分，由django数据库层处理，本章(第5章)要讲述的内容。</p>
+</li>
+<li><p>V ，选择显示哪些数据要显示以及怎样显示的部分，由视图和模板处理。</p>
+</li>
+<li><p>C ，根据用户输入委派视图的部分，由 Django 框架根据 URLconf 设置，对给定 URL 调用适当的 Python 函数。</p>
+</li>
+</ul>
+<p>由于 C 由框架自行处理，而 Django 里更关注的是<strong>模型（Model）、模板(Template)和视图（Views）</strong>，Django 也被称为 <strong>MTV 框架</strong> 。在 MTV 开发模式中：</p>
+<ul>
+<li><p>M 代表模型（Model），即数据存取层。 该层处理与数据相关的所有事务： 如何存取、如何验证有效性、包含哪些行为以及数据之间的关系等。</p>
+</li>
+<li><p>T 代表模板(Template)，即表现层。 该层处理与表现相关的决定： 如何在页面或其他类型文档中进行显示。</p>
+</li>
+<li><p>V 代表视图（View），即业务逻辑层。 该层包含存取模型及调取恰当模板的相关逻辑。 你可以把它看作模型与模板之间的桥梁。</p>
+</li>
+</ul>
+<p>如果你熟悉其它的 MVC Web开发框架，比方说 Ruby on Rails，你可能会认为 Django 视图是控制器，而 Django 模板是视图。 很不幸，这是对 MVC 不同诠释所引起的错误认识。 在 Django 对 MVC 的诠释中，视图用来描述要展现给用户的数据；不是数据 如何展现 ,而且展现 哪些 数据。 相比之下，Ruby on Rails 及一些同类框架提倡控制器负责决定向用户展现哪些数据，而视图则仅决定 如何 展现数据，而不是展现 哪些 数据。</p>
+<p>两种诠释中没有哪个更加正确一些。 重要的是要理解底层概念。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django-locals-技巧/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/django-locals-技巧/" itemprop="url">django-locals()技巧</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T19:54:43+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>思考一下我们对 current_datetime 的最后一次赋值:</p>
+<pre><code>def current_datetime(request):
+    now = datetime.datetime.now()
+    return render_to_response(&apos;current_datetime.html&apos;, {&apos;current_date&apos;: now})
+</code></pre><p>很多时候，就像在这个范例中那样，你发现自己一直在计算某个变量，保存结果到变量中（比如前面代码中的 now ），然后将这些变量发送给模板。 尤其喜欢偷懒的程序员应该注意到了，不断地为临时变量和临时模板命名有那么一点点多余。 不仅多余，而且需要额外的输入。</p>
+<p>如果你是个喜欢偷懒的程序员并想让代码看起来更加简明，可以利用 Python 的内建函数 locals() 。它返回的字典对所有局部变量的名称与值进行映射。 因此，前面的视图可以重写成下面这个样子：</p>
+<pre><code>def current_datetime(request):
+    current_date = datetime.datetime.now()
+    return render_to_response(&apos;current_datetime.html&apos;, locals())
+</code></pre><p>在此，我们没有像之前那样手工指定 context 字典，而是传入了 locals() 的值，<strong>它囊括了函数执行到该时间点时所定义的一切变量</strong>。 因此，我们将 now 变量重命名为 current_date ，因为那才是模板所预期的变量名称。 在本例中， locals() 并没有带来多 大 的改进，但是如果有多个模板变量要界定而你又想偷懒，这种技术可以减少一些键盘输入。</p>
+<p><strong>使用 locals() 时要注意是它将包括 所有 的局部变量，它们可能比你想让模板访问的要多。 在前例中， locals() 还包含了 request 。对此如何取舍取决你的应用程序。</strong></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django载入模板的顺序/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/django载入模板的顺序/" itemprop="url">Django载入模板的顺序</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T19:43:01+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Django默认会在配置文件<code>setting.py</code>的<code>TEMPLATE_LOADERS</code>中开启<code>django.template.loaders.filesystem.Loader</code>，开启该选项后可以按照<code>TEMPLATE_DIRS</code>中列出的路径的先后顺序从中查找并载入模板。</p>
+<p>比如有如下配置：</p>
+<pre><code>TEMPLATE_LOADERS = (
+    &apos;django.template.loaders.filesystem.Loader&apos;,
+)
+TEMPLATE_DIRS = (
+    &apos;/var/www/site/mycitsm/mycitsm/templates&apos;,
+    &apos;/var/www/site/mycitsm/sqlreview/templates&apos;,
+)
+</code></pre><p>现在<code>TEMPLATE_DIRS</code>中指定的两个目录中均存在<code>base.html</code>，渲染模板的语句为 <code>return render(request, &#39;base.html&#39;,context)</code>，<strong>那么Django会优先使用第一个目录中的<code>base.html</code>模板。当第一个目录中不存在<code>base.html</code>时，Django才会使用第二个目录中的base.html模板</strong>。当然，当两个目录都不存在<code>base.html</code>时，会提示找不到模板。因此为了避免混淆，在使用<code>&#39;django.template.loaders.filesystem.Loader&#39;</code>时尽量不要在<code>TEMPLATE_DIRS</code>指定的不同的位置放置同名模板。</p>
+<p>如果确实想在不同的位置放置同名模板呢？比如，为了达到程序复用的目的，我们往往会创建一些某个Django APP特定的static文件和template文件，保存在该APP特定的目录中。而我们不能保证这些文件与其他位置的文件不发生重名。因此这里引入了另外一种模板载入模式<code>&#39;django.template.loaders.app_directories.Loader&#39;</code>，<strong>开启该选项后可以从INSTALLED_APPS中已安装app对应的templates/目录中查找要渲染的模板文件</strong>（对于静态文件对应的是app的static/目录）。</p>
+<p>比如有如下配置：</p>
+<pre><code>TEMPLATE_LOADERS = (
+   &apos;django.template.loaders.app_directories.Loader&apos;，
+)
+TEMPLATE_DIRS = ()
+</code></pre><p>这里我们没有在<code>TEMPLATE_DIRS</code> 中指定包含模板文件的路径信息，但由于我们使用的是 <code>&#39;django.template.loaders.app_directories.Loader&#39;</code>载入方式，<strong>他会自动从APP对应的templates目录中查找相应的模板文件</strong>。比如渲染语句为<code>return render(request, &#39;base.html&#39;,context)</code>，APP对应的模板目录为<code>/var/www/site/mycitsm/sqlreview/templates/</code>，只要该目录中存在<code>base.html</code>，Django就会渲染该模板，不存在则提示找不到，除此之外不会从其他地方找该模板文件了。</p>
+<p>细心的你可能已经想到了：<strong>要是同时使用了两种载入模板的方式呢？比如同时使用了’django.template.loaders.filesystem.Loader’和’django.template.loaders.app_directories.Loader’会如何查找并载入模板？</strong></p>
+<p>比如有如下配置：</p>
+<pre><code>TEMPLATE_LOADERS = (
+    &apos;django.template.loaders.filesystem.Loader&apos;,
+    &apos;django.template.loaders.app_directories.Loader&apos;，
+)
+TEMPLATE_DIRS = (
+    &apos;/var/www/site/mycitsm/mycitsm/templates&apos;,
+    &apos;/var/www/site/mycitsm/sqlreview/templates&apos;,
+)
+</code></pre><p><code>TEMPLATE_DIRS</code>中指定的两个目录内均存在<code>base.html</code>模板，渲染模板的语句为 <code>return render(request, &#39;base.html&#39;,context)</code>，<strong>则Django会先依据<code>TEMPLATE_LOADERS</code>中最先列出的模板载入方式来查找并载入模板，方式同上，若找不到模板文件则使用列出的第二种方式查找，依次类推，直至找到或找不到。这样的话，Django要么找不到模板，要么会载入最先找到的模板，若在多个不同路径下存在同名的模板文件，最终载入的模板与列出的载入方式的顺序和列出的包含模板的目录的顺序嘻嘻相关。这往往是不明确的，极易造成混淆。</strong></p>
+<p>因此，通常在APP各自的templates目录中保存APP特定的模板，并不直接在APP对应templates目录中直接存放模板文件本身，而是在该目录中在创建一层以APP名称命名的目录，比如APP名称为sqlreview则存放该APP模板的目录为…/sqlreview/templates/sqlreview/，在指定要渲染的模板时可以通过模板文件的上一层目录来限定模板文件，以避免混淆，这实际上是提供了一个命名空间。比如return render(request, ‘sqlreview/base.html’,context),可以在/var/www/site/mycitsm/sqlreview/templates目录中找到该模板。这样便不用担心Django载入的模板究竟是不是对的、需要的那个模板。</p>
+<p>#django 1.8中的改变<br>在django 1.8中，setting里取消了<code>TEMPLATE_LOADERS</code>和<code>TEMPLATE_DIRS</code>设置，用一个<code>TEMPLATES</code>设置来代替</p>
+<pre><code>TEMPLATES = [
+    {
+        &apos;BACKEND&apos;: &apos;django.template.backends.django.DjangoTemplates&apos;,
+        &apos;DIRS&apos;: [os.path.join(BASE_DIR, &apos;blog/templates&apos;),],
+        &apos;APP_DIRS&apos;: True,
+        &apos;OPTIONS&apos;: {
+            &apos;context_processors&apos;: [
+                &apos;django.template.context_processors.debug&apos;,
+                &apos;django.template.context_processors.request&apos;,
+                &apos;django.contrib.auth.context_processors.auth&apos;,
+                &apos;django.contrib.messages.context_processors.messages&apos;,
+            ],
+        },
+    },
+]
+</code></pre><p>其中’DIRS’字段的值是一个列表，用来代替<code>TEMPLATE_DIRS</code>，设置模板的路径</p>
+<p><code>TEMPLATES</code>自带的loader是<code>&#39;django.template.loaders.filesystem.Loader&#39;</code>，如果我们想设置loader为<code>&#39;django.template.loaders.app_directories.Loader&#39;</code>，就将<code>APP_DIRS</code>的值设置为TRUE</p>
+<p>##补充</p>
+<p><code>&#39;django.template.loaders.filesystem.Loader&#39;</code>依赖于’DIRS’的设置，如果’DIRS’是一个空列表的话，他将找不到任何模板</p>
+<p><code>&#39;django.template.loaders.app_directories.Loader&#39;</code>会自动去app下面的template目录下寻找模板，所以采用这种方法就无需给’DIRS’赋值</p>
+<p>第一部分转载自<a href="http://blog.csdn.net/zyz511919766/article/details/18355827" target="_blank" rel="external">这里</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/URLconf/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/URLconf/" itemprop="url">URLconf</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T17:21:14+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>URLconf 就像是 Django 所支撑网站的目录。 它的本质是 URL 模式以及要为该 URL 模式调用的视图函数之间的映射表。 你就是以这种方式告诉 Django，对于这个 URL 调用这段代码，对于那个 URL 调用那段代码。 例如，当用户访问/foo/时，调用视图函数<code>foo_view()</code>，这个视图函数存在于Python模块文件view.py中。</p>
+<p>执行 <code>django-admin.py startproject</code>时，该脚本会自动为你建了一份<code>URLconf</code>（即 <code>urls.py</code>文件）</p>
+<blockquote>
+<p>默认情况下，URLconf 所有内容都被注释起来了——Django 应用程序还是白版一块。 （注：那是上一节中Django怎么知道显示欢迎页面的原因。 如果 URLconf 为空，Django 会认定你才创建好新项目，因此也就显示那种信息。</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django的时区/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/django的时区/" itemprop="url">Django的时区</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T17:20:07+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>视乎你的机器，显示的日期与时间可能和实际的相差几个小时。 这是因为Django是有时区意识的，并且默认时区为<code>America/Chicago</code>。 （它必须有个值，它的默认值是Django的诞生地：美国/芝加哥）如果你处在别的时区，你需要在settings.py文件中更改这个值。请参见它里面的注释，以获得最新世界时区列表。在中国我们设置为<code>Asia/Shanghai</code></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -2004,7 +1992,7 @@ else:
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">199</span>
+                <span class="site-state-item-count">194</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

@@ -286,768 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/python的搜索路径/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/15/python的搜索路径/" itemprop="url">python的搜索路径</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T16:24:56+08:00">
-                2015-04-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Python 搜索路径 就是使用 import 语句时，Python 所查找的系统目录清单。</p>
-<p>举例来说，假定你将 Python 路径设置为<code>[&#39;&#39;,&#39;/usr/lib/python2.4/site-packages&#39;,&#39;/home/username/djcode/&#39;]</code>。如果执行代码 <code>from foo import bar</code> ，Python 将会首先在当前目录查找 foo.py 模块( Python 路径第一项的空字符串表示当前目录)。 如果文件不存在，Python将查找 <code>/usr/lib/python2.4/site-packages/foo.py</code> 文件。</p>
-<p>如果你想看Python搜索路径的值，运行Python交互解释器，然后输入：</p>
-<pre><code>&gt;&gt;&gt; import sys
-&gt;&gt;&gt; print sys.path
-</code></pre><p>通常，你不必关心 Python 搜索路径的设置。 Python 和 Django 会在后台自动帮你处理好。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/14/python路径操作/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/14/python路径操作/" itemprop="url">python路径操作</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-14T14:32:19+08:00">
-                2015-04-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##<code>__file__</code><br><code>__file__</code>可以获取当前的脚本</p>
-<p>在/root/michael/目录下创建一个脚本为test.py</p>
-<p>在脚本里写下</p>
-<pre><code>#!/usr/bin/env python
-
-import os
-
-print __file__
-print os.path.abspath(__file__)
-print os.path.dirname(os.path.abspath(__file__))
-</code></pre><p>运行结果为</p>
-<pre><code>[root@pc105 michael]# ./test.py 
-./test.py
-/root/michael/test.py
-/root/michael
-</code></pre><ul>
-<li><p><code>__file__</code>是取当前脚本的路径，是相对路径，所以一般要在前面加上<code>abspath</code>来取绝对路径</p>
-</li>
-<li><p><code>os.path.dirname</code>获得当前目录的上级目录</p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/13/scp不能拷贝符号链接/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/13/scp不能拷贝符号链接/" itemprop="url">scp不能拷贝符号链接</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-13T09:42:34+08:00">
-                2015-04-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>今天把一个web目录直接scp -r到另一台机器上，发现起不来，后来发现是在配置目录下的一些符号连接都没有拷贝过来。</p>
-<p>如果要将这些符号连接拷贝过来，不能直接scp -r这个文件夹，<strong>需要先将文件夹打包，然后拷贝</strong></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/08/python导入模块/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/08/python导入模块/" itemprop="url">python导入模块</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-08T09:45:36+08:00">
-                2015-04-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>#python导入模块</p>
-<p>##使用from <strong> import </strong>不能节约内存</p>
-<p>python导入模块和他们的属性有两种方法：</p>
-<pre><code>import random
-print random.choice(range(10))
-</code></pre><p>和</p>
-<pre><code>from random import choice
-print choice(range(10))
-</code></pre><p>第一种方法是将模块的名字设置为一个隐含的名字空间里的全局变量，这样你就可以好像访问全局属性那样访问choice函数。而在第二个例子里，我们是直接把choice引入到全局名字空间里来（而非模块的名字）。因此不再需要把这个属性当成是模块的成员了。实际上我们也只拥有了这个属性而已。</p>
-<p><strong>Python新手之间经常有一种误解，以为第二种方法只导入了一个函数，而没有导入整个模块。这是不对的。整个模块其实已经被导入了，但是只有那个函数的引用被保存了起来。所以from-import这种语法并不能带来性能上的差异，也没有节省什么内存。</strong></p>
-<p>##能不能重复导入一个模块</p>
-<p>新手经常会担忧的一个问题是他们有两个模块m.py和n.py都导入了foo.py模块。当m导入n时，foo岂不是会被导入两次？简单的来说，没错，是这样的，但是和你想的有点不一样。</p>
-<p>Python有<code>导入模块</code>（importing）和<code>加载模块</code>（loading）之分。一个模块可以被导入任意多次，但是它<strong>只会被加载一次</strong>。就是说，当Python碰到一个已经被加载的模块又被导入时，它会跳过加载的过程，所以你无需担心额外消耗内存的问题。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/28/i-的线程安全性/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/28/i-的线程安全性/" itemprop="url">i++的线程安全性</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-28T18:25:29+08:00">
-                2015-03-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>转载自<a href="http://blog.csdn.net/sapair/archive/2009/06/05/4243974.aspx" target="_blank" rel="external">这里</a></p>
-<p>i++的线程安全性可以总结如下：</p>
-<ol>
-<li>如果i是局部变量，那么是可重入的，也就是线程安全的。</li>
-<li>如果i是全局变量，则同一进程的不同线程都可能访问到该变量，因而是线程不安全的。</li>
-</ol>
-<p>上面这两点比较清晰，具体原因我将在下面解释：</p>
-<p>本质上来讲，i并不是因为是全局变量才说是线程不安全的。其实其本质原因是i++这个操作并不是原子的，如果这是原子操作的话，具有不可分特性，那么即便是所有线程都能访问到，也都是线程安全的。</p>
-<p>i++最终被编译后的反汇编代码大概如下：</p>
-<pre><code>mov eax，[xxxxxxxx]
-inc   eax
-</code></pre><p>一条c语句已经被分为两条操作指令，那么在这两条操作指令执行之间，可能由于中断而被调度到不同线程，于是，不安全性就产生了。当然了，这并不是说单条汇编语句就是线程安全的，这取决于CPU架构，因为单条汇编指令可能在多个CPU时钟周期内进行，有些CPU架构可以在任何一个时钟周期内响应中断，对于这样的CPU，就是单条指令都不是安全的。当然了，现在的CPU大部分都是一条指令执行完后才能响应中断的。想要进行原子操作，方法有很多种，其中一种比较简单的是在原子语句之间先关闭中断，然后进行原子操作后再打开中断就OK了。</p>
-<p>##原子操作</p>
-<p>所谓原子操作是指不会被线程调度机制打断的操作；这种操作一旦开始，就一直运行到结束，中间不会有任何 context switch （切换到另一个线程），不能被更高等级中断抢夺优先。</p>
-<p>由于操作系统大部分时间处于开中断状态，所以，一个程序在执行的时候可能被优先级更高的线程中断。而有些操作是不能被中断的，不然会出现无法还原的后果，这时候，这些操作就需要原子操作。就是不能被中断的操作。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/27/malloc和free的实现原理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1983,6 +1221,782 @@ int readvrec( SOCKET s, char *buf, size_t len );
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/22/IO和NIO/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/22/IO和NIO/" itemprop="url">IO和NIO</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-22T20:09:54+08:00">
+                2015-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>转载自<a href="http://blog.csdn.net/zhouhl_cn/article/details/6568119" target="_blank" rel="external">这里</a></p>
+<p>传统的<code>socket IO</code>中，需要为每个连接创建一个线程，当并发的连接数量非常巨大时，线程所占用的栈内存和CPU线程切换的开销将非常巨大。使用NIO，不再需要为每个线程创建单独的线程，可以用一个含有限数量线程的<strong>线程池</strong>，甚至一个线程来为任意数量的连接服务。由于线程数量小于连接数量，所以每个线程进行IO操作时就不能阻塞，如果阻塞的话，有些连接就得不到处理，NIO提供了这种<strong>非阻塞</strong>的能力。</p>
+<p>小量的线程如何同时为大量连接服务呢？答案就是<strong>就绪选择</strong>。</p>
+<p>这就好比到餐厅吃饭，每来一桌客人，都有一个服务员专门为你服务，从你到餐厅到结帐走人，这样方式的好处是服务质量好，一对一的服务，VIP啊，可是缺点也很明显，成本高，如果餐厅生意好，同时来100桌客人，就需要100个服务员，那老板发工资的时候得心痛死了，这就是传统的一个连接一个线程的方式。</p>
+<p>老板是什么人啊，精着呢。这老板就得琢磨怎么能用10个服务员同时为100桌客人服务呢，老板就发现，服务员在为客人服务的过程中并不是一直都忙着，客人点完菜，上完菜，吃着的这段时间，服务员就闲下来了，可是这个服务员还是被这桌客人占用着，不能为别的客人服务，用华为领导的话说，就是工作不饱满。那怎么把这段闲着的时间利用起来呢。这餐厅老板就想了一个办法，让一个服务员（前台）专门负责收集客人的需求，登记下来，比如有客人进来了、客人点菜了，客人要结帐了，都先记录下来按顺序排好。每个服务员到这里领一个需求，比如点菜，就拿着菜单帮客人点菜去了。点好菜以后，服务员马上回来，领取下一个需求，继续为别人客人服务去了。这种方式服务质量就不如一对一的服务了，当客人数据很多的时候可能需要等待。但好处也很明显，由于在客人正吃饭着的时候服务员不用闲着了，服务员这个时间内可以为其他客人服务了，原来10个服务员最多同时为10桌客人服务，现在可能为50桌，60客人服务了。</p>
+<p>这种服务方式跟传统的区别有两个：</p>
+<ol>
+<li>增加了一个角色，要有一个专门负责收集客人需求的人。<code>NIO</code>里对应的就是<code>Selector</code>。</li>
+<li>由阻塞服务方式改为非阻塞服务了，客人吃着的时候服务员不用一直侯在客人旁边了。传统的IO操作，比如<code>read()</code>，当没有数据可读的时候，线程一直阻塞被占用，直到数据到来。NIO中没有数据可读时，<code>read()</code>会立即返回0，线程不会阻塞。</li>
+</ol>
+<p><code>NIO</code>中，客户端创建一个连接后，先要将连接注册到<code>Selector</code>，相当于客人进入餐厅后，告诉前台你要用餐，前台会告诉你你的桌号是几号，然后你就可能到那张桌子坐下了，<code>Selection Key</code>就是桌号。当某一桌需要服务时，前台就记录哪一桌需要什么服务，比如1号桌要点菜，2号桌要结帐，服务员从前台取一条记录，根据记录提供服务，完了再来取下一条。这样服务的时间就被最有效的利用起来了。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/TCP三次握手如果没有第三步会怎么样/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/20/TCP三次握手如果没有第三步会怎么样/" itemprop="url">TCP三次握手如果没有第三步会怎么样</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T17:00:30+08:00">
+                2015-03-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
+                    <span itemprop="name">TCP/IP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>没有第三步，那就是服务器发送给客户端的SYN没有收到回应，其实这就是SYN洪泛攻击。</p>
+<p>SYN攻击属于DDOS攻击的一种，它利用TCP协议缺陷，通过发送大量的半连接请求，<strong>耗费CPU和内存资源</strong>。</p>
+<p>SYN攻击除了能影响主机外，还可以危害路由器、防火墙等网络系统，事实上SYN攻击并不管目标是什么系统，只要这些系统打开TCP服务就可以实施。</p>
+<p>服务器接收到连接请求（syn=j），将此信息加入未连接队列，并发送请求包给客户（syn=k,ack=j+1），此时进入SYN_RECV状态。<strong>当服务器未收到客户端的确认包时，重发请求包，一直到超时，才将此条目从未连接队列删除。</strong>配合IP欺骗，SYN攻击能达到很好的效果，通常，客户端在短时间内伪造大量不存在的IP地址，向服务器不断地发送syn包，服务器回复确认包，并等待客户的确认，由于源地址是不存在的，服务器需要不断的重发直至超时，这些伪造的SYN包将长时间占用未连接队列，正常的SYN请求被丢弃，目标系统运行缓慢，严重者引起网络堵塞甚至系统瘫痪。 </p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/为什么malloc时需要指定size，对应的free时不需要指定size/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/20/为什么malloc时需要指定size，对应的free时不需要指定size/" itemprop="url">为什么malloc时需要指定size，对应的free时不需要指定size</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T16:59:18+08:00">
+                2015-03-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>当调用malloc(size)时，实际分配的内存大小大于size字节，这是因为在分配的内存区域头部有类似于</p>
+<pre><code>struct control_block {
+    unsigned size;
+    int used;
+};
+</code></pre><p>这样的一个结构，如果malloc函数内部得到的内存区域的首地址为<code>void *p</code>,那么它返回给你的就是<code>p + sizeof(control_block)</code>，而调用<code>free(q)</code>的时候，该函数把p减去<code>sizeof(control_block)</code>，然后就可以根据<br><code>((control_blcok*)q)-&gt;size</code>得到要释放的内存区域的大小。这也就是为什么free只能用来释放malloc分配的内存，如果用于释放其他的内存，会发生未知的错误。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/进程的状态及转换/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/20/进程的状态及转换/" itemprop="url">进程的状态及转换</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T16:23:21+08:00">
+                2015-03-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##进程的基本状态</p>
+<ol>
+<li>执行状态(Running)：进程占用处理机，进程的程序正在执行。单处理机系统中只能有一个进程处于执行状态，多处理机系统中可能有多个进程处于执行状态。</li>
+<li>阻塞状态(Blocked)：也叫等待或睡眠状态，是进程由于等待某种事件的发生而处于暂停执行的状态。如进程因等待I/O的完成、等待缓冲空间等。</li>
+<li>就绪状态（Ready）：进程已分配到处理机以外的所有必要资源，具备了执行的所有条件。可能会有多个进程处于就绪状态，排成就绪队列。</li>
+</ol>
+<p>##新状态和终止状态</p>
+<ol>
+<li><p>新状态：进程刚刚建立，还没有送入就绪队列的状态。</p>
+</li>
+<li><p>终止状态：一个进程已正常结束或非正常结束，OS已将它从就绪队列中移出，还未将它撤销时的状态。</p>
+</li>
+</ol>
+<p>##进程状态的转换</p>
+<p>进程在执行期间可以多次处于就绪状态和执行状态，也可多次处于阻塞状态，但处于新状态只有一次。</p>
+<ol>
+<li><p>新状态－＞就绪状态：当就绪队列允许接纳新进程时，系统便把处于新状态的进程移入就绪队列。</p>
+</li>
+<li><p>就绪态－＞执行状态：进程调度程序为处于就绪状态的进程分配处理机后，该进程进入执行状态。</p>
+</li>
+<li><p>执行态－＞阻塞状态：正在执行的进程因需要等待某事件而无法执行。</p>
+</li>
+<li><p>阻塞状态－＞就绪态：进程所等待的事件发生了，进程就从阻塞状态进入就绪状态。</p>
+</li>
+<li><p>执行态－＞就绪状态：正在执行的进程因时间片用完而被暂停执行；或者在可抢占调度方式中，一个优先权高的进程到来后，正在执行的低优先权的进程被强制撤下处理机，转换为就绪状态。</p>
+</li>
+<li><p>执行态－＞终止状态：一个进程已完成或发生某种特殊事件，进程将变为终止状态。 </p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/进程调度算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/20/进程调度算法/" itemprop="url">进程调度算法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T16:22:15+08:00">
+                2015-03-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>调度也称<code>dispatcher</code>， 内核的主要职责之一就是决定该轮到哪个任务运行了。多数实时内核是基于优先级调度算法的。每个任务根据其重要程度的不同被赋予一定的优先级。基于优先级的调度法指CPU 总是让处在就绪态的优先级最高的任务先运行，然而究竟何时让高优先级任务掌握CPU 的使用权有两种不同的情况。这要看用的是什么类型的内核，是非占先式，还是占先式的内核。一个良好的任务调度算法应该主要体现在以下几个方面</p>
+<ol>
+<li>公平保证每个进程得到合理的CPU 时间</li>
+<li>高效使CPU保持忙碌状态即总是有进程在CPU上运行</li>
+<li>响应时间使交互用户的响应时间尽可能短</li>
+<li>周转时间使批处理用户等待输出的时间尽可能短</li>
+<li>吞吐量使单位时间内处理的进程尽可能多</li>
+</ol>
+<p>很显然在任何操作系统中这几个目标不可能同时达到，所以不同的操作系统会在这几个方面中做出相应的取舍，从而确定自己的调度算法，常用的处理机调度算法有：</p>
+<ol>
+<li>先来先服务FCFS</li>
+<li>短作业优先SJF</li>
+<li>优先级</li>
+<li>时间片轮转法</li>
+<li>多级队列法</li>
+<li>多级反馈队列法</li>
+</ol>
+<p><strong>先来先服务</strong>：FCFS 是最简单的CPU 调度算法，即按进程到来的先后次序进行调度，这样在系统中等待时间最长的进程被优先调度，而不管其所需运行时间的长短。</p>
+<p><strong>作业优先</strong>：SJF 算法是指当CPU 可供使用时，SJF 算法把CPU 分给需要运行时间最短的进程。</p>
+<p><strong>多级队列调度算法</strong>：把就绪队列划分成几个单独的队列，一般根据进程的某些特性如内存大小和进程类型，永久性地把各个进程分别链入其中某一个队列中，每个队列都有自己的调度算法，此外在各个队列之间也要进行调度。通常采用固定优先级的抢占式调度，例如某系统中有5 个队列，各个队列的优先级自上而下降低，只有当前3 个队列中都为空的时候，队列4 中的进程才可以运行，而当队列4 中的进程在运行时，如果队列1 中进入了一个就绪进程，则队列4 中的进程要立刻让出CPU 使用权。多级反馈队列法允许进程在各队列间移动，其基本思想是把具有不同CPU工作时间这一特性的进程区分开来，如果一个进程要使用很长的CPU 时间，则应把它移至较低级的队列中，这种方式把I/O 繁忙型和交互式进程放在较高优先级的队列中，同样在低优先级队列中长时间等待的进程可以移到较高优先级队列中，UNIX 系统采用的是多级反馈队列轮转法。</p>
+<p><strong>时间片轮转调度法</strong>：<code>round-robin scheduling</code><br>当两个或两个以上任务有同样优先级，内核允许一个任务运行事先确定的一段时间叫做时间额度quantum ，然后切换给另一个任务也叫做时间片调度time slicing ，内核在满足以下条件时把CPU 控制权交给下一个任务就绪态的任务， 当前任务已无事可做，当前任务在时间片还没结束时已经完成了。轮转法主要是为分时系统设计的，其中时间片是一个重要的参数不能取的过大或过小，通常为10 至100ms 数量级，就绪队列可以看成是一个环形队列，CPU 调度程序轮流地把CPU 分给就绪队列中地每个进程，时间长度为一个时间片Linux 操作系统就是采用时间片轮转的调度算法。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -2033,7 +2047,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">199</span>
+                <span class="site-state-item-count">194</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

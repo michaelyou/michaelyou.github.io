@@ -286,828 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/cookie/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/10/cookie/" itemprop="url">cookie</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-10T18:33:54+08:00">
-                2015-02-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/http/" itemprop="url" rel="index">
-                    <span itemprop="name">http</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>转载自<a href="http://www.cnblogs.com/TankXiao/archive/2013/04/15/2848906.html" target="_blank" rel="external">这里</a></p>
-<p>##网站自动登录<br>我们以”博客园自动登陆“的例子，来说明cookie是如何传递的。</p>
-<p>大家知道博客园是可以自动登陆的。 如下图，这个是什么原理呢?</p>
-<p><img src="/img/cookie1.png" alt=""></p>
-<p>假如我已经在登陆页面输入了用户名，密码，选择了保存密码，登陆。</p>
-<p>（这时候，其实在你的机器上保存好了登陆的cookie, 不信你可以按照上节介绍方法去你的电脑上找下博客园的cookie）  </p>
-<p>当我下次访问博客园流程如下。</p>
-<ol>
-<li><p>用户打开IE浏览器，在地址栏上输入www.cnblogs.com.</p>
-</li>
-<li><p>IE首先会在硬盘中查找关于cnblogs.com的cookie. 然后把cookie放到HTTP Request中，再把Request发给Web服务器。</p>
-</li>
-<li><p>Web服务器返回博客园首页（你会看到你已经登陆了）。</p>
-</li>
-</ol>
-<p><img src="/img/自动登录.png" alt=""></p>
-<p>##截获Cookie，冒充别人身份<br>通过上面这个例子，可以看到cookie是很重要的，识别是否是登陆用户，就是通过cookie。  假如截获了别人的cookie是否可以冒充他人的身份登陆呢？  当然可以， 这就是一种黑客技术叫Cookie欺骗。</p>
-<p>利用Cookie 欺骗， 不需要知道用户名密码。就可以直接登录，使用别人的账户做坏事。</p>
-<p>我知道有两种方法可以截获他人的cookie，</p>
-<ol>
-<li><p>通过XSS脚步攻击， 获取他人的cookie. 具体原理可以看 <a href="http://www.cnblogs.com/TankXiao/archive/2012/03/21/2337194.html" target="_blank" rel="external">Web安全性测试之XSS</a></p>
-</li>
-<li><p>想办法获取别人电脑上保存的cookie文件（这个比较难）</p>
-</li>
-</ol>
-<p>##Cookie 泄露隐私<br>2013年央视的315晚会上， 曝光了很多不法公司利用Cookie跟踪并采集用户的个人信息，并转卖给网络广告商，形成了一条窃取用户信息的灰色产业链。从而实现广告准确投放。严重干扰了用户的正常网络应用，侵害了个人的隐私和利益。</p>
-<p>我经常就在门户网站上发现广告位上显示的是我在电商网站上流量过的商品。  这就是我的cookie被泄露了。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/在浏览器输入url回车，和直接按F5刷新有什么区别/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/10/在浏览器输入url回车，和直接按F5刷新有什么区别/" itemprop="url">在浏览器输入url回车，和直接按F5刷新有什么区别</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-10T16:12:03+08:00">
-                2015-02-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/http/" itemprop="url" rel="index">
-                    <span itemprop="name">http</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>按F5刷新浏览器和在地址栏里输入网址然后回车。 这两个行为是不一样的。</p>
-<p>按F5刷新浏览器， 浏览器会去Web服务器验证缓存。</p>
-<p>如果是在地址栏输入网址然后回车，浏览器会”直接使用有效的缓存”, 而不会发http request 去服务器验证缓存，这种情况叫做缓存命中，如下图</p>
-<p><img src="/img/缓存命中.png" alt=""></p>
-<p>实例： 比较第一次访问博客园主页和第二次博客园主页</p>
-<ol>
-<li><p>启动Fiddler, 用firefox打开博客园主页， 发现有50多个session。</p>
-</li>
-<li><p>按CTRL+X将Fiddler中的所有session删除。 关闭firefox,重新打开一个firefox，打开博客园主页。   发现只有30多个session.</p>
-</li>
-</ol>
-<p>分析；  少了的session是因为firefox直接用了缓存，而没有发http request。</p>
-<p><img src="/img/第一次访问.png" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/http判断缓存是否有效，为什么有了last-modified还需要etag/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/10/http判断缓存是否有效，为什么有了last-modified还需要etag/" itemprop="url">http判断缓存是否有效，为什么有了last-modified还需要etag</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-10T15:49:54+08:00">
-                2015-02-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/http/" itemprop="url" rel="index">
-                    <span itemprop="name">http</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>If-Modified-Since：<br>作用： 把浏览器端缓存页面的最后修改时间发送到服务器去，服务器会把这个时间与服务器上实际文件的最后修改时间进行对比。如果时间一致，那么返回304，客户端就直接使用本地缓存文件。如果时间不一致，就会返回200和新的文件内容。客户端接到之后，会丢弃旧文件，把新文件缓存起来，并显示在浏览器中.</p>
-<p>ETag：<br>是实体标签（Entity Tag）的缩写， 根据实体内容生成的一段hash字符串（类似于MD5或者SHA1之后的结果），可以标识资源的状态。 当资源发送改变时，ETag也随之发生变化。</p>
-<p>ETag是Web服务端产生的，然后发给浏览器客户端。浏览器客户端是不用关心Etag是如何产生的。</p>
-<p>问题是，我们知道last-modified可以用来判断浏览器的本地缓存是否有效，那为什么还要使用ETag呢？ 主要是为了解决Last-Modified 无法解决的一些问题。</p>
-<ol>
-<li><p>某些服务器不能精确得到文件的最后修改时间， 这样就无法通过最后修改时间来判断文件是否更新了。</p>
-</li>
-<li><p>某些文件的修改非常频繁，在秒以下的时间内进行修改. Last-Modified只能精确到秒。</p>
-</li>
-<li><p>一些文件的最后修改时间改变了，但是内容并未改变。 我们不希望客户端认为这个文件修改了。</p>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/为什么http协议是无连接的/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/10/为什么http协议是无连接的/" itemprop="url">为什么http协议是无连接的</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-10T14:13:31+08:00">
-                2015-02-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/http/" itemprop="url" rel="index">
-                    <span itemprop="name">http</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>HTTP 协议本身是无连接的，虽然它使用了面向连接的 TCP 向上提供的服务。</p>
-<p> TCP的面向连接是传输层的，而HTTP的无连接则是应用层的 。HTTP协议产生于互联网，因此服务器需要处理同时面向全世界数十万、上百万客户端的网页访问，但每个客户端（即浏览器）与服务器之间交换数据的间歇性较大（即传输具有突发性、瞬时性），并且网页浏览的联想性、发散性导致两次传送的数据关联性很低，如果按照上面的方式，则需要在服务器端开的进程和句柄数目都是不可接受的，大部分通道实际上会很空闲、无端占用资源。因此HTTP的设计者有意利用这种特点将协议设计为请求时建连接、请求完释放连接，以尽快将资源释放出来服务其他客户端。HTTP1.1现在设计为长连接，就是在一个连接内可以发生多个请求，避免了多次建立断开连接造成的消耗。</p>
-<p>UDP尽管不象TCP那样占用资源，但它不保证数据的完整性、有序性，想像如果服务器返回的HTML错序了或者丢失一部分你将看到什么效果；并且UDP没有流量控制，而互联网的传输质量又不是很好，服务器随便仍出一大堆UDP包可能导致网络风暴，这是相当危险的。</p>
-<p>归根结底，TCP的面向连接是传输层的，而HTTP的无连接则是应用层的。</p>
-<hr>
-<p><strong>无状态</strong>是指协议对于事务处理没有记忆能力，服务器不知道客户端是什么状态。从另一方面讲，打开一个服务器上的网页和你之前打开这个服务器上的网页之间没有任何联系</p>
-<p>HTTP是一个无状态的面向连接的协议，无状态不代表HTTP不能保持TCP连接，更不能代表HTTP使用的是UDP协议（无连接）</p>
-<p>从HTTP/1.1起，默认都开启了Keep-Alive，保持连接特性，简单地说，当一个网页打开完成后，客户端和服务器之间用于传输HTTP数据的TCP连接不会关闭，如果客户端再次访问这个服务器上的网页，会继续使用这一条已经建立的连接</p>
-<p> Keep-Alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/05/TCP和UDP的工作过程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/05/TCP和UDP的工作过程/" itemprop="url">TCP和UDP的工作过程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-05T16:41:11+08:00">
-                2015-02-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
-                    <span itemprop="name">TCP/IP</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##TCP和UDP的工作过程<br>UDP的工作过程是简单的，仅仅将用户数据封装到一个IP数据报中发送到目的地而已，而不关注其他方面。</p>
-<p>TCP却是一个极其复杂的协议，以下只是冰山一角</p>
-<p>###建立连接的三次握手</p>
-<ul>
-<li>主动方发送（SYN J），进入SYN_SENT状态</li>
-<li>被动方收到（SYN J），并往回发送（SYN K, ACK J+1），进入SYN_RCVD状态</li>
-<li>主动方收到（SYN K, ACK J+1），并往回发送（ACK K+1），进入ESTABLISHED状态</li>
-<li>被动方收到（ACK K+1），也进入ESTABLISHED状态<br>以上过程如下图所示：</li>
-</ul>
-<p><img src="/img/establish.png" alt="establish"></p>
-<p>注意到在TCP三次握手的过程中，服务器有这么一条：</p>
-<blockquote>
-<p>被动方收到（SYN J），并往回发送（SYN K, ACK J+1），进入SYN_RCVD状态</p>
-</blockquote>
-<p>服务器进入<code>SYN_RCVD</code>状态（此时连接称为半开连接）后，应当期待再收到一个ACK。 如果超时未收到客户端的<code>ACK</code>，服务器将重发<code>（SYN K, ACK J+1）</code>。 于是，就有一种叫做<code>SYN Flooding</code>的攻击方式。 攻击者向服务器高速发送<code>（SYN J）</code>（而且可以将SYN分节中的IP地址设为随机数）， 并且在随后收到服务器回复的<code>（SYN K, ACK J+1）</code>之后不再继续回复， 这使得服务器上存在很多的半开连接，这些半开连接一般情况下会持续63秒 （在Linux下，默认重试次数为5次，重试的间隔时间从1s开始每次都翻倍，5次的重试时间间隔为1s, 2s, 4s, 8s, 16s，第5次发出后还要等32s才知道第5次也超时了，所以，总共需要 1s + 2s + 4s+ 8s+ 16s + 32s = 63s，TCP才会把断开这个连接）。 它的危害有两方面，一方面自然是占用了服务器的资源；另一方面是填充了半开连接的队列，使得合法的SYN分节无法排队。</p>
-<p>根据SYN Flooding的攻击原理，它的防范主要有以下措施：</p>
-<ol>
-<li>过滤掉最大嫌疑攻击的IP或IP段</li>
-<li>将tcp_synack_retries设为0，表示回应第二个握手包（SYN K, ACK J+1）给客户端后，如果收不到ACK，不进行重试，加快回收“半开连接”。</li>
-<li>将tcp_max_syn_backlog参数根据内存情况适当调大，该参数一般指的是维护的半开连接的队列的长度（不同OS不一样）。</li>
-<li>设置tcp_abort_on_overflow选项，处理不过来就直接拒绝掉。</li>
-</ol>
-<p>###断开连接的四次握手</p>
-<ol>
-<li>主动方发送<code>（FIN M）</code>，进入<code>FIN_WAIT_1</code>状态</li>
-<li>被动方收到<code>（FIN M）</code>，并往回发送<code>（ACK M+1）</code>，进入<code>CLOSE_WAIT</code>状态</li>
-<li>主动方收到<code>（ACK M+1）</code>，进入<code>FIN_WAIT_2</code>状态</li>
-<li>被动方发送<code>（FIN N）</code>，进入<code>LAST_ACK</code>状态</li>
-<li>主动方收到<code>（FIN N）</code>，并往回发送<code>（ACK N+1）</code>，进入<code>TIME_WAIT</code>状态</li>
-<li>被动方收到<code>（ACK N+1）</code>，进入<code>CLOSED</code>状态</li>
-<li>主动方在<code>TIME_WAIT</code>状态中超时后，进入<code>CLOSED</code>状态</li>
-</ol>
-<p>以上过程如下图所示：</p>
-<p><img src="/img/close.png" alt="close"></p>
-<p>其实就是2次，只不过TCP是全双工的，所以，发送方和接收方都需要FIN和ACK。 只不过，有一方是被动的，所以看上去就成了所谓的4次挥握手。</p>
-<p>注意到最后有这么一条涉及到TIME_WAIT的状态</p>
-<blockquote>
-<p>主动方在TIME_WAIT状态中超时后，进入CLOSED状态</p>
-</blockquote>
-<p>需要经过一个<code>TIME_WAIT</code>超时的状态而不是直接进入<code>CLOSED</code>的原因有两个，一是确保有足够的时间让对端收到<code>ACK</code>，二是允许老的分节在网络中慢慢的消逝。</p>
-<p>然而，如果系统中存在着大量的短链接，那么大量的<code>TIME_WAIT</code>状态就会成为系统的累赘。网上一些资料提到的<code>tcp_tw_reuse</code>和<code>tcp_tw_recycle</code>选项来解决这个问题，但是最好还是别乱用，好像<code>coolshell</code>中有提到过，可能会出很多诡异的问题。还可以调整<code>tcp_max_tw_buckets</code>，当并发的<code>TIME_WAIT</code>过多时，会直接把多的给destory掉，然后在日志里打一个警告。引用一句“其实，<code>TIME_WAIT</code>表示的是你主动断连接，所以，这就是所谓的<code>&quot;no zuo， no die&quot;</code>。</p>
-<p>##TCP连接在“非正常”情况下的工作状况</p>
-<p>###服务器进程终止</p>
-<p>首先，服务器进程终止（收到<code>SIGKILL</code>信号）。作为进程中止处理的工作之一，该进程所有打开着的描述符将被关闭，这会导致向对端（客户端）发送（<code>FIN N</code>），而客户端则回复（<code>ACK N+1</code>），这就是TCP断开连接的前半部分。</p>
-<p>然后，此时客户端收到（<code>FIN N</code>）并不意味着连接断开（虽然在这个例子中，确实断开了），只是意味着服务器不再向客户端发送数据了，客户端还可以继续向服务器发送数据。如果此时客户端还继续向服务器发送数据，服务器TCP将发现之前的打开该套接字的进程已终止，于是回应一个<code>RST</code>。客户端在收到这个<code>RST</code>之前的read操作将会返回EOF，在收到这个<code>RST</code>后的read操作会返回<code>ECONNRESET</code>错误，在收到这个<code>RST</code>后的write操作会使当前进程收到<code>SIGPIPE</code>信号。</p>
-<p>以上过程如下图所示：</p>
-<p><img src="/img/server_kill.png" alt="server_kill"></p>
-<p>###服务器主机崩溃</p>
-<p>服务器主机崩溃的意思是，没有任何预兆，来不及在网络上发送任何消息，主机就无法工作了。这种情况等价于直接切断网络，或者通俗的说，可以直接拔掉网线来模拟这一情况。</p>
-<p>这时，如果客户端向服务器发送数据，后调用read操作，TCP会一直等待服务器的ACK确认消息，并且不断的超时重传（按照Berkeley的实现，重传12次，共需9分钟），直到到达重传次数，返回<code>ETIMEOUT</code>错误。如果是由中间的路由器判定服务器主机不可达，响应“destination unreasonable”的ICMP消息，将返回<code>EHOSTUNREACH</code>和<code>ENETUNREACH</code>错误。</p>
-<p>###服务器主机崩溃后重启</p>
-<p>重启之后的服务器已经丢失了之前的TCP信息，所以即使收到了客户端发来的TCP数据，也会回复<code>RST</code>，往后的情况和“服务器主机崩溃”中提到的类似。</p>
-<p>###服务器主机关机</p>
-<p>Unix系统关机时，init进程通常会给其他进程发送<code>SIGTERM</code>信号，然后等待10s左右给仍在运行的进程发送<code>SIGKILL</code>信号。所以如果进程不捕获<code>SIGTERM</code>信号，则将由<code>SIGKILL</code>信号终止，和“服务器进程终止”中提到的类似。</p>
-<p>##参考链接<br><a href="http://coolshell.cn/articles/11564.html" target="_blank" rel="external">TCP 的那些事儿（上）</a></p>
-<p><a href="http://coolshell.cn/articles/11609.html" target="_blank" rel="external">TCP 的那些事儿（下）</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/05/另一个Lambda表达式教程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2261,6 +1439,886 @@ if __name__ == &apos;__main__&apos;:
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/02/每天一个python小程序-6/" itemprop="url">每天一个python小程序(6)--统计代码行数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-02T23:16:22+08:00">
+                2015-02-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>有个目录，里面是你自己写过的程序，统计一下你写过多少行代码。包括空行和注释，但是要分别列出来。</p>
+</blockquote>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
+
+import re
+import os
+
+total = 0
+blank = 0
+comment = 0
+
+#要想使用全局变量，必须要用global来申明
+def count_code_lines(filename):
+    global total
+    global blank
+    global comment
+    f = open(filename)
+    lines = f.readlines()
+    total += len(lines)
+
+    pattern_blank = re.compile(r&apos;^\s*$&apos;)
+    pattern_comment = re.compile(r&apos;^\s*\#+&apos;)
+
+    for line in lines:
+        if pattern_blank.match(line):
+            blank += 1
+        elif pattern_comment.match(line):
+            comment += 1
+
+
+def walk_dir(file_path):
+    global total
+    global blank
+    global comment
+    #os.walk返回值为3元tupple，第一个是起始路径，第二个是起始下的文件夹，第三个是起始路径下的文件
+    for root, dirs, files in os.walk(file_path):
+        for file in files:
+            if file.lower().endswith(&apos;.py&apos;):
+                full_path = os.path.join(root, file)
+                count_code_lines(full_path)
+
+#在main函数里不要用global来申明全局变量
+if __name__ == &apos;__main__&apos;:
+    walk_dir(&apos;../&apos;)
+    print &apos;total line is %d, blank is %d, comment is %d&apos; % (total, blank, comment)
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/02/每天一个python小程序-5/" itemprop="url">每天一个python小程序(5)--找出最重要的单词</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-02T23:12:36+08:00">
+                2015-02-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>你有一个目录，放了你一个月的日记，都是 txt，为了避免分词的问题，假设内容都是英文，请统计出你认为每篇日记最重要的词。</p>
+</blockquote>
+<pre><code>#!/usr/bin/env python
+#encoding=utf-8
+
+import collections
+import re
+import os
+
+#这些单词在所有文章中都会频繁出现，不能看做最重要的词
+useless_words = (&apos;the&apos;, &apos;a&apos;, &apos;an&apos;, &apos;and&apos;, &apos;by&apos;, &apos;of&apos;, &apos;in&apos;, &apos;on&apos;, &apos;is&apos;, &apos;to&apos;)
+
+&apos;&apos;&apos;
+
+
+def get_important_word(file):
+    f = open(file)
+    word_counter = collections.Counter()
+
+    for line in f:
+        words = re.findall(&apos;\w+&apos;, line.lower())
+        word_counter.update(words)
+
+    f.close()
+    #按次序取出出现次序最多的词，和useless_words中的单词比较，如果在use_less表中，就取次一个高频的单词
+    most_important_word = word_counter.most_common(1)[0][0]
+    count = 2
+    while (most_important_word in useless_words):
+        most_important_word = word_counter.most_common(count)[count-1][0]
+        count += 1
+    num = word_counter.most_common(count)[count-1][1]
+    print &apos;the most important word in %s is %s, it appears %d times&apos; % (file, most_important_word, num)
+
+
+if __name__ == &apos;__main__&apos;:
+    filepath = &apos;diary&apos;
+    for dirpath, dirname, dirfiles in os.walk(filepath):
+        for file in dirfiles:
+            abspath = os.path.join(dirpath, file)
+            if os.path.isfile(abspath):
+                get_important_word(abspath)
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/02/每天一个python小程序-4/" itemprop="url">每天一个python小程序(4)--统计单词频数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-02T23:08:42+08:00">
+                2015-02-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>任一个英文的纯文本文件，统计其中每个单词出现的频数。</p>
+</blockquote>
+<p>这一题使用collections模块会非常简单</p>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
+
+import collections
+import re
+
+#增加统计单词总数和最长行
+def count_word(file_name):
+    f = open(file_name)
+
+    word_counter = collections.Counter()
+
+    #文件对象使用迭代器
+    for line in f:
+        words = re.findall(&apos;\w+&apos;, line.lower())
+        word_counter.update(words)
+
+    #迭代器对象只能遍历一次，欲再次遍历需要重现构建迭代器对象
+    f = open(file_name)
+    #计算单词总数 p206
+    word_sum = len([word for line in f for word in line.split()])
+
+
+    #最长行
+    f = open(file_name)
+    longest = max(len(line.split()) for line in f)
+
+    print &quot;the longest line&apos;s length is %d&quot; % longest
+    f.close()
+
+    return word_counter, word_sum
+
+if __name__ == &apos;__main__&apos;:
+    world_counter, word_sum = count_word(&apos;test.txt&apos;)
+    print &apos;there are %d words in this article&apos; % word_sum
+    #most_common打印出现次数最多的单词，这里most_common(3)表示出现次数最多的3个单词
+    for key,count in world_counter.most_common(3):
+        print &apos;%s: %d&apos; % (key, count)
+</code></pre><p>代码在<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.4" target="_blank" rel="external">这里</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/02/每天一个python小程序-3/" itemprop="url">每天一个python小程序(3)--保存激活码</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-02T23:04:29+08:00">
+                2015-02-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>将<a href="http://michaelyou.github.io/2015/02/02/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AApython%E5%B0%8F%E7%A8%8B%E5%BA%8F-2/" target="_blank" rel="external">这一题</a>生成的 200 个激活码（或者优惠券）保存到 mongodb 非关系型数据库中</p>
+</blockquote>
+<p>python连接mongodb需要用到pymongo模块，对数据库操作和单独操作mongodb是一样的</p>
+<pre><code>#usr/bin/python
+#encoding=utf-8
+
+import pymongo
+import uuid
+#连接到mongodb,这里的mongodb在本地运行，默认监听27017端口
+connection = pymongo.Connection(&apos;localhost&apos;, 27017)
+#连接到指定数据库，不存在即创建
+db = connection.python_study
+#指定collection，不存在即创建
+collection = db.uuid
+
+for i in range(200):
+    #向指定的collection中插入数据
+    collection.insert({&quot;id&quot;: i, &quot;value&quot;: uuid.uuid4()})
+</code></pre><p>代码可以在<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.2" target="_blank" rel="external">这里</a>下载</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/02/每天一个python小程序-2/" itemprop="url">每天一个python小程序(2)--生成激活码</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-02T22:58:51+08:00">
+                2015-02-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>作为 Apple Store App 独立开发者，你要搞限时促销，为你的应用生成激活码（或者优惠券），使用 Python 如何生成 200 个激活码（或者优惠券）？</p>
+</blockquote>
+<p>本题主要是熟悉python的uuid模块，uuid生成有4个算法，这里采用的是uuid4</p>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
+import uuid
+
+def generate_activation_code(count):
+    code_list = []
+    for i in xrange(count):
+        code = str(uuid.uuid4()).replace(&apos;-&apos;,&apos;&apos;).upper()
+        #uuid4的算法有一定的重复概率，所以下面作了判断
+        if not code in code_list:
+            code_list.append(code)
+
+    return code_list
+
+if __name__ == &apos;__main__&apos;:
+    code_list = generate_activation_code(200)
+    for code in code_list:
+        print code
+</code></pre><p>代码可以在<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.1" target="_blank" rel="external">这里</a>下载</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -2311,7 +2369,7 @@ if __name__ == &apos;__main__&apos;:
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">199</span>
+                <span class="site-state-item-count">194</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

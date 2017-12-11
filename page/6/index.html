@@ -286,1570 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/08/python线程初探/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/08/python线程初探/" itemprop="url">python线程初探</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-08T11:22:20+08:00">
-                2015-05-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>我们将会看到一些在Python中使用线程的实例和如何避免线程之间的竞争。你应当将下边的例子运行多次，以便可以注意到线程是不可预测的和线程每次运行出的不同结果。声明：从这里开始忘掉你听到过的关于GIL的东西，因为GIL不会影响到我想要展示的东西。</p>
-<p>##示例1</p>
-<p>我们将要请求五个不同的url：</p>
-<p>单线程</p>
-<pre><code>import time
-import urllib2
-
-def get_responses():
-    urls = [
-        &apos;http://www.google.com&apos;,
-        &apos;http://www.amazon.com&apos;,
-        &apos;http://www.ebay.com&apos;,
-        &apos;http://www.alibaba.com&apos;,
-        &apos;http://www.reddit.com&apos;
-    ]
-    start = time.time()
-    for url in urls:
-        print url
-        resp = urllib2.urlopen(url)
-        print resp.getcode()
-    print &quot;Elapsed time: %s&quot; % (time.time()-start)
-
-get_responses()
-</code></pre><p>输出是：</p>
-<pre><code>http://www.google.com 200
-http://www.amazon.com 200
-http://www.ebay.com 200
-http://www.alibaba.com 200
-http://www.reddit.com 200
-Elapsed time: 3.0814409256
-</code></pre><p>解释：</p>
-<ul>
-<li>url顺序的被请求</li>
-<li>除非cpu从一个url获得了回应，否则不会去请求下一个url</li>
-<li>网络请求会花费较长的时间，所以cpu在等待网络请求的返回时间内一直处于闲置状态。<br>##多线程</li>
-</ul>
-<pre><code>import urllib2
-import time
-from threading import Thread
-
-class GetUrlThread(Thread):
-    def __init__(self, url):
-        self.url = url 
-        super(GetUrlThread, self).__init__()
-
-    def run(self):
-        resp = urllib2.urlopen(self.url)
-        print self.url, resp.getcode()
-
-def get_responses():
-    urls = [
-        &apos;http://www.google.com&apos;, 
-        &apos;http://www.amazon.com&apos;, 
-        &apos;http://www.ebay.com&apos;, 
-        &apos;http://www.alibaba.com&apos;, 
-        &apos;http://www.reddit.com&apos;
-    ]
-    start = time.time()
-    threads = []
-    for url in urls:
-        t = GetUrlThread(url)
-        threads.append(t)
-        t.start()
-    for t in threads:
-        t.join()
-    print &quot;Elapsed time: %s&quot; % (time.time()-start)
-
-get_responses()
-</code></pre><p>输出：</p>
-<pre><code>http://www.reddit.com 200
-http://www.google.com 200
-http://www.amazon.com 200
-http://www.alibaba.com 200
-http://www.ebay.com 200
-Elapsed time: 0.689890861511
-</code></pre><p>解释：</p>
-<ul>
-<li>意识到了程序在执行时间上的提升</li>
-<li>我们写了一个多线程程序来减少cpu的等待时间，当我们在等待一个线程内的网络请求返回时，这时cpu可以切换到其他线程去进行其他线程内的网络请求。</li>
-<li>我们期望一个线程处理一个url，所以实例化线程类的时候我们传了一个url。</li>
-<li>线程运行意味着执行类里的run()方法。</li>
-<li>无论如何我们想每个线程必须执行run()。</li>
-<li>为每个url创建一个线程并且调用start()方法，这告诉了cpu可以执行线程中的run()方法了。</li>
-<li>我们希望所有的线程执行完毕的时候再计算花费的时间，所以调用了join()方法。</li>
-<li>join()可以通知主线程等待这个线程结束后，才可以执行下一条指令。</li>
-<li>每个线程我们都调用了join()方法，所以我们是在所有线程执行完毕后计算的运行时间。</li>
-</ul>
-<p>关于线程：</p>
-<ul>
-<li>cpu可能不会在调用start()后马上执行run()方法。</li>
-<li>你不能确定run()在不同线程建间的执行顺序。</li>
-<li>对于单独的一个线程，可以保证run()方法里的语句是按照顺序执行的。</li>
-<li>这就是因为线程内的url会首先被请求，然后打印出返回的结果。<br>##示例2<br>我们将会用一个程序演示一下多线程间的资源竞争，并修复这个问题。</li>
-</ul>
-<pre><code>from threading import Thread
-
-#define a global variable
-some_var = 0
-
-class IncrementThread(Thread):
-    def run(self):
-        #we want to read a global variable
-        #and then increment it
-        global some_var
-        read_value = some_var
-        print &quot;some_var in %s is %d&quot; % (self.name, read_value)
-        some_var = read_value + 1
-        print &quot;some_var in %s after increment is %d&quot; % (self.name, some_var)
-
-def use_increment_thread():
-    threads = []
-    for i in range(50):
-        t = IncrementThread()
-        threads.append(t)
-        t.start()
-    for t in threads:
-        t.join()
-    print &quot;After 50 modifications, some_var should have become 50&quot;
-    print &quot;After 50 modifications, some_var is %d&quot; % (some_var,)
-
-use_increment_thread()
-</code></pre><p>多次运行这个程序，你会看到多种不同的结果。</p>
-<p>解释：</p>
-<ul>
-<li>有一个全局变量，所有的线程都想修改它。</li>
-<li>所有的线程应该在这个全局变量上加 1 。</li>
-<li><p>有50个线程，最后这个数值应该变成50，但是它却没有。<br>为什么没有达到50？</p>
-</li>
-<li><p>在some_var是15的时候，线程t1读取了some_var，这个时刻cpu将控制权给了另一个线程t2。</p>
-</li>
-<li>t2线程读到的some_var也是15</li>
-<li>t1和t2都把some_var加到16</li>
-<li>当时我们期望的是t1 t2两个线程使some_var + 2变成17</li>
-<li>在这里就有了资源竞争。</li>
-<li>相同的情况也可能发生在其它的线程间，所以出现了最后的结果小于50的情况。</li>
-</ul>
-<p>解决资源竞争</p>
-<pre><code>from threading import Lock, Thread
-lock = Lock()
-some_var = 0
-
-class IncrementThread(Thread):
-    def run(self):
-        #we want to read a global variable
-        #and then increment it
-        global some_var
-        lock.acquire()
-        read_value = some_var
-        print &quot;some_var in %s is %d&quot; % (self.name, read_value)
-        some_var = read_value + 1
-        print &quot;some_var in %s after increment is %d&quot; % (self.name, some_var)
-        lock.release()
-
-def use_increment_thread():
-    threads = []
-    for i in range(50):
-        t = IncrementThread()
-        threads.append(t)
-        t.start()
-    for t in threads:
-        t.join()
-    print &quot;After 50 modifications, some_var should have become 50&quot;
-    print &quot;After 50 modifications, some_var is %d&quot; % (some_var,)
-
-use_increment_thread()
-</code></pre><p>再次运行这个程序，达到了我们预期的结果。</p>
-<p>解释：</p>
-<ul>
-<li>Lock 用来防止竞争条件</li>
-<li>如果在执行一些操作之前，线程t1获得了锁。其他的线程在t1释放Lock之前，不会执行相同的操作</li>
-<li>我们想要确定的是一旦线程t1已经读取了some_var，直到t1完成了修改some_var，其他的线程才可以读取some_var</li>
-<li>这样读取和修改some_var成了逻辑上的原子操作。<br>##示例3<br>让我们用一个例子来证明一个线程不能影响其他线程内的变量（非全局变量）。</li>
-</ul>
-<p>time.sleep()可以使一个线程挂起，强制线程切换发生。</p>
-<pre><code>from threading import Thread
-import time
-
-class CreateListThread(Thread):
-    def run(self):
-        self.entries = []
-        for i in range(10):
-            time.sleep(1)
-            self.entries.append(i)
-        print self.entries
-
-def use_create_list_thread():
-    for i in range(3):
-        t = CreateListThread()
-        t.start()
-
-use_create_list_thread()
-</code></pre><p>运行几次后发现并没有打印出正确的结果。当一个线程正在打印的时候，cpu切换到了另一个线程，所以产生了不正确的结果。我们需要确保print self.entries是个逻辑上的原子操作，以防打印时被其他线程打断。</p>
-<p>我们使用了Lock()，来看下边的例子。</p>
-<pre><code>from threading import Thread, Lock
-import time
-
-lock = Lock()
-
-class CreateListThread(Thread):
-    def run(self):
-        self.entries = []
-        for i in range(10):
-            time.sleep(1)
-            self.entries.append(i)
-        lock.acquire()
-        print self.entries
-        lock.release()
-
-def use_create_list_thread():
-    for i in range(3):
-        t = CreateListThread()
-        t.start()
-
-use_create_list_thread()
-</code></pre><p>这次我们看到了正确的结果。证明了一个线程不可以修改其他线程内部的变量（非全局变量）。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/08/python程序员长常犯的错误-高级篇/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/08/python程序员长常犯的错误-高级篇/" itemprop="url">python程序员长常犯的错误-高级篇</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-08T10:50:11+08:00">
-                2015-05-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>本文转载自<a href="http://blog.jobbole.com/68256/" target="_blank" rel="external">这里</a></p>
-<p>Python简单、易学的语法可能会误导一些Python程序员（特别是那些刚接触这门语言的人们），可能会忽略某些细微之处和这门语言的强大之处。</p>
-<p>考虑到这点，本文列出了“十大”甚至是高级的Python程序员都可能犯的，却又不容易发现的细微错误。</p>
-<p>##在函数参数中乱用表达式作为默认值</p>
-<p>Python允许给一个函数的某个参数设置<strong>默认值</strong>以使该参数成为一个<strong>可选参数</strong>。尽管这是这门语言很棒的一个功能，但是这当这个默认值是<strong>可变对象</strong>（<a href="https://docs.python.org/2/reference/datamodel.html" target="_blank" rel="external">mutable</a>）时，那就有些麻烦了。例如，看下面这个Python函数定义：</p>
-<pre><code>&gt;&gt;&gt; def foo(bar=[]):        # bar是可选参数，如果没有指明的话，默认值是[]
-...    bar.append(&quot;baz&quot;)    # 但是这行可是有问题的，走着瞧…
-...    return bar
-</code></pre><p>人们常犯的一个错误是认为<strong>每次</strong>调用这个函数时不给这个可选参数赋值的话，它总是会被赋予这个默认表达式的值。例如，在上面的代码中，程序员可能会认为重复调用函数foo() （不传参数bar给这个函数），这个函数会总是返回‘baz’，因为我们假定认为每次调用foo()的时候（不传bar），参数bar会被置为[]（即，一个空的列表）。</p>
-<p>那么我们来看看这么做的时候究竟会发生什么：</p>
-<pre><code>&gt;&gt;&gt; foo()
-[&quot;baz&quot;]
-&gt;&gt;&gt; foo()
-[&quot;baz&quot;, &quot;baz&quot;]
-&gt;&gt;&gt; foo()
-[&quot;baz&quot;, &quot;baz&quot;, &quot;baz&quot;]
-</code></pre><p>嗯？为什么每次调用foo()的时候，这个函数总是在一个已经存在的列表后面添加我们的默认值“baz”，而不是每次都创建一个<strong>新</strong>的列表？</p>
-<p>答案是<strong>一个函数参数的默认值，仅仅在该函数定义的时候，被赋值一次</strong>。如此，只有当函数foo()第一次被定义的时候，才讲参数bar的默认值初始化到它的默认值（即一个空的列表）。当调用foo()的时候（不给参数bar），会继续使用bar最早初始化时的那个列表。</p>
-<p>由此，可以有如下的解决办法：</p>
-<pre><code>&gt;&gt;&gt; def foo(bar=None):
-...    if bar is None:      # 或者用 if not bar:
-...        bar = []
-...    bar.append(&quot;baz&quot;)
-...    return bar
-...
-&gt;&gt;&gt; foo()
-[&quot;baz&quot;]
-&gt;&gt;&gt; foo()
-[&quot;baz&quot;]
-&gt;&gt;&gt; foo()
-[&quot;baz&quot;]
-</code></pre><p>##不正确的使用类变量</p>
-<p>看下面一个例子：</p>
-<pre><code>&gt;&gt;&gt; class A(object):
-...     x = 1
-...
-&gt;&gt;&gt; class B(A):
-...     pass
-...
-&gt;&gt;&gt; class C(A):
-...     pass
-...
-&gt;&gt;&gt; print A.x, B.x, C.x
-1 1 1
-</code></pre><p>看起来没有问题。</p>
-<pre><code>&gt;&gt;&gt; B.x = 2
-&gt;&gt;&gt; print A.x, B.x, C.x
-1 2 1
-</code></pre><p>嗯哈，还是和预想的一样。</p>
-<pre><code>&gt;&gt;&gt; A.x = 3
-&gt;&gt;&gt; print A.x, B.x, C.x
-3 2 3
-</code></pre><p>我了个去。只是改变了A.x，为啥C.x也变了？</p>
-<p>在Python里，类变量通常在内部被当做字典来处理并遵循通常所说的方法解析顺序（<a href="http://python-history.blogspot.com.ar/2010/06/method-resolution-order.html" target="_blank" rel="external">Method Resolution Order (MRO)</a>）。因此在上面的代码中，因为属性x在类C中找不到，因此它会往上去它的基类中查找（在上面的例子中只有A这个类，当然Python是支持多重继承（multiple inheritance）的）。换句话说，C没有它自己独立于A的属性x。因此对C.x的引用实际上是对A.x的引用。（B.x不是对A.x的引用是因为在第二步里B.x=2将B.x引用到了2这个对象上，倘若没有如此，B.x仍然是引用到A.x上的。）</p>
-<p>##在异常处理时错误的使用参数</p>
-<p>假设你有如下的代码：</p>
-<pre><code>&gt;&gt;&gt; try:
-...     l = [&quot;a&quot;, &quot;b&quot;]
-...     int(l[2])
-... except ValueError, IndexError:  # 想捕捉两个异常
-...     pass
-...
-Traceback (most recent call last):
-  File &quot;&lt;stdin&gt;&quot;, line 3, in &lt;module&gt;
-IndexError: list index out of range
-</code></pre><p>这里的问题在于except语句<strong>不会</strong>像这样去接受一系列的异常。并且，在Python 2.x里面，语法<code>except Exception, e</code>是用来将异常和这个可选的参数绑定起来（即这里的e），以用来在后面查看的。因此，在上面的代码中，IndexError异常<strong>不会</strong>被except语句捕捉到；而最终ValueError这个异常被绑定在了一个叫做IndexError的参数上。</p>
-<p>在except语句中捕捉多个异常的正确做法是将所有想要捕捉的异常放在一个元组（<a href="https://docs.python.org/2/tutorial/datastructures.html#tut-tuples" target="_blank" rel="external">tuple</a>）里并作为第一个参数给except语句。并且，为移植性考虑，使用as关键字，因为Python 2和Python 3都支持这样的语法，例如：</p>
-<pre><code>&gt;&gt;&gt; try:
-...     l = [&quot;a&quot;, &quot;b&quot;]
-...     int(l[2])
-... except (ValueError, IndexError) as e:  
-...     pass
-...
-&gt;&gt;&gt;
-</code></pre><p>##误解Python作用域的规则</p>
-<p>Python的作用域解析是基于叫做<a href="https://blog.mozilla.org/webdev/2011/01/31/python-scoping-understanding-legb/" target="_blank" rel="external">LEGB</a>（Local（本地），Enclosing（封闭），Global（全局），Built-in（内置））的规则进行操作的。这看起来很直观，对吧？事实上，在Python中这有一些细微的地方很容易出错。看这个例子：</p>
-<pre><code>&gt;&gt;&gt; x = 10
-&gt;&gt;&gt; def foo():
-...     x += 1
-...     print x
-...
-&gt;&gt;&gt; foo()
-Traceback (most recent call last):
-  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-  File &quot;&lt;stdin&gt;&quot;, line 2, in foo
-UnboundLocalError: local variable &apos;x&apos; referenced before assignment
-</code></pre><p>这是怎么回事？</p>
-<p>这是因为，在一个作用域里面给一个变量赋值的时候，<strong>Python自动认为这个变量是这个作用域的本地变量，并屏蔽作用域外的同名的变量</strong>。</p>
-<p>很多时候可能在一个函数里添加一个赋值的语句会让你从前本来工作的代码得到一个UnboundLocalError。（感兴趣的话可以读一读<a href="https://docs.python.org/2/faq/programming.html#why-am-i-getting-an-unboundlocalerror-when-the-variable-has-a-value" target="_blank" rel="external">这篇</a>文章。）</p>
-<p>在使用列表（<a href="https://docs.python.org/2/tutorial/datastructures.html" target="_blank" rel="external">lists</a>）的时候，这种情况尤为突出。看下面这个例子：</p>
-<pre><code>&gt;&gt;&gt; lst = [1, 2, 3]
-&gt;&gt;&gt; def foo1():
-...     lst.append(5)   # 这没有问题...
-...
-&gt;&gt;&gt; foo1()
-&gt;&gt;&gt; lst
-[1, 2, 3, 5]
-
-&gt;&gt;&gt; lst = [1, 2, 3]
-&gt;&gt;&gt; def foo2():
-...     lst += [5]      # ... 这就有问题了！
-...
-&gt;&gt;&gt; foo2()
-Traceback (most recent call last):
-  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-  File &quot;&lt;stdin&gt;&quot;, line 2, in foo
-UnboundLocalError: local variable &apos;lst&apos; referenced before assignment
-</code></pre><p>嗯？为什么foo2有问题，而foo1没有问题？</p>
-<p>答案和上一个例子一样，但是更加不易察觉。foo1并没有给lst<strong>赋值</strong>，但是foo2尝试给lst<strong>赋值</strong>。注意lst+=[5]只是lst=lst+[5]的简写，由此可以看到我们尝试给lst赋值（因此Python假设作用域为本地）。但是，这个要赋给lst的值是基于lst本身的（这里的作用域仍然是本地），而lst却没有被定义，这就出错了。</p>
-<p>##在遍历列表的同时又在修改这个列表</p>
-<p>下面这个例子中的代码应该比较明显了：</p>
-<pre><code>&gt;&gt;&gt; odd = lambda x : bool(x % 2)
-&gt;&gt;&gt; numbers = [n for n in range(10)]
-&gt;&gt;&gt; for i in range(len(numbers)):
-...     if odd(numbers[i]):
-...         del numbers[i]  # 这不对的：在遍历列表时删掉列表的元素。
-...
-Traceback (most recent call last):
-      File &quot;&lt;stdin&gt;&quot;, line 2, in &lt;module&gt;
-IndexError: list index out of range
-</code></pre><p>遍历一个列表或者数组的同时又删除里面的元素，对任何有经验的软件开发人员来说这是个很明显的错误。但是像上面的例子那样明显的错误，即使有经验的程序员也可能不经意间在更加复杂的程序中不小心犯错。</p>
-<p>所幸，Python集成了一些优雅的编程范式，如果使用得当，可以写出相当简化和精简的代码。一个附加的好处是更简单的代码更不容易遇到这种“不小心在遍历列表时删掉列表元素”的bug。例如<strong>列表推导式</strong>（<a href="https://docs.python.org/2/tutorial/datastructures.html#tut-listcomps" target="_blank" rel="external">list comprehensions</a>）就提供了这样的范式。再者，列表推导式在避免这样的问题上特别有用，接下来这个对上面的代码的重新实现就相当完美：</p>
-<pre><code>&gt;&gt;&gt; odd = lambda x : bool(x % 2)
-&gt;&gt;&gt; numbers = [n for n in range(10)]
-&gt;&gt;&gt; numbers[:] = [n for n in numbers if not odd(n)]  # 啊，这多优美
-&gt;&gt;&gt; numbers
-[0, 2, 4, 6, 8]
-</code></pre><p>##搞不清楚在闭包（closures）中Python是怎样绑定变量的    </p>
-<p>看这个例子：</p>
-<pre><code>&gt;&gt;&gt; def create_multipliers():
-...     return [lambda x : i * x for i in range(5)]
-&gt;&gt;&gt; for multiplier in create_multipliers():
-...     print multiplier(2)
-...
-</code></pre><p>期望得到下面的输出：</p>
-<pre><code>0
-2
-4
-6
-8
-</code></pre><p>但是实际上得到的是：</p>
-<pre><code>8
-8
-8
-8
-8
-</code></pre><p>意外吧！</p>
-<p>这是由于Python的<strong>后期绑定</strong>（late binding）机制导致的，这是指在闭包中使用的变量的值，是在内层函数被调用的时候查找的。因此在上面的代码中，当任一返回函数被调用的时候，i的值是在<strong>它被调用时的周围作用域</strong>中查找（到那时，循环已经结束了，所以i已经被赋予了它最终的值4）。</p>
-<p>解决的办法比较巧妙：</p>
-<pre><code>&gt;&gt;&gt; def create_multipliers():
-...     return [lambda x, i=i : i * x for i in range(5)]
-...
-&gt;&gt;&gt; for multiplier in create_multipliers():
-...     print multiplier(2)
-...
-0
-2
-4
-6
-8
-</code></pre><p>这下对了！这里利用了默认参数去产生匿名函数以达到期望的效果。有人会说这很优美，有人会说这很微妙，也有人会觉得反感。但是如果你是一名Python程序员，重要的是能理解任何的情况。</p>
-<p>##循环加载模块</p>
-<p>假设你有两个文件，a.py和b.py，在这两个文件中互相加载对方，例如：</p>
-<p>在a.py中：</p>
-<pre><code>import b
-def f():
-    return b.x
-print f()
-</code></pre><p>在b.py中：</p>
-<pre><code>import a
-x = 1
-def g():
-    print a.f()
-</code></pre><p>首先，我们试着加载a.py：</p>
-<pre><code>&gt;&gt;&gt; import a
-1
-</code></pre><p>没有问题。也许让人吃惊，毕竟有个感觉应该是问题的循环加载在这儿。</p>
-<p>事实上在Python中仅仅是表面上的出现循环加载并不是什么问题。如果一个模块以及被加载了，Python不会傻到再去重新加载一遍。但是，当每个模块都想要互相访问定义在对方里的函数或者变量时，问题就来了。</p>
-<p>让我们再回到之前的例子，当我们加载a.py时，它<strong>再加载b.py</strong>不会有问题，因为在加载b.py时，它并不需要访问a.py的任何东西，而在b.py中唯一的引用就是调用a.f()。但是这个调用是在函数g()中完成的，并且a.py或者b.py中没有人调用g()，所以这会儿心情还是美丽的。</p>
-<p>但是当我们试图加载b.py时（之前没有加载a.py），会发生什么呢：</p>
-<pre><code>&gt;&gt;&gt; import b
-Traceback (most recent call last):
-      File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-      File &quot;b.py&quot;, line 1, in &lt;module&gt;
-    import a
-      File &quot;a.py&quot;, line 6, in &lt;module&gt;
-    print f()
-      File &quot;a.py&quot;, line 4, in f
-    return b.x
-AttributeError: &apos;module&apos; object has no attribute &apos;x&apos;
-</code></pre><p>恭喜你，出错了。这里问题出在加载b.py的过程中，Python试图加载a.py，并且在a.py中需要调用到f()，而函数f()又要访问到b.x，但是这个时候b.x却还没有被定义。这就产生了AttributeError异常。</p>
-<p>解决的方案可以做一点细微的改动。改一下b.py，使得它在g()里面加载a.py：</p>
-<pre><code>x = 1
-def g():
-    import a    # 只有当g()被调用的时候才加载
-    print a.f()
-</code></pre><p>这会儿当我们加载b.py的时候，一切安好：</p>
-<pre><code>&gt;&gt;&gt; import b
-&gt;&gt;&gt; b.g()
-1   # 第一次输出，因为模块a在最后调用了‘print f()’
-1   # 第二次输出，这是我们调用g()
-</code></pre><p>##与Python标准库模块命名冲突</p>
-<p>Python的一个优秀的地方在于它提供了丰富的库模块。但是这样的结果是，如果你不下意识的避免，很容易你会遇到你自己的模块的名字与某个随Python附带的标准库的名字冲突的情况（比如，你的代码中可能有一个叫做email.py的模块，它就会与标准库中同名的模块冲突）。</p>
-<p>这会导致一些很粗糙的问题，例如当你想加载某个库，这个库需要加载Python标准库里的某个模块，结果呢，因为你有一个与标准库里的模块同名的模块，这个包错误的将你的模块加载了进去，而不是加载Python标准库里的那个模块。这样一来就会有麻烦了。</p>
-<p>所以在给模块起名字的时候要小心了，得避免与Python标准库中的模块重名。相比起你提交一个“<a href="http://legacy.python.org/dev/peps/" target="_blank" rel="external">Python改进建议（Python Enhancement Proposal (PEP)）</a>”去向上要求改一个标准库里包的名字，并得到批准来说，你把自己的那个模块重新改个名字要简单得多。</p>
-<p>##不能区分Python 2和Python 3</p>
-<p>看下面这个文件foo.py：</p>
-<pre><code>import sys
-
-def bar(i):
-    if i == 1:
-        raise KeyError(1)
-    if i == 2:
-        raise ValueError(2)
-
-def bad():
-    e = None
-    try:
-        bar(int(sys.argv[1]))
-    except KeyError as e:
-        print(&apos;key error&apos;)
-    except ValueError as e:
-        print(&apos;value error&apos;)
-    print(e)
-
-bad()
-</code></pre><p>在Python 2里，运行起来没有问题：</p>
-<pre><code>$ python foo.py 1
-key error
-1
-$ python foo.py 2
-value error
-2
-</code></pre><p>但是如果拿到Python 3上面玩玩：</p>
-<pre><code>$ python3 foo.py 1
-key error
-Traceback (most recent call last):
-  File &quot;foo.py&quot;, line 19, in &lt;module&gt;
-    bad()
-  File &quot;foo.py&quot;, line 17, in bad
-    print(e)
-UnboundLocalError: local variable &apos;e&apos; referenced before assignment
-</code></pre><p>这是怎么回事？“问题”在于，<strong>在Python 3里，在except块的作用域以外，异常对象（exception object）是不能被访问的</strong>。（原因在于，如果不这样的话，Python会在内存的堆栈里保持一个引用链直到Python的垃圾处理将这些引用从内存中清除掉。更多的技术细节可以参考<a href="https://docs.python.org/3/reference/compound_stmts.html#except" target="_blank" rel="external">这里</a>。）</p>
-<p>避免这样的问题可以这样做：保持在execpt块作用域以外对异常对象的引用，这样是可以访问的。下面是用这个办法对之前的例子做的改动，这样在Python 2和Python 3里面都运行都没有问题。</p>
-<pre><code>import sys
-
-def bar(i):
-    if i == 1:
-        raise KeyError(1)
-    if i == 2:
-        raise ValueError(2)
-
-def good():
-    exception = None
-    try:
-        bar(int(sys.argv[1]))
-    except KeyError as e:
-        exception = e
-        print(&apos;key error&apos;)
-    except ValueError as e:
-        exception = e
-        print(&apos;value error&apos;)
-    print(exception)
-
-good()
-</code></pre><p>在Py3k里面运行：</p>
-<pre><code>$ python3 foo.py 1
-key error
-1
-$ python3 foo.py 2
-value error
-2
-</code></pre><p>耶！</p>
-<p>##错误的使用<strong>del</strong>方法</p>
-<p>假设有一个文件mod.py中这样使用：</p>
-<pre><code>import foo
-
-class Bar(object):
-        ...
-    def __del__(self):
-        foo.cleanup(self.myhandle)
-</code></pre><p>然后试图在another_mod.py里这样：</p>
-<pre><code>import mod
-mybar = mod.Bar()
-</code></pre><p>那么你会得到一个恶心的AttributeError异常。</p>
-<p>为啥呢？这是因为（参考<a href="https://mail.python.org/pipermail/python-bugs-list/2009-January/069209.html" target="_blank" rel="external">这里</a>），当解释器关闭时，模块所有的全局变量会被置为空（None）。结果便如上例所示，当<strong>del</strong>被调用时，名字foo已经被置为空了。</p>
-<p>使用<code>atexit.register()</code>可以解决这个问题。如此，当你的程序结束的时候（退出的时候），你的注册的处理程序会在解释器关闭之前处理。</p>
-<p>这样理解的话，对上面的mod.py可以做如下的修改：</p>
-<pre><code>import foo
-import atexit
-
-def cleanup(handle):
-    foo.cleanup(handle)
-
-class Bar(object):
-    def __init__(self):
-        ...
-        atexit.register(cleanup, self.myhandle)
-</code></pre><p>这样的实现方式为在程序正常终止时调用清除功能提供了一种干净可靠的办法。显然，需要<code>foo.cleanup</code>决定怎么处理绑定在<code>self.myhandle</code>上的对象，但你知道怎么做的。</p>
-<p>##总结</p>
-<p>Python 是一门非常强大且灵活的语言，它众多的机制和范式能显著的提高生产效率。不过，和任何一款软件或者语言一样，对它的理解或认识不足的话，常常是弊大于利的，并会处于一种“一知半解”的状态。</p>
-<p>多熟悉Python的一些关键的细微的地方，比如（但不局限于）本文中提到的这些问题，可以帮你更好的使用这门语言的同时帮你避免一些常见的陷阱。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/06/Django-csrf机制/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/06/Django-csrf机制/" itemprop="url">Django csrf机制</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-06T20:44:17+08:00">
-                2015-05-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>官方文档参考<a href="https://docs.Djangoproject.com/en/1.7/ref/contrib/csrf/" target="_blank" rel="external">这里</a></p>
-<p>##什么是CSRF</p>
-<p>CSRF（Cross-site request forgery）跨站请求伪造，也被称成为“one click attack”或者session riding，通常缩写为CSRF或者XSRF，是一种对网站的恶意利用。尽管听起来像跨站脚本（XSS），但它与XSS非常不同，并且攻击方式几乎相左。XSS利用站点内的信任用户，而CSRF则通过伪装来自受信任用户的请求来利用受信任的网站。与XSS攻击相比，CSRF攻击往往不大流行（因此对其进行防范的资源也相当稀少）和难以防范，所以被认为比XSS更具危险性。</p>
-<p>比如可以这样进行攻击:</p>
-<p>一个网站用户Bob可能正在浏览聊天论坛，而同时另一个用户Alice也在此论坛中，并且后者刚刚发布了一个具有Bob银行链接的图片消息。设想一下，Alice编写了一个在Bob的银行站点上进行取款的form提交的链接，并将此链接作为图片tag。如果Bob的银行在cookie中保存他的授权信息，并且此cookie没有过期，那么当Bob的浏览器尝试装载图片时将提交这个取款form和他的cookie，这样在没经Bob同意的情况下便授权了这次事务。</p>
-<p>##防范措施<br>对于web站点，将持久化的授权方法（例如cookie或者HTTP授权）切换为瞬时的授权方法（在每个form中提供隐藏field），这将帮助网站防止这些攻击。一种类似的方式是在form中包含秘密信息、用户指定的代号作为cookie之外的验证。</p>
-<p>另一个可选的方法是“双提交”cookie。此方法只工作于Ajax请求，但它能够作为无需改变大量form的全局修正方法。如果某个授权的cookie在form post之前正被JavaScript代码读取，那么限制跨域规则将被应用。如果服务器需要在Post请求体或者URL中包含授权cookie的请求，那么这个请求必须来自于受信任的域，因为其它域是不能从信任域读取cookie的。</p>
-<p>与通常的信任想法相反，使用Post代替Get方法并不能提供卓有成效的保护。因为JavaScript能使用伪造的POST请求。尽管如此，那些导致对安全产生“副作用”的请求应该总使用Post方式发送。Post方式不会在web服务器和代理服务器日志中留下数据尾巴，然而Get方式却会留下数据尾巴。</p>
-<p>尽管CSRF是web应用的基本问题，而不是用户的问题，但用户能够在缺乏安全设计的网站上保护他们的帐户：通过在浏览其它站点前登出站点或者在浏览器会话结束后清理浏览器的cookie。</p>
-<p>##如何用 Django 进行防范 </p>
-<p>Django的csrf机制,它实际就是后台生成一个随机字符串,在你显示表单的时候在表单中加入一个hidden input,比如:</p>
-<pre><code>&lt;input type=&apos;hidden&apos; name=&apos;csrfmiddlewaretoken&apos; value=&apos;QtF7jsxQddj5Dj9uKuIs3J7jgm0Bf6sg&apos; /&gt;
-</code></pre><p>这个hidden input就是csrftoken在模板中根据后台传过来的随机字符串生成的。</p>
-<ol>
-<li>form提交时，会通过隐藏表单的方式提交cookie中的csrftoken记录</li>
-<li>服务器端接到POST请求时，会验证提交的Token和用户cookie的Token值是否一致，如不一致就返回403错误</li>
-</ol>
-<p><strong>注意</strong>：如果使用的是Django.middleware.csrf.CsrfViewMiddle这个中间件，Django会默认验证每一个post请求，因此所有的表单内都需要加上csrf_token的tag，否则站内提交也会被阻止，除非通过@csrf_exempt装饰器来显式申明不验证token值。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/06/python的logging模块/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/06/python的logging模块/" itemprop="url">python的logging模块</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-06T17:17:09+08:00">
-                2015-05-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>官方文档在<a href="https://docs.python.org/2/library/logging.html#logging.Handler.createLock" target="_blank" rel="external">这里</a></p>
-<p>举一个栗子：代码既要把日志输出到控制台，还要写入日志文件</p>
-<pre><code>import logging
-
-# 创建一个logger
-logger = logging.getLogger(&apos;mylogger&apos;)
-logger.setLevel(logging.DEBUG)
-
-# 创建一个handler，用于写入日志文件
-fh = logging.FileHandler(&apos;test.log&apos;)
-fh.setLevel(logging.DEBUG)
-
-# 再创建一个handler，用于输出到控制台
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-
-# 定义handler的输出格式
-formatter = logging.Formatter(&apos;%(asctime)s - %(name)s - %(levelname)s - %(message)s&apos;)
-fh.setFormatter(formatter)
-ch.setFormatter(formatter)
-
-# 给logger添加handler
-logger.addHandler(fh)
-logger.addHandler(ch)
-
-# 记录一条日志
-logger.info(&apos;foorbar&apos;)  
-</code></pre><p>在控制台和当前目录下的test.log文件中都有下面这行输出：</p>
-<pre><code>2015-05-6 17:10:29,816 - mylogger - INFO - foorbar 
-</code></pre><p>##logging模块的API</p>
-<p>###logging.getLogger([name])<br>返回一个logger实例，如果没有指定name，返回<code>root logger</code>。</p>
-<p>只要name相同，返回的logger实例都是同一个而且只有一个，即name和logger实例是一一对应的。这意味着，无需把logger实例在各个模块中传递。只要知道name，就能得到 同一个logger实例</p>
-<p>###Logger.setLevel(lvl)</p>
-<p>设置logger的level， level有以下几个级别：</p>
-<p>NOTSET &lt; DEBUG &lt; INFO &lt; WARNING &lt; ERROR &lt; CRITICAL</p>
-<p>如果把looger的级别设置为INFO， 那么小于INFO级别的日志都不输出， 大于等于INFO级别的日志都输出</p>
-<pre><code>logger.debug(&quot;foobar&quot;)     # 不输出 
-logger.info(&quot;foobar&quot;)      # 输出
-logger.warning(&quot;foobar&quot;)   # 输出
-logger.error(&quot;foobar&quot;)     # 输出
-logger.critical(&quot;foobar&quot;)  # 输出 
-</code></pre><p>###Logger.addHandler(hdlr)<br>logger可以雇佣handler来帮它处理日志， handler主要有以下几种：</p>
-<ol>
-<li>StreamHandler: 输出到控制台</li>
-<li>FileHandler:   输出到文件</li>
-</ol>
-<p><strong>handler还可以设置自己的level以及输出格式。</strong></p>
-<p>##logging.basicConfig([**kwargs])</p>
-<ul>
-<li>这个函数用来配置root logger， 为root logger创建一个StreamHandler，<br> 设置默认的格式。</li>
-<li>这些函数： logging.debug()、logging.info()、logging.warning()、<br> logging.error()、logging.critical() 如果调用的时候发现root logger没有任何<br> handler， 会自动调用basicConfig添加一个handler</li>
-<li>如果root logger已有handler， 这个函数不做任何事情</li>
-</ul>
-<p>使用basicConfig来配置root logger的输出格式和level：</p>
-<pre><code>import logging
-logging.basicConfig(format=&apos;%(levelname)s:%(message)s&apos;, level=logging.DEBUG)
-logging.debug(&apos;This message should appear on the console&apos;)
-</code></pre><p>##关于root logger以及logger的父子关系<br>前面多次提到root logger， 实际上logger实例之间还有父子关系， root logger就是处于<br>最顶层的logger， 它是所有logger的祖先。如下图:<br><img src="http://cupic.img168.net/bbsfile/forum/month_1109/11090116387b8f480c8f5ec3b2.png" alt=""> </p>
-<p>####root logger是默认的logger</p>
-<p>如果不创建logger实例， 直接调用logging.debug()、logging.info()logging.warning()、logging.error()、logging.critical()这些函数，<br>那么使用的logger就是 root logger， 它可以自动创建，也是单实例的。</p>
-<p>####如何得到root logger</p>
-<p>通过logging.getLogger()或者logging.getLogger(“”)得到root logger实例。</p>
-<p>####默认的level</p>
-<p>root logger默认的level是logging.WARNING</p>
-<p>####如何表示父子关系</p>
-<p>logger的name的命名方式可以表示logger之间的父子关系. 比如：<br>parent_logger = logging.getLogger(‘foo’)<br>child_logger = logging.getLogger(‘foo.bar’)</p>
-<p>####什么是effective level</p>
-<p>logger有一个概念，叫effective level。 如果一个logger没有显示地设置level，那么它就<br>用父亲的level。如果父亲也没有显示地设置level， 就用父亲的父亲的level，以此推….</p>
-<p>最后到达root logger，一定设置过level。默认为logging.WARNING</p>
-<p>child loggers得到消息后，既把消息分发给它的handler处理，也会传递给所有祖先logger处理。</p>
-<p>又一个<strong>栗子</strong>：</p>
-<pre><code>import logging
-
-# 设置root logger
-r = logging.getLogger()
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter(&apos;%(asctime)s - %(levelname)s - %(message)s&apos;)
-ch.setFormatter(formatter)
-r.addHandler(ch)
-
-# 创建一个logger作为父亲
-p = logging.getLogger(&apos;foo&apos;)
-p.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter(&apos;%(asctime)s - %(message)s&apos;)
-ch.setFormatter(formatter)
-p.addHandler(ch)
-
-# 创建一个孩子logger
-c = logging.getLogger(&apos;foo.bar&apos;)
-c.debug(&apos;foo_test&apos;)  
-</code></pre><p>输出如下：</p>
-<pre><code>2015-05-06 17:14:22,677 - foo_test
-2015-05-06 17:14:22,677 - DEBUG - foo_test
-</code></pre><p>可见， 孩子logger没有任何handler，所以对消息不做处理。但是它把消息转发给了它的父亲以及root logger。最后输出两条日志。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/06/函数式编程-2-装饰器和偏函数/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/06/函数式编程-2-装饰器和偏函数/" itemprop="url">函数式编程(2)--装饰器和偏函数</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-06T14:31:47+08:00">
-                2015-05-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##编写无参数decorator</p>
-<p>Python的 <code>decorator</code> 本质上就是一个高阶函数，它接收一个函数作为参数，然后，返回一个新函数。</p>
-<p>使用 decorator 用Python提供的 <code>@</code> 语法，这样可以避免手动编写 <code>f = decorate(f)</code> 这样的代码。</p>
-<p>考察一个@log的定义：</p>
-<pre><code>def log(f):
-    def fn(x):
-        print &apos;call &apos; + f.__name__ + &apos;()...&apos;
-        return f(x)
-    return fn
-</code></pre><p>对于阶乘函数，@log工作得很好：</p>
-<pre><code>@log
-def factorial(n):
-    return reduce(lambda x,y: x*y, range(1, n+1))
-print factorial(10)
-</code></pre><p><strong>结果：</strong></p>
-<pre><code>call factorial()...
-3628800
-</code></pre><p>但是，对于参数不是一个的函数，调用将报错：</p>
-<pre><code>@log
-def add(x, y):
-    return x + y
-print add(1, 2)
-</code></pre><p><strong>结果：</strong></p>
-<pre><code>Traceback (most recent call last):
-  File &quot;test.py&quot;, line 15, in &lt;module&gt;
-    print add(1,2)
-TypeError: fn() takes exactly 1 argument (2 given)
-</code></pre><p>因为 <code>add()</code> 函数需要传入两个参数，但是 <code>@log</code> 写死了只含一个参数的返回函数。<br>要让 <code>@log</code> 自适应任何参数定义的函数，可以利用Python的 <em>args 和 *</em>kw，保证任意个数的参数总是能正常调用：</p>
-<pre><code>def log(f):
-    def fn(*args, **kw):
-        print &apos;call &apos; + f.__name__ + &apos;()...&apos;
-        return f(*args, **kw)
-    return fn
-</code></pre><p>现在，对于任意函数，<code>@log</code> 都能正常工作。</p>
-<p><strong>栗子</strong>：请编写一个@performance，它可以打印出函数调用的时间。</p>
-<p>计算函数调用的时间可以记录调用前后的当前时间戳，然后计算两个时间戳的差。</p>
-<p><strong>参考代码</strong></p>
-<pre><code>import time
-def performance(f):
-    def fn(*args, **kw):
-        t1 = time.time()
-        r = f(*args, **kw)
-        t2 = time.time()
-        print &apos;call %s() in %fs&apos; % (f.__name__, (t2 - t1))
-        return r
-    return fn
-
-@performance
-def factorial(n):
-    return reduce(lambda x,y: x*y, range(1, n+1))
-print factorial(10)
-</code></pre><p>##编写带参数decorator</p>
-<p>考察上一节的 <code>@log</code>装饰器：</p>
-<pre><code>def log(f):
-    def fn(x):
-        print &apos;call &apos; + f.__name__ + &apos;()...&apos;
-        return f(x)
-    return fn
-</code></pre><p>发现对于被装饰的函数，log打印的语句是不能变的（除了函数名）。</p>
-<p>如果有的函数非常重要，希望打印出’[INFO] call xxx()…’，有的函数不太重要，希望打印出’[DEBUG] call xxx()…’，这时，log函数本身就需要传入’INFO’或’DEBUG’这样的参数，类似这样：</p>
-<pre><code>@log(&apos;DEBUG&apos;)
-def my_func():
-    pass
-</code></pre><p>把上面的定义翻译成高阶函数的调用，就是：</p>
-<pre><code>my_func = log(&apos;DEBUG&apos;)(my_func)
-</code></pre><p>上面的语句看上去还是比较绕，再展开一下：</p>
-<pre><code>log_decorator = log(&apos;DEBUG&apos;)
-my_func = log_decorator(my_func)
-</code></pre><p>上面的语句又相当于：</p>
-<pre><code>log_decorator = log(&apos;DEBUG&apos;)
-@log_decorator
-def my_func():
-    pass
-</code></pre><p>所以，带参数的log函数首先返回一个decorator函数，再让这个decorator函数接收my_func并返回新函数：</p>
-<pre><code>def log(prefix):
-    def log_decorator(f):
-        def wrapper(*args, **kw):
-            print &apos;[%s] %s()...&apos; % (prefix, f.__name__)
-            return f(*args, **kw)
-        return wrapper
-    return log_decorator
-
-@log(&apos;DEBUG&apos;)
-def test():
-    pass
-print test()
-</code></pre><p><strong>执行结果：</strong></p>
-<pre><code>[DEBUG] test()...
-None
-</code></pre><p>对于这种3层嵌套的decorator定义，你可以先把它拆开：</p>
-<pre><code># 标准decorator:
-def log_decorator(f):
-    def wrapper(*args, **kw):
-        print &apos;[%s] %s()...&apos; % (prefix, f.__name__)
-        return f(*args, **kw)
-    return wrapper
-return log_decorator
-
-# 返回decorator:
-def log(prefix):
-    return log_decorator(f)
-</code></pre><p>拆开以后会发现，调用会失败，因为在3层嵌套的<code>decorator</code>定义中，最内层的<code>wrapper</code>引用了最外层的参数<code>prefix</code>，所以，把一个闭包拆成普通的函数调用会比较困难。不支持闭包的编程语言要实现同样的功能就需要更多的代码。</p>
-<p><strong>栗子</strong>：上一节的<code>@performance</code>只能打印秒，请给 <code>@performace</code> 增加一个参数，允许传入<code>&#39;s&#39;</code>或<code>&#39;ms&#39;</code>：</p>
-<pre><code>@performance(&apos;ms&apos;)
-def factorial(n):
-    return reduce(lambda x,y: x*y, range(1, n+1))
-</code></pre><p>要实现带参数的@performance，就需要实现：</p>
-<pre><code>my_func = performance(&apos;ms&apos;)(my_func)
-</code></pre><p>需要3层嵌套的decorator来实现。</p>
-<p><strong>参考代码</strong></p>
-<pre><code>import time
-def performance(unit):
-    def perf_decorator(f):
-        def wrapper(*args, **kw):
-            t1 = time.time()
-            r = f(*args, **kw)
-            t2 = time.time()
-            t = (t2 - t1) * 1000 if unit==&apos;ms&apos; else (t2 - t1)
-            print &apos;call %s() in %f %s&apos; % (f.__name__, t, unit)
-            return r
-        return wrapper
-    return perf_decorator
-
-@performance(&apos;ms&apos;)
-def factorial(n):
-    return reduce(lambda x,y: x*y, range(1, n+1))
-print factorial(10)
-</code></pre><p>##完善decorator</p>
-<p><code>@decorator</code>可以动态实现函数功能的增加，但是，经过<code>@decorator</code>“改造”后的函数，和原函数相比，除了功能多一点外，有没有其它不同的地方？</p>
-<p>在没有decorator的情况下，打印函数名：</p>
-<pre><code>def f1(x):
-    pass
-print f1.__name__
-</code></pre><p><strong>输出</strong>： f1<br>有decorator的情况下，再打印函数名：</p>
-<pre><code>def log(f):
-    def wrapper(*args, **kw):
-        print &apos;call...&apos;
-        return f(*args, **kw)
-    return wrapper
-@log
-def f2(x):
-    pass
-print f2.__name__
-</code></pre><p><strong>输出</strong>： wrapper<br>可见，由于<code>decorator</code>返回的新函数函数名已经不是<code>&#39;f2&#39;</code>，而是<code>@log</code>内部定义的<code>&#39;wrapper&#39;</code>。这对于那些依赖函数名的代码就会失效。<code>decorator</code>还改变了函数的<code>__doc__</code>等其它属性。如果要让调用者看不出一个函数经过了<code>@decorator</code>的“改造”，就需要把原函数的一些属性复制到新函数中：</p>
-<pre><code>def log(f):
-    def wrapper(*args, **kw):
-        print &apos;call...&apos;
-        return f(*args, **kw)
-    wrapper.__name__ = f.__name__
-    wrapper.__doc__ = f.__doc__
-    return wrapper
-</code></pre><p>这样写<code>decorator</code>很不方便，因为我们也很难把原函数的所有必要属性都一个一个复制到新函数上，所以Python内置的<code>functools</code>可以用来自动化完成这个“复制”的任务：</p>
-<pre><code>import functools
-def log(f):
-    @functools.wraps(f)
-    def wrapper(*args, **kw):
-        print &apos;call...&apos;
-        return f(*args, **kw)
-    return wrapper
-</code></pre><p>最后需要指出，由于我们把原函数签名改成了<code>(*args, **kw)</code>，因此，无法获得原函数的原始参数信息。即便我们采用固定参数来装饰只有一个参数的函数：</p>
-<pre><code>def log(f):
-    @functools.wraps(f)
-    def wrapper(x):
-        print &apos;call...&apos;
-        return f(x)
-    return wrapper
-</code></pre><p>也可能改变原函数的参数名，因为新函数的参数名始终是 <code>&#39;x&#39;</code>，原函数定义的参数名不一定叫 <code>&#39;x&#39;</code>。</p>
-<p><strong>栗子</strong>：请思考带参数的@decorator，@functools.wraps应该放置在哪：</p>
-<pre><code>def performance(unit):
-    def perf_decorator(f):
-        def wrapper(*args, **kw):
-            ???
-        return wrapper
-    return perf_decorator
-</code></pre><p>注意@functools.wraps应该作用在返回的新函数上。</p>
-<p><strong>参考代码</strong></p>
-<pre><code>import time, functools
-def performance(unit):
-    def perf_decorator(f):
-        @functools.wraps(f)
-        def wrapper(*args, **kw):
-            t1 = time.time()
-            r = f(*args, **kw)
-            t2 = time.time()
-            t = (t2 - t1) * 1000 if unit==&apos;ms&apos; else (t2 - t1)
-            print &apos;call %s() in %f %s&apos; % (f.__name__, t, unit)
-            return r
-        return wrapper
-    return perf_decorator
-
-@performance(&apos;ms&apos;)
-def factorial(n):
-    return reduce(lambda x,y: x*y, range(1, n+1))
-print factorial.__name__
-</code></pre><p>##偏函数</p>
-<p>当一个函数有很多参数时，调用者就需要提供多个参数。如果减少参数个数，就可以简化调用者的负担。</p>
-<p>比如，<code>int()</code>函数可以把字符串转换为整数，当仅传入字符串时，int()函数默认按十进制转换：</p>
-<pre><code>&gt;&gt;&gt; int(&apos;12345&apos;)
-12345
-</code></pre><p>但int()函数还提供额外的<code>base参数</code>，默认值为<code>10</code>。如果传入base参数，就可以做 <code>N</code> 进制的转换：</p>
-<pre><code>&gt;&gt;&gt; int(&apos;12345&apos;, base=8)
-5349
-&gt;&gt;&gt; int(&apos;12345&apos;, 16)
-74565
-</code></pre><p>假设要转换大量的二进制字符串，每次都传入<code>int(x, base=2)</code>非常麻烦，于是，我们想到，可以定义一个<code>int2()</code>的函数，默认把<code>base=2</code>传进去：</p>
-<pre><code>def int2(x, base=2):
-    return int(x, base)
-</code></pre><p>这样，我们转换二进制就非常方便了：</p>
-<pre><code>&gt;&gt;&gt; int2(&apos;1000000&apos;)
-64
-&gt;&gt;&gt; int2(&apos;1010101&apos;)
-85
-</code></pre><p><code>functools.partial</code>就是帮助我们创建一个偏函数的，不需要我们自己定义<code>int2()</code>，可以直接使用下面的代码创建一个新的函数int2：</p>
-<pre><code>&gt;&gt;&gt; import functools
-&gt;&gt;&gt; int2 = functools.partial(int, base=2)
-&gt;&gt;&gt; int2(&apos;1000000&apos;)
-64
-&gt;&gt;&gt; int2(&apos;1010101&apos;)
-85
-</code></pre><p>所以，<code>functools.partial</code>可以把一个参数多的函数变成一个参数少的新函数，少的参数需要在创建时指定默认值，这样，新函数调用的难度就降低了。</p>
-<p><strong>栗子</strong>：在讲解<code>sorted</code>函数时，我们在<code>sorted</code>这个高阶函数中传入自定义排序函数就可以实现忽略大小写排序。请用<code>functools.partial</code>把这个复杂调用变成一个简单的函数：</p>
-<pre><code>sorted_ignore_case(iterable)
-</code></pre><p>要固定<code>sorted()的cmp参数</code>，需要传入一个排序函数作为<code>cmp</code>的默认值。</p>
-<p><strong>参考代码</strong></p>
-<pre><code>import functools
-sorted_ignore_case = functools.partial(sorted, cmp=lambda s1, s2: cmp(s1.upper(), s2.upper()))
-print sorted_ignore_case([&apos;bob&apos;, &apos;about&apos;, &apos;Zoo&apos;, &apos;Credit&apos;])
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/06/函数式编程-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3137,6 +1573,816 @@ True
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/27/CGI和WSGI/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/27/CGI和WSGI/" itemprop="url">CGI和WSGI</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-27T08:50:26+08:00">
+                2015-04-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>我对 CGI 的理解是利用程序的标准输入输出流，完成 HTTP 通信。HTTP 是文本协议，每次请求的文本以标准输入流的形式进入服务器端 CGI 程序，创建进程；然后进程的标准输出流作为响应 。</p>
+<p>WSGI 和 CGI 原理极其相似，但是是完全不同的实现。WSGI 是 Python 专用的协议，也是输入&amp;输出的方式传输文本流，但不是创建进程，而是对一个 WSGI 程序（callable 的对象，可以是函数也可以是实现了 <strong>call</strong> 的对象），将 request 作为参数传入（不再是纯文本，而是经过包装），同样将经过包装的 response 作为响应返回。request/response 的包装由 Python 标准库提供。</p>
+<p>二者都是标准，都有诸多实现。CGI 最为广泛，无论是二进制程序、perl 脚本、python 脚本还是 PHP 都可以以这样的原理提供 HTTP 服务；WSGI 在 Python 界也是公共标准，主流 Web 框架基本都有实现，例如 Bottle 的 bottle.Bottle （Application 对象）就实现了 WSGI 协议（见 <strong>call</strong> 方法）。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/26/django的QuerySets/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/26/django的QuerySets/" itemprop="url">Django的QuerySets</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-26T18:53:25+08:00">
+                2015-04-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>对象关系映射 (ORM) 使得与SQL数据库交互更为简单，不过也被认为效率不高，比原始的SQL要慢。<br>要有效的使用ORM，意味着需要多少要明白它是如何查询数据库的。本文我将重点介绍如何有效使用 <a href="https://docs.djangoproject.com/en/dev/topics/db/models/" target="_blank" rel="external">Django ORM</a>系统访问中到大型的数据集。</p>
+<p>##Django的queryset是惰性的</p>
+<p><strong>Django的queryset对应于数据库的若干记录（row）</strong>，通过可选的查询来过滤。例如，下面的代码会得到数据库中名字为‘Dave’的所有的人:<br>?</p>
+<pre><code>person_set = Person.objects.filter(first_name=&quot;Dave&quot;)
+</code></pre><p>上面的代码并没有运行任何的数据库查询。你可以使用person_set，给它加上一些过滤条件，或者将它传给某个函数，这些操作都不会发送给数据库。这是对的，因为数据库查询是显著影响web应用性能的因素之一。<br>要真正从数据库获得数据，你需要遍历queryset:<br>?</p>
+<pre><code>for person in person_set:
+    print(person.last_name)
+</code></pre><p>##Django的queryset是具有cache的</p>
+<p>当你遍历queryset时，所有匹配的记录会从数据库获取，然后转换成Django的model。这被称为<code>执行</code>（evaluation）。这些model会保存在queryset内置的cache中，这样如果你再次遍历这个queryset，你不需要重复运行通用的查询。<br>例如，下面的代码只会执行一次数据库查询：</p>
+<pre><code>pet_set = Pet.objects.filter(species=&quot;Dog&quot;)
+# The query is executed and cached.
+for pet in pet_set:
+    print(pet.first_name)
+# The cache is used for subsequent iteration.
+for pet in pet_set:
+    print(pet.last_name)
+</code></pre><p>##if语句会触发queryset的执行</p>
+<p>queryset的cache最有用的地方是可以有效的测试queryset是否包含数据，只有有数据时才会去遍历：</p>
+<pre><code>restaurant_set = Restaurant.objects.filter(cuisine=&quot;Indian&quot;)
+# `if`语句会触发queryset的执行。
+if restaurant_set:
+    # 遍历时用的是cache中的数据
+    for restaurant in restaurant_set:
+        print(restaurant.name)
+</code></pre><p>##QuerySet的常用API</p>
+<p>###去重<br>distinct方法的作用和SQL的distinct的作用是一样的，这里就不多说了</p>
+<pre><code>Author.objects.distinct()
+</code></pre><p>###序列化为JSON<br>和前端进行交互的时候，序列化成XML的情况还是比较少的，但是序列化成JSON格式的字符串的情况就比较多了，Django的ORM框架提供了values的方法来把实体序列化成json</p>
+<pre><code>Blog.objects.values()
+</code></pre><p>###序列化成数组<br>把对象序列化成数组元素的情况还真的是用的比较少</p>
+<pre><code>Entry.objects.values_list(&apos;id&apos;, &apos;headline&apos;)
+</code></pre><p>###从主表获取外键表的对象<br>在主表的实体上使用filter，然后再通过主表的实体获取外键的时候，Django会把主表的实体一并查询出来。但是有时候我们只希望从主表开始取数，但是只取外键表实体的信息，这个时候就可以用select_related方法了。第一个参数是主表的外键字段名称，第二个字段嘛。。。照抄就是了</p>
+<pre><code>g = Group.objects.select_related(&apos;room&apos;, &apos;subject&apos;)
+</code></pre><p>当然，也会有只希望拿主表信息，不想把外键字段取回来的情况，把参数设置为none就好了</p>
+<pre><code>without_relations = queryset.select_related(None)
+</code></pre><p>###处理从表对象<br>对于外键表来说，我们可以采用select_related的方法来进行处理。但是对于从表属性来说，就要用到另外一种方法了。（toppings是多对多的属性）</p>
+<pre><code>Pizza.objects.all().prefetch_related(&apos;toppings&apos;)
+</code></pre><p>同样的，不获取外键对象的话把参数设置为none就好了</p>
+<pre><code>non_prefetched = qs.prefetch_related(None)
+</code></pre><p>###ORM和SQL的混合：Extra方法<br>先看看Extra方法的一些例子</p>
+<p>####selec参数<br>    Entry.objects.extra(select={‘is_recent’: “pub_date &gt; ‘2006-01-01’”})</p>
+<p>####where参数<br>    Entry.objects.extra(where=[“foo=’a’ OR bar = ‘a’”, “baz = ‘a’”])</p>
+<p>####order_by参数<br>    q = q.extra(order_by = [‘-is_recent’])</p>
+<p>####paramas参数<br>    Entry.objects.extra(where=[‘headline=%s’], params=[‘Lennon’])<br>其实从官方给的例子看起来，Extra方法主要就是用于在ORM生成SQL的过程中内嵌SQL语句。例如希望在select 背后加入一句sql，例如select …,(select a from …)这种情况下的时候，用Extra方法就很好解决了</p>
+<p>###使用Defer和Only来过滤字段<br>select_related和prefetch_related方法分别用来过滤实体的外键属性和多对多属性，对于主表的字段属性过滤可以采用defer方法来少查询一些字段</p>
+<pre><code>Entry.objects.defer(&quot;headline&quot;, &quot;body&quot;)
+</code></pre><p>defer是排除哪些字段，而only是只查询哪些字段</p>
+<pre><code>Person.objects.only(&quot;name&quot;)
+</code></pre><p>###使用select_for_update来简化更新的过程<br>一般更新实体的时候，我们需要先把实体先查询出来，然后做出相应的更新，再做一次save操作</p>
+<pre><code>entity=Entry.objects.filter(...)[0]
+entity.name=xx
+entity.save()
+</code></pre><p>这个过程显得稍微有点繁琐，所以可以采用一种select_for_update来进行一些简化</p>
+<pre><code>entries = Entry.objects.select_for_update().filter(author=request.user)
+</code></pre><p>###使用get_or_create来简化创建对象的过程<br>同样的，有时候我们会需要先查询对象在不在数据库里面存储，假如没有的话就创建，有的话就取出</p>
+<pre><code>obj, created = Person.objects.get_or_create(first_name=&apos;John&apos;, last_name=&apos;Lennon&apos;,
+              defaults={&apos;birthday&apos;: date(1940, 10, 9)})
+</code></pre><p>不过个人觉得这个方法用到的情况很少。。。。</p>
+<p>###批量插入数据<br>    Entry.objects.bulk_create([<br>        Entry(headline=”Django 1.0 Released”),<br>        Entry(headline=”Django 1.1 Announced”),<br>        Entry(headline=”Breaking: Django is awesome”)<br>      ])<br>这玩意真的挺有用，具体的就不细说了</p>
+<p>###使用Count方法来进行统计<br>虽然做统计的话可以先把过滤完的对象查询出来，然后再len(xx)一下，但是这种做法会把数据库里面一堆一堆的暑假都查出来的(￣◇￣;)，所以当需要做count操作的时候还是老老实实的用sql的count语句，在Django里面的话做法如下</p>
+<pre><code>Entry.objects.filter(headline__contains=&apos;Lennon&apos;).count()
+</code></pre><p>###判断数据是否存在:exists<br>    rs=some_queryset.filter(pk=entry.pk).exists()</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/22/No-handlers-could-be-found-for-logger-keystoneclient-httpclient/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/22/No-handlers-could-be-found-for-logger-keystoneclient-httpclient/" itemprop="url">No handlers could be found for logger keystoneclient.httpclient</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-22T15:59:05+08:00">
+                2015-04-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/openstack/" itemprop="url" rel="index">
+                    <span itemprop="name">openstack</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>今天研究keystone的admin-url和public-url的问题，就把keystone的endpoint删掉了，再创建endpoint的时候就出现了这个错误，试着敲别的命令，发现也不能正常工作。</p>
+<p>如果你按照官方文档完整装过机的话，应该马上能定位到问题，但是苦逼的我并没有啊，在网上找到都是什么driver和添加环境变量的解决方法，根本没用。实在没办法，我就重装了一遍keystone，最后让我发现了问题所在。</p>
+<p>我们装keystone的时候，在创建service和endpoint之前，是需要导出<code>OS_SERVICE_TOKEN</code>和<code>OS_SERVICE_ENDPOINT</code>这两个环境变量的,这两个环境变量的值其实就临时充当了我们将要创建的service和endpoint，为什么是临时呢，因为export的环境变量在你关闭当前窗口之后就消失了，所以在导出了这两个环境变量之后我们需要立即创建service和endpoint。大家明白了吧，如果你遇到了这个错误，将这辆个环境变量导出就行了</p>
+<pre><code>export OS_SERVICE_TOKEN=ADMIN_TOKEN(和keystone.cfg中的admin_token值相同)
+export OS_SERVICE_ENDPOINT=http://controller:35357/v2.0
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/17/python去字典值的正确方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/17/python去字典值的正确方法/" itemprop="url">python取字典值的正确方法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-17T13:29:57+08:00">
+                2015-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>直接贴代码，代码用的是django的HttpRequest类的META属性，META是一个字典，key是http请求头的一些内容</p>
+<pre><code># BAD!    
+def ua_display_bad(request):
+    ua = request.META[&apos;HTTP_USER_AGENT&apos;]  # Might raise KeyError!
+    return HttpResponse(&quot;Your browser is %s&quot; % ua)
+
+# GOOD (VERSION 1)
+def ua_display_good1(request):
+    try:
+        ua = request.META[&apos;HTTP_USER_AGENT&apos;]
+    except KeyError:
+        ua = &apos;unknown&apos;
+    return HttpResponse(&quot;Your browser is %s&quot; % ua)
+
+# GOOD (VERSION 2)
+def ua_display_good2(request):
+    #key不存在，则用第二个参数赋值
+    ua = request.META.get(&apos;HTTP_USER_AGENT&apos;, &apos;unknown&apos;)
+    return HttpResponse(&quot;Your browser is %s&quot; % ua)
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/16/django-admin自定义字段标签/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/16/django-admin自定义字段标签/" itemprop="url">Django--admin自定义字段标签</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-16T21:40:45+08:00">
+                2015-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在编辑页面中，每个字段的标签都是从模块的字段名称生成的。 规则很简单： 用空格替换下划线；首字母大写。例如：Book模块中publication_date的标签是Publication date。</p>
+<p>然而，字段名称并不总是贴切的。有些情况下，你可能想自定义一个标签。 你只需在模块中指定verbose_name。</p>
+<p>举个例子，说明如何将Author.email的标签改为e-mail，中间有个横线。</p>
+<pre><code>class Author(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=40)
+    email = models.EmailField(blank=True, verbose_name=&apos;e-mail&apos; )
+</code></pre><p>修改后重启服务器，你会在author编辑页面中看到这个新标签。</p>
+<p><strong>请注意，你不必把<code>verbose_name</code>的首字母大写，除非是连续大写（如：”USA state”）。Django会自动适时将首字母大写，并且在其它不需要大写的地方使用<code>verbose_name</code>的精确值。</strong></p>
+<p>最后还需注意的是，为了使语法简洁，你可以把它当作固定位置的参数传递。 这个例子与上面那个的效果相同。</p>
+<pre><code>class Author(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=40)
+    email = models.EmailField(&apos;e-mail&apos;,  blank=True)
+</code></pre><p>但这不适用于ManyToManyField 和ForeignKey字段，因为它们第一个参数必须是模块类。 那种情形，必须显式使用<code>verbose_name</code>这个参数名称。</p>
+<p>–《the Django book 第六章 admin》</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -3187,7 +2433,7 @@ True
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">199</span>
+                <span class="site-state-item-count">194</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

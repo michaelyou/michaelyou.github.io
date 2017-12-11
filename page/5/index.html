@@ -286,1107 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/22/Django国际化遇到的神坑/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/22/Django国际化遇到的神坑/" itemprop="url">Django国际化遇到的神坑</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-22T00:14:23+08:00">
-                2015-05-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>配置完全是按照文档来，检查了一遍又一遍。来回地创建po，mo文件，可是web就是不显示中文，Django你坏了还是我坏了？</p>
-<p>django国际化的问题纠缠了我5个小时，我从没有如此痛苦过，因为我很清楚这是一个很小的问题，但是因为没法调试，没有log，我根本不知道问题出在哪里。谁能TMD知道不能用<code>-</code>啊，草泥马！！！</p>
-<p>解决方案：</p>
-<p>语言包不要有<code>-</code>，例如语言包是<code>zh-hans</code>, 请将其改成<code>zh_hans</code>，其他地方的<code>zh-hans</code>不需要修改。</p>
-<p>如果说这也能称为知识的话，我真是日了狗了。</p>
-<p>django现在对<code>zh-cn</code>, <code>zh-CN</code>都不支持了，用了这些的话Django会提醒你：</p>
-<pre><code>The use of the language code &apos;zh-cn&apos; is deprecated. Please use the &apos;zh-hans&apos; translation instead.
-</code></pre><p>其实直接用<code>zh</code>也可以，而且，他还会主动到<code>zh_hans</code>的语言包里去找它里面没有翻译的内容。虽然我很想赞叹一声，但是竟然要这样区分<code>-</code>和<code>_</code>，我也是醉了。</p>
-<p>切记切记，语言包的名称中不要有<code>-</code>!!!</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/20/为什么搬家之后手机地图定位仍是在原来的地方-Google-WiFi-定位的原理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/20/为什么搬家之后手机地图定位仍是在原来的地方-Google-WiFi-定位的原理/" itemprop="url">搬家后手机地图定位仍在原来的地方--Google WiFi定位的原理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-20T23:27:32+08:00">
-                2015-05-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/长知识/" itemprop="url" rel="index">
-                    <span itemprop="name">长知识</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>前几天刚搬家，到了新家拿出手机，却发现手机地图的定位还是在原来的地方，怎么重新定位都不准确。过了两天却又好了，我以为是正常的延迟或者误差，就没把这事放在心上。今天看到了这篇文章终于恍然大悟，不禁感叹，生活处处是学问啊！</p>
-<p>原文是一位台湾同行写的，是繁体字，我改成了简体贴在这里与大家共享，原文在<a href="http://www.dearhoney.idv.tw/?p=1293" target="_blank" rel="external">这里</a></p>
-<hr>
-<p>以前我不了解Google WiFi 定位时，一直对这技术嗤之以鼻，我想说从IP Address 哪里能定位到很精准，最多就是从一些公开的IP to GEO 资料库可以查询到这个IP 是在那个城市，是没办法精准定位的。</p>
-<p>可是随着我发现没有GPS 卫星定位功能的iPod Touch 在打开WiFi 的情况下竟然可以在Google 地图上精准到我所在地的附近，这就引起了我很大的好奇心，到底这是怎么做到的？显然不可能是靠IP Address 去查询啊？</p>
-<p>看了一些简体与繁体的文件，实在是觉得扯太远扯太多，还是没看到精髓处，所以直接从英文去查吧！果然查到了不少资料，也就了解Google WiFi 定位的原理了。在这之前先把几个名词给解释一下。</p>
-<p><strong>GPS卫星定位</strong>：靠的是环绕在地球四周的数颗卫星发送讯号到地面，交叉连集出所在地的方法。从十几年前开始出现汽车导航产品，就是使用这种技术。初次定位时常要花上一分钟以上的时间，这也是目前汽车导航和智慧型手机都有提供的定位方式。当有遮蔽物阻挡来自天空的讯号时就会发生定位的困难。</p>
-<p><strong>A-GPS定位</strong>：靠着事先下载星历资料，能够加速上述GPS定位的初次定位速度。由于一般车用导航机都不具备网路连线能力因此无法事先下载星历资料，所以也都不具备A-GPS定位。</p>
-<p><strong>手机基地台定位</strong>：靠的是侦测到的手机基地台(Cell Tower)，比对资料库以及信号强度，交叉连集出所在地的方法。也因为要能够侦测手机基地台，所以一般车用导航机因不具备手机电话能力而无法 提供，几乎可以说手机基地台定位是智慧型手机或者能够插手机SIM卡的平板电脑才可以提供的功能。此法尚须有网路连线做资料库查询才能完成定位。</p>
-<p><img src="http://7xj6cl.com1.z0.glb.clouddn.com/GoogleWiFi_CellTower.png" alt="附近手机基地台真多啊"></p>
-<p><strong>WIFI定位</strong>：靠的是侦测附近周围所有的无线网路基地台（无线接入点）的MAC地址（类似10-78-D2-93-58-C2这样的格式），去比对资料库中该MAC地址的座標，交叉連集出所在地。此法尚須有網路連線做資料庫查詢才能完成定位。</p>
-<p>所以问题来了：这份无线网路基地台MAC地址对应到经纬度的资料库，是怎么建立起来的呢？</p>
-<p>基础建设靠的是谷歌街景车。谷歌街景车除了拍下街景以外，另外还做了两件事情(信息来源：<a href="http://googlepolicyeurope.blogspot.com/2010/04/data-collected-by-google-cars.html" target="_blank" rel="external">google blog</a>)：</p>
-<p>沿路搜集所有公开的无线网路MAC地址，与当时的经纬度一并记录。<br>根据拍下的街景来建立建筑物的3D模型资料。</p>
-<p><img src="http://7xj6cl.com1.z0.glb.clouddn.com/GoogleWiFi_3Dbuilding.png" alt="此效果截至本文刊出时仅能在谷歌Android手机上看到"></p>
-<p>但資料庫一定會面臨過期與需要更新的問題，這時候全世界有在使用行動裝置谷歌+定位程式的人，等于是在不知不觉中帮忙做这件事情。更新的方法是当无线网络与手机基地台定位或GPS定位同时开启时，手持装置藉由手机基地台定位或GPS定位这两种方式可以获得目前的座标，再透过无线网络搜寻到附近所有的MAC地址，背后向谷歌的资料库做更新。（信息来源：<a href="http://www.google.com/support/forum/p/Google%20Mobile/thread?tid=6bef39e72c3abbb5&amp;hl=en" target="_blank" rel="external">谷歌员工克里斯托弗的公开说法</a>）</p>
-<p>說穿了技術其實不難，但這麼龐大的資料庫，又能夠不痛不癢的號召每個行動裝置幫忙更新維護這份資料庫，大概也只有谷歌做得来了。</p>
-<p>知道了原理之后，衍生出来的就是一些隐私权的问题。</p>
-<p>首先就是谷歌搜集无线网络的MAC地址资讯合法吗？德国政府去年对此提出疑虑，而谷歌认为合法，两造后来怎么样了我懒得去追，反正从技术上来看，MAC地址在網路上要能夠被查詢到，那麼你與對方之間不能有路由器存在，一旦過了路由器那麼原始MAC地址就會被替換(詳細的原理這邊就不多說了)，所以一般人雖然可以用很多方法去找出對方的IP地址，但对方的MAC地址就没办法了，中间经过的路由器太多啦！也就无法利用MAC地址去查對方身處何處。除非將木馬植入對方電腦來回報，且對方有在使用無線網路而且他附近的無線網路基地台有被登記到谷歌資料庫中，那才有機會找到對方所在地附近，但這難度又高條件又多，對警察來說還是用IP地址行文法院与电信业者来找精确的地址最快。</p>
-<p>所以回头来说隐私权，我个人觉得应该是不会，且无线网络的MAC地址是屬於公開資訊，並非刻意用什麼非法手段才能取得。一般人就算探測到你的MAC地址，也不晓得你是谁或什么人在使用。</p>
-<p>再来就是定位错误的问题。</p>
-<p>搬家后其无线网路基地台也跟着移动，那么以无线网络定位來看自己身在何處，可能會呈現仍然在上一個住所的問題。針對這種因為資料庫尚未被更新而產生的定位錯誤問題，Google提供了一个<a href="https://services.google.com/fb/forms/wifibugs/" target="_blank" rel="external">无线网路定位错误的表格</a>来申请回报，但一如一般谷歌的服務一樣，這表格並不能保證立即得到回應。想要加速更新資料庫，除了填寫這份表格以外，另外就是自己時常拿行動裝置開著无线+ GPS定位吧，这是刚才提过的资料库更新法，总有一天谷歌会因为你与行动装置的努力而修正过来的。😛</p>
-<p>回头看我一开始以为谷歌的WiFi定位是靠着IP地址来定位，真是大错特错了啊！谷歌要的只是侦测到无线基地台的MAC地址就可以，也没有强调一定要与无线基地台连线，只要打开行动装置的无线网络功能，让谷歌定位可以藉由无线去搜集附近可侦测的MAC地址，接着透过3G行动上网或此时你真的有无线网络连线，就可以去向谷歌资料库查询这些MAC地址连集起来的可能位置，就这样完成定位了。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/19/翻译-python招聘指南/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/19/翻译-python招聘指南/" itemprop="url">[翻译]python招聘指南</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-19T20:52:20+08:00">
-                2015-05-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文在<a href="http://www.toptal.com/python/#hiring-guide" target="_blank" rel="external">这里toptal</a></p>
-<p>##python专家or Snake in the Grass?</p>
-<p><img src="http://7xj6cl.com1.z0.glb.clouddn.com/toptal-blog-image.png" alt=""></p>
-<p>你已经发现什么样的表现是一个python高手。但是在你该如何确定你的top 1%精英候选者也是呢？尽管没有魔法或者万无一失的技术，但是确实有一些问题可以帮助你确定候选者对这门语言认识的深度。下面简要地列举了一些这样的问题。</p>
-<p><strong>重要的是，这些样题仅仅旨在作为指导。不是所有的值得招聘的“A”级候选人都能正确地回答所有这些问题。同样，能正确回答所有问题也不能保证他/她就是一个“A”级候选人。招聘是一门科学，同样也是一门艺术。</strong></p>
-<p>##杂草中的蟒蛇…</p>
-<p>尽管确实最优秀的开发者不会浪费时间记住一些能轻易在语言手册或者API文档中找到的知识，但是，仍然有一些关键的特性和能力，任何编程语言的每个专家都能，并且应该<br>精通。这里就是一些python特定的例子。</p>
-<p>###Q：为什么要用函数装饰器？请举例</p>
-<p>装饰器本质上是用来修改，扩展函数或类定义的可调用Python对象。装饰器的一个美丽之处是，单个装饰器定义可作用于多种函数（或类）。大部分功能从而可以用装饰器实现，否则将需要大量的样板（或更糟多余的！）代码。例如<a href="http://flask.pocoo.org/" target="_blank" rel="external">Flask</a>，使用装饰器的机制来添加新的端点到web应用程序。一些装饰器的更常见的用途包括：增加同步，类型强制执行，日志，或前/后条件到一个类或函数。</p>
-<p>###Q：什么是lambda表达式，列表解析和生成器表达式？各有什么优势和适当的用途？</p>
-<p>lambda表达式是一种快速创建单行匿名函数的方法。它的简单，内联的本质往往-虽然不是总是-可以让代码比用正常函数定义方法更加可读和简洁。但另一方面，它的内联本质也极大地限制了它能做的事情。Being anonymous and inline, the only way to use the same lambda function in multiple locations in your code is to specify it redundantly.</p>
-<p>List comprehensions provide a concise syntax for creating lists. List comprehensions are commonly used to make lists where each element is the result of some operation(s) applied to each member of another sequence or iterable. They can also be used to create a subsequence of those elements whose members satisfy a certain condition. In Python, list comprehensions provide an alternative to using the built-in map() and filter() functions.</p>
-<p>As the applied usage of lambda expressions and list comprehensions can overlap, opinions vary widely as to when and where to use one vs. the other. One point to bear in mind, though, is that a list comprehension executes somewhat faster than a comparable solution using map and lambda (some quick tests yielded a performance difference of roughly 10%). This is because calling a lambda function creates a new stack frame while the expression in the list comprehension is evaluated without doing so.</p>
-<p>Generator expressions are syntactically and functionally similar to list comprehensions but there are some fairly significant differences between the ways the two operate and, accordingly, when each should be used. In a nutshell, iterating over a generator expression or list comprehension will essentially do the same thing, but the list comprehension will create the entire list in memory first while the generator expression will create the items on the fly as needed. Generator expressions can therefore be used for very large (and even infinite) sequences and their lazy (i.e., on demand) generation of values results in improved performance and lower memory usage. It is worth noting, though, that the standard Python list methods can be used on the result of a list comprehension, but not directly on that of a generator expression.</p>
-<p>###Q：考虑下面初始化列表的两种方法和产生的列表。所产生的列表将如何不同，为什么要使用这一初始化方法而不是另一个？</p>
-<pre><code>&gt;&gt;&gt; # INITIALIZING AN ARRAY -- METHOD 1
-...
-&gt;&gt;&gt; x = [[1,2,3,4]] * 3
-&gt;&gt;&gt; x
-[[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]]
-&gt;&gt;&gt;
-&gt;&gt;&gt;
-&gt;&gt;&gt; # INITIALIZING AN ARRAY -- METHOD 2
-...
-&gt;&gt;&gt; y = [[1,2,3,4] for _ in range(3)]
-&gt;&gt;&gt; y
-[[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]]
-&gt;&gt;&gt;
-&gt;&gt;&gt; # WHICH METHOD SHOULD YOU USE AND WHY?
-</code></pre><p>虽然这两种方法乍一看产生的结果相同，但两者之间的差异极其显著。如你所料，方法2产生有3个元素的列表，每个元素本身就是一个独立的4元素的列表。然而，在方法1中，列表的元素(4元素列表)都指向同一个对象。这会导致我们最始料未及和最不希望的行为，如下所示。</p>
-<pre><code>&gt;&gt;&gt; # MODIFYING THE x ARRAY FROM THE PRIOR CODE SNIPPET:
-&gt;&gt;&gt; x[0][3] = 99
-&gt;&gt;&gt; x
-[[1, 2, 3, 99], [1, 2, 3, 99], [1, 2, 3, 99]]
-&gt;&gt;&gt; # UH-OH, DON’T THINK YOU WANTED THAT TO HAPPEN!
-...
-&gt;&gt;&gt;
-&gt;&gt;&gt; # MODIFYING THE y ARRAY FROM THE PRIOR CODE SNIPPET:
-&gt;&gt;&gt; y[0][3] = 99
-&gt;&gt;&gt; y
-[[1, 2, 3, 99], [1, 2, 3, 4], [1, 2, 3, 4]]
-&gt;&gt;&gt; # THAT’S MORE LIKE WHAT YOU EXPECTED!
-...
-</code></pre><p>###Q： 下面的第二个append()语句输出什么？</p>
-<pre><code>&gt;&gt;&gt; def append(list=[]):
-...     # append the length of a list to the list
-...     list.append(len(list))
-...     return list
-...
-&gt;&gt;&gt; append([&apos;a&apos;,&apos;b&apos;])
-[&apos;a&apos;, &apos;b&apos;, 2]
-&gt;&gt;&gt;
-&gt;&gt;&gt; append()  # calling with no arg uses default list value of []
-[0]
-&gt;&gt;&gt;
-&gt;&gt;&gt; append()  # but what happens when we AGAIN call append with no arg?
-</code></pre><p>如果一个函数参数的默认值是一个表达式，这个表达式仅被执行一次，而不是每次这个函数被调用都被执行。因此，一旦列表参数已经被初始化为了一个空列表，后续调用append函数时，如果不指定参数list，将会继续使用之前初始化的同一个列表。这会引起下面的意外行为：</p>
-<pre><code>&gt;&gt;&gt; append()  # first call with no arg uses default list value of []
-[0]
-&gt;&gt;&gt; append()  # but then look what happens...
-[0, 1]
-&gt;&gt;&gt; append()  # successive calls keep extending the same default list!
-[0, 1, 2]
-&gt;&gt;&gt; append()  # and so on, and so on, and so on...
-[0, 1, 2, 3]
-</code></pre><p>###Q：在上述问题中，如何修改append方法的实现来避免描述的不当行为？</p>
-<p>下面的append方法的替代实现是避免上述问题答案描述的不当行为的一个方法：</p>
-<pre><code>&gt;&gt;&gt; def append(list=None):
-...     if list is None:
-            list = []
-        # append the length of a list to the list
-...     list.append(len(list))
-...     return list
-...
-&gt;&gt;&gt; append()
-[0]
-&gt;&gt;&gt; append()
-[0]
-</code></pre><p>###Q：如何用一行python代码交换两个变量的值？</p>
-<p>考虑这个简单的例子：</p>
-<pre><code>&gt;&gt;&gt; x = &apos;X&apos;
-&gt;&gt;&gt; y = &apos;Y&apos;
-</code></pre><p>在很多语言中，交换x和y的值需要你进行以下的操作：</p>
-<pre><code>&gt;&gt;&gt; tmp = x
-&gt;&gt;&gt; x = y
-&gt;&gt;&gt; y = tmp
-&gt;&gt;&gt; x, y
-(&apos;Y&apos;, &apos;X&apos;)
-</code></pre><p>但是在python中，你可以用一行代码完成swap功能（感谢元组隐式的打包和解包）</p>
-<pre><code>&gt;&gt;&gt; x,y = y,x
-&gt;&gt;&gt; x,y
-(&apos;Y&apos;, &apos;X&apos;)
-</code></pre><p>###Q：下面代码中最后一个表达式的输出是什么？</p>
-<pre><code>&gt;&gt;&gt; flist = []
-&gt;&gt;&gt; for i in range(3):
-...     flist.append(lambda: i)
-...
-&gt;&gt;&gt; [f() for f in flist]   # what will this print out?
-</code></pre><p>在Python的闭包中，变量都是通过名字来绑定。因此，上面代码的输出如下：</p>
-<pre><code>[2, 2, 2]
-</code></pre><p>可能并不是代码的作者预料的结果!</p>
-<p>一个替代方法是：可以创建一个独立的函数，或者通过名字传递参数；比如：</p>
-<pre><code>&gt;&gt;&gt; flist = []
-&gt;&gt;&gt; for i in range(3):
-...     flist.append(lambda i = i : i)
-...
-&gt;&gt;&gt; [f() for f in flist]
-[0, 1, 2]
-</code></pre><p>###Q: Python2和3之间的主要区别是什么？</p>
-<p>尽管Python2现在被认为是遗留之物，但是对一个开发者来说，因为Python2使用广泛，知道Python2和Python3之间的区别是非常重要的。</p>
-<p>这里是开发者应该了解的一些关键差异：</p>
-<p>Text and Data instead of Unicode and 8-bit strings. Python 3.0 uses the concepts of text and (binary) data instead of Unicode strings and 8-bit strings. The biggest ramification of this is that any attempt to mix text and data in Python 3.0 raises a TypeError (to combine the two safely, you must decode bytes or encode Unicode, but you need to know the proper encoding, e.g. UTF-8)</p>
-<p>This addresses a longstanding pitfall for naïve Python programmers. In Python 2, mixing Unicode and 8-bit data would work if the string happened to contain only 7-bit (ASCII) bytes, but you would get UnicodeDecodeError if it contained non-ASCII values. Moreover, the exception would happen at the combination point, not at the point at which the non-ASCII characters were put into the str object. This behavior was a common source of confusion and consternation for neophyte Python programmers.</p>
-<p>print函数. <code>print表达式</code>已经被一个<code>print()函数</code>替代</p>
-<p>xrange – buh-bye. <code>xrange()</code>不再存在(<code>range()</code>现在的效果和<code>xrange()</code>一样，except it works with values of arbitrary size) </p>
-<p><strong>API changes</strong>:</p>
-<ul>
-<li><p>zip(), map() and filter() all now return iterators instead of lists</p>
-</li>
-<li><p>dict.keys(), dict.items() and dict.values() now return “views” instead of lists</p>
-</li>
-<li><p>dict.iterkeys(), dict.iteritems() and dict.itervalues() are no longer supported</p>
-</li>
-<li><p>Comparison operators. The ordering comparison operators (&lt;, &lt;=, &gt;=, &gt;) now raise a TypeError exception when the operands don’t have a meaningful natural ordering. Some examples of the ramifications of this include:</p>
-</li>
-</ul>
-<blockquote>
-<p>Expressions like 1 &lt; ‘’, 0 &gt; None or len &lt;= len are no longer valid<br>None &lt; None now raises a TypeError instead of returning False</p>
-</blockquote>
-<ul>
-<li>Sorting a heterogeneous list no longer makes sense – all the elements must be comparable to each other</li>
-</ul>
-<p>更多关于Python2和Python3的区别可以参考<a href="https://docs.python.org/3/whatsnew/3.0.html" target="_blank" rel="external">这里</a>。</p>
-<p>###Q: Python是解释型的还是编译型的？</p>
-<p>As noted in Why Are There So Many Pythons?, this is, frankly, a bit of a trick question in that it is malformed. Python itself is nothing more than an interface definition (as is true with any language specification) of which there are multiple implementations. Accordingly, the question of whether “Python” is interpreted or compiled does not apply to the Python language itself; rather, it applies to each specific implementation of the Python specification.</p>
-<p>Further complicating the answer to this question is the fact that, in the case of CPython (the most common Python implementation), the answer really is “sort of both”. Specifically, with CPython, code is first compiled and then interpreted. More precisely, it is not precompiled to native machine code, but rather to bytecode. While machine code is certainly faster, bytecode is more portable and secure. The bytecode is then interpreted in the case of CPython (or both interpreted and compiled to optimized machine code at runtime in the case of PyPy).</p>
-<p>###Q: 有哪些CPython的替代实现？什么时候，为什么会使用他们？</p>
-<p>One of the more prominent alternative implementations is Jython, a Python implementation written in Java that utilizes the Java Virtual Machine (JVM). While CPython produces bytecode to run on the CPython VM, Jython produces Java bytecode to run on the JVM.</p>
-<p>Another is IronPython, written in C# and targeting the .NET stack. IronPython runs on Microsoft’s Common Language Runtime (CLR).</p>
-<p>As also pointed out in Why Are There So Many Pythons?, it is entirely possible to survive without ever touching a non-CPython implementation of Python, but there are advantages to be had from switching, most of which are dependent on your technology stack.</p>
-<p>Another noteworthy alternative implementation is PyPy whose key features include:</p>
-<p>Speed. Thanks to its Just-in-Time (JIT) compiler, Python programs often run faster on PyPy.</p>
-<p>Memory usage. Large, memory-hungry Python programs might end up taking less space with PyPy than they do in CPython.</p>
-<p>Compatibility. PyPy is highly compatible with existing python code. It supports cffi and can run popular Python libraries like Twisted and Django.</p>
-<p>Sandboxing. PyPy provides the ability to run untrusted code in a fully secure way.</p>
-<p>Stackless mode. PyPy comes by default with support for stackless mode, providing micro-threads for massive concurrency.</p>
-<p>###Q: What’s your approach to unit testing in Python?</p>
-<p>The most fundamental answer to this question centers around Python’s unittest testing framework. Basically, if a candidate doesn’t mention unittest when answering this question, that should be a huge red flag.</p>
-<p>unittest supports test automation, sharing of setup and shutdown code for tests, aggregation of tests into collections, and independence of the tests from the reporting framework. The unittest module provides classes that make it easy to support these qualities for a set of tests.</p>
-<p>Assuming that the candidate does mention unittest (if they don’t, you may just want to end the interview right then and there!), you should also ask them to describe the key elements of the unittest framework; namely, test fixtures, test cases, test suites and test runners.</p>
-<p>A more recent addition to the unittest framework is mock. mock allows you to replace parts of your system under test with mock objects and make assertions about how they are to be used. mock is now part of the Python standard library, available as unittest.mock in Python 3.3 onwards.</p>
-<p>The value and power of mock are well explained in An Introduction to Mocking in Python. As noted therein, system calls are prime candidates for mocking: whether writing a script to eject a CD drive, a web server which removes antiquated cache files from /tmp, or a socket server which binds to a TCP port, these calls all feature undesired side-effects in the context of unit tests. Similarly, keeping your unit-tests efficient and performant means keeping as much “slow code” as possible out of the automated test runs, namely filesystem and network access.</p>
-<hr>
-<p>####[注意:这个问题针对的是同样有java开发经验的python开发者.]</p>
-<p>###Q: What are some key differences to bear in mind when coding in Python vs. Java?</p>
-<p>Disclaimer #1. The differences between Java and Python are numerous and would likely be a topic worthy of its own (lengthy) post. Below is just a brief sampling of some key differences between the two languages.</p>
-<p>Disclaimer #2. The intent here is not to launch into a religious battle over the merits of Python vs. Java (as much fun as that might be!). Rather, the question is really just geared at seeing how well the developer understands some practical differences between the two languages. The list below therefore deliberately avoids discussing the arguable advantages of Python over Java from a programming productivity perspective.</p>
-<p>With the above two disclaimers in mind, here is a sampling of some key differences to bear in mind when coding in Python vs. Java:</p>
-<p>Dynamic vs static typing. One of the biggest differences between the two languages is that Java is restricted to static typing whereas Python supports dynamic typing of variables.</p>
-<p>Static vs. class methods. A static method in Java does not translate to a Python class method.</p>
-<p>In Python, calling a class method involves an additional memory allocation that calling a static method or function does not.</p>
-<p>In Java, dotted names (e.g., foo.bar.method) are looked up by the compiler, so at runtime it really doesn’t matter how many of them you have. In Python, however, the lookups occur at runtime, so “each dot counts”.</p>
-<p>Method overloading. Whereas Java requires explicit specification of multiple same-named functions with different signatures, the same can be accomplished in Python with a single function that includes optional arguments with default values if not specified by the caller.</p>
-<p>Single vs. double quotes. Whereas the use of single quotes vs. double quotes has significance in Java, they can be used interchangeably in Python (but no, it won’t allow beginnning the same string with a double quote and trying to end it with a single quote, or vice versa!).</p>
-<p>Getters and setters (not!). Getters and setters in Python are superfluous; rather, you should use the ‘property’ built-in (that’s what it’s for!). In Python, getters and setters are a waste of both CPU and programmer time.</p>
-<p>Classes are optional. Whereas Java requires every function to be defined in the context of an enclosing class definition, Python has no such requirement.</p>
-<p>Indentation matters… in Python. This bites many a newbie Python programmer.</p>
-<p><strong>The Big Picture</strong></p>
-<p>An expert knowledge of Python extends well beyond the technical minutia of the language. A Python expert will have an in-depth understanding and appreciation of Python’s benefits as well as its limitations. Accordingly, here are some sample questions that can help assess this dimension of a candidate’s expertise:</p>
-<p>###Q: What is Python particularly good for? When is using Python the “right choice” for a project?</p>
-<p>Although likes and dislikes are highly personal, a developer who is “worth his or her salt” will highlight features of the Python language that are generally considered advantageous (which also helps answer the question of what Python is “particularly good for”). Some of the more common valid answers to this question include:</p>
-<p>便于使用和重构，感谢Python灵活的语法，让它在快速建模时非常有用。</p>
-<p>更多简洁的代码，再次感谢Python的语法和众多Python库。(distributed freely with most Python language implementations).</p>
-<p>A dynamically-typed and strongly-typed language, offering the rare combination of code flexibility while at the same time avoiding pesky implicit-type-conversion bugs.</p>
-<p>免费且开源，还要我说更多吗？</p>
-<p>With regard to the question of when using Python is the “right choice” for a project, the complete answer also depends on a number of issues orthogonal to the language itself, such as prior technology investment, skill set of the team, and so on. Although the question as stated above implies interest in a strictly technical answer, a developer who will raise these additional issues in an interview will always “score more points” with me since it indicates an awareness of, and sensitivity to, the “bigger picture” (i.e., beyond just the technology being employed). Conversely, a response that Python is always the right choice is a clear sign of an unsophisticated developer.</p>
-<p>###Q: Python语言的有哪些缺陷？</p>
-<p>对于初学者来说，如果你很了解一门语言，你就应该知道它的缺点，因此回答如“他没有任何我不喜欢的东西”或者“它没有缺点”都非常telling indeed。</p>
-<p>这个问题两个最常见的有效答案(绝不是详细列表)是：</p>
-<p><a href="https://wiki.python.org/moin/GlobalInterpreterLock" target="_blank" rel="external">全局解释器锁（GIL）</a>。 CPython（最常用的Python实现）是非完全线程安全的。为了支持多线程的Python程序，当前线程必须保持CPython提供的一个全局锁，之后才能安全地访问python对象。其结果是，不管有多少线程或处理器存在，在任意时刻只有一个线程被执行。相比较而言，值得注意的是，<a href="http://www.toptal.com/python#aboutPyPy" target="_blank" rel="external">之前讨论的PyPy实现</a>提供了对海量micro-threads并发的支持。</p>
-<p>执行速度。 Python可能比编译语言要慢，因为它是被解释的。 （嗯，有点慢。查看<a href="http://www.toptal.com/python#interpretedOrCompiled" target="_blank" rel="external">之前我们针对这个问题的讨论</a>。）<br>包起来</p>
-<p>##总结</p>
-<p>本文中所列举的问题和技巧可以帮助你识别真正的python高手。我们希望在你寻找顶尖python开发者的时候，这些问题和技巧能成为一个“从谷壳分离麦子”的有用工具。然而，要记住，这些仅仅应该是作为工具被纳入你的整体招聘工具箱和战略中。</p>
-<p>另外，对于那些可能会错误地阅读本指南，希望学习如何捕捉爬行动物（对不起，伙计，一类错误的蟒蛇！）的人，我们推荐你来弗罗里达州野生动物基金会的Python挑战赛。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/19/翻译-7个经典python面试题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/19/翻译-7个经典python面试题/" itemprop="url">[翻译]7个经典python面试题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-19T17:30:02+08:00">
-                2015-05-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文在<a href="http://www.toptal.com/python/interview-questions" target="_blank" rel="external">这里toptal</a></p>
-<p>##下面的代码输出什么？</p>
-<pre><code>list = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;]
-print list[10:]
-</code></pre><p>上面的代码输出<code>[]</code>，并且不会导致<code>IndexError</code>错误</p>
-<p>跟你想的一样，当取列表元素的时候，如果索引值超过了元素的个数(例如在上面的列表中，取list[10])将会导致<code>IndexError</code>错误。但是，取一个列表的切片的时候，如果起始索引超过了元素个数，将不会引起<code>IndexError</code>错误，仅返回一个空列表。</p>
-<p>这一特性将会导致一些非常难于追踪的bug，因为在运行时根本没有错误产生。</p>
-<p>##下面的代码在Python2中的输出是什么？解释你的答案</p>
-<pre><code>def div1(x,y):
-    print &quot;%s/%s = %s&quot; % (x, y, x/y)
-
-def div2(x,y):
-    print &quot;%s//%s = %s&quot; % (x, y, x//y)
-
-div1(5,2)
-div1(5.,2)
-div2(5,2)
-div2(5.,2.)
-</code></pre><p>另外，在Python3中上面的代码的输出有何不同(假设代码中的print语句都转化成了Python3中的语法结构)？</p>
-<p>在<strong>Python2</strong>中，代码的输出是：</p>
-<pre><code>5/2 = 2
-5.0/2 = 2.5
-5//2 = 2
-5.0//2.0 = 2.0
-</code></pre><p>默认情况下，如果两个操作数都是整数，Python2默认执行整数运算。所以，<code>5/2</code> 结果是<code>2</code>，而<code>5./2</code>结果是<code>2.5</code></p>
-<p>注意你可以通过下面的import语句来覆盖Python2中的这一行为</p>
-<pre><code>from __future__ import division 
-</code></pre><p>还要注意“双斜杠”(<code>//</code>)操作符将会一直执行整除，忽略操作数的类型。这就是为什么5.0//2.0即使在Python2中结果也是2.0</p>
-<p>但是在Python3并没有这一行为。两个操作数都是整数时，也不执行整数运算。在Python3中，输出如下：</p>
-<pre><code>5/2 = 2.5
-5.0/2 = 2.5
-5//2 = 2
-5.0//2.0 = 2.0
-</code></pre><p>##下面代码的输出是什么？请解释你的答案</p>
-<pre><code>def extendList(val, list=[]):
-    list.append(val)
-    return list
-
-list1 = extendList(10)
-list2 = extendList(123,[])
-list3 = extendList(&apos;a&apos;)
-
-print &quot;list1 = %s&quot; % list1
-print &quot;list2 = %s&quot; % list2
-print &quot;list3 = %s&quot; % list3
-</code></pre><p>如何修改函数<code>ExtendList</code>的定义才能产生我们希望的行为？</p>
-<p>输出为：</p>
-<pre><code>list1 = [10, &apos;a&apos;]
-list2 = [123]
-list3 = [10, &apos;a&apos;]
-</code></pre><p>很多人会错误地预计<code>list1</code>等于<code>［10］</code>，<code>list3</code>等于<code>[&#39;a&#39;]</code>，认为<code>extendList</code>函数的<code>list</code>参数在每一次函数被调用时都会被设置为默认值<code>[]</code></p>
-<p>但是，真实的情况是，默认的<code>list</code>只在函数定义的时候被创建一次。之后不指定<code>list</code>参数地调用<code>extendList</code>函数时，使用的都是同一个<code>list</code>。这是因为带默认参数的表达式是在函数定义的时候被计算的，而不是在函数调用时。</p>
-<p>所以，<code>list1</code>和<code>list3</code>都是在操作同一个默认<code>list</code>，而<code>list2</code>是在操作它自己创建的一个独立的<code>list</code>(将自己的空<code>list</code>作为参数传递过去)</p>
-<p><code>extendlist</code>的定义可以这样定义来达到我们预期的效果：</p>
-<pre><code>def extendList(val, list=None):
-    if list is None:
-        list = []
-    list.append(val)
-    return list
-</code></pre><p>调用修改后的函数，输出是：</p>
-<pre><code>list1 = [10]
-list2 = [123]
-list3 = [&apos;a&apos;]
-</code></pre><p>##下面代码的输出是什么？请解释你的答案</p>
-<pre><code>class Parent(object):
-    x = 1
-
-class Child1(Parent):
-    pass
-
-class Child2(Parent):
-    pass
-
-print Parent.x, Child1.x, Child2.x
-Child1.x = 2
-print Parent.x, Child1.x, Child2.x
-Parent.x = 3
-print Parent.x, Child1.x, Child2.x
-</code></pre><p>输出为：</p>
-<pre><code>1 1 1
-1 2 1
-3 2 3
-</code></pre><p>让很多人感到疑惑和惊讶的是，最后一行的输出竟然不是<code>3 2 1</code>而是<code>3 2 3</code>. 为什么修改了Parent.X的值会影响到<code>Child2.x</code>，但是同时又没有改变<code>Child1.x</code>的值呢？        </p>
-<p>这个问题的关键在于，在python中，类中的变量在内部被当作字典处理。如果一个变量名在当前类的字典中没有被发现，系统将会在这个类的祖先(例如，它的父类)中继续寻找，直到找到为止(如果一个变量名在这个类和这个类的祖先中都没有，那么将会引发一个<code>AttributeError</code>错误)</p>
-<p>因此，在父类中将变量x赋值为1，那么x变量将可以被当前类和所有这个类的子类引用。这就是为什么第一个print语句输出为<code>1 1 1</code>.</p>
-<p>接下来，如果它的子类覆盖了这个值(例如， 当我们执行<code>Child1.x = 2</code>)，那么这个变量的值仅仅在这个子类中发生了改变。这就是为什么第二个print语句输出<code>1 2 1</code></p>
-<p>最后，如果父类改变了这个变量的值(例如，我们执行<code>Parent.x = 3</code>)，所有没有覆盖这个参数值的子类(在这个例子中覆盖了参数的就是<code>Child2</code>)都会受到影响，这就是为什么第三个print语句的输出为<code>3 2 3</code></p>
-<p>##下面代码的输出是什么？请解释你的答案</p>
-<pre><code>def multipliers():
-    return [lambda x : i * x for i in range(4)]
-
-print [m(2) for m in multipliers()]
-</code></pre><p>怎么修改multipliers的定义才能达到期望的效果？</p>
-<p>上面代码的输出是<code>[6, 6, 6, 6]</code>(不是<code>[0, 2, 4, 6]</code>).</p>
-<p>原因是Python的闭包是延迟绑定(<code>late binding</code>)的。这表明在闭包中使用的变量直到内层函数被调用的时候才会被查找。结果是，当调用<code>multipliers()</code>返回的函数时，<code>i</code>参数的值会在这时被在调用环境中查找。所以，无论调用返回的哪个函数，<code>for</code>循环此时已经结束，<code>i</code>等于它最终的值<code>3</code>。因此，所有返回的函数都要乘以传递过来的<code>3</code>，因为上面的代码传递了<code>2</code>作为参数，所以他们都返回了<code>6</code>（即，<code>3 * 2</code>）</p>
-<p>(顺便提一句，正如在书<a href="http://docs.python-guide.org/en/latest/" target="_blank" rel="external">《The Hitchhiker’s Guide to Python》</a>中提出来的一样, 有一种广泛传播的误解认为这个问题和lambda表达式有关，事实并非如此。通过labda表达式产生的函数并没有什么特别之处，使用普通的<code>def</code>定义的函数的行为和lambda表达式产生的函数的行为是一样的.)</p>
-<p>下面是一些可以绕过这个问题的方法。</p>
-<p>方法一是像下面一样使用Python的生成器(generator)</p>
-<pre><code>def multipliers():
-     for i in range(4): yield lambda x : i * x 
-</code></pre><p>另一个方法是创造一个闭包，通过使用一个默认参数来立即绑定它的参数</p>
-<pre><code>def multipliers():
-    return [lambda x, i=i : i * x for i in range(4)]
-</code></pre><p>或者，你也可以使用functools.partial函数：</p>
-<pre><code>from functools import partial
-from operator import mul
-
-def multipliers():
-    return [partial(mul, i) for i in range(4)]
-</code></pre><p>##考虑下面的代码片段:</p>
-<pre><code>1. list = [ [ ] ] * 5
-2. list  # output?
-3. list[0].append(10)
-4. list  # output?
-5. list[1].append(20)
-6. list  # output?
-7. list.append(30)
-8. list  # output?
-</code></pre><p>第2，4，6，8行的输出是什么？解释你的答案.</p>
-<p>输出如下:</p>
-<pre><code>[[], [], [], [], []]
-[[10], [10], [10], [10], [10]]
-[[10, 20], [10, 20], [10, 20], [10, 20], [10, 20]]
-[[10, 20], [10, 20], [10, 20], [10, 20], [10, 20], 30]
-</code></pre><p>下面是解释:</p>
-<p>第一行的输出凭直觉就能知道，很容易理解。即：<code>list = [ [ ] ] * 5</code>创建了一个元素是5个列表的列表。</p>
-<p>但是，这里要理解的关键是，<code>list = [ [ ] ] * 5</code>并没有创建一个包含5个不同列表的列表。创建的这个列表里的5个列表，是对同一个列表的引用（a a list of 5 references to the same list）。理解了这些，你就能更好地理解余下的输出。</p>
-<p><code>list[0].append(10)</code>将数字10添加到第一个列表。但是由于5个列表是对同一个列表的引用，所以输出是<code>[[10], [10], [10], [10], [10]]</code>。</p>
-<p>同样的，<code>list[1].append(20)</code>将20追加到第二个列表。但是同样，由于这5个列表引用同一个列表，所以输出：<code>[[10, 20], [10, 20], [10, 20], [10, 20], [10, 20]]</code>.</p>
-<p>相比之下， <code>list.append(30)</code>是将一个全新的元素追加到“外层”的列表，所以产生了这样的输出：<code>[[10, 20], [10, 20], [10, 20], [10, 20], [10, 20], 30]</code>.</p>
-<p>##有一个拥有N个元素的列表，用一个列表解析式生成一个新的列表，元素的值同时满足以下条件:</p>
-<pre><code>(a) 偶数，以及
-(b) 在原列表中，索引为偶数
-</code></pre><p>例如，如果list[2]的值是偶数，那么这个元素应该也被包含在新列表中，因为它在原列表中的索引也是偶数(即 2). 但是， 如果list[3]是偶数，那这个值不应该被包含在新列表中，因为它在原列表中的索引是一个奇数。</p>
-<p>一个简单的解法如下：</p>
-<pre><code>[x for x in list[::2] if x%2 == 0]
-</code></pre><p>例如，给出下面的列表:</p>
-<pre><code>#        0   1   2   3    4    5    6    7    8
-list = [ 1 , 3 , 5 , 8 , 10 , 13 , 18 , 36 , 78 ]
-</code></pre><p>列表解析式<code>[x for x in list[::2] if x%2 == 0]</code> 会生成:</p>
-<pre><code>[10, 18, 78]
-</code></pre><p>这个表达式首先取列表中索引是偶数的数字，然后过滤掉所有的奇数.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/19/部署multi-region-openstack环境/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/19/部署multi-region-openstack环境/" itemprop="url">部署multi-region openstack环境</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-19T17:17:06+08:00">
-                2015-05-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/openstack/" itemprop="url" rel="index">
-                    <span itemprop="name">openstack</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><code>Icehouse</code>默认的<code>region</code>是<code>RegionOne</code>。因为默认<code>region</code>的存在，无论是在命令行，还是在web上，我们都不需要指定<code>region</code>。在命令行中你还可以用<code>os-region-name</code>来指定region，在web中你就根本找不到与region相关的东西。</p>
-<p>因为这样，很多人都不了解region的概念，如果你已经使用过openstack，并且不知道在哪看到了可以设置多region这样一件事，所以想自己部署一个看看，那么你可以把这篇文章读完。</p>
-<p>因为只是一个实验，我们怎么简单怎么来。网上有很多快速部署openstack环境的教程，首先你需要按照教程部署两套完整的openstack环境。有了这两套环境，我们稍微改一下配置即可。</p>
-<p>##增加endpoint</p>
-<p>选择一台机器作为RegionOne，另一台则为RegionTwo。我们需要在RegionOne上增加Regiontwo上的service的endpoint。</p>
-<p><img src="http://7xj6cl.com1.z0.glb.clouddn.com/Multi-Site_shared_keystone_horizon_swift1.png" alt=""></p>
-<p>如图，可以看到Horizon，Keystone和Swift是公用的，我们只需要增加这些服务之外的服务的endpoint</p>
-<p><img src="http://7xj6cl.com1.z0.glb.clouddn.com/service-list.png" alt=""></p>
-<p>如图我们需要增加cinder,ec2,glance,neutron,nova的endpoint。添加endpoint的命令是：</p>
-<pre><code>keystone endpoint-create --region RegionTwo 
-                         --service &lt;service&gt; 
-                          --publicurl &lt;public-url&gt;
-                         --adminurl &lt;admin-url&gt;
-                         --internalurl &lt;internal-url&gt;
-</code></pre><p>这样添加好了之后，工作就完成一半了。</p>
-<p>如果就这样打开RegionOne的web，会发现在页面上出现了一个之前没有的选择框，可以选择RegionOne或者RegionTwo，但是选了Regiontwo之后，按概况或者云主机之类的按钮，会出现各种<strong>无权限</strong>的错误，好蛋疼。其实这时候我们的web还没有配置好。</p>
-<p>##配置horizon</p>
-<p>打开文件</p>
-<pre><code>vim /etc/openstack-dashboard/local_settings.py
-</code></pre><p>找到</p>
-<pre><code># For multiple regions uncomment this configuration, and add (endpoint, title).
-# AVAILABLE_REGIONS = [
-#     (&apos;http://cluster1.example.com:5000/v2.0&apos;, &apos;cluster1&apos;),
-#     (&apos;http://cluster2.example.com:5000/v2.0&apos;, &apos;cluster2&apos;),
-# ]
-</code></pre><p>去掉注释，改成这样：</p>
-<pre><code># For multiple regions uncomment this configuration, and add (endpoint, title).
-AVAILABLE_REGIONS = [ 
-     (&apos;http://10.10.7.208:5000/v2.0&apos;, &apos;RegionOne&apos;),
-     (&apos;http://10.10.7.200:5000/v2.0&apos;, &apos;RegionTwo&apos;),
-]
-</code></pre><p>我的两台环境是<code>10.10.7.208</code>和<code>10.10.7.200</code>，你需要改成你的环境的ip。后面的5000端口不需要改，5000是keystone监听的端口，剩下的都不需要改。</p>
-<p>改完之后，保存，重启web</p>
-<pre><code>service apache2 restart
-#这里也是，如果你不是用的apache，请改成你重启web的方式
-</code></pre><p>这时候再登录就一切OK啦！</p>
-<p><img src="http://7xj6cl.com1.z0.glb.clouddn.com/region.png" alt=""></p>
-<p>右上角的region控制你登录的是哪个region，中间的那个是用户自由切换的用的。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/19/让mac的终端实现克隆会话功能/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2275,6 +1174,1570 @@ export https_proxy=http://10.10.1.2:8080
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/08/python线程初探/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/08/python线程初探/" itemprop="url">python线程初探</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-08T11:22:20+08:00">
+                2015-05-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>我们将会看到一些在Python中使用线程的实例和如何避免线程之间的竞争。你应当将下边的例子运行多次，以便可以注意到线程是不可预测的和线程每次运行出的不同结果。声明：从这里开始忘掉你听到过的关于GIL的东西，因为GIL不会影响到我想要展示的东西。</p>
+<p>##示例1</p>
+<p>我们将要请求五个不同的url：</p>
+<p>单线程</p>
+<pre><code>import time
+import urllib2
+
+def get_responses():
+    urls = [
+        &apos;http://www.google.com&apos;,
+        &apos;http://www.amazon.com&apos;,
+        &apos;http://www.ebay.com&apos;,
+        &apos;http://www.alibaba.com&apos;,
+        &apos;http://www.reddit.com&apos;
+    ]
+    start = time.time()
+    for url in urls:
+        print url
+        resp = urllib2.urlopen(url)
+        print resp.getcode()
+    print &quot;Elapsed time: %s&quot; % (time.time()-start)
+
+get_responses()
+</code></pre><p>输出是：</p>
+<pre><code>http://www.google.com 200
+http://www.amazon.com 200
+http://www.ebay.com 200
+http://www.alibaba.com 200
+http://www.reddit.com 200
+Elapsed time: 3.0814409256
+</code></pre><p>解释：</p>
+<ul>
+<li>url顺序的被请求</li>
+<li>除非cpu从一个url获得了回应，否则不会去请求下一个url</li>
+<li>网络请求会花费较长的时间，所以cpu在等待网络请求的返回时间内一直处于闲置状态。<br>##多线程</li>
+</ul>
+<pre><code>import urllib2
+import time
+from threading import Thread
+
+class GetUrlThread(Thread):
+    def __init__(self, url):
+        self.url = url 
+        super(GetUrlThread, self).__init__()
+
+    def run(self):
+        resp = urllib2.urlopen(self.url)
+        print self.url, resp.getcode()
+
+def get_responses():
+    urls = [
+        &apos;http://www.google.com&apos;, 
+        &apos;http://www.amazon.com&apos;, 
+        &apos;http://www.ebay.com&apos;, 
+        &apos;http://www.alibaba.com&apos;, 
+        &apos;http://www.reddit.com&apos;
+    ]
+    start = time.time()
+    threads = []
+    for url in urls:
+        t = GetUrlThread(url)
+        threads.append(t)
+        t.start()
+    for t in threads:
+        t.join()
+    print &quot;Elapsed time: %s&quot; % (time.time()-start)
+
+get_responses()
+</code></pre><p>输出：</p>
+<pre><code>http://www.reddit.com 200
+http://www.google.com 200
+http://www.amazon.com 200
+http://www.alibaba.com 200
+http://www.ebay.com 200
+Elapsed time: 0.689890861511
+</code></pre><p>解释：</p>
+<ul>
+<li>意识到了程序在执行时间上的提升</li>
+<li>我们写了一个多线程程序来减少cpu的等待时间，当我们在等待一个线程内的网络请求返回时，这时cpu可以切换到其他线程去进行其他线程内的网络请求。</li>
+<li>我们期望一个线程处理一个url，所以实例化线程类的时候我们传了一个url。</li>
+<li>线程运行意味着执行类里的run()方法。</li>
+<li>无论如何我们想每个线程必须执行run()。</li>
+<li>为每个url创建一个线程并且调用start()方法，这告诉了cpu可以执行线程中的run()方法了。</li>
+<li>我们希望所有的线程执行完毕的时候再计算花费的时间，所以调用了join()方法。</li>
+<li>join()可以通知主线程等待这个线程结束后，才可以执行下一条指令。</li>
+<li>每个线程我们都调用了join()方法，所以我们是在所有线程执行完毕后计算的运行时间。</li>
+</ul>
+<p>关于线程：</p>
+<ul>
+<li>cpu可能不会在调用start()后马上执行run()方法。</li>
+<li>你不能确定run()在不同线程建间的执行顺序。</li>
+<li>对于单独的一个线程，可以保证run()方法里的语句是按照顺序执行的。</li>
+<li>这就是因为线程内的url会首先被请求，然后打印出返回的结果。<br>##示例2<br>我们将会用一个程序演示一下多线程间的资源竞争，并修复这个问题。</li>
+</ul>
+<pre><code>from threading import Thread
+
+#define a global variable
+some_var = 0
+
+class IncrementThread(Thread):
+    def run(self):
+        #we want to read a global variable
+        #and then increment it
+        global some_var
+        read_value = some_var
+        print &quot;some_var in %s is %d&quot; % (self.name, read_value)
+        some_var = read_value + 1
+        print &quot;some_var in %s after increment is %d&quot; % (self.name, some_var)
+
+def use_increment_thread():
+    threads = []
+    for i in range(50):
+        t = IncrementThread()
+        threads.append(t)
+        t.start()
+    for t in threads:
+        t.join()
+    print &quot;After 50 modifications, some_var should have become 50&quot;
+    print &quot;After 50 modifications, some_var is %d&quot; % (some_var,)
+
+use_increment_thread()
+</code></pre><p>多次运行这个程序，你会看到多种不同的结果。</p>
+<p>解释：</p>
+<ul>
+<li>有一个全局变量，所有的线程都想修改它。</li>
+<li>所有的线程应该在这个全局变量上加 1 。</li>
+<li><p>有50个线程，最后这个数值应该变成50，但是它却没有。<br>为什么没有达到50？</p>
+</li>
+<li><p>在some_var是15的时候，线程t1读取了some_var，这个时刻cpu将控制权给了另一个线程t2。</p>
+</li>
+<li>t2线程读到的some_var也是15</li>
+<li>t1和t2都把some_var加到16</li>
+<li>当时我们期望的是t1 t2两个线程使some_var + 2变成17</li>
+<li>在这里就有了资源竞争。</li>
+<li>相同的情况也可能发生在其它的线程间，所以出现了最后的结果小于50的情况。</li>
+</ul>
+<p>解决资源竞争</p>
+<pre><code>from threading import Lock, Thread
+lock = Lock()
+some_var = 0
+
+class IncrementThread(Thread):
+    def run(self):
+        #we want to read a global variable
+        #and then increment it
+        global some_var
+        lock.acquire()
+        read_value = some_var
+        print &quot;some_var in %s is %d&quot; % (self.name, read_value)
+        some_var = read_value + 1
+        print &quot;some_var in %s after increment is %d&quot; % (self.name, some_var)
+        lock.release()
+
+def use_increment_thread():
+    threads = []
+    for i in range(50):
+        t = IncrementThread()
+        threads.append(t)
+        t.start()
+    for t in threads:
+        t.join()
+    print &quot;After 50 modifications, some_var should have become 50&quot;
+    print &quot;After 50 modifications, some_var is %d&quot; % (some_var,)
+
+use_increment_thread()
+</code></pre><p>再次运行这个程序，达到了我们预期的结果。</p>
+<p>解释：</p>
+<ul>
+<li>Lock 用来防止竞争条件</li>
+<li>如果在执行一些操作之前，线程t1获得了锁。其他的线程在t1释放Lock之前，不会执行相同的操作</li>
+<li>我们想要确定的是一旦线程t1已经读取了some_var，直到t1完成了修改some_var，其他的线程才可以读取some_var</li>
+<li>这样读取和修改some_var成了逻辑上的原子操作。<br>##示例3<br>让我们用一个例子来证明一个线程不能影响其他线程内的变量（非全局变量）。</li>
+</ul>
+<p>time.sleep()可以使一个线程挂起，强制线程切换发生。</p>
+<pre><code>from threading import Thread
+import time
+
+class CreateListThread(Thread):
+    def run(self):
+        self.entries = []
+        for i in range(10):
+            time.sleep(1)
+            self.entries.append(i)
+        print self.entries
+
+def use_create_list_thread():
+    for i in range(3):
+        t = CreateListThread()
+        t.start()
+
+use_create_list_thread()
+</code></pre><p>运行几次后发现并没有打印出正确的结果。当一个线程正在打印的时候，cpu切换到了另一个线程，所以产生了不正确的结果。我们需要确保print self.entries是个逻辑上的原子操作，以防打印时被其他线程打断。</p>
+<p>我们使用了Lock()，来看下边的例子。</p>
+<pre><code>from threading import Thread, Lock
+import time
+
+lock = Lock()
+
+class CreateListThread(Thread):
+    def run(self):
+        self.entries = []
+        for i in range(10):
+            time.sleep(1)
+            self.entries.append(i)
+        lock.acquire()
+        print self.entries
+        lock.release()
+
+def use_create_list_thread():
+    for i in range(3):
+        t = CreateListThread()
+        t.start()
+
+use_create_list_thread()
+</code></pre><p>这次我们看到了正确的结果。证明了一个线程不可以修改其他线程内部的变量（非全局变量）。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/08/python程序员长常犯的错误-高级篇/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/08/python程序员长常犯的错误-高级篇/" itemprop="url">python程序员长常犯的错误-高级篇</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-08T10:50:11+08:00">
+                2015-05-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>本文转载自<a href="http://blog.jobbole.com/68256/" target="_blank" rel="external">这里</a></p>
+<p>Python简单、易学的语法可能会误导一些Python程序员（特别是那些刚接触这门语言的人们），可能会忽略某些细微之处和这门语言的强大之处。</p>
+<p>考虑到这点，本文列出了“十大”甚至是高级的Python程序员都可能犯的，却又不容易发现的细微错误。</p>
+<p>##在函数参数中乱用表达式作为默认值</p>
+<p>Python允许给一个函数的某个参数设置<strong>默认值</strong>以使该参数成为一个<strong>可选参数</strong>。尽管这是这门语言很棒的一个功能，但是这当这个默认值是<strong>可变对象</strong>（<a href="https://docs.python.org/2/reference/datamodel.html" target="_blank" rel="external">mutable</a>）时，那就有些麻烦了。例如，看下面这个Python函数定义：</p>
+<pre><code>&gt;&gt;&gt; def foo(bar=[]):        # bar是可选参数，如果没有指明的话，默认值是[]
+...    bar.append(&quot;baz&quot;)    # 但是这行可是有问题的，走着瞧…
+...    return bar
+</code></pre><p>人们常犯的一个错误是认为<strong>每次</strong>调用这个函数时不给这个可选参数赋值的话，它总是会被赋予这个默认表达式的值。例如，在上面的代码中，程序员可能会认为重复调用函数foo() （不传参数bar给这个函数），这个函数会总是返回‘baz’，因为我们假定认为每次调用foo()的时候（不传bar），参数bar会被置为[]（即，一个空的列表）。</p>
+<p>那么我们来看看这么做的时候究竟会发生什么：</p>
+<pre><code>&gt;&gt;&gt; foo()
+[&quot;baz&quot;]
+&gt;&gt;&gt; foo()
+[&quot;baz&quot;, &quot;baz&quot;]
+&gt;&gt;&gt; foo()
+[&quot;baz&quot;, &quot;baz&quot;, &quot;baz&quot;]
+</code></pre><p>嗯？为什么每次调用foo()的时候，这个函数总是在一个已经存在的列表后面添加我们的默认值“baz”，而不是每次都创建一个<strong>新</strong>的列表？</p>
+<p>答案是<strong>一个函数参数的默认值，仅仅在该函数定义的时候，被赋值一次</strong>。如此，只有当函数foo()第一次被定义的时候，才讲参数bar的默认值初始化到它的默认值（即一个空的列表）。当调用foo()的时候（不给参数bar），会继续使用bar最早初始化时的那个列表。</p>
+<p>由此，可以有如下的解决办法：</p>
+<pre><code>&gt;&gt;&gt; def foo(bar=None):
+...    if bar is None:      # 或者用 if not bar:
+...        bar = []
+...    bar.append(&quot;baz&quot;)
+...    return bar
+...
+&gt;&gt;&gt; foo()
+[&quot;baz&quot;]
+&gt;&gt;&gt; foo()
+[&quot;baz&quot;]
+&gt;&gt;&gt; foo()
+[&quot;baz&quot;]
+</code></pre><p>##不正确的使用类变量</p>
+<p>看下面一个例子：</p>
+<pre><code>&gt;&gt;&gt; class A(object):
+...     x = 1
+...
+&gt;&gt;&gt; class B(A):
+...     pass
+...
+&gt;&gt;&gt; class C(A):
+...     pass
+...
+&gt;&gt;&gt; print A.x, B.x, C.x
+1 1 1
+</code></pre><p>看起来没有问题。</p>
+<pre><code>&gt;&gt;&gt; B.x = 2
+&gt;&gt;&gt; print A.x, B.x, C.x
+1 2 1
+</code></pre><p>嗯哈，还是和预想的一样。</p>
+<pre><code>&gt;&gt;&gt; A.x = 3
+&gt;&gt;&gt; print A.x, B.x, C.x
+3 2 3
+</code></pre><p>我了个去。只是改变了A.x，为啥C.x也变了？</p>
+<p>在Python里，类变量通常在内部被当做字典来处理并遵循通常所说的方法解析顺序（<a href="http://python-history.blogspot.com.ar/2010/06/method-resolution-order.html" target="_blank" rel="external">Method Resolution Order (MRO)</a>）。因此在上面的代码中，因为属性x在类C中找不到，因此它会往上去它的基类中查找（在上面的例子中只有A这个类，当然Python是支持多重继承（multiple inheritance）的）。换句话说，C没有它自己独立于A的属性x。因此对C.x的引用实际上是对A.x的引用。（B.x不是对A.x的引用是因为在第二步里B.x=2将B.x引用到了2这个对象上，倘若没有如此，B.x仍然是引用到A.x上的。）</p>
+<p>##在异常处理时错误的使用参数</p>
+<p>假设你有如下的代码：</p>
+<pre><code>&gt;&gt;&gt; try:
+...     l = [&quot;a&quot;, &quot;b&quot;]
+...     int(l[2])
+... except ValueError, IndexError:  # 想捕捉两个异常
+...     pass
+...
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 3, in &lt;module&gt;
+IndexError: list index out of range
+</code></pre><p>这里的问题在于except语句<strong>不会</strong>像这样去接受一系列的异常。并且，在Python 2.x里面，语法<code>except Exception, e</code>是用来将异常和这个可选的参数绑定起来（即这里的e），以用来在后面查看的。因此，在上面的代码中，IndexError异常<strong>不会</strong>被except语句捕捉到；而最终ValueError这个异常被绑定在了一个叫做IndexError的参数上。</p>
+<p>在except语句中捕捉多个异常的正确做法是将所有想要捕捉的异常放在一个元组（<a href="https://docs.python.org/2/tutorial/datastructures.html#tut-tuples" target="_blank" rel="external">tuple</a>）里并作为第一个参数给except语句。并且，为移植性考虑，使用as关键字，因为Python 2和Python 3都支持这样的语法，例如：</p>
+<pre><code>&gt;&gt;&gt; try:
+...     l = [&quot;a&quot;, &quot;b&quot;]
+...     int(l[2])
+... except (ValueError, IndexError) as e:  
+...     pass
+...
+&gt;&gt;&gt;
+</code></pre><p>##误解Python作用域的规则</p>
+<p>Python的作用域解析是基于叫做<a href="https://blog.mozilla.org/webdev/2011/01/31/python-scoping-understanding-legb/" target="_blank" rel="external">LEGB</a>（Local（本地），Enclosing（封闭），Global（全局），Built-in（内置））的规则进行操作的。这看起来很直观，对吧？事实上，在Python中这有一些细微的地方很容易出错。看这个例子：</p>
+<pre><code>&gt;&gt;&gt; x = 10
+&gt;&gt;&gt; def foo():
+...     x += 1
+...     print x
+...
+&gt;&gt;&gt; foo()
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;&lt;stdin&gt;&quot;, line 2, in foo
+UnboundLocalError: local variable &apos;x&apos; referenced before assignment
+</code></pre><p>这是怎么回事？</p>
+<p>这是因为，在一个作用域里面给一个变量赋值的时候，<strong>Python自动认为这个变量是这个作用域的本地变量，并屏蔽作用域外的同名的变量</strong>。</p>
+<p>很多时候可能在一个函数里添加一个赋值的语句会让你从前本来工作的代码得到一个UnboundLocalError。（感兴趣的话可以读一读<a href="https://docs.python.org/2/faq/programming.html#why-am-i-getting-an-unboundlocalerror-when-the-variable-has-a-value" target="_blank" rel="external">这篇</a>文章。）</p>
+<p>在使用列表（<a href="https://docs.python.org/2/tutorial/datastructures.html" target="_blank" rel="external">lists</a>）的时候，这种情况尤为突出。看下面这个例子：</p>
+<pre><code>&gt;&gt;&gt; lst = [1, 2, 3]
+&gt;&gt;&gt; def foo1():
+...     lst.append(5)   # 这没有问题...
+...
+&gt;&gt;&gt; foo1()
+&gt;&gt;&gt; lst
+[1, 2, 3, 5]
+
+&gt;&gt;&gt; lst = [1, 2, 3]
+&gt;&gt;&gt; def foo2():
+...     lst += [5]      # ... 这就有问题了！
+...
+&gt;&gt;&gt; foo2()
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;&lt;stdin&gt;&quot;, line 2, in foo
+UnboundLocalError: local variable &apos;lst&apos; referenced before assignment
+</code></pre><p>嗯？为什么foo2有问题，而foo1没有问题？</p>
+<p>答案和上一个例子一样，但是更加不易察觉。foo1并没有给lst<strong>赋值</strong>，但是foo2尝试给lst<strong>赋值</strong>。注意lst+=[5]只是lst=lst+[5]的简写，由此可以看到我们尝试给lst赋值（因此Python假设作用域为本地）。但是，这个要赋给lst的值是基于lst本身的（这里的作用域仍然是本地），而lst却没有被定义，这就出错了。</p>
+<p>##在遍历列表的同时又在修改这个列表</p>
+<p>下面这个例子中的代码应该比较明显了：</p>
+<pre><code>&gt;&gt;&gt; odd = lambda x : bool(x % 2)
+&gt;&gt;&gt; numbers = [n for n in range(10)]
+&gt;&gt;&gt; for i in range(len(numbers)):
+...     if odd(numbers[i]):
+...         del numbers[i]  # 这不对的：在遍历列表时删掉列表的元素。
+...
+Traceback (most recent call last):
+      File &quot;&lt;stdin&gt;&quot;, line 2, in &lt;module&gt;
+IndexError: list index out of range
+</code></pre><p>遍历一个列表或者数组的同时又删除里面的元素，对任何有经验的软件开发人员来说这是个很明显的错误。但是像上面的例子那样明显的错误，即使有经验的程序员也可能不经意间在更加复杂的程序中不小心犯错。</p>
+<p>所幸，Python集成了一些优雅的编程范式，如果使用得当，可以写出相当简化和精简的代码。一个附加的好处是更简单的代码更不容易遇到这种“不小心在遍历列表时删掉列表元素”的bug。例如<strong>列表推导式</strong>（<a href="https://docs.python.org/2/tutorial/datastructures.html#tut-listcomps" target="_blank" rel="external">list comprehensions</a>）就提供了这样的范式。再者，列表推导式在避免这样的问题上特别有用，接下来这个对上面的代码的重新实现就相当完美：</p>
+<pre><code>&gt;&gt;&gt; odd = lambda x : bool(x % 2)
+&gt;&gt;&gt; numbers = [n for n in range(10)]
+&gt;&gt;&gt; numbers[:] = [n for n in numbers if not odd(n)]  # 啊，这多优美
+&gt;&gt;&gt; numbers
+[0, 2, 4, 6, 8]
+</code></pre><p>##搞不清楚在闭包（closures）中Python是怎样绑定变量的    </p>
+<p>看这个例子：</p>
+<pre><code>&gt;&gt;&gt; def create_multipliers():
+...     return [lambda x : i * x for i in range(5)]
+&gt;&gt;&gt; for multiplier in create_multipliers():
+...     print multiplier(2)
+...
+</code></pre><p>期望得到下面的输出：</p>
+<pre><code>0
+2
+4
+6
+8
+</code></pre><p>但是实际上得到的是：</p>
+<pre><code>8
+8
+8
+8
+8
+</code></pre><p>意外吧！</p>
+<p>这是由于Python的<strong>后期绑定</strong>（late binding）机制导致的，这是指在闭包中使用的变量的值，是在内层函数被调用的时候查找的。因此在上面的代码中，当任一返回函数被调用的时候，i的值是在<strong>它被调用时的周围作用域</strong>中查找（到那时，循环已经结束了，所以i已经被赋予了它最终的值4）。</p>
+<p>解决的办法比较巧妙：</p>
+<pre><code>&gt;&gt;&gt; def create_multipliers():
+...     return [lambda x, i=i : i * x for i in range(5)]
+...
+&gt;&gt;&gt; for multiplier in create_multipliers():
+...     print multiplier(2)
+...
+0
+2
+4
+6
+8
+</code></pre><p>这下对了！这里利用了默认参数去产生匿名函数以达到期望的效果。有人会说这很优美，有人会说这很微妙，也有人会觉得反感。但是如果你是一名Python程序员，重要的是能理解任何的情况。</p>
+<p>##循环加载模块</p>
+<p>假设你有两个文件，a.py和b.py，在这两个文件中互相加载对方，例如：</p>
+<p>在a.py中：</p>
+<pre><code>import b
+def f():
+    return b.x
+print f()
+</code></pre><p>在b.py中：</p>
+<pre><code>import a
+x = 1
+def g():
+    print a.f()
+</code></pre><p>首先，我们试着加载a.py：</p>
+<pre><code>&gt;&gt;&gt; import a
+1
+</code></pre><p>没有问题。也许让人吃惊，毕竟有个感觉应该是问题的循环加载在这儿。</p>
+<p>事实上在Python中仅仅是表面上的出现循环加载并不是什么问题。如果一个模块以及被加载了，Python不会傻到再去重新加载一遍。但是，当每个模块都想要互相访问定义在对方里的函数或者变量时，问题就来了。</p>
+<p>让我们再回到之前的例子，当我们加载a.py时，它<strong>再加载b.py</strong>不会有问题，因为在加载b.py时，它并不需要访问a.py的任何东西，而在b.py中唯一的引用就是调用a.f()。但是这个调用是在函数g()中完成的，并且a.py或者b.py中没有人调用g()，所以这会儿心情还是美丽的。</p>
+<p>但是当我们试图加载b.py时（之前没有加载a.py），会发生什么呢：</p>
+<pre><code>&gt;&gt;&gt; import b
+Traceback (most recent call last):
+      File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+      File &quot;b.py&quot;, line 1, in &lt;module&gt;
+    import a
+      File &quot;a.py&quot;, line 6, in &lt;module&gt;
+    print f()
+      File &quot;a.py&quot;, line 4, in f
+    return b.x
+AttributeError: &apos;module&apos; object has no attribute &apos;x&apos;
+</code></pre><p>恭喜你，出错了。这里问题出在加载b.py的过程中，Python试图加载a.py，并且在a.py中需要调用到f()，而函数f()又要访问到b.x，但是这个时候b.x却还没有被定义。这就产生了AttributeError异常。</p>
+<p>解决的方案可以做一点细微的改动。改一下b.py，使得它在g()里面加载a.py：</p>
+<pre><code>x = 1
+def g():
+    import a    # 只有当g()被调用的时候才加载
+    print a.f()
+</code></pre><p>这会儿当我们加载b.py的时候，一切安好：</p>
+<pre><code>&gt;&gt;&gt; import b
+&gt;&gt;&gt; b.g()
+1   # 第一次输出，因为模块a在最后调用了‘print f()’
+1   # 第二次输出，这是我们调用g()
+</code></pre><p>##与Python标准库模块命名冲突</p>
+<p>Python的一个优秀的地方在于它提供了丰富的库模块。但是这样的结果是，如果你不下意识的避免，很容易你会遇到你自己的模块的名字与某个随Python附带的标准库的名字冲突的情况（比如，你的代码中可能有一个叫做email.py的模块，它就会与标准库中同名的模块冲突）。</p>
+<p>这会导致一些很粗糙的问题，例如当你想加载某个库，这个库需要加载Python标准库里的某个模块，结果呢，因为你有一个与标准库里的模块同名的模块，这个包错误的将你的模块加载了进去，而不是加载Python标准库里的那个模块。这样一来就会有麻烦了。</p>
+<p>所以在给模块起名字的时候要小心了，得避免与Python标准库中的模块重名。相比起你提交一个“<a href="http://legacy.python.org/dev/peps/" target="_blank" rel="external">Python改进建议（Python Enhancement Proposal (PEP)）</a>”去向上要求改一个标准库里包的名字，并得到批准来说，你把自己的那个模块重新改个名字要简单得多。</p>
+<p>##不能区分Python 2和Python 3</p>
+<p>看下面这个文件foo.py：</p>
+<pre><code>import sys
+
+def bar(i):
+    if i == 1:
+        raise KeyError(1)
+    if i == 2:
+        raise ValueError(2)
+
+def bad():
+    e = None
+    try:
+        bar(int(sys.argv[1]))
+    except KeyError as e:
+        print(&apos;key error&apos;)
+    except ValueError as e:
+        print(&apos;value error&apos;)
+    print(e)
+
+bad()
+</code></pre><p>在Python 2里，运行起来没有问题：</p>
+<pre><code>$ python foo.py 1
+key error
+1
+$ python foo.py 2
+value error
+2
+</code></pre><p>但是如果拿到Python 3上面玩玩：</p>
+<pre><code>$ python3 foo.py 1
+key error
+Traceback (most recent call last):
+  File &quot;foo.py&quot;, line 19, in &lt;module&gt;
+    bad()
+  File &quot;foo.py&quot;, line 17, in bad
+    print(e)
+UnboundLocalError: local variable &apos;e&apos; referenced before assignment
+</code></pre><p>这是怎么回事？“问题”在于，<strong>在Python 3里，在except块的作用域以外，异常对象（exception object）是不能被访问的</strong>。（原因在于，如果不这样的话，Python会在内存的堆栈里保持一个引用链直到Python的垃圾处理将这些引用从内存中清除掉。更多的技术细节可以参考<a href="https://docs.python.org/3/reference/compound_stmts.html#except" target="_blank" rel="external">这里</a>。）</p>
+<p>避免这样的问题可以这样做：保持在execpt块作用域以外对异常对象的引用，这样是可以访问的。下面是用这个办法对之前的例子做的改动，这样在Python 2和Python 3里面都运行都没有问题。</p>
+<pre><code>import sys
+
+def bar(i):
+    if i == 1:
+        raise KeyError(1)
+    if i == 2:
+        raise ValueError(2)
+
+def good():
+    exception = None
+    try:
+        bar(int(sys.argv[1]))
+    except KeyError as e:
+        exception = e
+        print(&apos;key error&apos;)
+    except ValueError as e:
+        exception = e
+        print(&apos;value error&apos;)
+    print(exception)
+
+good()
+</code></pre><p>在Py3k里面运行：</p>
+<pre><code>$ python3 foo.py 1
+key error
+1
+$ python3 foo.py 2
+value error
+2
+</code></pre><p>耶！</p>
+<p>##错误的使用<strong>del</strong>方法</p>
+<p>假设有一个文件mod.py中这样使用：</p>
+<pre><code>import foo
+
+class Bar(object):
+        ...
+    def __del__(self):
+        foo.cleanup(self.myhandle)
+</code></pre><p>然后试图在another_mod.py里这样：</p>
+<pre><code>import mod
+mybar = mod.Bar()
+</code></pre><p>那么你会得到一个恶心的AttributeError异常。</p>
+<p>为啥呢？这是因为（参考<a href="https://mail.python.org/pipermail/python-bugs-list/2009-January/069209.html" target="_blank" rel="external">这里</a>），当解释器关闭时，模块所有的全局变量会被置为空（None）。结果便如上例所示，当<strong>del</strong>被调用时，名字foo已经被置为空了。</p>
+<p>使用<code>atexit.register()</code>可以解决这个问题。如此，当你的程序结束的时候（退出的时候），你的注册的处理程序会在解释器关闭之前处理。</p>
+<p>这样理解的话，对上面的mod.py可以做如下的修改：</p>
+<pre><code>import foo
+import atexit
+
+def cleanup(handle):
+    foo.cleanup(handle)
+
+class Bar(object):
+    def __init__(self):
+        ...
+        atexit.register(cleanup, self.myhandle)
+</code></pre><p>这样的实现方式为在程序正常终止时调用清除功能提供了一种干净可靠的办法。显然，需要<code>foo.cleanup</code>决定怎么处理绑定在<code>self.myhandle</code>上的对象，但你知道怎么做的。</p>
+<p>##总结</p>
+<p>Python 是一门非常强大且灵活的语言，它众多的机制和范式能显著的提高生产效率。不过，和任何一款软件或者语言一样，对它的理解或认识不足的话，常常是弊大于利的，并会处于一种“一知半解”的状态。</p>
+<p>多熟悉Python的一些关键的细微的地方，比如（但不局限于）本文中提到的这些问题，可以帮你更好的使用这门语言的同时帮你避免一些常见的陷阱。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/06/Django-csrf机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/06/Django-csrf机制/" itemprop="url">Django csrf机制</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-06T20:44:17+08:00">
+                2015-05-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>官方文档参考<a href="https://docs.Djangoproject.com/en/1.7/ref/contrib/csrf/" target="_blank" rel="external">这里</a></p>
+<p>##什么是CSRF</p>
+<p>CSRF（Cross-site request forgery）跨站请求伪造，也被称成为“one click attack”或者session riding，通常缩写为CSRF或者XSRF，是一种对网站的恶意利用。尽管听起来像跨站脚本（XSS），但它与XSS非常不同，并且攻击方式几乎相左。XSS利用站点内的信任用户，而CSRF则通过伪装来自受信任用户的请求来利用受信任的网站。与XSS攻击相比，CSRF攻击往往不大流行（因此对其进行防范的资源也相当稀少）和难以防范，所以被认为比XSS更具危险性。</p>
+<p>比如可以这样进行攻击:</p>
+<p>一个网站用户Bob可能正在浏览聊天论坛，而同时另一个用户Alice也在此论坛中，并且后者刚刚发布了一个具有Bob银行链接的图片消息。设想一下，Alice编写了一个在Bob的银行站点上进行取款的form提交的链接，并将此链接作为图片tag。如果Bob的银行在cookie中保存他的授权信息，并且此cookie没有过期，那么当Bob的浏览器尝试装载图片时将提交这个取款form和他的cookie，这样在没经Bob同意的情况下便授权了这次事务。</p>
+<p>##防范措施<br>对于web站点，将持久化的授权方法（例如cookie或者HTTP授权）切换为瞬时的授权方法（在每个form中提供隐藏field），这将帮助网站防止这些攻击。一种类似的方式是在form中包含秘密信息、用户指定的代号作为cookie之外的验证。</p>
+<p>另一个可选的方法是“双提交”cookie。此方法只工作于Ajax请求，但它能够作为无需改变大量form的全局修正方法。如果某个授权的cookie在form post之前正被JavaScript代码读取，那么限制跨域规则将被应用。如果服务器需要在Post请求体或者URL中包含授权cookie的请求，那么这个请求必须来自于受信任的域，因为其它域是不能从信任域读取cookie的。</p>
+<p>与通常的信任想法相反，使用Post代替Get方法并不能提供卓有成效的保护。因为JavaScript能使用伪造的POST请求。尽管如此，那些导致对安全产生“副作用”的请求应该总使用Post方式发送。Post方式不会在web服务器和代理服务器日志中留下数据尾巴，然而Get方式却会留下数据尾巴。</p>
+<p>尽管CSRF是web应用的基本问题，而不是用户的问题，但用户能够在缺乏安全设计的网站上保护他们的帐户：通过在浏览其它站点前登出站点或者在浏览器会话结束后清理浏览器的cookie。</p>
+<p>##如何用 Django 进行防范 </p>
+<p>Django的csrf机制,它实际就是后台生成一个随机字符串,在你显示表单的时候在表单中加入一个hidden input,比如:</p>
+<pre><code>&lt;input type=&apos;hidden&apos; name=&apos;csrfmiddlewaretoken&apos; value=&apos;QtF7jsxQddj5Dj9uKuIs3J7jgm0Bf6sg&apos; /&gt;
+</code></pre><p>这个hidden input就是csrftoken在模板中根据后台传过来的随机字符串生成的。</p>
+<ol>
+<li>form提交时，会通过隐藏表单的方式提交cookie中的csrftoken记录</li>
+<li>服务器端接到POST请求时，会验证提交的Token和用户cookie的Token值是否一致，如不一致就返回403错误</li>
+</ol>
+<p><strong>注意</strong>：如果使用的是Django.middleware.csrf.CsrfViewMiddle这个中间件，Django会默认验证每一个post请求，因此所有的表单内都需要加上csrf_token的tag，否则站内提交也会被阻止，除非通过@csrf_exempt装饰器来显式申明不验证token值。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/06/python的logging模块/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/06/python的logging模块/" itemprop="url">python的logging模块</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-06T17:17:09+08:00">
+                2015-05-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>官方文档在<a href="https://docs.python.org/2/library/logging.html#logging.Handler.createLock" target="_blank" rel="external">这里</a></p>
+<p>举一个栗子：代码既要把日志输出到控制台，还要写入日志文件</p>
+<pre><code>import logging
+
+# 创建一个logger
+logger = logging.getLogger(&apos;mylogger&apos;)
+logger.setLevel(logging.DEBUG)
+
+# 创建一个handler，用于写入日志文件
+fh = logging.FileHandler(&apos;test.log&apos;)
+fh.setLevel(logging.DEBUG)
+
+# 再创建一个handler，用于输出到控制台
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+# 定义handler的输出格式
+formatter = logging.Formatter(&apos;%(asctime)s - %(name)s - %(levelname)s - %(message)s&apos;)
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+
+# 给logger添加handler
+logger.addHandler(fh)
+logger.addHandler(ch)
+
+# 记录一条日志
+logger.info(&apos;foorbar&apos;)  
+</code></pre><p>在控制台和当前目录下的test.log文件中都有下面这行输出：</p>
+<pre><code>2015-05-6 17:10:29,816 - mylogger - INFO - foorbar 
+</code></pre><p>##logging模块的API</p>
+<p>###logging.getLogger([name])<br>返回一个logger实例，如果没有指定name，返回<code>root logger</code>。</p>
+<p>只要name相同，返回的logger实例都是同一个而且只有一个，即name和logger实例是一一对应的。这意味着，无需把logger实例在各个模块中传递。只要知道name，就能得到 同一个logger实例</p>
+<p>###Logger.setLevel(lvl)</p>
+<p>设置logger的level， level有以下几个级别：</p>
+<p>NOTSET &lt; DEBUG &lt; INFO &lt; WARNING &lt; ERROR &lt; CRITICAL</p>
+<p>如果把looger的级别设置为INFO， 那么小于INFO级别的日志都不输出， 大于等于INFO级别的日志都输出</p>
+<pre><code>logger.debug(&quot;foobar&quot;)     # 不输出 
+logger.info(&quot;foobar&quot;)      # 输出
+logger.warning(&quot;foobar&quot;)   # 输出
+logger.error(&quot;foobar&quot;)     # 输出
+logger.critical(&quot;foobar&quot;)  # 输出 
+</code></pre><p>###Logger.addHandler(hdlr)<br>logger可以雇佣handler来帮它处理日志， handler主要有以下几种：</p>
+<ol>
+<li>StreamHandler: 输出到控制台</li>
+<li>FileHandler:   输出到文件</li>
+</ol>
+<p><strong>handler还可以设置自己的level以及输出格式。</strong></p>
+<p>##logging.basicConfig([**kwargs])</p>
+<ul>
+<li>这个函数用来配置root logger， 为root logger创建一个StreamHandler，<br> 设置默认的格式。</li>
+<li>这些函数： logging.debug()、logging.info()、logging.warning()、<br> logging.error()、logging.critical() 如果调用的时候发现root logger没有任何<br> handler， 会自动调用basicConfig添加一个handler</li>
+<li>如果root logger已有handler， 这个函数不做任何事情</li>
+</ul>
+<p>使用basicConfig来配置root logger的输出格式和level：</p>
+<pre><code>import logging
+logging.basicConfig(format=&apos;%(levelname)s:%(message)s&apos;, level=logging.DEBUG)
+logging.debug(&apos;This message should appear on the console&apos;)
+</code></pre><p>##关于root logger以及logger的父子关系<br>前面多次提到root logger， 实际上logger实例之间还有父子关系， root logger就是处于<br>最顶层的logger， 它是所有logger的祖先。如下图:<br><img src="http://cupic.img168.net/bbsfile/forum/month_1109/11090116387b8f480c8f5ec3b2.png" alt=""> </p>
+<p>####root logger是默认的logger</p>
+<p>如果不创建logger实例， 直接调用logging.debug()、logging.info()logging.warning()、logging.error()、logging.critical()这些函数，<br>那么使用的logger就是 root logger， 它可以自动创建，也是单实例的。</p>
+<p>####如何得到root logger</p>
+<p>通过logging.getLogger()或者logging.getLogger(“”)得到root logger实例。</p>
+<p>####默认的level</p>
+<p>root logger默认的level是logging.WARNING</p>
+<p>####如何表示父子关系</p>
+<p>logger的name的命名方式可以表示logger之间的父子关系. 比如：<br>parent_logger = logging.getLogger(‘foo’)<br>child_logger = logging.getLogger(‘foo.bar’)</p>
+<p>####什么是effective level</p>
+<p>logger有一个概念，叫effective level。 如果一个logger没有显示地设置level，那么它就<br>用父亲的level。如果父亲也没有显示地设置level， 就用父亲的父亲的level，以此推….</p>
+<p>最后到达root logger，一定设置过level。默认为logging.WARNING</p>
+<p>child loggers得到消息后，既把消息分发给它的handler处理，也会传递给所有祖先logger处理。</p>
+<p>又一个<strong>栗子</strong>：</p>
+<pre><code>import logging
+
+# 设置root logger
+r = logging.getLogger()
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter(&apos;%(asctime)s - %(levelname)s - %(message)s&apos;)
+ch.setFormatter(formatter)
+r.addHandler(ch)
+
+# 创建一个logger作为父亲
+p = logging.getLogger(&apos;foo&apos;)
+p.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter(&apos;%(asctime)s - %(message)s&apos;)
+ch.setFormatter(formatter)
+p.addHandler(ch)
+
+# 创建一个孩子logger
+c = logging.getLogger(&apos;foo.bar&apos;)
+c.debug(&apos;foo_test&apos;)  
+</code></pre><p>输出如下：</p>
+<pre><code>2015-05-06 17:14:22,677 - foo_test
+2015-05-06 17:14:22,677 - DEBUG - foo_test
+</code></pre><p>可见， 孩子logger没有任何handler，所以对消息不做处理。但是它把消息转发给了它的父亲以及root logger。最后输出两条日志。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/06/函数式编程-2-装饰器和偏函数/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/06/函数式编程-2-装饰器和偏函数/" itemprop="url">函数式编程(2)--装饰器和偏函数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-06T14:31:47+08:00">
+                2015-05-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##编写无参数decorator</p>
+<p>Python的 <code>decorator</code> 本质上就是一个高阶函数，它接收一个函数作为参数，然后，返回一个新函数。</p>
+<p>使用 decorator 用Python提供的 <code>@</code> 语法，这样可以避免手动编写 <code>f = decorate(f)</code> 这样的代码。</p>
+<p>考察一个@log的定义：</p>
+<pre><code>def log(f):
+    def fn(x):
+        print &apos;call &apos; + f.__name__ + &apos;()...&apos;
+        return f(x)
+    return fn
+</code></pre><p>对于阶乘函数，@log工作得很好：</p>
+<pre><code>@log
+def factorial(n):
+    return reduce(lambda x,y: x*y, range(1, n+1))
+print factorial(10)
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>call factorial()...
+3628800
+</code></pre><p>但是，对于参数不是一个的函数，调用将报错：</p>
+<pre><code>@log
+def add(x, y):
+    return x + y
+print add(1, 2)
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>Traceback (most recent call last):
+  File &quot;test.py&quot;, line 15, in &lt;module&gt;
+    print add(1,2)
+TypeError: fn() takes exactly 1 argument (2 given)
+</code></pre><p>因为 <code>add()</code> 函数需要传入两个参数，但是 <code>@log</code> 写死了只含一个参数的返回函数。<br>要让 <code>@log</code> 自适应任何参数定义的函数，可以利用Python的 <em>args 和 *</em>kw，保证任意个数的参数总是能正常调用：</p>
+<pre><code>def log(f):
+    def fn(*args, **kw):
+        print &apos;call &apos; + f.__name__ + &apos;()...&apos;
+        return f(*args, **kw)
+    return fn
+</code></pre><p>现在，对于任意函数，<code>@log</code> 都能正常工作。</p>
+<p><strong>栗子</strong>：请编写一个@performance，它可以打印出函数调用的时间。</p>
+<p>计算函数调用的时间可以记录调用前后的当前时间戳，然后计算两个时间戳的差。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>import time
+def performance(f):
+    def fn(*args, **kw):
+        t1 = time.time()
+        r = f(*args, **kw)
+        t2 = time.time()
+        print &apos;call %s() in %fs&apos; % (f.__name__, (t2 - t1))
+        return r
+    return fn
+
+@performance
+def factorial(n):
+    return reduce(lambda x,y: x*y, range(1, n+1))
+print factorial(10)
+</code></pre><p>##编写带参数decorator</p>
+<p>考察上一节的 <code>@log</code>装饰器：</p>
+<pre><code>def log(f):
+    def fn(x):
+        print &apos;call &apos; + f.__name__ + &apos;()...&apos;
+        return f(x)
+    return fn
+</code></pre><p>发现对于被装饰的函数，log打印的语句是不能变的（除了函数名）。</p>
+<p>如果有的函数非常重要，希望打印出’[INFO] call xxx()…’，有的函数不太重要，希望打印出’[DEBUG] call xxx()…’，这时，log函数本身就需要传入’INFO’或’DEBUG’这样的参数，类似这样：</p>
+<pre><code>@log(&apos;DEBUG&apos;)
+def my_func():
+    pass
+</code></pre><p>把上面的定义翻译成高阶函数的调用，就是：</p>
+<pre><code>my_func = log(&apos;DEBUG&apos;)(my_func)
+</code></pre><p>上面的语句看上去还是比较绕，再展开一下：</p>
+<pre><code>log_decorator = log(&apos;DEBUG&apos;)
+my_func = log_decorator(my_func)
+</code></pre><p>上面的语句又相当于：</p>
+<pre><code>log_decorator = log(&apos;DEBUG&apos;)
+@log_decorator
+def my_func():
+    pass
+</code></pre><p>所以，带参数的log函数首先返回一个decorator函数，再让这个decorator函数接收my_func并返回新函数：</p>
+<pre><code>def log(prefix):
+    def log_decorator(f):
+        def wrapper(*args, **kw):
+            print &apos;[%s] %s()...&apos; % (prefix, f.__name__)
+            return f(*args, **kw)
+        return wrapper
+    return log_decorator
+
+@log(&apos;DEBUG&apos;)
+def test():
+    pass
+print test()
+</code></pre><p><strong>执行结果：</strong></p>
+<pre><code>[DEBUG] test()...
+None
+</code></pre><p>对于这种3层嵌套的decorator定义，你可以先把它拆开：</p>
+<pre><code># 标准decorator:
+def log_decorator(f):
+    def wrapper(*args, **kw):
+        print &apos;[%s] %s()...&apos; % (prefix, f.__name__)
+        return f(*args, **kw)
+    return wrapper
+return log_decorator
+
+# 返回decorator:
+def log(prefix):
+    return log_decorator(f)
+</code></pre><p>拆开以后会发现，调用会失败，因为在3层嵌套的<code>decorator</code>定义中，最内层的<code>wrapper</code>引用了最外层的参数<code>prefix</code>，所以，把一个闭包拆成普通的函数调用会比较困难。不支持闭包的编程语言要实现同样的功能就需要更多的代码。</p>
+<p><strong>栗子</strong>：上一节的<code>@performance</code>只能打印秒，请给 <code>@performace</code> 增加一个参数，允许传入<code>&#39;s&#39;</code>或<code>&#39;ms&#39;</code>：</p>
+<pre><code>@performance(&apos;ms&apos;)
+def factorial(n):
+    return reduce(lambda x,y: x*y, range(1, n+1))
+</code></pre><p>要实现带参数的@performance，就需要实现：</p>
+<pre><code>my_func = performance(&apos;ms&apos;)(my_func)
+</code></pre><p>需要3层嵌套的decorator来实现。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>import time
+def performance(unit):
+    def perf_decorator(f):
+        def wrapper(*args, **kw):
+            t1 = time.time()
+            r = f(*args, **kw)
+            t2 = time.time()
+            t = (t2 - t1) * 1000 if unit==&apos;ms&apos; else (t2 - t1)
+            print &apos;call %s() in %f %s&apos; % (f.__name__, t, unit)
+            return r
+        return wrapper
+    return perf_decorator
+
+@performance(&apos;ms&apos;)
+def factorial(n):
+    return reduce(lambda x,y: x*y, range(1, n+1))
+print factorial(10)
+</code></pre><p>##完善decorator</p>
+<p><code>@decorator</code>可以动态实现函数功能的增加，但是，经过<code>@decorator</code>“改造”后的函数，和原函数相比，除了功能多一点外，有没有其它不同的地方？</p>
+<p>在没有decorator的情况下，打印函数名：</p>
+<pre><code>def f1(x):
+    pass
+print f1.__name__
+</code></pre><p><strong>输出</strong>： f1<br>有decorator的情况下，再打印函数名：</p>
+<pre><code>def log(f):
+    def wrapper(*args, **kw):
+        print &apos;call...&apos;
+        return f(*args, **kw)
+    return wrapper
+@log
+def f2(x):
+    pass
+print f2.__name__
+</code></pre><p><strong>输出</strong>： wrapper<br>可见，由于<code>decorator</code>返回的新函数函数名已经不是<code>&#39;f2&#39;</code>，而是<code>@log</code>内部定义的<code>&#39;wrapper&#39;</code>。这对于那些依赖函数名的代码就会失效。<code>decorator</code>还改变了函数的<code>__doc__</code>等其它属性。如果要让调用者看不出一个函数经过了<code>@decorator</code>的“改造”，就需要把原函数的一些属性复制到新函数中：</p>
+<pre><code>def log(f):
+    def wrapper(*args, **kw):
+        print &apos;call...&apos;
+        return f(*args, **kw)
+    wrapper.__name__ = f.__name__
+    wrapper.__doc__ = f.__doc__
+    return wrapper
+</code></pre><p>这样写<code>decorator</code>很不方便，因为我们也很难把原函数的所有必要属性都一个一个复制到新函数上，所以Python内置的<code>functools</code>可以用来自动化完成这个“复制”的任务：</p>
+<pre><code>import functools
+def log(f):
+    @functools.wraps(f)
+    def wrapper(*args, **kw):
+        print &apos;call...&apos;
+        return f(*args, **kw)
+    return wrapper
+</code></pre><p>最后需要指出，由于我们把原函数签名改成了<code>(*args, **kw)</code>，因此，无法获得原函数的原始参数信息。即便我们采用固定参数来装饰只有一个参数的函数：</p>
+<pre><code>def log(f):
+    @functools.wraps(f)
+    def wrapper(x):
+        print &apos;call...&apos;
+        return f(x)
+    return wrapper
+</code></pre><p>也可能改变原函数的参数名，因为新函数的参数名始终是 <code>&#39;x&#39;</code>，原函数定义的参数名不一定叫 <code>&#39;x&#39;</code>。</p>
+<p><strong>栗子</strong>：请思考带参数的@decorator，@functools.wraps应该放置在哪：</p>
+<pre><code>def performance(unit):
+    def perf_decorator(f):
+        def wrapper(*args, **kw):
+            ???
+        return wrapper
+    return perf_decorator
+</code></pre><p>注意@functools.wraps应该作用在返回的新函数上。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>import time, functools
+def performance(unit):
+    def perf_decorator(f):
+        @functools.wraps(f)
+        def wrapper(*args, **kw):
+            t1 = time.time()
+            r = f(*args, **kw)
+            t2 = time.time()
+            t = (t2 - t1) * 1000 if unit==&apos;ms&apos; else (t2 - t1)
+            print &apos;call %s() in %f %s&apos; % (f.__name__, t, unit)
+            return r
+        return wrapper
+    return perf_decorator
+
+@performance(&apos;ms&apos;)
+def factorial(n):
+    return reduce(lambda x,y: x*y, range(1, n+1))
+print factorial.__name__
+</code></pre><p>##偏函数</p>
+<p>当一个函数有很多参数时，调用者就需要提供多个参数。如果减少参数个数，就可以简化调用者的负担。</p>
+<p>比如，<code>int()</code>函数可以把字符串转换为整数，当仅传入字符串时，int()函数默认按十进制转换：</p>
+<pre><code>&gt;&gt;&gt; int(&apos;12345&apos;)
+12345
+</code></pre><p>但int()函数还提供额外的<code>base参数</code>，默认值为<code>10</code>。如果传入base参数，就可以做 <code>N</code> 进制的转换：</p>
+<pre><code>&gt;&gt;&gt; int(&apos;12345&apos;, base=8)
+5349
+&gt;&gt;&gt; int(&apos;12345&apos;, 16)
+74565
+</code></pre><p>假设要转换大量的二进制字符串，每次都传入<code>int(x, base=2)</code>非常麻烦，于是，我们想到，可以定义一个<code>int2()</code>的函数，默认把<code>base=2</code>传进去：</p>
+<pre><code>def int2(x, base=2):
+    return int(x, base)
+</code></pre><p>这样，我们转换二进制就非常方便了：</p>
+<pre><code>&gt;&gt;&gt; int2(&apos;1000000&apos;)
+64
+&gt;&gt;&gt; int2(&apos;1010101&apos;)
+85
+</code></pre><p><code>functools.partial</code>就是帮助我们创建一个偏函数的，不需要我们自己定义<code>int2()</code>，可以直接使用下面的代码创建一个新的函数int2：</p>
+<pre><code>&gt;&gt;&gt; import functools
+&gt;&gt;&gt; int2 = functools.partial(int, base=2)
+&gt;&gt;&gt; int2(&apos;1000000&apos;)
+64
+&gt;&gt;&gt; int2(&apos;1010101&apos;)
+85
+</code></pre><p>所以，<code>functools.partial</code>可以把一个参数多的函数变成一个参数少的新函数，少的参数需要在创建时指定默认值，这样，新函数调用的难度就降低了。</p>
+<p><strong>栗子</strong>：在讲解<code>sorted</code>函数时，我们在<code>sorted</code>这个高阶函数中传入自定义排序函数就可以实现忽略大小写排序。请用<code>functools.partial</code>把这个复杂调用变成一个简单的函数：</p>
+<pre><code>sorted_ignore_case(iterable)
+</code></pre><p>要固定<code>sorted()的cmp参数</code>，需要传入一个排序函数作为<code>cmp</code>的默认值。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>import functools
+sorted_ignore_case = functools.partial(sorted, cmp=lambda s1, s2: cmp(s1.upper(), s2.upper()))
+print sorted_ignore_case([&apos;bob&apos;, &apos;about&apos;, &apos;Zoo&apos;, &apos;Credit&apos;])
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -2325,7 +2788,7 @@ export https_proxy=http://10.10.1.2:8080
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">199</span>
+                <span class="site-state-item-count">194</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

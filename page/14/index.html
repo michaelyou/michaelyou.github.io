@@ -286,849 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/如何实现守护进程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/04/如何实现守护进程/" itemprop="url">如何实现守护进程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-04T16:10:42+08:00">
-                2015-03-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li><p>创建子进程，父进程退出。 （脱离控制终端），很自然地，子进程成了孤儿进程，被init进程收养。</p>
-</li>
-<li><p>子进程中创建新会话。</p>
-</li>
-</ul>
-<blockquote>
-<p>我们先介绍下进程组的概念：</p>
-<p>进程组是一个或者多个进程的集合，由进程组id来唯一标识，除了进程号PID之外，进程组ID也是一个进程的必备属性。<br>每个进程组都有一个组长进程，其组长进程的进程号PID等于进程组ID，且该进程ID不会因为组长进程的退出而受到影响。</p>
-<p><strong>会话期</strong></p>
-<p>会话组是一个或者多个进程组的集合，通常，一个会话开始于用户登录，终止于用户退出，在此期间用户运行的所有进程 都属于这个会话期。</p>
-<p>Setid函数就是用于创建一个新的会话，并担任该会话组的组长，有三个作用，让进程摆脱原会话和进程组，终端的控制，使进程完全独立出来。</p>
-</blockquote>
-<ul>
-<li>由于fork（）继承了父进程的工作目录，对以后的使用造成不便，所以我们要改变当前目录为根目录。</li>
-</ul>
-<ul>
-<li><p>关闭文件描述符。 （fork（）继承过来的）</p>
-</li>
-<li><p>重设文件权限掩码。因为由继承得来的文件模式屏蔽字可能会被设置为拒绝某些权限</p>
-<pre><code>void daemonize()
-{
-  pid_t pid;
-
-  pid = fork();
-
-  /* In case of fork is error. */
-  if (pid &lt; 0)
-    {
-      fprintf(stderr,&quot;fork error.\n&quot;);
-      exit(0);
-    }
-  /* In case of this is parent process. */
-  if (pid != 0)
-    exit (0);// 父进程退出
-  /* Become session leader and get pid. */
-  pid = setsid();
-  if (pid == -1)
-    {
-      fprintf(stderr, &quot;setsid failed..&quot;);
-      exit(0);
-    }
-  /* Change directory to root. */
-
-    chdir (&quot;/&quot;);
-
-  /* File descriptor close. */
-  int fd;
-  fd = open (&quot;/dev/null&quot;, O_RDWR, 0);
-  if(fd != -1)
-    {
-      dup2(fd, STDIN_FILENO);
-      dup2(fd, STDOUT_FILENO);
-      dup2(fd, STDERR_FILENO);//all the output to stdin&amp;stdout&amp;stderr will go into /dev/null now
-      if(fd &gt; 2)
-        close(fd);
-    }
-
-  umask (0);
-}
-</code></pre></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/编译原理基础/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/04/编译原理基础/" itemprop="url">编译原理基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-04T15:28:31+08:00">
-                2015-03-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编译原理/" itemprop="url" rel="index">
-                    <span itemprop="name">编译原理</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>编译器</p>
-</blockquote>
-<p>答：一个编译器就是一个程序，它可以阅读以某一种语言编写的程序，并把该程序翻译成为一个等价的、用另一种语言编写的程序。编译器的重要任务之一就是报告它在翻译中发现的源程序中的错误</p>
-<blockquote>
-<p>把一种高级语言翻译成为另一种高级语言的编译器称为（source-to-source）的翻译器，翻译器使用C语言作为目标语言有什么好处？</p>
-</blockquote>
-<p>答：就好比为什么编译器要产生汇编语言而是不是机器语言一样，C语言更简单更常用更加容易理解，同样方便调试和输出。</p>
-<blockquote>
-<p>编译器和解释器之间的区别是什么</p>
-</blockquote>
-<p>答：编译器是把源程序的每一条语句都编译成机器语言,并保存成二进制文件,这样运行时计算机可以直接以机器语言来运行此程序,速度很快;</p>
-<p>  而解释器则是只在执行程序时,才一条一条的解释成机器语言给计算机来执行,所以运行速度是不如编译后的程序运行的快的.</p>
-<blockquote>
-<p>编译器相对与解释器的优点是什么？解释器相对与编译器的优点是什么？</p>
-</blockquote>
-<p>答：</p>
-<ul>
-<li>一个编译器产生的机器语言目标程序通常比一个解释器快很多；</li>
-<li>解释器的错误诊断效果通常比编译器更好。</li>
-</ul>
-<blockquote>
-<p>在一个语言处理系统中，编译器产生汇编语言而不是机器语言的好处是什么</p>
-</blockquote>
-<p>答：就如书中写到的“汇编语言比较容易调试和输出”，这样就减轻了编译器设计的工作量，将部分工作转到汇编器上，使得设计更专注于编译器本身，尽量减少超出其本身所容纳的内容的范围。</p>
-<blockquote>
-<p>描述一下汇编器所要完成的一些任务。</p>
-</blockquote>
-<p>答：汇编器就类似于编译器，只是它的源语言不是高级语言而是汇编语言。同样，它需要一个预处理器进行预处理，如聚合文件，展开宏等。写成的机器语言也要类似与连接器和加载器的程序，完成类似的工作。</p>
-<blockquote>
-<p>创建一个可执行的目标程序</p>
-</blockquote>
-<p>答：除了编译器之外，创建一个可执行的目标程序还需要一些其他程序。一个源程序可能被分割成为多个模块，并存放于独立的文件中。把源程序聚合在一起的任务有时 会由一个被称为预处理器（preprocessor）的程序独立完成。预处理器还负责把那些称为宏的缩写形式转换为源语言的语句。</p>
-<p>然后，将经过预处理的源程序作为输入传递给一个编译器。编译器可能产生一个汇编语言程序作为其输出，因为汇编语言容易输出和调试。接着，这个汇编语言程序由称为汇编器（assemble）的程序进行处理，并生成可重定位的机器代码。</p>
-<p>大型程序经常被分成多个部分进行编译，因此，可重定位的机器代码有必要和其他可重定位的目标文件以及库文件连接在一起，形成真正在机器上运行的代码。一个 文件中的代码可能指向另一个文件的位置，而链接器（Linker）能够解决外部内存地址的问题。最后，加载器（Loader）把所有的可执行目标文件放到 内存中执行。</p>
-<p><img src="/img/一个混合编译器.png" alt=""></p>
-<p><img src="/img/一个语言处理程序.png" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/linux系统同步机制，什么是死锁，如何避免/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/04/linux系统同步机制，什么是死锁，如何避免/" itemprop="url">linux系统同步机制，什么是死锁，如何避免</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-04T15:24:45+08:00">
-                2015-03-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##linux系统的同步机制</p>
-<ul>
-<li>信号量</li>
-<li>锁</li>
-</ul>
-<p>##死锁<br>线程A需要资源X，而线程B需要资源Y，而双方都掌握有对方所要的资源，这种情况称为死锁（deadlock），或死亡拥抱（the deadly embrace）。</p>
-<p>在并发程序设计中，死锁 (deadlock) 是一种十分常见的逻辑错误。通过采用正确的编程方式，死锁的发生不难避免。</p>
-<p>###死锁的四个必要条件<br>死锁的四个必要条件，这四个条件缺一不可，或者说只要破坏了其中任何一个条件，死锁就不可能发生。</p>
-<ol>
-<li>互斥（Mutual exclusion）：存在这样一种资源，它在某个时刻只能被分配给一个执行绪（也称为线程）使用；</li>
-<li>持有（Hold and wait）：当请求的资源已被占用从而导致执行程序阻塞时，资源占用者不但无需释放该资源，而且还可以继续请求更多资源；</li>
-<li>不可剥夺（No preemption）：执行程序获得到的互斥资源不可被强行剥夺，换句话说，只有资源占用者自己才能释放资源；</li>
-<li>环形等待（Circular wait）：若干执行程序以不同的次序获取互斥资源，从而形成环形等待的局面，想象在由多个执行程序组成的环形链中，每个执行绪都在等待下一个执行绪释放它持有的资源。</li>
-</ol>
-<p>###解除死锁的必要条件<br>不难看出，在死锁的四个必要条件中，第二、三和四项条件比较容易消除。通过引入事务机制，往往可以消除第二、三两项条件，方法是将所有上锁操作均作为事务对待，一旦开始上锁，即确保全部操作均可回退，同时通过锁管理器检测死锁，并剥夺资源（回退事务）。这种做法有时会造成较大开销，而且也需要对上锁模式进行较多改动。</p>
-<p>消除第四项条件是比较容易且代价较低的办法。具体来说这种方法约定：上锁的顺序必须一致。具体来说，我们人为地给锁指定一种类似“水位”的方向性属性。无论已持有任何锁，该执行者所有的上锁操作，必须按照一致的先后顺序从低到高（或从高到低）进行，且在一个系统中，只允许使用一种先后次序。</p>
-<p>请注意，放锁的顺序并不会导致死锁。也就是说，尽管按照 锁A, 锁B, 放A, 放B 这样的顺序来进行锁操作看上去有些怪异，但是只要大家都按先A后B的顺序上锁，便不会导致死锁。</p>
-<p>##解决方法：</p>
-<ol>
-<li>使用事务时，尽量缩短事务的逻辑处理过程，及早提交或回滚事务； (细化处理逻辑，执行一段逻辑后便回滚或者提交，然后再执行其它逻辑，直到事物执行完毕提交)</li>
-<li>设置死锁超时参数为合理范围，如：3分钟-10分种；超过时间，自动放弃本次操作，避免进程悬挂； </li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/共享内存/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/04/共享内存/" itemprop="url">共享内存</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-04T15:15:55+08:00">
-                2015-03-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>共享内存定义：共享内存是最快的可用IPC（进程间通信）形式。它允许多个不相关的进程去访问同一部分逻辑内存。共享内存是由IPC为一个进程创建的一个特殊的·地址范围，它将出现在进程的地址空间中。其他进程可以把同一段共享内存段“连接到”它们自己的地址空间里去。所有进程都可以访问共享内存中的地址。如果一个进程向这段共享内存写了数据，所做的改动会立刻被有访问同一段共享内存的其他进程看到。因此共享内存对于数据的传输是非常高效的。</p>
-<p><strong>共享内存段被映射进进程空间之后，存在于进程空间的什么位置？共享内存段最大限制是多少？</strong></p>
-<pre><code>$sysctl kern.ipc.shmmax  //可以查看共享内存的大小
-kern.ipc.shmmax: 33554432
-</code></pre><p>共享内存存在于进程数据段，最大限制为0x2000000Byte</p>
-<p><img src="/img/一个linux进程的存储器映像.png" alt="一个linux进程的存储器映像"></p>
-<p>程序内总是从虚拟地址0x08048000处开始。用户栈总是从虚拟地址0xbfffffff处开始，共享对象总是加载在从虚拟地址0x40000000处开始的区域内。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/float与“零值”比较的-if-语句/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/04/float与“零值”比较的-if-语句/" itemprop="url">float与“零值”比较的 if 语句</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-04T11:11:55+08:00">
-                2015-03-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##代码<br>    const float EPSINON = 0.00001;<br>    if ((x &gt;= - EPSINON) &amp;&amp; (x &lt;= EPSINON)）</p>
-<p>##解释<br>浮点数在内存中的存贮机制和整型数不同，有舍入误差，在计算机中用以近似表示任意某个实数。具体的说，这个实数由一个整数或定点数（即尾数）乘以某个基数（计算机中通常是2）的整数次幂得到，这种表示方法类似于基数为10的科学记数法。</p>
-<p>所以浮点数在运算过程中通常伴随着因为无法精确表示而进行的近似或舍入。但是这种设计的好处是可以在固定的长度上存储更大范围的数。</p>
-<p>例如，一个指数范围为±4的4位十进制浮点数可以用来表示43210，4.321或0.0004321，但是没有足够的精度来表示432.123和43212.3（必须近似为432.1和43210）。当然，实际使用的位数通常远大于4。</p>
-<p>所以浮点数不能够判断相等，像 if(x==0)的这样的编码是不总是正确的，我们在判断浮点数相等时，推荐用范围来确定，若x在某一范围内，我们就认为相等，至于范围怎么定义，要看实际情况而已了，float,和double 各有不同</p>
-<p>所以</p>
-<pre><code>const float EPSINON = 0.00001;  
-if ((x &gt;= - EPSINON) &amp;&amp; (x &lt;= EPSINON) 
-</code></pre><p>这样判断是可取的</p>
-<p><strong>至于为什么取0.00001，可以自己按实际情况定义</strong></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/进程与线程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2064,6 +1221,927 @@ sigrelse(SIGALRM);
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/03/TIME-WAIT状态详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/03/TIME-WAIT状态详解/" itemprop="url">TIME_WAIT状态详解</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-03T11:26:25+08:00">
+                2015-03-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
+                    <span itemprop="name">TCP/IP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>TCP 的 timewait 状态是什么？谁会有 timewait 状态？timewait 状态存在的作用是什么？如何避免大量的 timewait 状态占用系统资源？</p>
+</blockquote>
+<p> timewait 状态是 TCP 链接的主动关闭方会有的状态，在发出最后一个 ACK 包之后，主动关闭方进入 timewait 状态，以确保 ACK 包到达对端，以及等待网络中之前迷路的数据包完全消失，防止在端口被复用的时候收到迷路包从而出现收包错误。</p>
+<p>timewait 状态会持续 2MSL（max segment lifetime) 的时间，一般会有 1分钟到4分钟事件。这段事件内 端口不可被重分配使用。</p>
+<p><strong>timewait 并不会占用更多系统资源，但是可以通过修改内核参数 /etc/sysctl.conf 来达到 限制timewait 数量的功能。</strong></p>
+<p><img src="/img/time_wait.png" alt="time_wait"></p>
+<p>##TIME_WAIT状态原理</p>
+<p>通信双方建立TCP连接后，主动关闭连接的一方就会进入<code>TIME_WAIT</code>状态。客户端主动关闭连接时，会发送最后一个ack，然后会进入TIME_WAIT状态，再停留2个MSL时间(后有MSL的解释)，进入CLOSED状态。</p>
+<p>上图是以客户端主动关闭连接为例，说明这一过程的。</p>
+<p>##TIME_WAIT状态存在的理由</p>
+<p>TCP/IP协议就是这样设计的，是不可避免的。主要有两个原因:</p>
+<p>###可靠地实现TCP全双工连接的终止</p>
+<p>TCP协议在关闭连接的四次握手过程中，最终的ACK是由主动关闭连接的一端（后面统称A端）发出的，如果这个ACK丢失，对方（后面统称B端）将重发出最终的FIN，因此A端必须维护状态信息（TIME_WAIT）允许它重发最终的ACK。如果A端不维持TIME_WAIT状态，而是处于CLOSED 状态，那么A端将响应RST分节，B端收到后将此分节解释成一个错误（在java中会抛出connection reset的SocketException)。<br>因而，要实现TCP全双工连接的正常终止，必须处理终止过程中四个分节任何一个分节的丢失情况，主动关闭连接的A端必须维持TIME_WAIT状态 。</p>
+<p>###允许老的重复分节在网络中消逝<br>TCP分节可能由于路由器异常而“迷途”，在迷途期间，TCP发送端可能因确认超时而重发这个分节，迷途的分节在路由器修复后也会被送到最终目的地，这个迟到的迷途分节到达时可能会引起问题。在关闭“前一个连接”之后，马上又重新建立起一个相同的IP和端口之间的“新连接”，“前一个连接”的迷途重复分组在“前一个连接”终止后到达，而被“新连接”收到了。为了避免这个情况，TCP协议不允许处于<code>TIME_WAIT</code>状态的连接启动一个新的可用连接，因为<code>TIME_WAIT</code>状态持续2MSL，就可以保证当成功建立一个新TCP连接的时候，来自旧连接重复分组已经在网络中消逝。</p>
+<h2 id="MSL时间"><a href="#MSL时间" class="headerlink" title="MSL时间"></a>MSL时间</h2><p>MSL就是maximum segment lifetime(最大分节生命期），这是一个IP数据包能在互联网上生存的最长时间，超过这个时间IP数据包将在网络中消失 。MSL在RFC 1122上建议是2分钟，而源自berkeley的TCP实现传统上使用30秒。</p>
+<h2 id="TIME-WAIT状态维持时间"><a href="#TIME-WAIT状态维持时间" class="headerlink" title="TIME_WAIT状态维持时间"></a>TIME_WAIT状态维持时间</h2><p>TIME_WAIT状态维持时间是两个MSL时间长度，也就是在1-4分钟。Windows操作系统就是4分钟。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/03/write的写停止问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/03/write的写停止问题/" itemprop="url">write的写停止问题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-03T10:05:53+08:00">
+                2015-03-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##例程</p>
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include&lt;unistd.h&gt;
+
+int main()
+{
+    char buf[100];
+    strcpy(buf, &quot;hello\nworld&quot;);
+    write(STDOUT_FILENO, buf, strlen(buf));
+}
+</code></pre><p>输出为</p>
+<pre><code>hello
+world（光标在这里）
+</code></pre><hr>
+<pre><code>int main()
+{
+    char buf[100];
+    strcpy(buf, &quot;hel\0lo\nworld&quot;);
+    write(STDOUT_FILENO, buf, strlen(buf));
+}
+</code></pre><p>输出为</p>
+<pre><code>hel（光标在这里）
+</code></pre><hr>
+<pre><code>int main()
+{
+    char buf[100];
+    strcpy(buf, &quot;hello\nworld&quot;);
+    fputs(buf, stdout);
+}
+</code></pre><p>输出为：</p>
+<pre><code>hello
+world
+</code></pre><hr>
+<pre><code>int main()
+{
+    char buf[100];
+    strcpy(buf, &quot;hel\0lo\nworld&quot;);
+    fputs(buf, stdout);
+}
+</code></pre><p>输出为：</p>
+<pre><code>hel（光标在这里）
+</code></pre><hr>
+<pre><code>int main()
+{
+    char buf[100];
+    strcpy(buf, &quot;hello\nworld&quot;);
+    write(STDOUT_FILENO, buf, strlen(buf));
+}
+</code></pre><p>输出：</p>
+<pre><code>hello
+world(光标在这里)
+</code></pre><p>##总结<br>其余socket的数据传输函数也是如此，只以\0作为字符串的结尾，而不是\n，\n将被认为是字符进行传输，并且后面的字符也会传输，直到遇到\0为止</p>
+<p>如果只要打印某一部分字符，则在此字符串之后一定要加\0，因为\0才被认为是一个字符串的结束符</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/02/TCP和udp的一些特性/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/02/TCP和udp的一些特性/" itemprop="url">TCP和udp的一些特性</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-02T15:34:38+08:00">
+                2015-03-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
+                    <span itemprop="name">TCP/IP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>转载自<a href="http://armsword.com/2014/02/14/tcp-and-udp-note/" target="_blank" rel="external">这里</a></p>
+<p>在TCP/IP中能够实现传输层功能的、具有代表性的协议是TCP和UDP。</p>
+<p>##TCP：</p>
+<p>TCP是面向连接的、可靠的流协议。流就是指不间断的数据结构，你可以把它想象成排水道中的水流。当应用程序采用TCP发送消息时，虽然可以保证发送的顺序，但还是犹如没有任何间隔的数据流发送给接收端。TCP充分地实现了数据传输时各种控制功能，可以进行丢包时的重发控制，还可以对次序乱掉的分包进行顺序控制。而这些在UDP中都没有。此外，TCP作为一种面向有连接的协议，只有在确认通信对端存在时才会发送数据，从而可以控制通信流量的浪费。根据TCP的这些机制，在IP这种无连接的网络上也能够实现高可靠性的通信。</p>
+<p>TCP为提供可靠性传输，实行“顺序控制”或“重发控制”机制。此外还具备“流控制（流量控制）”、“拥塞控制”、提供网络利用率等众多功能。</p>
+<p>TCP通过检验和、序列号、确认应答、重发控制、连接管理以及窗口控制等机制实现可靠性传输。</p>
+<p>###通过序列号与确认应答提高可靠性<br>在TCP中，当发送端的数据到达接收主机时，接收端主机会返回一个已收到消息的通知。这个消息叫做确认应答（ACK）。</p>
+<p><img src="/img/20140214001551.png" alt=""></p>
+<p>TCP通过肯定的确认应答（ACK）实现可靠的数据传输。当发送端将数据发出之后会等待对端的确认应答。如果有确认应答，说明数据已经成功到达对端。反之，则数据丢失的可能性很大。在一定时间内没有等到确认应答，发送端就可以认为数据已经丢失，并进行重发。由此，即使产生了丢包，仍然能够保证数据能够到达对端，实现可靠传输。未收到确认应答并不意味着数据一定丢失。也有可能是数据对方已经收到，只是返回的确认应答在途中丢失。这种情况也会导致发送端因没有收到确认应答，而认为数据没有到达目的地，从而进行重新发发送。</p>
+<p>上述这些确认应答处理、重发控制以及重复控制等功能都可以通过序列号实现。序列号是按顺序给发送数据的每一个字节（8位字节）都标上号码的编号。接收端查询接收数据TCP首部中的序列号和数据的长度，将自己下一步应该接收的序号作为确认应答返送回去。就这样，通过序列号和确认应答号，TCP可以实现可靠传输。</p>
+<p>###重发超时如何确定<br>重发超时是指在重发数据之前，等待确认应答到来的那个特定时间间隔。如果超过了这个时间仍未收到确认应答，发送端将进行数据重发。那么这个重发超时的具体时间长度又是如何确定的呢？</p>
+<p>最理想的是，找到一个最小时间，它能保证“确认应答一定能在这个时间内返回”。然而这个时间长短随着数据包途径的网络环境的不同而有所变化。例如在高速的LAN中时间相对较短，而在长距离的通信当中应该比LAN要长一些。即使是在同一个网络中，根据不同时段的网络堵塞程度时间的长短也会发生变化。TCP要求不论处在何种网络环境下都要提供高性能通信，并且无论网络拥堵情况发生何种变化，都必须保持这一特性。为此，它在每次发包时都会计算往返时间及其偏差。将这个往返时间和偏差相加重发超时的时间，就是比这个总和要稍大一点的值。</p>
+<p>在BSD的Unix以及Windows系统中，超时都以0.5秒为单位进行控制，因此重发超时都是0.5秒的整数倍。不过，由于最初的数据包还不知道往返时间，所以其重发超时一般设置为6秒左右。数据被重发之后若还是收不到确认应答，则进行再次发送。此时，等待确认应答的时间将会以2倍、4倍的指数函数延长。此外，数据也不会被无限、反复地重发。达到一定重发次数之后，如果仍没有任何确认应答返回，就会判断为网络或对端主机发生了异常，强制关闭连接。并且通知应用通信异常强行终止。</p>
+<p>###连接管理<br>UDP是一种面向无连接的通信协议，因此不检查对端是否可以通信，直接将UDP包发送出去。TCP与此相反，它会在数据通信之前，通过TCP首部发送一个SYN包作为建立连接的请求等待确认应答。如果对端发来确认应答，则认为可以进行数据通信。如果对端的确认应答未能到达，就不会进行数据通信。此外，在通信结束时会进行断开连接的处理（FIN包）。</p>
+<p>可以使用TCP首部用于控制的字段来管理TCP连接。一个连接的建立与断开，正常过程至少需要来回发送7个包才能完成。</p>
+<p><img src="/img/20140214001552.png" alt=""></p>
+<p>###TCP以段为单位发送数据<br>在建立TCP连接的同时，也可以确认发送数据包的单位，我们也可以称其为“最大消息长度”（MSS：Maximum Segment Size）。最理想的情况是，最大消息长度正好是IP中不会被分片处理的最大数据长度。</p>
+<p>TCP在传送大量数据时，是以MSS的大小将数据进行分割发送。进行重发时也是以MSS为单位。</p>
+<p>MSS是在三次握手的时候，在两端主机之间被计算得出。两端的主机在发出建立连接的请求时，会在TCP首部中写入MSS选项，告诉对方自己的接口能够适应MSS的大小。然后会在两者之间选择一个较小的值投入使用。</p>
+<p><img src="/img/20140214001553.png" alt=""></p>
+<p>###利用窗口控制提高速度<br>TCP以1个段为单位，每发一个段进行一次确认应答的处理，这样的传输方式有一个缺点，那就是，包的往返时间越长通信性能就越低。</p>
+<p>为解决这个问题，TCP引入了窗口这个概念。即使在往返时间较长的情况下，它也能控制网络性能的下降。确认应答不再是以每个分段，而是以更大的单位进行确认时，转发时间将会大幅度的缩短。也就是说，发送端主机，在发送了一个段以后不必要一直等待确认应答，而是继续发送。</p>
+<p><img src="/img/20140214001554.png" alt=""></p>
+<p>窗口大小就是无需等待确认应答而可以继续发送数据的最大值，如上，窗口大小为4个段。这个机制实现了使用大量的缓冲区，通过对多个段同时进行确认应答的功能。<br>收到确认应答的情况下，将窗口滑动到确认应答中的序列号的位置。这样可以顺序地将多个段同时发送提高通信性能。这种机制也被成为滑动窗口控制。</p>
+<p><img src="/img/20140214001555.png" alt=""></p>
+<p>###流控制<br>发送端根据自己的实际情况发送数据。但是，接收端可能收到的是一个毫无关系的数据包又可能会在处理其他问题上花费一些时间。因此在为这个数据包做其他处理时会耗费一些时间，甚至在高负荷的情况下无法接收任何数据。如此一来，如果接收端将本应该接收的数据丢弃的话，就又会触发重发机制，从而导致网络流量的无端浪费。<br>为了防止这种现象的发生，TCP提供一种机制可以让发送端根据接收端的实际接收能力控制发送的数据量。这就是所谓的流控制。它的具体操作是，接收端主机向发送端主机通知自己可以接收数据的大小，于是发送端会发送不超过这个限度的数据。该大小限度就被称作窗口大小。</p>
+<p>TCP首部中，专门有一个字段用来通知窗口大小。接收主机将自己可以接收的缓冲区大小放入这个字段中通知给发送端。这个字段的值越大，说明网络的吞吐量越高。<br>不过，接收端的这个缓冲区一旦面临数据溢出时，窗口大小的值也会随之被设置为一个更小的值通知给发送端，从而控制数据发送量。也就是说，发送端主机会根据接收端主机的指示，对发送数据的量进行控制。这也就形成了一个完整的TCP流控制（流量控制）。</p>
+<p><img src="/img/20140214114741.png" alt=""></p>
+<p>###拥塞控制<br>有了TCP的窗口控制，收发主机之间即使不再以一个数据段为单位发送确认应答，也能够连续发送大量数据包。然而，如果在通信刚开始时就发送大量数据，也可能会引发其他问题。在网络出现堵塞时，如果突然发送一个较大量的数据，极有可能导致整个网络的瘫痪。TCP为了防止该问题的出现，在通信一开始时就会通过一个叫做慢启动的算法得出的数值，对发送数据量进行控制。</p>
+<p>首先，为了在发送端调节所要发送数据的量，定义了一个叫做“拥塞窗口”的概念。于是在慢启动的时候，将这个拥塞窗口的大小设置为1个数据段（1MSS）发送数据，之后每收到一次确认应答（ACK），拥塞窗口的值就加1.在发送数据包时，将拥塞窗口的大小与接收端主机通知的窗口大小做比较，然后按照它们当中较小的那个值，发送比其还要小的数据量。</p>
+<p>###提高网络利用率的规范<br>Nagle算法：<br>TCP中为了提高网络的利用率，经常使用一个叫做Nagle的算法。该算法是指发送端即使还有应该发送的数据，但如果这部分数据很少的话，则进行延迟发送的一种处理机制。具体来说，就是仅在下列任意一种条件下才能发送数据。如果两个条件都不满足，那么暂时等待一段时间以后再进行数据发送。</p>
+<ol>
+<li>已发送的数据都已经收到确认应答时</li>
+<li>可以发送最大段长度（MSS）的数据时</li>
+</ol>
+<p><strong>延迟确认应答</strong>：</p>
+<p>当某个接收端收到这个小窗口的通知以后，会以它为上限发送数据，从而又降低了网络的利用率。为此，引入了一个方法，那就是收到数据以后并不立即返回确认应答，而是延迟一段时间的机制。</p>
+<p><strong>捎带应答</strong>：</p>
+<p>捎带应答是指在同一个TCP包中既发送数据又发送确认应答的一种机制。由此，网络的利用率会提高，计算机的负荷也会减轻。不过，确认应答必须得等到应用处理完数据并将作为回执的数据返回为止，才能进行捎带应答。</p>
+<p>##UDP：<br>UDP是User Datagram Protocol的缩写。UDP是不具有可靠性的数据报协议。细微的处理它会交给上层的应用去完成。在UDP的情况下，虽然可以确保发送消息的大小，却不能保证消息一定会到达。因此，应用有时会根据自己的需要进行重发处理。</p>
+<p>UDP不提供复杂的控制机制，利用IP提供面向无连接的通信服务。并且它是将应用程序发来的数据在收到的那一刻，立即按照原样发送到网络上的一种机制。</p>
+<p>即使是出现网络堵塞的情况下，UDP也无法进行流量控制等避免网络拥塞的行为。此外，传输途中即使出现丢包，UDP也不负责重发。甚至当出现包的到达顺序乱掉时也没有纠正的功能。如果需要这些细节控制，那么不得不交由采用UDP的应用程序去处理。UDP有点类似于用户说什么听什么的机制，但是需要用户充分考虑好上层协议类型并制作相应的应用程序。因此，也可以说，UDP按照“制造程序的那些用户的指示行事”。<br>由于UDP面向无连接，它可以随时发送数据。再加上UDP本身的处理既简单又高效，因此经常用于以下几个方面：</p>
+<ol>
+<li>包总量较少的通信（DNS、SNMP等）</li>
+<li>视频、音频等多媒体通信（即时通信）</li>
+<li>限定于LAN等特定网络中的应用通信</li>
+<li>广播通信（广播、多播）</li>
+</ol>
+<p>可能有人会认为，鉴于TCP是可靠的传输协议，那么它一定优于UDP。其实不然。TCP与UDP的优缺点无法简单地、绝对地去做比较。那么，对这两种协议应该如何加以区分使用呢？下面，我就对此问题做一简单说明。</p>
+<p>TCP用于在传输层有必要实现可靠的情况。由于它是面向有连接并具备顺序控制、重发控制等机制的，所以它可以为应用提供可靠传输。</p>
+<p>而UDP主要用于那些对高速传输和实时性有较高要求的通信或广播通信。我们拿通过IP电话进行通话作为例子。如果使用TCP，数据在传送途中如果丢失会重发，但这样无法刘畅地传输通话人的声音，会导致无法进行正常交流。而采用UDP，它不会进行重发处理。从而也就不会有声音大幅度延迟到达的问题。即使有部分数据丢失，也只是会影响某一小部分的通话。此外，在多播与广播通信中也使用UDP而不是TCP。RIP、DHCP等基于广播的协议也要依赖于UDP。因此，TCP和UDP应该根据应用的目的按需使用。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/02/语言中的指针和内存泄漏/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/02/语言中的指针和内存泄漏/" itemprop="url">语言中的指针和内存泄漏</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-02T09:27:39+08:00">
+                2015-03-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>转载自<a href="http://www.ibm.com/developerworks/cn/aix/library/au-toughgame/" target="_blank" rel="external">这里</a></p>
+<p>##引言</p>
+<p>对于任何使用 C 语言的人，如果问他们 C 语言的最大烦恼是什么，其中许多人可能会回答说是指针和内存泄漏。这些的确是消耗了开发人员大多数调试时间的事项。指针和内存泄漏对某些开发人员来说似乎令人畏惧，但是一旦您了解了指针及其关联内存操作的基础，它们就是您在 C 语言中拥有的最强大工具。</p>
+<p>本文将与您分享开发人员在开始使用指针来编程前应该知道的秘密。本文内容包括：</p>
+<ul>
+<li>导致内存破坏的指针操作类型</li>
+<li>在使用动态内存分配时必须考虑的检查点</li>
+<li>导致内存泄漏的场景</li>
+</ul>
+<p>如果您预先知道什么地方可能出错，那么您就能够小心避免陷阱，并消除大多数与指针和内存相关的问题。</p>
+<p>##什么地方可能出错？<br>有几种问题场景可能会出现，从而可能在完成生成后导致问题。在处理指针时，您可以使用本文中的信息来避免许多问题。</p>
+<p>###未初始化的内存<br>在本例中，p 已被分配了 10 个字节。这 10 个字节可能包含垃圾数据，如图 1 所示。</p>
+<pre><code>char *p = malloc ( 10 );
+</code></pre><p><img src="/img/垃圾数据.png" alt="图1.垃圾数据"></p>
+<p>如果在对这个 p 赋值前，某个代码段尝试访问它，则可能会获得垃圾值，您的程序可能具有不可预测的行为。p 可能具有您的程序从未曾预料到的值。</p>
+<p><strong>良好的实践是始终结合使用 memset 和 malloc，或者使用 calloc。</strong></p>
+<pre><code>char *p = malloc (10);
+memset(p,’’,10);
+</code></pre><p>现在，即使同一个代码段尝试在对 p 赋值前访问它，该代码段也能正确处理 Null 值（在理想情况下应具有的值），然后将具有正确的行为。</p>
+<p>###内存覆盖<br>由于 p 已被分配了 10 个字节，如果某个代码片段尝试向 p 写入一个 11 字节的值，则该操作将在不告诉您的情况下自动从其他某个位置“吃掉”一个字节。让我们假设指针 q 表示该内存。</p>
+<p><img src="/img/原始q内容.png" alt="图2.原始q内容"></p>
+<p><img src="/img/覆盖后的q内容.png" alt="图3.覆盖后的q内容"></p>
+<p>结果，指针 q 将具有从未预料到的内容。即使您的模块编码得足够好，也可能由于某个共存模块执行某些内存操作而具有不正确的行为。下面的示例代码片段也可以说明这种场景。</p>
+<pre><code>char *name = (char *) malloc(11);
+// Assign some value to name
+memcpy ( p,name,11); // Problem begins here
+</code></pre><p>在本例中，memcpy 操作尝试将 11 个字节写到 p，而后者仅被分配了 10 个字节。</p>
+<p>作为良好的实践，每当向指针写入值时，都要确保对可用字节数和所写入的字节数进行交叉核对。一般情况下，memcpy 函数将是用于此目的的检查点。</p>
+<p>###内存读取越界<br>内存读取越界 (overread) 是指所读取的字节数多于它们应有的字节数。这个问题并不太严重，在此就不再详述了。下面的代码提供了一个示例。</p>
+<pre><code>char *ptr = (char *)malloc(10);
+char name[20] ;
+memcpy ( name,ptr,20); // Problem begins here
+</code></pre><p>在本例中，memcpy 操作尝试从 ptr 读取 20 个字节，但是后者仅被分配了 10 个字节。这还会导致不希望的输出。</p>
+<p>###内存泄漏<br>内存泄漏可能真正令人讨厌。下面的列表描述了一些导致内存泄漏的场景。<br>重新赋值我将使用一个示例来说明重新赋值问题。</p>
+<pre><code>char *memoryArea = malloc(10);
+char *newArea = malloc(10);
+</code></pre><p>这向如下面的图 4 所示的内存位置赋值。</p>
+<p><img src="/img/图4.内存位置.png" alt="图4.内存位置"></p>
+<p>memoryArea 和 newArea 分别被分配了 10 个字节，它们各自的内容如图 4 所示。如果某人执行如下所示的语句（指针重新赋值）……</p>
+<pre><code>memoryArea = newArea;
+</code></pre><p>则它肯定会在该模块开发的后续阶段给您带来麻烦。</p>
+<p>在上面的代码语句中，开发人员将 memoryArea 指针赋值给 newArea 指针。结果，memoryArea 以前所指向的内存位置变成了孤立的，如下面的图 5 所示。它无法释放，因为没有指向该位置的引用。这会导致 10 个字节的内存泄漏。</p>
+<p><img src="/img/内存泄漏.png" alt="图5.内存泄漏"></p>
+<p>在对指针赋值前，请确保内存位置不会变为孤立的。</p>
+<ul>
+<li>首先释放父块</li>
+</ul>
+<p>假设有一个指针 memoryArea，它指向一个 10 字节的内存位置。该内存位置的第三个字节又指向某个动态分配的 10 字节的内存位置，如图 6 所示。</p>
+<p><img src="/img/图6.动态分配的内存.png" alt="图6.动态分配的内存"></p>
+<pre><code>free(memoryArea)
+</code></pre><p>如果通过调用 free 来释放了 memoryArea，则 newArea 指针也会因此而变得无效。newArea 以前所指向的内存位置无法释放，因为已经没有指向该位置的指针。换句话说，newArea 所指向的内存位置变为了孤立的，从而导致了内存泄漏。</p>
+<p>每当释放结构化的元素，而该元素又包含指向动态分配的内存位置的指针时，应首先遍历子内存位置（在此例中为 newArea），并从那里开始释放，然后再遍历回父节点。</p>
+<p>这里的正确实现应该为：</p>
+<pre><code>free( memoryArea-&gt;newArea);
+free(memoryArea);
+</code></pre><ul>
+<li>返回值的不正确处理</li>
+</ul>
+<p>有时，某些函数会返回对动态分配的内存的引用。跟踪该内存位置并正确地处理它就成为了 calling 函数的职责。</p>
+<pre><code>char *func ( )
+{
+ return malloc(20); // make sure to memset this location to ‘’…
+}
+void callingFunc ( )
+{
+ func ( ); // Problem lies here
+}
+</code></pre><p>在上面的示例中，callingFunc() 函数中对 func() 函数的调用未处理该内存位置的返回地址。结果，func() 函数所分配的 20 个字节的块就丢失了，并导致了内存泄漏。</p>
+<p>###归还您所获得的<br>在开发组件时，可能存在大量的动态内存分配。您可能会忘了跟踪所有指针（指向这些内存位置），并且某些内存段没有释放，还保持分配给该程序。</p>
+<p>始终要跟踪所有内存分配，并在任何适当的时候释放它们。事实上，可以开发某种机制来跟踪这些分配，比如在链表节点本身中保留一个计数器（但您还必须考虑该机制的额外开销）。</p>
+<p>###访问空指针<br>访问空指针是非常危险的，因为它可能使您的程序崩溃。始终要确保您不是 在访问空指针。</p>
+<p>##总结<br>本文讨论了几种在使用动态内存分配时可以避免的陷阱。要避免内存相关的问题，良好的实践是：</p>
+<ul>
+<li>始终结合使用 memset 和 malloc，或始终使用 calloc。</li>
+<li>每当向指针写入值时，都要确保对可用字节数和所写入的字节数进行交叉核对。</li>
+<li>在对指针赋值前，要确保没有内存位置会变为孤立的。</li>
+<li>每当释放结构化的元素（而该元素又包含指向动态分配的内存位置的指针）时，都应首先遍历子内存位置并从那里开始释放，然后再遍历回父节点。</li>
+<li>始终正确处理返回动态分配的内存引用的函数返回值。</li>
+<li>每个 malloc 都要有一个对应的 free。</li>
+<li>确保您不是在访问空指针。</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/01/线程安全/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/01/线程安全/" itemprop="url">线程安全</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-01T22:01:15+08:00">
+                2015-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>如果你的代码所在的进程中有多个线程在同时运行，而这些线程可能会同时运行这段代码。如果每次运行结果和单线程运行的结果是一样的，而且其他的变量的值也和预期的是一样的，就是线程安全的。</p>
+<p>或者说:一个类或者程序所提供的接口对于线程来说是原子操作或者多个线程之间的切换不会导致该接口的执行结果存在二义性,也就是说我们不用考虑同步的问题。</p>
+<p>线程安全问题都是由全局变量及静态变量引起的。</p>
+<p>若每个线程中对全局变量、静态变量只有读操作，而无写操作，一般来说，这个全局变量是线程安全的；若有多个线程同时执行写操作，一般都需要考虑线程同步，否则的话就可能影响线程安全。</p>
+<p>##举例<br>比如一个 ArrayList 类，在添加一个元素的时候，它可能会有两步来完成：</p>
+<ol>
+<li>在 Items[Size] 的位置存放此元素</li>
+<li>增大 Size 的值。</li>
+</ol>
+<p>在单线程运行的情况下，如果 Size = 0，添加一个元素后，此元素在位置 0，而且 Size=1；</p>
+<p>而如果是在多线程情况下，比如有两个线程，线程 A 先将元素存放在位置 0。但是此时 CPU 调度线程A暂停，线程 B 得到运行的机会。线程B也向此 ArrayList 添加元素，因为此时 Size 仍然等于 0 （注意哦，我们假设的是添加一个元素是要两个步骤哦，而线程A仅仅完成了步骤1），所以线程B也将元素存放在位置0。然后线程A和线程B都继续运行，都增加 Size 的值。</p>
+<p>那好，我们来看看 ArrayList 的情况，元素实际上只有一个，存放在位置 0，而 Size 却等于 2。这就是“线程不安全”了。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -2114,7 +2192,7 @@ sigrelse(SIGALRM);
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">199</span>
+                <span class="site-state-item-count">194</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
