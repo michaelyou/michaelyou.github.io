@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="python,scrapy," />
+  <meta name="keywords" content="scrapy," />
 
 
 
@@ -94,18 +94,18 @@
 
 
 
-<meta name="description" content="转载自这里 #1. 设置download_delay    他的作用主要是设置下载的等待时间，大规模集中的访问对服务器的影响最大，相当于短时间中增大服务器负载。下载等待时间长，不能满足短时间大规模抓取的要求，太短则大大增加了被ban的几率。如果你的爬虫工作的好好的，突然掉线了，并且得到了类似下面的错误： twisted.internet.error.ConnectionRefusedError 不">
-<meta name="keywords" content="python,scrapy">
+<meta name="description" content="转载自这里 1. 设置download_delay   他的作用主要是设置下载的等待时间，大规模集中的访问对服务器的影响最大，相当于短时间中增大服务器负载。下载等待时间长，不能满足短时间大规模抓取的要求，太短则大大增加了被ban的几率。如果你的爬虫工作的好好的，突然掉线了，并且得到了类似下面的错误： 1twisted.internet.error.ConnectionRefusedError 不妨">
+<meta name="keywords" content="scrapy">
 <meta property="og:type" content="article">
 <meta property="og:title" content="scrapy防止被ban的策略">
 <meta property="og:url" content="http://yoursite.com/2015/01/14/scrapy防止被ban的策略/index.html">
 <meta property="og:site_name" content="Youmai の Blog">
-<meta property="og:description" content="转载自这里 #1. 设置download_delay    他的作用主要是设置下载的等待时间，大规模集中的访问对服务器的影响最大，相当于短时间中增大服务器负载。下载等待时间长，不能满足短时间大规模抓取的要求，太短则大大增加了被ban的几率。如果你的爬虫工作的好好的，突然掉线了，并且得到了类似下面的错误： twisted.internet.error.ConnectionRefusedError 不">
+<meta property="og:description" content="转载自这里 1. 设置download_delay   他的作用主要是设置下载的等待时间，大规模集中的访问对服务器的影响最大，相当于短时间中增大服务器负载。下载等待时间长，不能满足短时间大规模抓取的要求，太短则大大增加了被ban的几率。如果你的爬虫工作的好好的，突然掉线了，并且得到了类似下面的错误： 1twisted.internet.error.ConnectionRefusedError 不妨">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta property="og:updated_time" content="2017-12-11T11:22:52.212Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="scrapy防止被ban的策略">
-<meta name="twitter:description" content="转载自这里 #1. 设置download_delay    他的作用主要是设置下载的等待时间，大规模集中的访问对服务器的影响最大，相当于短时间中增大服务器负载。下载等待时间长，不能满足短时间大规模抓取的要求，太短则大大增加了被ban的几率。如果你的爬虫工作的好好的，突然掉线了，并且得到了类似下面的错误： twisted.internet.error.ConnectionRefusedError 不">
+<meta name="twitter:description" content="转载自这里 1. 设置download_delay   他的作用主要是设置下载的等待时间，大规模集中的访问对服务器的影响最大，相当于短时间中增大服务器负载。下载等待时间长，不能满足短时间大规模抓取的要求，太短则大大增加了被ban的几率。如果你的爬虫工作的好好的，突然掉线了，并且得到了类似下面的错误： 1twisted.internet.error.ConnectionRefusedError 不妨">
 
 
 
@@ -376,101 +376,28 @@
 
       
         <p>转载自<a href="http://blog.csdn.net/u012150179/article/details/35774323" target="_blank" rel="external">这里</a></p>
-<p>#1. 设置download_delay</p>
-<p>   他的作用主要是设置下载的等待时间，大规模集中的访问对服务器的影响最大，相当于短时间中增大服务器负载。下载等待时间长，不能满足短时间大规模抓取的要求，太短则大大增加了被ban的几率。如果你的爬虫工作的好好的，突然掉线了，并且得到了类似下面的错误：</p>
-<pre><code>twisted.internet.error.ConnectionRefusedError
-</code></pre><p>不妨试着将download_delay设置的大一点。</p>
+<h1 id="1-设置download-delay"><a href="#1-设置download-delay" class="headerlink" title="1. 设置download_delay"></a>1. 设置download_delay</h1><p>   他的作用主要是设置下载的等待时间，大规模集中的访问对服务器的影响最大，相当于短时间中增大服务器负载。下载等待时间长，不能满足短时间大规模抓取的要求，太短则大大增加了被ban的几率。如果你的爬虫工作的好好的，突然掉线了，并且得到了类似下面的错误：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">twisted.internet.error.ConnectionRefusedError</div></pre></td></tr></table></figure>
+<p>不妨试着将<code>download_delay</code>设置的大一点。</p>
 <p>使用注意：</p>
-<p>download_delay可以设置在settings.py中，也可以在spider中设置</p>
-<p>#2. 禁止cookies</p>
-<p>所谓cookies，是指某些网站为了辨别用户身份而储存在用户本地终端（Client Side）上的数据（通常经过加密），禁止cookies也就防止了可能使用cookies识别爬虫轨迹的网站得逞。</p>
+<p><code>download_delay</code>可以设置在settings.py中，也可以在spider中设置</p>
+<h1 id="2-禁止cookies"><a href="#2-禁止cookies" class="headerlink" title="2. 禁止cookies"></a>2. 禁止cookies</h1><p>所谓cookies，是指某些网站为了辨别用户身份而储存在用户本地终端（Client Side）上的数据（通常经过加密），禁止cookies也就防止了可能使用cookies识别爬虫轨迹的网站得逞。</p>
 <p>使用：</p>
 <p>在settings.py中设置COOKIES_ENABLES=False。也就是不启用cookies middleware，不向web server发送cookies</p>
-<p>#3. 使用user agent池<br>所谓的user agent，是指包含浏览器信息、操作系统信息等的一个字符串，也称之为一种特殊的网络协议。服务器通过它判断当前访问对象是浏览器、邮件客户端还是网络爬虫。在request.headers可以查看user agent。如下，使用scrapy shell查看：</p>
+<h1 id="3-使用user-agent池"><a href="#3-使用user-agent池" class="headerlink" title="3. 使用user agent池"></a>3. 使用user agent池</h1><p>所谓的user agent，是指包含浏览器信息、操作系统信息等的一个字符串，也称之为一种特殊的网络协议。服务器通过它判断当前访问对象是浏览器、邮件客户端还是网络爬虫。在request.headers可以查看user agent。如下，使用scrapy shell查看：</p>
 <pre><code>scrapy shell http://michaelyou.github.io
 </code></pre><p>输出request.headers可以得到如下信息</p>
-<pre><code>In [1]: request.headers
-Out[1]: 
-{&apos;Accept&apos;: &apos;text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&apos;,
-&apos;Accept-Encoding&apos;: &apos;gzip,deflate&apos;,
-&apos;Accept-Language&apos;: &apos;en&apos;,
-&apos;User-Agent&apos;: &apos;Scrapy/0.24.4 (+http://scrapy.org)&apos;}
-</code></pre><p>由此得到,scrapy本身是使用Scrapy/0.24.4来表明自己身份的。这也就暴露了自己是爬虫的信息。解决方法如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">In [<span class="number">1</span>]: request.headers</div><div class="line">Out[<span class="number">1</span>]: </div><div class="line">&#123;<span class="string">'Accept'</span>: <span class="string">'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'</span>,</div><div class="line"><span class="string">'Accept-Encoding'</span>: <span class="string">'gzip,deflate'</span>,</div><div class="line"><span class="string">'Accept-Language'</span>: <span class="string">'en'</span>,</div><div class="line"><span class="string">'User-Agent'</span>: <span class="string">'Scrapy/0.24.4 (+http://scrapy.org)'</span>&#125;</div></pre></td></tr></table></figure>
+<p>由此得到,scrapy本身是使用Scrapy/0.24.4来表明自己身份的。这也就暴露了自己是爬虫的信息。解决方法如下：</p>
 <p>首先编写自己的UserAgentMiddle中间件，在spider目录下新建rotate_useragent.py,代码如下：</p>
-<pre><code># -*-coding:utf-8-*-
-
-from scrapy import log
-
-&quot;&quot;&quot;避免被ban策略之一：使用useragent池。
-
-使用注意：需在settings.py中进行相应的设置。
-&quot;&quot;&quot;
-
-import random
-from scrapy.contrib.downloadermiddleware.useragent import UserAgentMiddleware
-
-class RotateUserAgentMiddleware(UserAgentMiddleware):
-
-    def __init__(self, user_agent=&apos;&apos;):
-        self.user_agent = user_agent
-
-    def process_request(self, request, spider):
-        ua = random.choice(self.user_agent_list)
-        if ua:
-            #显示当前使用的useragent
-            print &quot;********Current UserAgent:%s************&quot; %ua
-
-            #记录
-            log.msg(&apos;Current UserAgent: &apos;+ua, level=&apos;INFO&apos;)
-            request.headers.setdefault(&apos;User-Agent&apos;, ua)
-
-    #the default user_agent_list composes chrome,I E,firefox,Mozilla,opera,netscape
-    #for more user agent strings,you can find it in http://www.useragentstring.com/pages/useragentstring.php
-    user_agent_list = [\
-        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 &quot;
-        &quot;(KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1&quot;,
-        &quot;Mozilla/5.0 (X11; CrOS i686 2268.111.0) AppleWebKit/536.11 &quot;
-        &quot;(KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11&quot;,
-        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 &quot;
-        &quot;(KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6&quot;,
-        &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 &quot;
-        &quot;(KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6&quot;,
-        &quot;Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.1 &quot;
-        &quot;(KHTML, like Gecko) Chrome/19.77.34.5 Safari/537.1&quot;,
-        &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 &quot;
-        &quot;(KHTML, like Gecko) Chrome/19.0.1084.9 Safari/536.5&quot;,
-        &quot;Mozilla/5.0 (Windows NT 6.0) AppleWebKit/536.5 &quot;
-        &quot;(KHTML, like Gecko) Chrome/19.0.1084.36 Safari/536.5&quot;,
-        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 &quot;
-        &quot;(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,
-        &quot;Mozilla/5.0 (Windows NT 5.1) AppleWebKit/536.3 &quot;
-        &quot;(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,
-        &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_0) AppleWebKit/536.3 &quot;
-        &quot;(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,
-        &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 &quot;
-        &quot;(KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3&quot;,
-        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 &quot;
-        &quot;(KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3&quot;,
-        &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 &quot;
-        &quot;(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3&quot;,
-        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 &quot;
-        &quot;(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3&quot;,
-        &quot;Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.3 &quot;
-        &quot;(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3&quot;,
-        &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 &quot;
-        &quot;(KHTML, like Gecko) Chrome/19.0.1061.0 Safari/536.3&quot;,
-        &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.24 &quot;
-        &quot;(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24&quot;,
-        &quot;Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 &quot;
-        &quot;(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24&quot;
-       ]
-</code></pre><p>建立user agent池（user_agent_list）并在每次发送request之前从agent池中随机选取一项设置request的User_Agent。编写的UserAgent中间件的基类为UserAgentMiddle。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*-coding:utf-8-*-</span></div><div class="line"></div><div class="line"><span class="keyword">from</span> scrapy <span class="keyword">import</span> log</div><div class="line"></div><div class="line"><span class="string">"""避免被ban策略之一：使用useragent池。</span></div><div class="line"><span class="string"></span></div><div class="line"><span class="string">使用注意：需在settings.py中进行相应的设置。</span></div><div class="line"><span class="string">"""</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> random</div><div class="line"><span class="keyword">from</span> scrapy.contrib.downloadermiddleware.useragent <span class="keyword">import</span> UserAgentMiddleware</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">RotateUserAgentMiddleware</span><span class="params">(UserAgentMiddleware)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, user_agent=<span class="string">''</span>)</span>:</span></div><div class="line">        self.user_agent = user_agent</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span><span class="params">(self, request, spider)</span>:</span></div><div class="line">        ua = random.choice(self.user_agent_list)</div><div class="line">        <span class="keyword">if</span> ua:</div><div class="line">            <span class="comment">#显示当前使用的useragent</span></div><div class="line">            <span class="keyword">print</span> <span class="string">"********Current UserAgent:%s************"</span> %ua</div><div class="line"></div><div class="line">            <span class="comment">#记录</span></div><div class="line">            log.msg(<span class="string">'Current UserAgent: '</span>+ua, level=<span class="string">'INFO'</span>)</div><div class="line">            request.headers.setdefault(<span class="string">'User-Agent'</span>, ua)</div><div class="line"></div><div class="line">    <span class="comment">#the default user_agent_list composes chrome,I E,firefox,Mozilla,opera,netscape</span></div><div class="line">    <span class="comment">#for more user agent strings,you can find it in http://www.useragentstring.com/pages/useragentstring.php</span></div><div class="line">    user_agent_list = [\</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (X11; CrOS i686 2268.111.0) AppleWebKit/536.11 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.1 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.77.34.5 Safari/537.1"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1084.9 Safari/536.5"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.0) AppleWebKit/536.5 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1084.36 Safari/536.5"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 5.1) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_0) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1061.0 Safari/536.3"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.24 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24"</span>,</div><div class="line">        <span class="string">"Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 "</span></div><div class="line">        <span class="string">"(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24"</span></div><div class="line">       ]</div></pre></td></tr></table></figure>
+<p>建立user agent池（user_agent_list）并在每次发送request之前从agent池中随机选取一项设置request的User_Agent。编写的UserAgent中间件的基类为UserAgentMiddle。</p>
 <p>除此之外，要在settings.py(配置文件)中禁用默认的useragent并启用重新实现的User Agent。配置方法如下：</p>
-<p>#取消默认的useragent,使用新的useragent<br>    DOWNLOADER_MIDDLEWARES = {<br>            ‘scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware’ : None,<br>            ‘CSDNBlogCrawlSpider.spiders.rotate_useragent.RotateUserAgentMiddleware’ :400<br>        }</p>
-<p>#4. 使用IP池<br>web server应对爬虫的策略之一就是直接将你的IP或者是整个IP段都封掉禁止访问，这时候，当IP封掉后，转换到其他的IP继续访问即可。</p>
+<h1 id="取消默认的useragent-使用新的useragent"><a href="#取消默认的useragent-使用新的useragent" class="headerlink" title="取消默认的useragent,使用新的useragent"></a>取消默认的useragent,使用新的useragent</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">DOWNLOADER_MIDDLEWARES = &#123;</div><div class="line">        <span class="string">'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware'</span> : <span class="keyword">None</span>,</div><div class="line">        <span class="string">'CSDNBlogCrawlSpider.spiders.rotate_useragent.RotateUserAgentMiddleware'</span> :<span class="number">400</span></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h1 id="4-使用IP池"><a href="#4-使用IP池" class="headerlink" title="4. 使用IP池"></a>4. 使用IP池</h1><p>web server应对爬虫的策略之一就是直接将你的IP或者是整个IP段都封掉禁止访问，这时候，当IP封掉后，转换到其他的IP继续访问即可。</p>
 <p>可以使用Scrapy+Tor+polipo</p>
 <p>配置方法与使用教程请点<a href="http://pkmishra.github.io/blog/2013/03/18/how-to-run-scrapy-with-TOR-and-multiple-browser-agents-part-1-mac/" target="_blank" rel="external">这里</a>。</p>
-<p>#5. 分布式爬取<br>有时间再补充</p>
+<h1 id="5-分布式爬取"><a href="#5-分布式爬取" class="headerlink" title="5. 分布式爬取"></a>5. 分布式爬取</h1><p>有时间再补充</p>
 
       
     </div>
@@ -487,8 +414,6 @@ class RotateUserAgentMiddleware(UserAgentMiddleware):
     <footer class="post-footer">
       
         <div class="post-tags">
-          
-            <a href="/tags/python/" rel="tag"># python</a>
           
             <a href="/tags/scrapy/" rel="tag"># scrapy</a>
           
@@ -567,8 +492,17 @@ class RotateUserAgentMiddleware(UserAgentMiddleware):
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/img/lufei.jpeg"
@@ -654,6 +588,22 @@ class RotateUserAgentMiddleware(UserAgentMiddleware):
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-设置download-delay"><span class="nav-number">1.</span> <span class="nav-text">1. 设置download_delay</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-禁止cookies"><span class="nav-number">2.</span> <span class="nav-text">2. 禁止cookies</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-使用user-agent池"><span class="nav-number">3.</span> <span class="nav-text">3. 使用user agent池</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#取消默认的useragent-使用新的useragent"><span class="nav-number">4.</span> <span class="nav-text">取消默认的useragent,使用新的useragent</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-使用IP池"><span class="nav-number">5.</span> <span class="nav-text">4. 使用IP池</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-分布式爬取"><span class="nav-number">6.</span> <span class="nav-text">5. 分布式爬取</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
