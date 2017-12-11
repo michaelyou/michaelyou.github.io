@@ -286,7 +286,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django-启动web/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/进程调度算法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -305,7 +305,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/04/15/django-启动web/" itemprop="url">Django--启动web</a></h1>
+                <a class="post-title-link" href="/2015/03/20/进程调度算法/" itemprop="url">进程调度算法</a></h1>
         
 
         <div class="post-meta">
@@ -317,1143 +317,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T17:18:49+08:00">
-                2015-04-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>runserver 命令在 8000 端口启动开发服务器，且仅监听本地连接。 要想要更改服务器端口的话，可将端口作为命令行参数传入：</p>
-<pre><code>python manage.py runserver 8080
-</code></pre><p>通过指定一个 IP 地址，你可以告诉服务器–允许非本地连接访问。 如果你想和其他开发人员共享同一开发站点的话，该功能特别有用。 <code>0.0.0.0</code> 这个 IP 地址，告诉服务器去侦听任意的网络接口。</p>
-<pre><code>python manage.py runserver 0.0.0.0:8000
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/使用django的出错页来帮助调试/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/15/使用django的出错页来帮助调试/" itemprop="url">使用Django的出错页来帮助调试</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T17:14:11+08:00">
-                2015-04-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##出错页解析<br>在页面顶部，你可以得到关键的异常信息： 异常数据类型、异常的参数 、在哪个文件中引发了异常、出错的行号等等。</p>
-<p>在关键异常信息下方，该页面显示了对该异常的完整 Python 追踪信息。 这类似于你在 Python 命令行解释器中获得的追溯信息，只不过后者更具交互性。 对栈中的每一帧，Django 均显示了其文件名、函数或方法名、行号及该行源代码。</p>
-<p>点击该行代码 (以深灰色显示)，你可以看到出错行的前后几行，从而得知相关上下文情况。</p>
-<p><strong>点击栈中的任何一帧的“Local vars”可以看到一个所有局部变量的列表，以及在出错 那一帧时它们的值。 这些调试信息相当有用。</strong></p>
-<p>注意“Traceback”下面的<code>“Switch to copy-and-paste view”</code>文字。 点击这些字，追溯会 切换另一个视图，它让你很容易地复制和粘贴这些内容。 当你想同其他人分享这些异常 追溯以获得技术支持时（比如在 Django 的 IRC 聊天室或邮件列表中），可以使用它。</p>
-<p>你按一下下面的<code>“Share this traceback on a public Web site”</code>按钮，它将会完成这项工作。 点击它以传回追溯信息至<code>http://www.dpaste.com/</code>，在那里你可以得到一个单独的URL并与其他人分享你的追溯信息。</p>
-<p>接下来的<code>“Request information”</code>部分包含了有关产生错误的 Web 请求的大量信息： GET 和 POST、cookie 值、元数据（象 CGI 头）。 在附录H里给出了request的对象的 完整参考。</p>
-<p>Request信息的下面，“Settings”列出了 Django 使用的具体配置信息。 （我们已经提及过ROOT_URLCONF，接下来我们将向你展示各式的Django设置。 附录D覆盖了所有可用的设置。）</p>
-<p>##将你从print打印中解放出来</p>
-<p>不知道你是不是那种使用小心放置的 print 语句来帮助调试的程序员？ 你其实可以用 Django 出错页来做这些，而不用 print 语句。 <strong>在你视图的任何位置，临时插入一个 assert False 来触发出错页。 然后，你就可以看到局部变量和程序语句了</strong></p>
-<p>–《django book 2.0》</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django-动态url/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/15/django-动态url/" itemprop="url">Django--动态url</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T17:05:59+08:00">
-                2015-04-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在 大多数动态web应用程序，URL通常都包含有相关的参数。 举个例子，一家在线书店会为每一本书提供一个URL，如：<code>/books/243/</code>、<code>/books/81196/</code>。</p>
-<p>让我们创建第三个视图来显示当前时间和加上时间偏差量的时间，设计是这样的： <code>/time/plus/1/</code> 显示当前时间＋1个小时的页面, <code>/time/plus/2/</code> 显示当前时间＋2个小时的页面, <code>/time/plus/3/</code> 显示当前时间＋3个小时的页面，以此类推。</p>
-<p>新手可能会考虑写不同的视图函数来处理每个时间偏差量，URL配置看起来就象这样：</p>
-<pre><code>urlpatterns = patterns(&apos;&apos;,
-    (&apos;^time/$&apos;, current_datetime),
-    (&apos;^time/plus/1/$&apos;, one_hour_ahead),
-    (&apos;^time/plus/2/$&apos;, two_hours_ahead),
-    (&apos;^time/plus/3/$&apos;, three_hours_ahead),
-    (&apos;^time/plus/4/$&apos;, four_hours_ahead),
-)
-</code></pre><p>很明显，这样处理是不太妥当的。 不但有很多冗余的视图函数，而且整个应用也被限制了只支持 预先定义好的时间段，2小时，3小时，或者4小时。 如果哪天我们要实现 5 小时，我们就 不得不再单独创建新的视图函数和配置URL，既重复又混乱。 我们需要在这里做一点抽象，提取 一些共同的东西出来。</p>
-<p>##关于漂亮URL的一点建议</p>
-<p>如果你有其它web平台的开发经验（如PHP或Java），你可能会想：嘿！让我们用查询字符串参数吧！ 就像<code>/time/plus?hours=3</code>里面的小时应该在查询字符串中被参数hours指定（问号后面的是参数）。</p>
-<p>你 可以 在Django里也这样做 (如果你真的想要这样做，我们稍后会告诉你怎么做）， 但是Django的一个核心理念就是URL必须看起来漂亮。 <code>URL /time/plus/3/</code> 更加清晰， 更简单，也更有可读性，可以很容易的大声念出来，因为它是纯文本，没有查询字符串那么 复杂。 漂亮的URL就像是高质量的Web应用的一个标志。</p>
-<p>Django的URL配置系统可以使你很容易的设置漂亮的URL，而尽量不要考虑它的 反面 。</p>
-<hr>
-<p>那么，我们如何设计程序来处理任意数量的时差？ 答案是：使用通配符（wildcard URLpatterns）。正如我们之前提到过，一个URL模式就是一个正则表达式。因此，这里可以使用d+来匹配1个以上的数字。</p>
-<pre><code>urlpatterns = patterns(&apos;&apos;,
-    # ...
-    (r&apos;^time/plus/\d+/$&apos;, hours_ahead),
-    # ...
-)
-</code></pre><p>这里使用# …来表示省略了其它可能存在的URL模式定义。 （见上）</p>
-<p>这个URL模式将匹配类似 <code>/time/plus/2/</code> , <code>/time/plus/25/</code> ,甚至 <code>/time/plus/100000000000/</code> 的任何URL。 更进一步，让我们把它限制在最大允许99个小时， 这样我们就只允许一个或两个数字，正则表达式的语法就是 <code>\d{1,2}</code> :</p>
-<pre><code>(r&apos;^time/plus/\d{1,2}/$&apos;, hours_ahead),
-</code></pre><p>备注:</p>
-<p>在建造Web应用的时候，尽可能多考虑可能的数据输入是很重要的，然后决定哪些我们可以接受。 在这里我们就设置了99个小时的时间段限制。</p>
-<p>另外一个重点，正则表达式字符串的开头字母“r”。 它告诉Python这是个原始字符串，不需要处理里面的反斜杠（转义字符）。 在普通Python字符串中，反斜杠用于特殊字符的转义。比如\n转义成一个换行符。 当你用r把它标示为一个原始字符串后，Python不再视其中的反斜杠为转义字符。也就是说，“\n”是两个字符串：“\”和“n”。由于反斜杠在Python代码和正则表达式中有冲突，因此建议你在Python定义正则表达式时都使用原始字符串。 从现在开始，本文所有URL模式都用原始字符串。</p>
-<p>现在我们已经设计了一个带通配符的URL，我们需要一个方法把它传递到视图函数里去，这样 我们只用一个视图函数就可以处理所有的时间段了。 我们使用圆括号把参数在URL模式里标识 出来。 在这个例子中，我们想要把这些数字作为参数，用圆括号把 <code>\d{1,2}</code> 包围起来：</p>
-<pre><code>(r&apos;^time/plus/(\d{1,2})/$&apos;, hours_ahead),
-</code></pre><p><strong>如果你熟悉正则表达式，那么你应该已经了解，正则表达式也是用圆括号来从文本里 提取 数据的。</strong></p>
-<p>最终的URLconf包含上面两个视图，如：</p>
-<pre><code>from django.conf.urls.defaults import *
-from mysite.views import hello, current_datetime, hours_ahead
-
-urlpatterns = patterns(&apos;&apos;,
-    (r&apos;^hello/$&apos;, hello),
-    (r&apos;^time/$&apos;, current_datetime),
-    (r&apos;^time/plus/(\d{1,2})/$&apos;, hours_ahead),
-)
-</code></pre><p>现在开始写 <code>hours_ahead</code> 视图。</p>
-<p>###编码次序</p>
-<p>这个例子中，我们先写了URLpattern ，然后是视图，但是在前面的例子中， 我们先写了视图，然后是URLpattern 。 哪一种方式比较好？</p>
-<p>嗯，怎么说呢，每个开发者是不一样的。</p>
-<p>如果你是喜欢从总体上来把握事物（注： 或译为“大局观”）类型的人，你应该会想在项目开始 的时候就写下所有的URL配置。</p>
-<p>如果你从更像是一个自底向上的开发者，你可能更喜欢先写视图， 然后把它们挂接到URL上。 这同样是可以的。</p>
-<p>最后，取决与你喜欢哪种技术，两种方法都是可以的。 (见上)</p>
-<p>hours_ahead 和我们以前写的 current_datetime 很象，关键的区别在于： 它多了一个额外参数，时间差。 以下是view代码：</p>
-<pre><code>from django.http import Http404, HttpResponse
-import datetime
-
-def hours_ahead(request, offset):
-    try:
-        offset = int(offset)
-    except ValueError:
-        raise Http404()
-    dt = datetime.datetime.now() + datetime.timedelta(hours=offset)
-    html = &quot;&lt;html&gt;&lt;body&gt;In %s hour(s), it will be %s.&lt;/body&gt;&lt;/html&gt;&quot; % (offset, dt)
-    return HttpResponse(html)
-</code></pre><p>让我们逐行分析一下代码：</p>
-<blockquote>
-<p>视图函数, hours_ahead , 有 两个 参数: request 和 offset . (见上)</p>
-<p>request 是一个 HttpRequest 对象, 就像在 current_datetime 中一样. 再说一次好了: 每一个视图 总是 以一个 HttpRequest 对象作为 它的第一个参数。 (见上)</p>
-<p>offset 是从匹配的URL里提取出来的。 例如：如果请求URL是/time/plus/3/，那么offset将会是3；如果请求URL是/time/plus/21/，那么offset将会是21。请注意：捕获值永远都是字符串（string）类型，而不会是整数（integer）类型，即使这个字符串全由数字构成（如：“21”）。</p>
-<p>（从技术上来说，捕获值总是Unicode objects，而不是简单的Python字节串，但目前不需要担心这些差别。）</p>
-<p>在这里我们命名变量为 offset ，你也可以任意命名它，只要符合Python 的语法。 变量名是无关紧要的，重要的是它的位置，它是这个函数的第二个 参数 (在 request 的后面）。 你还可以使用关键字来定义它，而不是用 位置。</p>
-<p>我们在这个函数中要做的第一件事情就是在 offset 上调用 int() . 这会把这个字符串值转换为整数。</p>
-<p>请留意：如果你在一个不能转换成整数类型的值上调用int()，Python将抛出一个ValueError异常。如：int(‘foo’)。在这个例子中，如果我们遇到ValueError异常，我们将转为抛出django.http.Http404异常——正如你想象的那样：最终显示404页面（提示信息：页面不存在）。</p>
-<p>机灵的读者可能会问： 我们在URL模式中用正则表达式(d{1,2})约束它，仅接受数字怎么样？这样无论如何，offset都是由数字构成的。 答案是：我们不会这么做，因为URLpattern提供的是“适度但有用”级别的输入校验。万一这个视图函数被其它方式调用，我们仍需自行检查ValueError。 实践证明，在实现视图函数时，不臆测参数值的做法是比较好的。 松散耦合，还记得么？</p>
-<p>下一行，计算当前日期/时间，然后加上适当的小时数。 在current_datetime视图中，我们已经见过datetime.datetime.now()。这里新的概念是执行日期/时间的算术操作。我们需要创建一个datetime.timedelta对象和增加一个datetime.datetime对象。 结果保存在变量dt中。</p>
-<p>这一行还说明了，我们为什么在offset上调用int()——datetime.timedelta函数要求hours参数必须为整数类型。</p>
-<p>这行和前面的那行的的一个微小差别就是，它使用带有两个值的Python的格式化字符串功能， 而不仅仅是一个值。 因此，在字符串中有两个 %s 符号和一个以进行插入的值的元组： (offset, dt) 。</p>
-<p>最终，返回一个HTML的HttpResponse。 如今，这种方式已经过时了。(这里的意思是这样使用url的传值的方式已经过时了，目前，动态url仍然是使用这样的设计方法)</p>
-</blockquote>
-<p>–《django book 2.0》</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django是如何处理请求的/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/15/django是如何处理请求的/" itemprop="url">Django是如何处理请求的</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T16:56:40+08:00">
-                2015-04-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>当你通过在浏览器里敲<code>http://127.0.0.1:8000/hello/</code>来访问<code>Hello world</code>消息得时候，Django在后台有些什么动作呢？</p>
-<p>所有均开始于setting文件。当你运行<code>python manage.py runserver</code>，脚本将在于manage.py同一个目录下查找名为setting.py的文件。这个文件包含了所有有关这个Django项目的配置信息，均大写： <code>TEMPLATE_DIRS</code> , <code>DATABASE_NAME</code> , 等. 最重要的设置是<code>ROOT_URLCONF</code>，它将作为URLconf告诉Django在这个站点中那些Python的模块将被用到</p>
-<p>还记得什么时候<code>django-admin.py startproject</code>创建文件<code>settings.py</code>和<code>urls.py</code>吗？自动创建的settings.py包含一个<code>ROOT_URLCONF</code>配置用来指向自动产生的<code>urls.py</code>. 打开文件<code>settings.py</code>你将看到如下：</p>
-<pre><code>ROOT_URLCONF = &apos;mysite.urls&apos;
-</code></pre><p>相对应的文件是mysite/urls.py</p>
-<p>当访问 URL <code>/hello/</code> 时，Django 根据 <code>ROOT_URLCONF</code> 的设置装载 <code>URLconf</code> 。 然后按顺序逐个匹配URLconf里的URLpatterns，直到找到一个匹配的。 当找到这个匹配 的URLpatterns就调用相关联的view函数，并把 HttpRequest 对象作为第一个参数。 </p>
-<p>正如我们在第一个视图例子里面看到的，一个视图功能必须返回一个<code>HttpResponse</code>。 一旦做完，Django将完成剩余的转换Python的对象到一个合适的带有HTTP头和body的Web Response，（例如，网页内容）。</p>
-<p>总结一下：</p>
-<ol>
-<li><p>进来的请求转入/hello/.</p>
-</li>
-<li><p>Django通过在ROOT_URLCONF配置来决定根URLconf.</p>
-</li>
-<li><p>Django在URLconf中的所有URL模式中，查找第一个匹配/hello/的条目。</p>
-</li>
-<li><p>如果找到匹配，将调用相应的视图函数</p>
-</li>
-<li><p>视图函数返回一个HttpResponse</p>
-</li>
-<li><p>Django转换HttpResponse为一个适合的HTTP response， 以Web page显示出来</p>
-</li>
-</ol>
-<p>你现在知道了怎么做一个 Django-powered 页面了，真的很简单，只需要写视图函数并用 <code>URLconfs</code>把它们和URLs对应起来。 你可能会认为用一系列正则表达式将URLs映射到函数也许会比较慢，但事实却会让你惊讶。</p>
-<p>–《django book 2.0》</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/URLconf的url匹配/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/15/URLconf的url匹配/" itemprop="url">URLconf的url匹配</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T16:26:40+08:00">
-                2015-04-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Django在检查URL模式前，移除每一个申请的URL开头的斜杠(/)。 这意味着我们为<code>/hello/</code>写URL模式不用包含斜杠(/)。（刚开始，这样可能看起来不直观，但这样的要求简化了许多工作，如URL模式内嵌，我们将在django book第八章谈及。）</p>
-<p>模式包含了一个尖号(^)和一个美元符号($)。这些都是正则表达式符号，并且有特定的含义： <strong>上箭头要求表达式对字符串的头部进行匹配，美元符号则要求表达式对字符串的尾部进行匹配</strong>。</p>
-<p>最好还是用范例来说明一下这个概念。 如果我们用尾部不是$的模式<code>’^hello/’</code>，那么任何以<code>/hello/</code>开头的URL将会匹配，例如：<code>/hello/foo</code>和<code>/hello/bar</code>，而不仅仅是<code>/hello/</code>。类似地，如果我们忽略了尖号(^)，即<code>’hello/$’</code>，那么任何以<code>hello/</code>结尾的URL将会匹配，例如：<code>/foo/bar/hello/</code>。如果我们简单使用<code>hello/</code>，即没有^开头和$结尾，那么任何包含<code>hello/</code>的URL将会匹配，如：<code>/foo/hello/bar</code>。因此，我们使用这两个符号以确保只有<code>/hello/</code>匹配，不多也不少。</p>
-<p>你大多数的URL模式会以<code>^</code>开始、以<code>$</code>结束，但是拥有复杂匹配的灵活性会更好。</p>
-<p>你可能会问：如果有人申请访问/hello（尾部没有斜杠/）会怎样。 因为我们的URL模式要求尾部有一个斜杠(/)，那个申请URL将不匹配。 <strong>然而，默认地，任何不匹配或尾部没有斜杠(/)的申请URL，将被重定向至尾部包含斜杠的相同字眼的URL</strong>。 （这是受配置文件setting中APPEND_SLASH项控制的，参见django book附件D。）</p>
-<p>如果你是喜欢所有URL都以’/’结尾的人（Django开发者的偏爱），那么你只需要在每个URL后添加斜杠，并且设置<code>”APPEND_SLASH”</code>为<code>”True”</code>. 如果不喜欢URL以斜杠结尾或者根据每个URL来决定，那么需要设置<code>”APPEND_SLASH”</code>为<code>”False”</code>,并且根据你自己的意愿来添加结尾斜杠/在URL模L模式后.</p>
-<p>–《django book 2.0》</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/python的搜索路径/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/15/python的搜索路径/" itemprop="url">python的搜索路径</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T16:24:56+08:00">
-                2015-04-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Python 搜索路径 就是使用 import 语句时，Python 所查找的系统目录清单。</p>
-<p>举例来说，假定你将 Python 路径设置为<code>[&#39;&#39;,&#39;/usr/lib/python2.4/site-packages&#39;,&#39;/home/username/djcode/&#39;]</code>。如果执行代码 <code>from foo import bar</code> ，Python 将会首先在当前目录查找 foo.py 模块( Python 路径第一项的空字符串表示当前目录)。 如果文件不存在，Python将查找 <code>/usr/lib/python2.4/site-packages/foo.py</code> 文件。</p>
-<p>如果你想看Python搜索路径的值，运行Python交互解释器，然后输入：</p>
-<pre><code>&gt;&gt;&gt; import sys
-&gt;&gt;&gt; print sys.path
-</code></pre><p>通常，你不必关心 Python 搜索路径的设置。 Python 和 Django 会在后台自动帮你处理好。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/14/python路径操作/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/14/python路径操作/" itemprop="url">python路径操作</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-14T14:32:19+08:00">
-                2015-04-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##<code>__file__</code><br><code>__file__</code>可以获取当前的脚本</p>
-<p>在/root/michael/目录下创建一个脚本为test.py</p>
-<p>在脚本里写下</p>
-<pre><code>#!/usr/bin/env python
-
-import os
-
-print __file__
-print os.path.abspath(__file__)
-print os.path.dirname(os.path.abspath(__file__))
-</code></pre><p>运行结果为</p>
-<pre><code>[root@pc105 michael]# ./test.py 
-./test.py
-/root/michael/test.py
-/root/michael
-</code></pre><ul>
-<li><p><code>__file__</code>是取当前脚本的路径，是相对路径，所以一般要在前面加上<code>abspath</code>来取绝对路径</p>
-</li>
-<li><p><code>os.path.dirname</code>获得当前目录的上级目录</p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/13/scp不能拷贝符号链接/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/04/13/scp不能拷贝符号链接/" itemprop="url">scp不能拷贝符号链接</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-13T09:42:34+08:00">
-                2015-04-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T16:22:15+08:00">
+                2015-03-20
               </time>
             
 
@@ -1514,8 +379,27 @@ print os.path.dirname(os.path.abspath(__file__))
       
         
           
-            <p>今天把一个web目录直接scp -r到另一台机器上，发现起不来，后来发现是在配置目录下的一些符号连接都没有拷贝过来。</p>
-<p>如果要将这些符号连接拷贝过来，不能直接scp -r这个文件夹，<strong>需要先将文件夹打包，然后拷贝</strong></p>
+            <p>调度也称<code>dispatcher</code>， 内核的主要职责之一就是决定该轮到哪个任务运行了。多数实时内核是基于优先级调度算法的。每个任务根据其重要程度的不同被赋予一定的优先级。基于优先级的调度法指CPU 总是让处在就绪态的优先级最高的任务先运行，然而究竟何时让高优先级任务掌握CPU 的使用权有两种不同的情况。这要看用的是什么类型的内核，是非占先式，还是占先式的内核。一个良好的任务调度算法应该主要体现在以下几个方面</p>
+<ol>
+<li>公平保证每个进程得到合理的CPU 时间</li>
+<li>高效使CPU保持忙碌状态即总是有进程在CPU上运行</li>
+<li>响应时间使交互用户的响应时间尽可能短</li>
+<li>周转时间使批处理用户等待输出的时间尽可能短</li>
+<li>吞吐量使单位时间内处理的进程尽可能多</li>
+</ol>
+<p>很显然在任何操作系统中这几个目标不可能同时达到，所以不同的操作系统会在这几个方面中做出相应的取舍，从而确定自己的调度算法，常用的处理机调度算法有：</p>
+<ol>
+<li>先来先服务FCFS</li>
+<li>短作业优先SJF</li>
+<li>优先级</li>
+<li>时间片轮转法</li>
+<li>多级队列法</li>
+<li>多级反馈队列法</li>
+</ol>
+<p><strong>先来先服务</strong>：FCFS 是最简单的CPU 调度算法，即按进程到来的先后次序进行调度，这样在系统中等待时间最长的进程被优先调度，而不管其所需运行时间的长短。</p>
+<p><strong>作业优先</strong>：SJF 算法是指当CPU 可供使用时，SJF 算法把CPU 分给需要运行时间最短的进程。</p>
+<p><strong>多级队列调度算法</strong>：把就绪队列划分成几个单独的队列，一般根据进程的某些特性如内存大小和进程类型，永久性地把各个进程分别链入其中某一个队列中，每个队列都有自己的调度算法，此外在各个队列之间也要进行调度。通常采用固定优先级的抢占式调度，例如某系统中有5 个队列，各个队列的优先级自上而下降低，只有当前3 个队列中都为空的时候，队列4 中的进程才可以运行，而当队列4 中的进程在运行时，如果队列1 中进入了一个就绪进程，则队列4 中的进程要立刻让出CPU 使用权。多级反馈队列法允许进程在各队列间移动，其基本思想是把具有不同CPU工作时间这一特性的进程区分开来，如果一个进程要使用很长的CPU 时间，则应把它移至较低级的队列中，这种方式把I/O 繁忙型和交互式进程放在较高优先级的队列中，同样在低优先级队列中长时间等待的进程可以移到较高优先级队列中，UNIX 系统采用的是多级反馈队列轮转法。</p>
+<p><strong>时间片轮转调度法</strong>：<code>round-robin scheduling</code><br>当两个或两个以上任务有同样优先级，内核允许一个任务运行事先确定的一段时间叫做时间额度quantum ，然后切换给另一个任务也叫做时间片调度time slicing ，内核在满足以下条件时把CPU 控制权交给下一个任务就绪态的任务， 当前任务已无事可做，当前任务在时间片还没结束时已经完成了。轮转法主要是为分时系统设计的，其中时间片是一个重要的参数不能取的过大或过小，通常为10 至100ms 数量级，就绪队列可以看成是一个环形队列，CPU 调度程序轮流地把CPU 分给就绪队列中地每个进程，时间长度为一个时间片Linux 操作系统就是采用时间片轮转的调度算法。</p>
 
           
         
@@ -1564,7 +448,7 @@ print os.path.dirname(os.path.abspath(__file__))
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/08/python导入模块/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/socket的长连接和短连接/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -1583,7 +467,7 @@ print os.path.dirname(os.path.abspath(__file__))
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/04/08/python导入模块/" itemprop="url">python导入模块</a></h1>
+                <a class="post-title-link" href="/2015/03/20/socket的长连接和短连接/" itemprop="url">socket的长连接和短连接</a></h1>
         
 
         <div class="post-meta">
@@ -1595,8 +479,875 @@ print os.path.dirname(os.path.abspath(__file__))
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-08T09:45:36+08:00">
-                2015-04-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T16:20:43+08:00">
+                2015-03-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>所谓<code>长连接</code>，指在一个TCP连接上可以连续发送多个数据包，在TCP连接保持期间，如果没有数据包发送，需要双方发检测包以维持此连接，一般需要自己做在线维持。 </p>
+<p><code>短连接</code>是指通信双方有数据交互时，就建立一个TCP连接，数据发送完成后，则断开此TCP连接，一般银行都使用短连接。  </p>
+<p>比如http的，只是连接、请求、关闭，过程时间较短,服务器若是一段时间内没有收到请求即可关闭连接。 </p>
+<p>其实长连接是相对于通常的短连接而说的，也就是长时间保持客户端与服务端的连接状态。</p>
+<p>##长连接与短连接的操作过程</p>
+<p>通常的短连接操作步骤是：<br>连接→数据传输→关闭连接；</p>
+<p>而长连接通常就是：<br>连接→数据传输→保持连接(心跳)→数据传输→保持连接(心跳)→……→关闭连接；<br>这就要求长连接在没有数据通信时，定时发送数据包(心跳)，以维持连接状态，短连接在没有数据传输时直接关闭就行了</p>
+<p>##什么时候用长连接，短连接？</p>
+<p>长连接多用于操作频繁，点对点的通讯，而且连接数不能太多情况，。每个TCP连接都需要三步握手，这需要时间，如果每个操作都是先连接，再操作的话那么处理速度会降低很多，所以每个操作完后都不断开，次处理时直接发送数据包就OK了，不用建立TCP连接。例如：数据库的连接用长连接， 如果用短连接频繁的通信会造成socket错误，而且频繁的socket 创建也是对资源的浪费。</p>
+<p>而像WEB网站的http服务一般都用短链接，因为长连接对于服务端来说会耗费一定的资源，而像WEB网站这么频繁的成千上万甚至上亿客户端的连接用短连接会更省一些资源，如果用长连接，而且同时有成千上万的用户，如果每个用户都占用一个连接的话，那可想而知吧。所以并发量大，但每个用户无需频繁操作情况下需用短连好。 </p>
+<p>##发送接收方式</p>
+<p>###异步<br>报文发送和接收是分开的，相互独立的，互不影响。这种方式又分两种情况：</p>
+<ol>
+<li>异步双工：接收和发送在同一个程序中，由两个不同的子进程分别负责发送和接收 </li>
+<li>异步单工：接收和发送是用两个不同的程序来完成。<br>###同步<br>报文发送和接收是同步进行，既报文发送后等待接收返回报文。 同步方式一般需要考虑超时问题，即报文发出去后不能无限等待，需要设定超时时间，超过该时间发送方不再等待读返回报文，直接通知超时返回。</li>
+</ol>
+<p><strong>在长连接中一般是没有条件能够判断读写什么时候结束，所以必须要加长度报文头。读函数先是读取报文头的长度，再根据这个长度去读相应长度的报文。</strong>具体原因可以参考<a href="http://michaelyou.github.io/2015/03/13/tcp%E6%98%AF%E6%B5%81%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83-%E6%8B%86%E5%8C%85%E5%92%8C%E7%B2%98%E5%8C%85/" target="_blank" rel="external">这里</a></p>
+<p>##补充：HTTP的长连接</p>
+<p>HTTP也可以建立长连接的，使用Connection:keep-alive，HTTP 1.1默认进行持久连接。HTTP1.1和HTTP1.0相比较而言，最大的区别就是增加了持久连接支持(貌似最新的 http1.0 可以显示的指定 keep-alive)，但还是无状态的，或者说是不可以信任的。 </p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/diff比较两个文件夹/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/20/diff比较两个文件夹/" itemprop="url">diff比较两个文件夹</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T10:47:13+08:00">
+                2015-03-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>diff -urNa dir1 dir2</p>
+<p><strong>-a</strong>： Treat  all  files  as text and compare them  line-by-line, even if they do not seem to be text.</p>
+<p><strong>-N</strong>： In  directory  comparison, if a file is found in only one directory, treat it as present but empty in the other directory.</p>
+<p><strong>-r</strong>： When comparing directories, recursively compare any subdirectories found.</p>
+<p><strong>-u</strong>： Use the unified output format.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/19/DNS原理及其解析过程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/19/DNS原理及其解析过程/" itemprop="url">DNS原理及其解析过程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-19T21:21:26+08:00">
+                2015-03-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/网络/" itemprop="url" rel="index">
+                    <span itemprop="name">网络</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>网络通讯大部分是基于TCP/IP的，而TCP/IP是基于IP地址的，所以计算机在网络上进行通讯时只能识别如<code>202.96.134.133</code>之类的IP地址，而不能认识域名。我们无法记住10个以上网站的IP地址，所以我们访问网站时，更多的是在浏览器地址栏中输入域名，就能看到所需要的页面，这是因为有一个叫<code>DNS服务器</code>的计算机自动把我们的域名“翻译”成了相应的IP地址，然后调出IP地址所对应的网页。</p>
+<p>##什么是DNS<br> DNS( Domain Name System)是<code>域名系统</code>的英文缩写，是一种组织成域层次结构的计算机和网络服务命名系统，它用于TCP/IP网络，它所提供的服务是用来将主机名和域名转换为IP地址的工作。DNS就是这样的一位“翻译官”，它的基本工作原理可用下图来表示。</p>
+<p><img src="/img/DNS.jpg" alt=""></p>
+<p>##DNS使用的协议<br>DNS<strong>同时占用UDP和TCP端口53</strong>是公认的，这种单个应用协议同时使用两种传输协议的情况在TCP/IP栈也算是个另类。但很少有人知道DNS分别在什么情况下使用这两种协议。 </p>
+<blockquote>
+<p>DNS在进行区域传输的时候使用TCP协议，其它时候则使用UDP协议；</p>
+</blockquote>
+<p> DNS的规范规定了2种类型的DNS服务器，一个叫主DNS服务器，一个叫辅助DNS服务器。在一个区中主DNS服务器从自己本机的数据文件中读取该区的DNS数据信息，而辅助DNS服务器则从区的主DNS服务器中读取该区的DNS数据信息。当一个辅助DNS服务器启动时，它需要与主DNS服务器通信，并加载数据信息，这就叫做区传送（zone transfer）。 </p>
+<p>为什么既使用TCP又使用UDP？ </p>
+<p>首先了解一下TCP与UDP传送字节的长度限制： </p>
+<blockquote>
+<p>UDP报文的最大长度为512字节，而TCP则允许报文长度超过512字节。当DNS查询超过512字节时，协议的TC标志出现删除标志，这时则使用TCP发送。通常传统的UDP报文一般不会大于512字节。 </p>
+</blockquote>
+<p><strong>区域传送时使用TCP</strong>，主要有一下两点考虑： </p>
+<ol>
+<li>辅域名服务器会定时（一般时3小时）向主域名服务器进行查询以便了解数据是否有变动。如有变动，则会执行一次区域传送，进行数据同步。区域传送将使用TCP而不是UDP，因为数据同步传送的数据量比一个请求和应答的数据量要多得多。 </li>
+<li>TCP是一种可靠的连接，保证了数据的准确性。 </li>
+</ol>
+<p>域名解析时使用UDP协议： </p>
+<p><strong>客户端向DNS服务器查询域名，一般返回的内容都不超过512字节，用UDP传输即可</strong>。不用经过TCP三次握手，这样DNS服务器负载更低，响应更快。虽然从理论上说，客户端也可以指定向DNS服务器查询的时候使用TCP，但事实上，很多DNS服务器进行配置的时候，仅支持UDP查询包。</p>
+<p>##DNS的查询过程</p>
+<p><img src="/img/DNS的查询过程.jpg" alt=""></p>
+<ol>
+<li>在浏览器中输入www.qq.com域名，操作系统会先检查自己本地的hosts文件是否有这个网址映射关系，如果有，就先调用这个IP地址映射，完成域名解析。 </li>
+<li>如果hosts里没有这个域名的映射，则查找<strong>本地DNS解析器缓存</strong>，是否有这个网址映射关系，如果有，直接返回，完成域名解析。 </li>
+<li>如果hosts与本地DNS解析器缓存都没有相应的网址映射关系，首先会找TCP/ip参数中设置的首选DNS服务器，在此我们叫它<strong>本地DNS服务器</strong>，此服务器收到查询时，如果要查询的域名，包含在本地配置区域资源中，则返回解析结果给客户机，完成域名解析，此解析具有权威性。 </li>
+<li>如果要查询的域名，不由本地DNS服务器区域解析，但该服务器已缓存了此网址映射关系，则调用这个IP地址映射，完成域名解析，此解析不具有权威性。 </li>
+<li>如果本地DNS服务器本地区域文件与缓存解析都失效，则根据本地DNS服务器的设置（是否设置转发器）进行查询，如果未用转发模式，本地DNS就把请求发至13台根DNS，根DNS服务器收到请求后会判断这个域名(.com)是谁来授权管理，并会返回一个负责该顶级域名服务器的一个IP。本地DNS服务器收到IP信息后，将会联系负责.com域的这台服务器。这台负责.com域的服务器收到请求后，如果自己无法解析，它就会找一个管理.com域的下一级DNS服务器地址(qq.com)给本地DNS服务器。当本地DNS服务器收到这个地址后，就会找qq.com域服务器，重复上面的动作，进行查询，直至找到www.qq.com主机。 </li>
+<li>如果用的是转发模式，此DNS服务器就会把请求转发至上一级DNS服务器，由上一级服务器进行解析，上一级服务器如果不能解析，或找根DNS或把转请求转至上上级，以此循环。不管是本地DNS服务器用是是转发，还是根提示，最后都是把结果返回给本地DNS服务器，由此DNS服务器再返回给客户机。 </li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/17/能够关闭（close）一个套接字，为何还使用shutdown/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/17/能够关闭（close）一个套接字，为何还使用shutdown/" itemprop="url">能够关闭（close）一个套接字，为何还使用shutdown</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-17T23:22:17+08:00">
+                2015-03-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li><p>只有一个最后一个活动关闭时，close才释放网络断点。这意味着如果复制一个套接字（如采用dup），要直到关闭了最后一个引用它的文件描述符才会释放这个套接字。而shutdown允许使一个套接字处于不活动状态，和引用它的文件描述符无关</p>
+</li>
+<li><p>有时可以很方便地关闭套接字双向传输中的一个方向。例如，如果想让所通信的进程能够确定数据传输何时结束，可以关闭该套接字的写段，然而通过该套接字读端仍可以继续接受数据</p>
+</li>
+</ol>
+<p><strong>注意</strong>：</p>
+<p>在unix中调用了shutdown后，以shutdown（s, 0）为例，此函数为关闭s的接收端，unix会刷新输入队列，以丢弃应用程序还未读取的所有数据。如果有新数据到达，TCP会进行ACK，然后悄悄地将其丢弃。因为应用程序再也无法接收数据了</p>
+<p>shutdown（s，1）关闭连接的发送端。将套接字标识为无法发送任何额外的数据，后继所有试图对套接字进行的写操作都会出错。将发送缓冲区中所有的数据都发送出去之后，TCP会向其对等实体发送一个FIN，通知它没有其他数据了。这被称为半关闭（half close）</p>
+<p>只有关闭连接的发送端被称为半关闭，它虽然也发送FIN，但此FIN与close的FIN有差别，这个FIN表示的是“我已经完成了数据的传送，因此发送一个FIN到另一端，但我还想接收另一端发来的消息，直到他给我发来文件结束（FIN）</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/16/海量数据处理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/16/海量数据处理/" itemprop="url">海量数据处理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-16T17:04:51+08:00">
+                2015-03-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>转载自<a href="http://blog.csdn.net/v_july_v/article/details/6685962" target="_blank" rel="external">这里</a></p>
+<p>##海量日志数据，提取出某日访问百度次数最多的那个IP。</p>
+<p>算法思想：分而治之+Hash</p>
+<ol>
+<li>IP地址最多有2^32=4G种取值情况，所以不能完全加载到内存中处理； </li>
+<li>可以考虑采用“分而治之”的思想，按照IP地址的Hash(IP)%1024值，把海量IP日志分别存储到1024个小文件中。这样，每个小文件最多包含4MB个IP地址； </li>
+<li>对于每一个小文件，可以构建一个IP为key，出现次数为value的Hash map，同时记录当前出现次数最多的那个IP地址；</li>
+<li>可以得到1024个小文件中的出现次数最多的IP，再依据常规的排序算法得到总体上出现次数最多的IP；</li>
+</ol>
+<p>##给定a、b两个文件，各存放50亿个url，每个url各占64字节，内存限制是4G，让你找出a、b文件共同的url？</p>
+<p><strong>方法</strong>：可以估计每个文件安的大小为5G×64=320G，远远大于内存限制的4G。所以不可能将其完全加载到内存中处理。考虑采取分而治之的方法。</p>
+<ol>
+<li>遍历文件a，对每个url求取<code>hash(url)%1000</code>，然后根据所取得的值将url分别存储到1000个小文件中(每个小文件存放的是经过<code>hash(url)%1000</code>计算后结果相同的url)，记为<code>a1a2a3...a999</code>。这样每个小文件的大约为300M。</li>
+</ol>
+<ul>
+<li><p>遍历文件b，采取和a相同的方式将url分别存储到1000小文件中，记为<code>b1b2b3...b999</code>。这样处理后，所有可能相同的url都在对应的小文件中，<code>a1-&gt;b1，a2-&gt;b2，...，a999-&gt;b999</code>，不对应的小文件不可能有相同的url(相同的url的<code>hash(url)%1000</code>的值也必然相等)。然后我们只要求出1000对小文件中相同的url即可。</p>
+</li>
+<li><p>求每对小文件中相同的url时，可以把其中一个小文件的url存储到<code>hash_set</code>中。然后遍历另一个小文件的每个url，看其是否在刚才构建的<code>hash_set</code>中，如果是，那么就是共同的url，存到文件里面就可以了。</p>
+</li>
+</ul>
+<p>注意点：</p>
+<ol>
+<li>hash后要判断每个文件大小，如果hash分的不均衡有文件较大，还应继续hash分文件，换个hash算法第二次再分较大的文件，一直分到没有较大的文件为止。这样文件标号可以用A1-2表示（第一次hash编号为1，文件较大所以参加第二次hash，编号为2）</li>
+<li>由于1存在，第一次hash如果有大文件，不能用直接set的方法。建议对每个文件都先用字符串自然顺序排序，然后具有相同hash编号的（如都是1-3，而不能a编号是1，b编号是1-1和1-2），可以直接从头到尾比较一遍。对于层级不一致的，如a1，b有1-1，1-2-1，1-2-2，层级浅的要和层级深的每个文件都比较一次，才能确认每个相同的url。</li>
+</ol>
+<p>##有10个文件，每个文件1G，每个文件的每一行存放的都是用户的query，每个文件的query都可能重复。要求你按照query的频度排序。</p>
+<p>方案1：</p>
+<ol>
+<li>顺序读取10个文件，按照<code>hash(query)%10</code>的结果将query写入到另外10个文件中。这样新生成的文件每个的大小大约也1G（假设hash函数是随机的）。</li>
+</ol>
+<ul>
+<li>找一台内存在2G左右的机器，依次对1中生成的10个文件用<code>hash_map(query, query_count)</code>来统计每个query出现的次数。利用快速/堆/归并排序按照出现次数进行排序。将排序好的<code>query</code>和对应的<code>query_cout</code>输出到文件中。这样得到了10个排好序的文件。</li>
+<li>对这10个文件进行归并排序（内排序与外排序相结合）。</li>
+</ul>
+<p>方案2：</p>
+<p>一般query的总量是有限的，只是重复的次数比较多而已，可能对于所有的query，一次性就可以加入到内存了。这样，我们就可以采用trie树/hash_map等直接来统计每个query出现的次数，然后按出现次数做快速/堆/归并排序就可以了</p>
+<p>##寻找热门查询：</p>
+<p>搜索引擎会通过日志文件把用户每次检索使用的所有检索串都记录下来，每个查询串的长度为1-255字节。假设目前有一千万个记录，这些查询串的重复读比较高，虽然总数是1千万，但是如果去除重复和，不超过3百万个。一个查询串的重复度越高，说明查询它的用户越多，也就越热门。请你统计最热门的10个查询串，要求使用的内存不能超过1G。</p>
+<ol>
+<li>先对这批海量数据预处理，在O（N）的时间内用Hash表完成统计；</li>
+<li>借助堆这个数据结构，找出Top K，时间复杂度为<code>N&#39;*logK</code>。即，借助堆结构，我们可以在log量级的时间内查找和调整/移动。因此，维护一个K(该题目中是10)大小的小根堆，然后遍历300万的Query，分别和根元素进行对比所以，我们最终的时间复杂度是：<code>O（N） + N&#39;*O（logK）</code>，（N为1000万，N’为300万）。</li>
+</ol>
+<p>##有一个1G大小的一个文件，里面每一行是一个词，词的大小不超过16字节，内存限制大小是1M。返回频数最高的100个词。</p>
+<p>方案1：</p>
+<ol>
+<li>顺序读文件中，对于每个词x，取<code>hash(x)%5000</code>，然后按照该值存到5000个小文件中。这样每个文件大概是200k左右。如果其中的有的文件超过了1M大小，还可以按照类似的方法继续往下分，直到分解得到的小文件的大小都不超过1M。</li>
+</ol>
+<ul>
+<li>对每个小文件，统计每个文件中出现的词以及相应的频率（可以采用trie树/hash_map等），并取出出现频率最大的100个词（可以用含100个结点的最小堆），并把100词及相应的频率存入文件，这样又得到了5000个文件。</li>
+<li>把这5000个文件进行归并（类似于归并排序）排序。</li>
+</ul>
+<p>##在2.5亿个整数中找出不重复的整数，内存不足以容纳这2.5亿个整数。</p>
+<p><strong>方案1</strong>：采用2-Bitmap（每个数分配2bit，00表示不存在，01表示出现一次，10表示多次，11无意义）进行，共需内存2^32*2bit=1GB内存，还可以接受。然后扫描这2.5亿个整数，查看Bitmap中相对应位，如果是00变01，01变10，10保持不变。所描完事后，查看bitmap，把对应位是01的整数输出即可。</p>
+<p><strong>方案2</strong>：也可采用上题类似的方法，进行划分小文件的方法。然后在小文件中找出不重复的整数，并排序。然后再进行归并，注意去除重复的元素。</p>
+<p>##腾讯面试题：给40亿个不重复的unsigned int的整数，没排过序的，然后再给一个数，如何快速判断这个数是否在那40亿个数当中？</p>
+<p><strong>方案1</strong>：申请512M(<code>512*1024*1024*8 = 40亿bit</code>)的内存，一个bit位代表一个unsigned int值。读入40亿个数，设置相应的bit位，读入要查询的数，查看相应bit位是否为1，为1表示存在，为0表示不存在。</p>
+<p><strong>方案2</strong>：这个问题在《编程珠玑》里有很好的描述，大家可以参考下面的思路，探讨一下：</p>
+<p>因为2^32为40亿多，所以给定一个数可能在，也可能不在其中；<br>这里我们把40亿个数中的每一个用32位的二进制来表示<br>假设这40亿个数开始放在一个文件中。</p>
+<p>然后将这40亿个数分成两类:</p>
+<ol>
+<li>最高位为0</li>
+<li>最高位为1</li>
+</ol>
+<p>并将这两类分别写入到两个文件中，其中一个文件中数的个数&lt;=20亿，而另一个&gt;=20亿（这相当于折半了）；与要查找的数的最高位比较并接着进入相应的文件再查找</p>
+<p>再然后把这个文件为又分成两类:</p>
+<ol>
+<li>次最高位为0</li>
+<li>次最高位为1</li>
+</ol>
+<p>并将这两类分别写入到两个文件中，其中一个文件中数的个数&lt;=10亿，而另一个&gt;=10亿（这相当于折半了）；</p>
+<p>与要查找的数的次最高位比较并接着进入相应的文件再查找。</p>
+<p>…….</p>
+<p>以此类推，就可以找到了,而且时间复杂度为O(logn)，方案2完。</p>
+<p>附：这里，再简单介绍下，位图方法：</p>
+<blockquote>
+<p>使用位图法判断整形数组是否存在重复<br>判断集合中存在重复是常见编程任务之一，当集合中数据量比较大时我们通常希望少进行几次扫描，这时双重循环法就不可取了。</p>
+<p>位图法比较适合于这种情况，它的做法是按照集合中最大元素max创建一个长度为max+1的新数组，然后再次扫描原数组，遇到几就给新数组的第几位置上1，如遇到5就给新数组的第六个元素置1，这样下次再遇到5想置位时发现新数组的第六个元素已经是1了，这说明这次的数据肯定和以前的数据存在着重复。这种给新数组初始化时置零其后置一的做法类似于位图的处理方法故称位图法。它的运算次数最坏的情况为2N。如果已知数组的最大值即能事先给新数组定长的话效率还能提高一倍。</p>
+</blockquote>
+<p>##海量数据分布在100台电脑中，想个办法高效统计出这批数据的TOP10。</p>
+<p>方案1：</p>
+<ol>
+<li>在每台电脑上求出TOP10，可以采用包含10个元素的堆完成（TOP10小，用最大堆，TOP10大，用最小堆）。比如求TOP10大，我们首先取前10个元素调整成最小堆，如果发现，然后扫描后面的数据，并与堆顶元素比较，如果比堆顶元素大，那么用该元素替换堆顶，然后再调整为最小堆。最后堆中的元素就是TOP10大。</li>
+</ol>
+<ul>
+<li>求出每台电脑上的TOP10后，然后把这100台电脑上的TOP10组合起来，共1000个数据，再利用上面类似的方法求出TOP10就可以了。</li>
+</ul>
+<p>##怎么在海量数据中找出重复次数最多的一个？</p>
+<p><strong>方案1</strong>：先做hash，然后求模映射为小文件，求出每个小文件中重复次数最多的一个，并记录重复次数。然后找出上一步求出的数据中重复次数最多的一个就是所求（具体参考前面的题）。</p>
+<p>##上千万或上亿数据（有重复），统计其中出现次数最多的前N个数据。</p>
+<p><strong>方案1</strong>：上千万或上亿的数据，现在的机器的内存应该能存下。所以考虑采用hash_map/搜索二叉树/红黑树等来进行统计次数。然后就是取出前N个出现次数最多的数据了，可以用堆机制完成。</p>
+<p>##1000万字符串，其中有些是重复的，需要把重复的全部去掉，保留没有重复的字符串。请怎么设计和实现？</p>
+<p><strong>方案1</strong>：这题用trie树比较合适，hash_map也应该能行。</p>
+<p>##一个文本文件，大约有一万行，每行一个词，要求统计出其中最频繁出现的前10个词，请给出思想，给出时间复杂度分析。</p>
+<p><strong>方案1</strong>：这题是考虑时间效率。用trie树统计每个词出现的次数，时间复杂度是<code>O(n*le)</code>（le表示单词的平准长度）。然后是找出出现最频繁的前10个词，可以用堆来实现，前面的题中已经讲到了，时间复杂度是<code>O(n*lg10)</code>。所以总的时间复杂度，是<code>O(n*le)</code>与<code>O(n*lg10)</code>中较大的哪一个。</p>
+<p>##一个文本文件，找出前10个经常出现的词，但这次文件比较长，说是上亿行或十亿行，总之无法一次读入内存，问最优解。</p>
+<p><strong>方案1</strong>：首先根据用hash并求模，将文件分解为多个小文件，对于单个文件利用上题的方法求出每个文件件中10个最常出现的词。然后再进行归并处理，找出最终的10个最常出现的词。</p>
+<p>##100w个数中找出最大的100个数。</p>
+<p><strong>方案1</strong>：在前面的题中，我们已经提到了，用一个含100个元素的最小堆完成。复杂度为O(100w*lg100)。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/15/删除list里的重复元素/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/15/删除list里的重复元素/" itemprop="url">删除list里的重复元素</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-15T14:21:26+08:00">
+                2015-03-15
               </time>
             
 
@@ -1657,19 +1408,205 @@ print os.path.dirname(os.path.abspath(__file__))
       
         
           
-            <p>#python导入模块</p>
-<p>##使用from <strong> import </strong>不能节约内存</p>
-<p>python导入模块和他们的属性有两种方法：</p>
-<pre><code>import random
-print random.choice(range(10))
-</code></pre><p>和</p>
-<pre><code>from random import choice
-print choice(range(10))
-</code></pre><p>第一种方法是将模块的名字设置为一个隐含的名字空间里的全局变量，这样你就可以好像访问全局属性那样访问choice函数。而在第二个例子里，我们是直接把choice引入到全局名字空间里来（而非模块的名字）。因此不再需要把这个属性当成是模块的成员了。实际上我们也只拥有了这个属性而已。</p>
-<p><strong>Python新手之间经常有一种误解，以为第二种方法只导入了一个函数，而没有导入整个模块。这是不对的。整个模块其实已经被导入了，但是只有那个函数的引用被保存了起来。所以from-import这种语法并不能带来性能上的差异，也没有节省什么内存。</strong></p>
-<p>##能不能重复导入一个模块</p>
-<p>新手经常会担忧的一个问题是他们有两个模块m.py和n.py都导入了foo.py模块。当m导入n时，foo岂不是会被导入两次？简单的来说，没错，是这样的，但是和你想的有点不一样。</p>
-<p>Python有<code>导入模块</code>（importing）和<code>加载模块</code>（loading）之分。一个模块可以被导入任意多次，但是它<strong>只会被加载一次</strong>。就是说，当Python碰到一个已经被加载的模块又被导入时，它会跳过加载的过程，所以你无需担心额外消耗内存的问题。</p>
+            <p>##方法一：先排序后比较大小</p>
+<pre><code>if List:
+    List.sort()
+last = List[-1]
+for i in range(len(List)-2, -1, -1):
+    if last==List[i]: 
+        del List[i]
+    else: 
+        last=List[i]
+</code></pre><p>问题：为什么要从后往前迭代呢？我们可以从list[0]开始啊，代码如下：</p>
+<pre><code>if List:
+    List.sort()
+begin = List[0]
+for i in range(1, len(list)):
+    if begin==List[i]: 
+        del List[i]
+    else: 
+        begin=List[i]
+</code></pre><p>运行一下，报错如下：</p>
+<pre><code>IndexError: list index out of range
+</code></pre><p>数组访问越界了！why？</p>
+<p>我们调用del删除list里的元素，相应的list的长度也会自动减小，但我们迭代的范围range(1, len(list))是一开始就计算好的，所以必然会越界。比如说：</p>
+<pre><code>li = [1,1,2,2,3,3,3,4,5,6]
+</code></pre><p>调用len计算得到li的长度为10，range(1,10)得到我们迭代的序列是1-9，但是当我们删除了li中的重复元素1,2,3之后，li的长度只剩下了6，可是我们依然会访问li[7]，因为访问序列一开始就计算好了，所以必然造成了越界。</p>
+<p>那从后向前是如何避免越界的呢？从后向前遍历，删除元素后，只是把这个元素之后的已经没有重复元素的序列向前移动一位，数组依然在变短，但这个时候是不会影响到我们向前遍历的。</p>
+<p>##方法二：使用set</p>
+<pre><code>&gt;&gt;&gt; li = [1,2,4,5,7,8,2,3,4,56,7]
+&gt;&gt;&gt; list(set(li))
+&gt;&gt;&gt; [1, 2, 3, 4, 5, 7, 8, 56]
+</code></pre><p>##方法三：使用列表综合</p>
+<pre><code>l1 = [&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;b&apos;,&apos;c&apos;,&apos;a&apos;,&apos;a&apos;]  
+l2 = []  
+[l2.append(i) for i in l1 if not i in l2]  
+print l2
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/13/tcp是流的一些思考-拆包和粘包/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/13/tcp是流的一些思考-拆包和粘包/" itemprop="url">tcp是流的一些思考--拆包和粘包</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-13T16:19:01+08:00">
+                2015-03-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
+                    <span itemprop="name">TCP/IP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>假设应用层协议是http</p>
+<p>我从浏览器中访问了一个网站，网站服务器给我发了200k的数据。建立连接的时候，通告的MSS是50k，所以为了防止ip层分片，tcp每次只会发送50k的数据，一共发了4个tcp数据包。如果我又访问了另一个网站，这个网站给我发了100k的数据，这次tcp会发出2个包，问题是，客户端收到6个包，怎么知道前4个包是一个页面，后两个是一个页面。既然是tcp将这些包分开了，那tcp会将这些包重组吗，它送给应用层的是什么？</p>
+<p>这是我自己想的一个场景，正式一点讲的话，这个现象叫<strong>拆包</strong>。</p>
+<p>我们再考虑一个问题。</p>
+<p>tcp中有一个negal算法，用途是这样的：通信两端有很多小的数据包要发送，虽然传送的数据很少，但是流程一点没少，也需要tcp的各种确认，校验。这样小的数据包如果很多，会造成网络资源很大的浪费，negal算法做了这样一件事，当来了一个很小的数据包，我不急于发送这个包，而是等来了更多的包，将这些小包组合成大包之后一并发送，不就提高了网络传输的效率的嘛。这个想法收到了很好的效果，但是我们想一下，如果是分属于两个不同页面的包，被合并在了一起，那客户那边如何区分它们呢？</p>
+<p>这就是<strong>粘包</strong>问题。</p>
+<p>从粘包问题我们更可以看出为什么tcp被称为流协议，因为它就跟水流一样，是没有边界的，没有消息的边界保护机制，所以tcp只有流的概念，没有包的概念。</p>
+<p>我们还需要有两个概念</p>
+<ul>
+<li><strong>长连接</strong>： Client方与Server方先建立通讯连接，连接建立后不断开， 然后再进行报文发送和接收。</li>
+<li><strong>短连接</strong>：Client方与Server每进行一次报文收发交易时才进行通讯连接，交易完毕后立即断开连接。此种方式常用于一点对多点  通讯，比如多个Client连接一个Server.</li>
+</ul>
+<p>下面我们揭晓答案：</p>
+<ol>
+<li>我想象的关于粘包的场景是不对的，http连接是短连接，请求之后，收到回答，立马断开连接，不会出现粘包。</li>
+<li>拆包现象是有可能存在的</li>
+</ol>
+<p>##处理拆包<br>既然拆包现象可能存在，如果遇到了，那么该如何处理呢？这里提供两种方法</p>
+<ol>
+<li>通过包头+包长+包体的协议形式，当服务器端获取到指定的包长时才说明获取完整。 </li>
+<li>指定包的结束标识，这样当我们获取到指定的标识时，说明包获取完整。 </li>
+</ol>
+<p>##处理粘包<br>我们从上面的分析看到，虽然像http这样的短连接协议不会出现粘包的现象，但是一旦建立了长连接，粘包还是有可能会发生的。</p>
+<p>网上的处理方法有很多，这里不列举了，但大家看这些处理方法，都会发现，这些方法并不好，都会做一些牺牲。比如禁用negal算法，就是以网络性能作为牺牲。</p>
 
           
         
@@ -1718,7 +1655,7 @@ print choice(range(10))
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/28/i-的线程安全性/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/一些阿里面试题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -1737,7 +1674,7 @@ print choice(range(10))
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/28/i-的线程安全性/" itemprop="url">i++的线程安全性</a></h1>
+                <a class="post-title-link" href="/2015/03/12/一些阿里面试题/" itemprop="url">一些阿里面试题</a></h1>
         
 
         <div class="post-meta">
@@ -1749,8 +1686,8 @@ print choice(range(10))
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-28T18:25:29+08:00">
-                2015-03-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T20:17:38+08:00">
+                2015-03-12
               </time>
             
 
@@ -1772,8 +1709,8 @@ print choice(range(10))
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
                   </a>
                 </span>
 
@@ -1811,21 +1748,211 @@ print choice(range(10))
       
         
           
-            <p>转载自<a href="http://blog.csdn.net/sapair/archive/2009/06/05/4243974.aspx" target="_blank" rel="external">这里</a></p>
-<p>i++的线程安全性可以总结如下：</p>
+            <p>##内存泄露最终的结果在操作系统中的表现是什么？<br>内存泄漏形象的比喻是“操作系统可提供给所有进程的存储空间正在被某个进程榨干”，最终结果是<strong>程序运行时间越长，占用存储空间越来越多，最终用尽全部存储空间，整个系统崩溃。</strong>所以“内存泄漏”是从操作系统的角度来看的。这里的存储空间并不是指物理内存，而是指虚拟内存大小，这个虚拟内存大小取决于磁盘交换区设定的大小。由程序申请的一块内存，如果没有任何一个指针指向它，那么这块内存就泄漏了。</p>
+<p>从用户使用程序的角度来看，内存泄漏本身不会产生什么危害，作为一般的用户，根本感觉不到内存泄漏的存在。<strong>真正有危害的是内存泄漏的堆积，这会最终消耗尽系统所有的内存。</strong>从这个角度来说，一次性内存泄漏并没有什么危害，因为它不会堆积，而隐式内存泄漏危害性则非常大，因为较之于常发性和偶发性内存泄漏它更难被检测到。</p>
+<p>##malloc-free和new-delete的区别</p>
+<p>malloc-free是c/c++中的函数，new-delete是c++中的运算符</p>
+<p>##怎么知道http首部结束了？</p>
+<p>http首部由一个空行结束，也就是<code>\r\n\r\n</code>，表明了首部的结束和实体主体的开始。</p>
+<p>实体的主体部分包含一个由任意数据组成的数据块。并不是所有的报文都包含实体的主体部分。如<code>GET请求就不包含实体</code>。</p>
+<p>##tcpdump抓包是在哪一层？</p>
+<p>Linux下抓取报文的位置，是在链路层处理报文之后，交给网络层之前的位置。</p>
+<p>##同一端口可否同时被两个应用监听？<br>不可以，但是fork的子进程用netstat看确实和父进程监听在同一端口，但是这和两个独立的进程应该是有所区别的</p>
+<p>同一机器上的应用如果监听在同一端口，那socket的四元组就是一样的了，这是不可能的</p>
+<p>##查看命令的帮助文档的命令</p>
+<ul>
+<li>man是查看本地      </li>
+<li>info是查看在线</li>
+</ul>
+<p>##谁在决定是使用Big-endian，还是Little-endian？</p>
+<p>在计算存储中是CPU，也就是CPU的体系结构，还是有点抽象啊。比如x86的是小端，power-pc的是大端。</p>
+<p>##线性表的顺序结构和链表结构各有什么优缺点</p>
+<ul>
+<li><p>顺序结构：</p>
+<ul>
+<li>优点：易于查询，索引快 list[n]这样的操作，O(1)复杂度</li>
+<li>缺点：扩展性弱，不易删除、添加。</li>
+</ul>
+</li>
+<li><p>链表结构：</p>
+<ul>
+<li>优点：扩展性强，易于删除、添加</li>
+<li>缺点：不易于查询，索引慢，list[n]这样的操作，复杂度为O(n)</li>
+</ul>
+</li>
+</ul>
+<p>##shell的if和for语句</p>
+<p>if语句</p>
+<pre><code>if condition;
+then
+    commands
+fi
+</code></pre><p>for语句</p>
+<pre><code>for i in ***; do
+commands
+done
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/print0-xargs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/12/print0-xargs/" itemprop="url">print0 && xargs</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T20:12:59+08:00">
+                2015-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>awk和sed之前看过，好久不用又忘记了，也没有总结，所以要学习还得再上网找资料，索性自己来总结一下。-print0和xargs之前一直在用，但是模模糊糊，一知半解，今天一并解决。</p>
+<p>##-print</p>
 <ol>
-<li>如果i是局部变量，那么是可重入的，也就是线程安全的。</li>
-<li>如果i是全局变量，则同一进程的不同线程都可能访问到该变量，因而是线程不安全的。</li>
+<li>-print是find命令的一个参数，别的命令是没有的（我没见过，说错了请大家指正）</li>
+<li>-print0是-print的一个形态，也可以不加最后的0</li>
 </ol>
-<p>上面这两点比较清晰，具体原因我将在下面解释：</p>
-<p>本质上来讲，i并不是因为是全局变量才说是线程不安全的。其实其本质原因是i++这个操作并不是原子的，如果这是原子操作的话，具有不可分特性，那么即便是所有线程都能访问到，也都是线程安全的。</p>
-<p>i++最终被编译后的反汇编代码大概如下：</p>
-<pre><code>mov eax，[xxxxxxxx]
-inc   eax
-</code></pre><p>一条c语句已经被分为两条操作指令，那么在这两条操作指令执行之间，可能由于中断而被调度到不同线程，于是，不安全性就产生了。当然了，这并不是说单条汇编语句就是线程安全的，这取决于CPU架构，因为单条汇编指令可能在多个CPU时钟周期内进行，有些CPU架构可以在任何一个时钟周期内响应中断，对于这样的CPU，就是单条指令都不是安全的。当然了，现在的CPU大部分都是一条指令执行完后才能响应中断的。想要进行原子操作，方法有很多种，其中一种比较简单的是在原子语句之间先关闭中断，然后进行原子操作后再打开中断就OK了。</p>
-<p>##原子操作</p>
-<p>所谓原子操作是指不会被线程调度机制打断的操作；这种操作一旦开始，就一直运行到结束，中间不会有任何 context switch （切换到另一个线程），不能被更高等级中断抢夺优先。</p>
-<p>由于操作系统大部分时间处于开中断状态，所以，一个程序在执行的时候可能被优先级更高的线程中断。而有些操作是不能被中断的，不然会出现无法还原的后果，这时候，这些操作就需要原子操作。就是不能被中断的操作。</p>
+<p>-print指明打印出匹配文件的文件名。当使用-print时，’\n’作为用于输出的文件名进行分隔。</p>
+<p>-print0指明使用’\0’作为匹配的文件名之间的定界符。</p>
+<p>##xargs</p>
+<p>我们可以用管道将一个命令的stdout重定向到另一个命令的stdin。例如：</p>
+<pre><code>command | grep &quot;text&quot;
+</code></pre><p>但是有些命令只能以命令行参数的形式接受数据，而无法通过stdin接受数据流。在这种情况下，我们无法用管道来提供哪些只有通过命令行参数才能提供的数据。</p>
+<p>只是就只能另辟蹊径了。该xargs命令上场了，他擅长将标准输入数据转换成命令行参数。xargs能够处理stdin并将其转换成特定命令的命令行参数。xargs也可以将单行或多行文本输入转换成其他格式，例如单行变多行或多行变单行。</p>
+<p>xargs应该紧跟在管道操作符之后，以标注输入作为主要的原数据流</p>
+<pre><code>command | xargs 
+</code></pre><p>例如：删除path路径下的所有文件</p>
+<pre><code>rm `find /path -type f`
+</code></pre><p>如果path目录下文件过多就会因为“参数列表过长”而报错无法执行。但改用xargs以后，问题即获解决。</p>
+<pre><code>find /path -type f -print0 | xargs -0 rm
+</code></pre><p>xargs将find产生的长串文件列表拆散成多个子串，然后对每个子串调用rm。</p>
+<p><strong>awk和sed的东西比较多，为了避免文章太长，另外写吧</strong></p>
 
           
         
@@ -1865,7 +1992,7 @@ inc   eax
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1911,7 +2038,7 @@ inc   eax
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">193</span>
+                <span class="site-state-item-count">163</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

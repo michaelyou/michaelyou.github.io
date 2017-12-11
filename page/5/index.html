@@ -286,156 +286,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/19/让mac的终端实现克隆会话功能/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/19/让mac的终端实现克隆会话功能/" itemprop="url">让mac的终端实现克隆会话功能</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-19T10:34:12+08:00">
-                2015-05-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mac/" itemprop="url" rel="index">
-                    <span itemprop="name">mac</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>win上的securecrt和xshell都支持克隆回话，这样ssh到别的主机就不需要每次都输入密码。mac版的securecrt非常难用，网上找到方法可以让mac自带的终端实现克隆会话的功能，如下。</p>
-<pre><code>cd ~/.ssh
-touch config
-</code></pre><p>在config文件中写入下面的内容：</p>
-<pre><code>Host *
-    ControlMaster auto
-    ControlPath ~/.ssh/%h-%p-%r
-    ControlPersist yes
-</code></pre><p>第一次登陆输入密码后，第二次登陆就不需要密码了。每次登陆，会在~/.ssh中建立一个soket文件，下次用相同用户名，端口，主机名进行连接就会自动复用</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/15/openstack-horizon管理页面屏蔽/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -678,163 +528,6 @@ def horizon_nav(context):
 <p>有不明白之处，可以联系：wq_you@163.com</p>
 <p>##参考资料</p>
 <p><a href="http://www.cnblogs.com/yuxc/p/3419102.html" target="_blank" rel="external">Horizon Is Easy, Horizon Is Complex</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/15/终端和finder的切换/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/15/终端和finder的切换/" itemprop="url">终端和finder的切换</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-15T08:57:13+08:00">
-                2015-05-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mac/" itemprop="url" rel="index">
-                    <span itemprop="name">mac</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>我们很多人习惯了在终端中操作，使用命令行很方便，但有时候我们可能需要打开当前终端所在路径的finder（比如你的程序生成了一个pdf文档或者网页），更多时候我们需要在打开的finder中打开终端，本文介绍具体怎么做。</p>
-<p>##在终端中打开finder<br>这个非常简单，一条命令即可。</p>
-<pre><code>open .
-</code></pre><p>在终端中敲入这条命令，就可以打开当前路径的finder</p>
-<p>##在当前finder中启动终端</p>
-<p>###方法一：mac自带</p>
-<p>依次打开System Preferences &gt; Keyboard &gt; Services &gt; Files and Folders 下面找到New Terminal Tab at Folder(我的系统设置是英文，大家凑合看吧）</p>
-<blockquote>
-<p>Files and Folders 下面有 <code>New Terminal at Folder</code> 和 <code>New Terminal Tab at Folder</code>两个选项，其实差不多，只是<code>New Terminal Tab at Folder</code>会在已经存在一个终端的情况下以标签形式出现在之前的终端里面</p>
-</blockquote>
-<p>然后在Finder右键一个文件夹，右键菜单里面 Services 选择 New Terminal Tab at Folder 就打开了当前位置的终端了。</p>
-<p>###方法二：go2shell</p>
-<p>这个方法需要借助mac里的软件，但是相比方法一更简单也更人性化。</p>
-<p><a href="https://itunes.apple.com/us/app/go2shell/id445770608?mt=12" target="_blank" rel="external">go2shell</a>是mac上的一款免费软件，下载之后将其拖动到finder的头部即可，<a href="https://itunes.apple.com/us/app/go2shell/id445770608?mt=12" target="_blank" rel="external">安装页面</a>有详细介绍。</p>
-<p><img src="http://a2.mzstatic.com/us/r30/Purple1/v4/ce/0b/39/ce0b39ea-42a1-c6b0-25d6-33043945804c/screen800x500.jpeg" alt=""></p>
-<p><strong>Note: 拖动go2shell的时候直接拖是没有用的，需要按住command键</strong></p>
 
           
         
@@ -2145,244 +1838,6 @@ class Bar(object):
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/06/python的logging模块/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/06/python的logging模块/" itemprop="url">python的logging模块</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-06T17:17:09+08:00">
-                2015-05-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>官方文档在<a href="https://docs.python.org/2/library/logging.html#logging.Handler.createLock" target="_blank" rel="external">这里</a></p>
-<p>举一个栗子：代码既要把日志输出到控制台，还要写入日志文件</p>
-<pre><code>import logging
-
-# 创建一个logger
-logger = logging.getLogger(&apos;mylogger&apos;)
-logger.setLevel(logging.DEBUG)
-
-# 创建一个handler，用于写入日志文件
-fh = logging.FileHandler(&apos;test.log&apos;)
-fh.setLevel(logging.DEBUG)
-
-# 再创建一个handler，用于输出到控制台
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-
-# 定义handler的输出格式
-formatter = logging.Formatter(&apos;%(asctime)s - %(name)s - %(levelname)s - %(message)s&apos;)
-fh.setFormatter(formatter)
-ch.setFormatter(formatter)
-
-# 给logger添加handler
-logger.addHandler(fh)
-logger.addHandler(ch)
-
-# 记录一条日志
-logger.info(&apos;foorbar&apos;)  
-</code></pre><p>在控制台和当前目录下的test.log文件中都有下面这行输出：</p>
-<pre><code>2015-05-6 17:10:29,816 - mylogger - INFO - foorbar 
-</code></pre><p>##logging模块的API</p>
-<p>###logging.getLogger([name])<br>返回一个logger实例，如果没有指定name，返回<code>root logger</code>。</p>
-<p>只要name相同，返回的logger实例都是同一个而且只有一个，即name和logger实例是一一对应的。这意味着，无需把logger实例在各个模块中传递。只要知道name，就能得到 同一个logger实例</p>
-<p>###Logger.setLevel(lvl)</p>
-<p>设置logger的level， level有以下几个级别：</p>
-<p>NOTSET &lt; DEBUG &lt; INFO &lt; WARNING &lt; ERROR &lt; CRITICAL</p>
-<p>如果把looger的级别设置为INFO， 那么小于INFO级别的日志都不输出， 大于等于INFO级别的日志都输出</p>
-<pre><code>logger.debug(&quot;foobar&quot;)     # 不输出 
-logger.info(&quot;foobar&quot;)      # 输出
-logger.warning(&quot;foobar&quot;)   # 输出
-logger.error(&quot;foobar&quot;)     # 输出
-logger.critical(&quot;foobar&quot;)  # 输出 
-</code></pre><p>###Logger.addHandler(hdlr)<br>logger可以雇佣handler来帮它处理日志， handler主要有以下几种：</p>
-<ol>
-<li>StreamHandler: 输出到控制台</li>
-<li>FileHandler:   输出到文件</li>
-</ol>
-<p><strong>handler还可以设置自己的level以及输出格式。</strong></p>
-<p>##logging.basicConfig([**kwargs])</p>
-<ul>
-<li>这个函数用来配置root logger， 为root logger创建一个StreamHandler，<br> 设置默认的格式。</li>
-<li>这些函数： logging.debug()、logging.info()、logging.warning()、<br> logging.error()、logging.critical() 如果调用的时候发现root logger没有任何<br> handler， 会自动调用basicConfig添加一个handler</li>
-<li>如果root logger已有handler， 这个函数不做任何事情</li>
-</ul>
-<p>使用basicConfig来配置root logger的输出格式和level：</p>
-<pre><code>import logging
-logging.basicConfig(format=&apos;%(levelname)s:%(message)s&apos;, level=logging.DEBUG)
-logging.debug(&apos;This message should appear on the console&apos;)
-</code></pre><p>##关于root logger以及logger的父子关系<br>前面多次提到root logger， 实际上logger实例之间还有父子关系， root logger就是处于<br>最顶层的logger， 它是所有logger的祖先。如下图:<br><img src="http://cupic.img168.net/bbsfile/forum/month_1109/11090116387b8f480c8f5ec3b2.png" alt=""> </p>
-<p>####root logger是默认的logger</p>
-<p>如果不创建logger实例， 直接调用logging.debug()、logging.info()logging.warning()、logging.error()、logging.critical()这些函数，<br>那么使用的logger就是 root logger， 它可以自动创建，也是单实例的。</p>
-<p>####如何得到root logger</p>
-<p>通过logging.getLogger()或者logging.getLogger(“”)得到root logger实例。</p>
-<p>####默认的level</p>
-<p>root logger默认的level是logging.WARNING</p>
-<p>####如何表示父子关系</p>
-<p>logger的name的命名方式可以表示logger之间的父子关系. 比如：<br>parent_logger = logging.getLogger(‘foo’)<br>child_logger = logging.getLogger(‘foo.bar’)</p>
-<p>####什么是effective level</p>
-<p>logger有一个概念，叫effective level。 如果一个logger没有显示地设置level，那么它就<br>用父亲的level。如果父亲也没有显示地设置level， 就用父亲的父亲的level，以此推….</p>
-<p>最后到达root logger，一定设置过level。默认为logging.WARNING</p>
-<p>child loggers得到消息后，既把消息分发给它的handler处理，也会传递给所有祖先logger处理。</p>
-<p>又一个<strong>栗子</strong>：</p>
-<pre><code>import logging
-
-# 设置root logger
-r = logging.getLogger()
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter(&apos;%(asctime)s - %(levelname)s - %(message)s&apos;)
-ch.setFormatter(formatter)
-r.addHandler(ch)
-
-# 创建一个logger作为父亲
-p = logging.getLogger(&apos;foo&apos;)
-p.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter(&apos;%(asctime)s - %(message)s&apos;)
-ch.setFormatter(formatter)
-p.addHandler(ch)
-
-# 创建一个孩子logger
-c = logging.getLogger(&apos;foo.bar&apos;)
-c.debug(&apos;foo_test&apos;)  
-</code></pre><p>输出如下：</p>
-<pre><code>2015-05-06 17:14:22,677 - foo_test
-2015-05-06 17:14:22,677 - DEBUG - foo_test
-</code></pre><p>可见， 孩子logger没有任何handler，所以对消息不做处理。但是它把消息转发给了它的父亲以及root logger。最后输出两条日志。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/06/函数式编程-2-装饰器和偏函数/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2738,11 +2193,938 @@ print sorted_ignore_case([&apos;bob&apos;, &apos;about&apos;, &apos;Zoo&apos;, &
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/06/函数式编程-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/06/函数式编程-1/" itemprop="url">函数式编程(1)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-06T14:30:40+08:00">
+                2015-05-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##基本概念<br>函数是Python内建支持的一种封装，我们通过把大段代码拆成函数，通过一层一层的函数调用，就可以把复杂任务分解成简单的任务，这种分解可以称之为面向过程的程序设计。函数就是面向过程的程序设计的基本单元。</p>
+<p>而函数式编程（请注意多了一个“式”字）—— <code>Functional Programming</code>，虽然也可以归结到面向过程的程序设计，但其思想更接近数学计算。</p>
+<p>我们首先要搞明白计算机（<code>Computer</code>）和计算（<code>Compute</code>）的概念。</p>
+<p>在计算机的层次上，CPU执行的是加减乘除的指令代码，以及各种条件判断和跳转指令，所以，汇编语言是最贴近计算机的语言。</p>
+<p>而计算则指数学意义上的计算，越是抽象的计算，离计算机硬件越远。</p>
+<p>对应到编程语言，就是越低级的语言，越贴近计算机，抽象程度低，执行效率高，比如C语言；越高级的语言，越贴近计算，抽象程度高，执行效率低，比如Lisp语言。</p>
+<p>函数式编程就是一种抽象程度很高的编程范式，纯粹的函数式编程语言编写的函数没有变量，因此，任意一个函数，只要输入是确定的，输出就是确定的，这种纯函数我们称之为没有副作用。而允许使用变量的程序设计语言，由于函数内部的变量状态不确定，同样的输入，可能得到不同的输出，因此，这种函数是有副作用的。</p>
+<p>函数式编程的一个特点就是，允许把函数本身作为参数传入另一个函数，还允许返回一个函数！</p>
+<p>Python对函数式编程提供部分支持。由于Python允许使用变量，因此，Python不是纯函数式编程语言。</p>
+<p>##高阶函数<br>能够接受函数作为参数的函数，被称为高阶函数。函数式编程就是指这种高度抽象的编程范式。</p>
+<p>一个简单的高阶函数</p>
+<pre><code>def add(x, y, f):
+    return f(x) + f(y)
+</code></pre><p>如果传入abs作为参数f的值</p>
+<pre><code>add(-5, 9, abs)
+</code></pre><p>根据函数的定义，函数执行的代码实际上是：</p>
+<p>abs(-5) + abs(9)</p>
+<p>由于参数 x, y 和 f 都可以任意传入，如果 f 传入其他函数，就可以得到不同的返回值。</p>
+<p>比如说传入开平方根的函数</p>
+<blockquote>
+<p>计算平方根可以用函数：</p>
+<blockquote>
+<blockquote>
+<p>math.sqrt(2)<br>    1.4142…</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p><strong>参考代码</strong></p>
+<pre><code>import math
+def add(x, y, f):
+    return f(x) + f(y)
+print add(25, 9, math.sqrt)
+</code></pre><p>##map()函数</p>
+<p><strong>map()</strong>是 Python 内置的高阶函数，它接收<strong>一个函数 f</strong> 和<strong>一个 list</strong>，并通过把函数 f 依次作用在 list 的每个元素上，得到一个新的 list 并返回。</p>
+<p>例如，对于list [1, 2, 3, 4, 5, 6, 7, 8, 9]</p>
+<p>如果希望把list的每个元素都作平方，就可以用map()函数：</p>
+<p><img src="http://www.liaoxuefeng.com/files/attachments/0013879622109990efbf9d781704b02994ba96765595f56000/0" alt=""></p>
+<p>因此，我们只需要传入函数f(x)=x*x，就可以利用map()函数完成这个计算：</p>
+<pre><code>def f(x):
+    return x*x
+print map(f, [1, 2, 3, 4, 5, 6, 7, 8, 9])
+</code></pre><p>输出结果：</p>
+<pre><code>[1, 4, 9, 10, 25, 36, 49, 64, 81]
+</code></pre><p><strong>注意</strong>：map()函数不改变原有的 list，而是返回一个新的 list。</p>
+<p>利用map()函数，可以把一个 list 转换为另一个 list，只需要传入转换函数。</p>
+<p>由于list包含的元素可以是任何类型，因此，map() 不仅仅可以处理只包含数值的 list，事实上它可以处理包含任意类型的 list，只要传入的函数f可以处理这种数据类型。</p>
+<p><strong>栗子</strong>：假设用户输入的英文名字不规范，没有按照首字母大写，后续字母小写的规则，请利用map()函数，把一个list（包含若干不规范的英文名字）变成一个包含规范英文名字的list：</p>
+<p>输入：[‘adam’, ‘LISA’, ‘barT’]</p>
+<p>输出：[‘Adam’, ‘Lisa’, ‘Bart’]</p>
+<p><strong>参考代码</strong></p>
+<pre><code>def format_name(s):
+    return s[0].upper() + s[1:].lower()
+print map(format_name, [&apos;adam&apos;, &apos;LISA&apos;, &apos;barT&apos;])
+</code></pre><p>##reduce()函数</p>
+<p><strong>reduce()</strong>函数也是Python内置的一个高阶函数。reduce()函数接收的参数和 map()类似，<strong>一个函数 f</strong>，<strong>一个list</strong>，但行为和 map()不同，reduce()传入的函数 f 必须接收两个参数，reduce()对list的每个元素反复调用函数f，并返回最终结果值。</p>
+<p>例如，编写一个f函数，接收x和y，返回x和y的和：</p>
+<pre><code>def f(x, y):
+    return x + y
+</code></pre><p>调用 <code>reduce(f, [1, 3, 5, 7, 9])</code>时，reduce函数将做如下计算：</p>
+<pre><code>先计算头两个元素：f(1, 3)，结果为4；
+再把结果和第3个元素计算：f(4, 5)，结果为9；
+再把结果和第4个元素计算：f(9, 7)，结果为16；
+再把结果和第5个元素计算：f(16, 9)，结果为25；
+由于没有更多的元素了，计算结束，返回结果25。
+</code></pre><p>上述计算实际上是对 list 的所有元素求和。虽然Python内置了求和函数sum()，但是，利用reduce()求和也很简单。</p>
+<p><strong>reduce()还可以接收第3个可选参数，作为计算的初始值。</strong>如果把初始值设为100，计算：</p>
+<pre><code>reduce(f, [1, 3, 5, 7, 9], 100)
+</code></pre><p>结果将变为125，因为第一轮计算是：<br>计算初始值和第一个元素：<strong>f(100, 1)</strong>，结果为101。</p>
+<p>##filter()函数</p>
+<p><strong>filter()</strong>函数是 Python 内置的另一个有用的高阶函数，filter()函数接收<strong>一个函数 f</strong> 和<strong>一个list</strong>，这个函数 f 的作用是对每个元素进行判断，返回 True或 False，filter()根据判断结果自动过滤掉不符合条件的元素，返回由符合条件元素组成的新list。</p>
+<p>例如，要从一个<code>list [1, 4, 6, 7, 9, 12, 17]</code>中删除偶数，保留奇数，首先，要编写一个判断奇数的函数：</p>
+<pre><code>def is_odd(x):
+    return x % 2 == 1
+</code></pre><p>然后，利用filter()过滤掉偶数：</p>
+<pre><code>filter(is_odd, [1, 4, 6, 7, 9, 12, 17])
+</code></pre><p><strong>结果</strong>：[1, 7, 9, 17]</p>
+<p>利用filter()，可以完成很多有用的功能，例如，删除 None 或者空字符串：</p>
+<pre><code>def is_not_empty(s):
+    return s and len(s.strip()) &gt; 0
+filter(is_not_empty, [&apos;test&apos;, None, &apos;&apos;, &apos;str&apos;, &apos;  &apos;, &apos;END&apos;])
+</code></pre><p><strong>结果</strong>：[‘test’, ‘str’, ‘END’]</p>
+<p><strong>注意</strong>: s.strip(rm) 删除 s 字符串中开头、结尾处的 rm 序列的字符。</p>
+<p>当rm为空时，默认删除空白符（包括’\n’, ‘\r’, ‘\t’, ‘ ‘)，如下：</p>
+<pre><code>a = &apos;     123&apos;
+a.strip()
+</code></pre><p><strong>结果</strong>： ‘123’</p>
+<pre><code>a=&apos;\t\t123\r\n&apos;
+a.strip()
+</code></pre><p><strong>结果</strong>：’123’</p>
+<p><strong>栗子</strong>：<code>filter()</code> 接收的函数必须判断出一个数的平方根是否是整数，而 <code>math.sqrt()</code>返回结果是浮点数。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>import math
+def is_sqr(x):
+    r = int(math.sqrt(x))
+    return r*r==x
+print filter(is_sqr, range(1, 101))
+</code></pre><p>##sorted自定义排序函数</p>
+<p>Python内置的 sorted()函数可对list进行排序：</p>
+<pre><code>&gt;&gt;&gt;sorted([36, 5, 12, 9, 21])
+
+[5, 9, 12, 21, 36]
+</code></pre><p>但 sorted()也是一个高阶函数，它可以接收一个比较函数来实现自定义排序，比较函数的定义是，传入两个待比较的元素 x, y，<strong>如果 x 应该排在 y 的前面，返回 -1，如果 x 应该排在 y 的后面，返回 1。如果 x 和 y 相等，返回 0。</strong></p>
+<p>因此，如果我们要实现倒序排序，只需要编写一个reversed_cmp函数：</p>
+<pre><code>def reversed_cmp(x, y):
+    if x &gt; y:
+        return -1
+    if x &lt; y:
+        return 1
+    return 0
+</code></pre><p>这样，调用 sorted() 并传入 reversed_cmp 就可以实现倒序排序：</p>
+<pre><code>&gt;&gt;&gt; sorted([36, 5, 12, 9, 21], reversed_cmp)
+[36, 21, 12, 9, 5]
+</code></pre><p>sorted()也可以对字符串进行排序，字符串默认按照ASCII大小来比较：</p>
+<pre><code>&gt;&gt;&gt; sorted([&apos;bob&apos;, &apos;about&apos;, &apos;Zoo&apos;, &apos;Credit&apos;])
+[&apos;Credit&apos;, &apos;Zoo&apos;, &apos;about&apos;, &apos;bob&apos;]
+</code></pre><p>‘Zoo’排在’about’之前是因为’Z’的ASCII码比’a’小。</p>
+<p><strong>栗子</strong>：对字符串排序时，有时候忽略大小写排序更符合习惯。请利用sorted()高阶函数，实现忽略大小写排序的算法。</p>
+<p>输入：[‘bob’, ‘about’, ‘Zoo’, ‘Credit’]</p>
+<p>输出：[‘about’, ‘bob’, ‘Credit’, ‘Zoo’]</p>
+<p>对于比较函数cmp_ignore_case(s1, s2)，要忽略大小写比较，就是先把两个字符串都变成大写（或者都变成小写），再比较。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>def cmp_ignore_case(s1, s2):
+    u1 = s1.upper()
+    u2 = s2.upper()
+    if u1 &lt; u2:
+        return -1
+    if u1 &gt; u2:
+        return 1
+    return 0
+print sorted([&apos;bob&apos;, &apos;about&apos;, &apos;Zoo&apos;, &apos;Credit&apos;], cmp_ignore_case)
+</code></pre><p>##返回函数</p>
+<p>Python的函数不但可以返回int、str、list、dict等数据类型，还可以返回函数！<br>例如，定义一个函数 f()，我们让它返回一个函数 g，可以这样写：</p>
+<pre><code>def f():
+    print &apos;call f()...&apos;
+    # 定义函数g:
+    def g():
+        print &apos;call g()...&apos;
+    # 返回函数g:
+    return g
+</code></pre><p>仔细观察上面的函数定义，我们在函数 f 内部又定义了一个函数 g。由于函数 g 也是一个对象，函数名 g 就是指向函数 g 的变量，所以，最外层函数 f 可以返回变量 g，也就是函数 g 本身。</p>
+<p>调用函数 f，我们会得到 f 返回的一个函数：</p>
+<pre><code>&gt;&gt;&gt; x = f()   # 调用f()
+call f()...
+&gt;&gt;&gt; x   # 变量x是f()返回的函数：
+&lt;function g at 0x1037bf320&gt;
+&gt;&gt;&gt; x()   # x指向函数，因此可以调用
+call g()...   # 调用x()就是执行g()函数定义的代码
+</code></pre><p>请注意区分返回函数和返回值：</p>
+<pre><code>def myabs():
+    return abs   # 返回函数
+def myabs2(x):
+    return abs(x)   # 返回函数调用的结果，返回值是一个数值
+</code></pre><p>返回函数可以把一些计算延迟执行。例如，如果定义一个普通的求和函数：</p>
+<pre><code>def calc_sum(lst):
+    return sum(lst)
+</code></pre><p>调用calc_sum()函数时，将立刻计算并得到结果：</p>
+<pre><code>&gt;&gt;&gt; calc_sum([1, 2, 3, 4])
+10
+</code></pre><p>但是，如果返回一个函数，就可以“延迟计算”：</p>
+<pre><code>def calc_sum(lst):
+    def lazy_sum():
+        return sum(lst)
+    return lazy_sum
+</code></pre><p>调用calc_sum()并没有计算出结果，而是返回函数:</p>
+<pre><code>&gt;&gt;&gt; f = calc_sum([1, 2, 3, 4])
+&gt;&gt;&gt; f
+&lt;function lazy_sum at 0x1037bfaa0&gt;
+</code></pre><p>对返回的函数进行调用时，才计算出结果:</p>
+<pre><code>&gt;&gt;&gt; f()
+10
+</code></pre><p>由于可以返回函数，我们在后续代码里就可以决定到底要不要调用该函数。</p>
+<p><strong>栗子</strong>：请编写一个函数calc_prod(lst)，它接收一个list，返回一个函数，返回函数可以计算参数的乘积。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>def calc_prod(lst):
+    def lazy_prod():
+        def f(x, y):
+            return x * y
+        return reduce(f, lst, 1)
+    return lazy_prod
+f = calc_prod([1, 2, 3, 4])
+print f()
+</code></pre><p>##闭包</p>
+<p>在函数内部定义的函数和外部定义的函数是一样的，只是他们无法被外部访问：</p>
+<pre><code>def g():
+    print &apos;g()...&apos;
+
+def f():
+    print &apos;f()...&apos;
+    return g
+</code></pre><p>将 <code>g</code> 的定义移入函数 <code>f</code> 内部，防止其他代码调用 <code>g</code>：</p>
+<pre><code>def f():
+    print &apos;f()...&apos;
+    def g():
+        print &apos;g()...&apos;
+    return g
+</code></pre><p>但是，考察上一小节定义的 <code>calc_sum</code> 函数：</p>
+<pre><code>def calc_sum(lst):
+    def lazy_sum():
+        return sum(lst)
+    return lazy_sum
+</code></pre><p><strong>注意</strong>: 发现没法把 <code>lazy_sum</code> 移到 <code>calc_sum</code> 的外部，因为它引用了 <code>calc_sum</code> 的参数 <code>lst</code>。</p>
+<p>像这种内层函数引用了外层函数的变量（参数也算变量），然后返回内层函数的情况，称为<strong>闭包（Closure）</strong>。</p>
+<p>闭包的特点是返回的函数还引用了外层函数的局部变量，所以，要正确使用闭包，就要确保引用的局部变量在函数返回后不能变。举例如下：</p>
+<pre><code># 希望一次返回3个函数，分别计算1x1,2x2,3x3:
+def count():
+    fs = []
+    for i in range(1, 4):
+        def f():
+             return i*i
+        fs.append(f)
+    return fs
+
+f1, f2, f3 = count()
+</code></pre><p>你可能认为调用f1()，f2()和f3()结果应该是<code>1，4，9</code>，但实际结果全部都是 <code>9</code>（请自己动手验证）。</p>
+<p>原因就是当count()函数返回了3个函数时，这3个函数所引用的变量 i 的值已经变成了3。由于f1、f2、f3并没有被调用，所以，此时他们并未计算 i*i，当 f1 被调用时：</p>
+<pre><code>&gt;&gt;&gt; f1()
+9     # 因为f1现在才计算i*i，但现在i的值已经变为3
+</code></pre><p>因此，返回函数不要引用任何循环变量，或者后续会发生变化的变量。</p>
+<p><strong>栗子</strong>：返回闭包不能引用循环变量，请改写count()函数，让它正确返回能计算1x1、2x2、3x3的函数。</p>
+<p>考察下面的函数 f:</p>
+<pre><code>def f(j):
+    def g():
+        return j*j
+    return g
+</code></pre><p>它可以正确地返回一个闭包g，g所引用的变量j不是循环变量，因此将正常执行。<br>在count函数的循环内部，如果借助f函数，就可以避免引用循环变量i。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>def count():
+    fs = []
+    for i in range(1, 4):
+        def f(j):
+            def g():
+                return j*j
+            return g
+        r = f(i)
+        fs.append(r)
+    return fs
+f1, f2, f3 = count()
+print f1(), f2(), f3()
+</code></pre><p>##匿名函数</p>
+<p>高阶函数可以接收函数做参数，有些时候，我们不需要显式地定义函数，直接传入匿名函数更方便。</p>
+<p>在Python中，对匿名函数提供了有限支持。还是以<code>map()</code>函数为例，计算 f(x)=x2 时，除了定义一个<code>f(x)</code>的函数外，还可以直接传入匿名函数：</p>
+<pre><code>&gt;&gt;&gt; map(lambda x: x * x, [1, 2, 3, 4, 5, 6, 7, 8, 9])
+[1, 4, 9, 16, 25, 36, 49, 64, 81]
+</code></pre><p>通过对比可以看出，匿名函数 <code>lambda x: x * x</code> 实际上就是：</p>
+<pre><code>def f(x):
+    return x * x
+</code></pre><p><code>关键字lambda</code> 表示匿名函数，冒号前面的 <code>x 表示函数参数</code>。<br>匿名函数有个限制，就是<code>只能有一个表达式，不写return</code>，返回值就是该表达式的结果。</p>
+<p>使用匿名函数，可以不必定义函数名，直接创建一个函数对象，很多时候可以简化代码：</p>
+<pre><code>&gt;&gt;&gt; sorted([1, 3, 9, 5, 0], lambda x,y: -cmp(x,y))
+[9, 5, 3, 1, 0]
+</code></pre><p>返回函数的时候，也可以返回匿名函数：</p>
+<pre><code>&gt;&gt;&gt; myabs = lambda x: -x if x &lt; 0 else x 
+&gt;&gt;&gt; myabs(-1)
+1
+&gt;&gt;&gt; myabs(1)
+1
+</code></pre><p><strong>栗子</strong>：利用匿名函数简化以下代码：</p>
+<pre><code>def is_not_empty(s):
+    return s and len(s.strip()) &gt; 0
+
+filter(is_not_empty, [&apos;test&apos;, None, &apos;&apos;, &apos;str&apos;, &apos;  &apos;, &apos;END&apos;])
+</code></pre><p>定义匿名函数时，没有return关键字，且表达式的值就是函数返回值。</p>
+<p><strong>参考代码</strong></p>
+<pre><code>print filter(lambda s: s and len(s.strip())&gt;0, [&apos;test&apos;, None, &apos;&apos;, &apos;str&apos;, &apos;  &apos;, &apos;END&apos;])
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/05/Python-中的下划线命名规则/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/05/Python-中的下划线命名规则/" itemprop="url">Python 中的下划线命名规则</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-05T15:35:45+08:00">
+                2015-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>python中用下划线命名变量和函数是在是令人困惑，单下划线，双下划线，双下划线还分前后……,今天来总结一下，以备日后参考</p>
+<p>##单下划线（_）</p>
+<p>通常情况下，单下划线（_）会在以下3种场景中使用：</p>
+<p>###在解释器中：</p>
+<p>在这种情况下，“_”代表交互式解释器会话中上一条执行的语句的结果。这种用法首先被标准CPython解释器采用，然后其他类型的解释器也先后采用。</p>
+<pre><code>&gt;&gt;&gt; _ Traceback (most recent call last): 
+File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt; 
+NameError: name &apos;_&apos; is not defined 
+&gt;&gt;&gt; 42
+&gt;&gt;&gt; _ 
+42
+&gt;&gt;&gt; &apos;alright!&apos; if _ else &apos;:(&apos;
+&apos;alright!&apos;
+&gt;&gt;&gt; _ 
+&apos;alright!&apos;
+</code></pre><p>###作为一个名称：</p>
+<p>这与上面一点稍微有些联系，此时<code>“_”</code>作为临时性的名称使用。这样，当其他人阅读你的代码时将会知道，你分配了一个特定的名称，但是并不会在后面再次用到该名称。例如，下面的例子中，你可能对循环计数中的实际值并不感兴趣，此时就可以使用“_”。</p>
+<pre><code>n = 42
+for _ in range(n): 
+    do_something()
+</code></pre><p>###国际化：</p>
+<p>也许你也曾看到”_“会被作为一个函数来使用。这种情况下，它通常用于实现国际化和本地化字符串之间翻译查找的函数名称，这似乎源自并遵循相应的C约定。例如，在 Django文档“转换”章节 中，你将能看到如下代码：</p>
+<pre><code>from django.utils.translation import ugettext as _ 
+from django.http import HttpResponse 
+def my_view(request): 
+    output = _(&quot;Welcome to my site.&quot;) 
+    return HttpResponse(output)
+</code></pre><p>可以发现，场景二和场景三中的使用方法可能会相互冲突，所以我们需要避免在使用<code>“_”</code>作为国际化查找转换功能的代码块中同时使用“_”作为临时名称。</p>
+<p>##名称前的单下划线（如：_shahriar）</p>
+<p>程序员使用名称前的单下划线，用于指定该名称属性为“私有”。这有点类似于惯例，为了使其他人（或你自己）使用这些代码时将会知道以“_”开头的名称只供内部使用。正如Python文档中所述：</p>
+<p>以下划线<code>“_”</code>为前缀的名称（如_spam）应该被视为API中非公开的部分（不管是函数、方法还是数据成员）。此时，应该将它们看作是一种实现细节，在修改它们时无需对外部通知。</p>
+<p>正如上面所说，这确实类似一种惯例，因为它对解释器来说确实有一定的意义，如果你写了代码“from &lt;模块/包名&gt; import <em>”，那么以<code>“_”</code>开头的名称都不会被导入， 除非模块或包中的<code>“__all__”</code>列表显式地包含了它们 。了解更多请查看“ Importing </em> in Python ”。</p>
+<p>不过值得注意的是，如果使用 <code>import a_module</code> 这样导入模块，仍然可以用 <code>a_module._some_var</code> 这样的形式访问到这样的对象。</p>
+<p>另外单下划线开头还有一种一般不会用到的情况在于，使用一个 C 编写的扩展库有时会用下划线开头命名，然后使用一个去掉下划线的 Python 模块进行包装。如 struct 这个模块实际上是 C 模块 _struct 的一个 Python 包装。</p>
+<p>##名称前的双下划线（如：__shahriar）</p>
+<p>名称（具体为一个方法名）前双下划线<code>（__）</code>的用法并不是一种惯例，对解释器来说它有特定的意义。Python中的这种用法是为了避免与子类定义的名称冲突。Python文档指出，<code>“__spam”</code>这种形式（ 至少两个前导下划线，最多一个后续下划线 ）的任何标识符将会被<code>“_classname__spam”</code>这种形式原文取代，在这里“classname”是去掉前导下划线的当前类名。例如下面的例子：</p>
+<pre><code>&gt;&gt;&gt; class A(object): 
+...     def _internal_use(self): 
+...         pass
+...     def __method_name(self): 
+...         pass
+... 
+&gt;&gt;&gt; dir(A()) 
+[&apos;_A__method_name&apos;, ..., &apos;_internal_use&apos;]
+</code></pre><p>正如所预料的，<code>“_internal_use”</code>并未改变，而<code>“__method_name”</code>却被变成了<code>“_ClassName__method_name”</code>：<code>__</code>开头 的 私有变量会在代码生成之前被转换为长格式（变为公有）。转换机制是这样的：在变量前端插入类名，再在前端加入一个下划线字符。这就是所谓的私有变量 名字改编 （Private name mangling） 。<br>此时，如果你创建A的一个子类B，那么你将不能轻易地覆写A中的方法<code>“__method_name”</code>，</p>
+<pre><code>&gt;&gt;&gt; class B(A): 
+...     def __method_name(self): 
+...         pass
+... 
+&gt;&gt;&gt; dir(B()) 
+[&apos;_A__method_name&apos;, &apos;_B__method_name&apos;, ..., &apos;_internal_use&apos;]
+</code></pre><p>然而如果你知道了这个规律，最终你还是可以访问这个“私有”变量的。</p>
+<p>私有变量名字改编意在给出一个在类中定义”私有”实例变量和方法的简单途径，避免派生类的实例变量定义产生问题，或者与外界代码中的变量搞混。</p>
+<p>要注意的是混淆规则（私有变量名字改编）主要目的在于避免意外错误，被认作为私有的变量仍然有可能被访问或修改(使用<code>_classname__membername</code>)，在特定的场合它也是有用的，比如调试的时候。</p>
+<p>上述的功能几乎和Java中的final方法和C++类中标准方法（非虚方法）一样。</p>
+<p><strong>再讲两点题外话</strong>：</p>
+<p>一是因为轧压（改编）会使标识符变长，当超过255的时候，Python会切断，要注意因此引起的命名冲突。</p>
+<p>二是当类名全部以下划线命名的时候，Python就不再执行轧压（改编）。</p>
+<p>无论是单下划线还是双下划线开头的成员，都是希望外部程序开发者不要直接使用这些成员变量和这些成员函数，只是双下划线从语法上能够更直接的避免错误的使用，但是如果按照 <code>_类名__成员名</code> 则依然可以访问到。单下划线的在动态调试时可能会方便一些，只要项目组的人都遵守下划线开头的成员不直接使用，那使用单下划线或许会更好。</p>
+<p>##名称前后的双下划线（如：<strong>init</strong>）</p>
+<p>这种用法表示Python中特殊的方法名。其实，这只是一种惯例，对Python系统来说，这将确保不会与用户自定义的名称冲突。通常，你将会覆写这些方法，并在里面实现你所需要的功能，以便Python调用它们。例如，当定义一个类时，你经常会覆写<code>“__init__”</code>方法。</p>
+<p>双下划线开头双下划线结尾的是一些 Python 的“魔术”对象，如类成员的 <code>__init__</code>、<code>__del__</code>、<code>__add__</code>、<code>__getitem__</code> 等，以及全局的 <code>__file__</code>、<code>__name__</code> 等。 Python 官方推荐永远不要将这样的命名方式应用于自己的变量或函数，而是按照文档说明来使用。 虽然你也可以编写自己的特殊方法名，但不要这样做。</p>
+<pre><code>&gt;&gt;&gt; class C(object): 
+...     def __mine__(self): 
+...         pass
+... 
+&gt;&gt;&gt; dir(C) 
+... [..., &apos;__mine__&apos;, ...]
+</code></pre><p>其实，很容易摆脱这种类型的命名，而只让Python内部定义的特殊名称遵循这种约定 :)</p>
+<p>##题外话 if <strong>name</strong> == “<strong>main</strong>“:</p>
+<p>所有的 Python 模块都是对象并且有几个有用的属性，你可以使用这些属性方便地测试你所书写的模块。</p>
+<p>模块是对象, 并且所有的模块都有一个内置属性<code>__name__</code>。一个模块的<code>__name__</code> 的值要看您如何应用模块。如果 import 模块, 那么 <code>__name__</code>的值通常为模块的文件名, 不带路径或者文件扩展名。但是您也可以像一个标准的程序一样直接运行模块, 在这种情况下<code>__name__</code>的值将是一个特别的缺省值：<code>__main__</code>。</p>
+<pre><code>&gt;&gt;&gt; import odbchelper
+&gt;&gt;&gt; odbchelper.__name__
+&apos;odbchelper&apos;
+</code></pre><p>一旦了解到这一点, 您可以在模块内部为您的模块设计一个测试套件, 在其中加入这个 if 语句。当您直接运行模块, <code>__name__</code> 的值是 <code>__main__</code>, 所以测试套件执行。当您导入模块,<code>__name__</code>的值就是别的东西了, 所以测试套件被忽略。这样使得在将新的模块集成到一个大程序之前开发和调试容易多了。</p>
+<p>在 MacPython 上, 需要一个额外的步聚来使得<code>if __name__</code>技巧有效。 点击窗口右上角的黑色三角, 弹出模块的属性菜单, 确认<code>Run as __main__</code>被选中。</p>
+<p>##总结：</p>
+<p>Python 用下划线作为变量前缀和后缀指定特殊变量。</p>
+<p><code>_xxx</code>       不能用’from module import *’导入</p>
+<p><code>__xxx__</code>  系统定义名字</p>
+<p><code>__xxx</code>    类中的私有变量名</p>
+<p><strong>核心风格：避免用下划线作为变量名的开头。</strong></p>
+<p>因为下划线对解释器有特殊的意义，而且是内建标识符所使用的符号，我们建议程序员避免用下划线作为变量名的开头。一般来讲，变量名_xxx被看作是“私有的”，在模块或类外不可以使用。当变量是私有的时候，用_xxx 来表示变量是很好的习惯。 因为变量名<code>__xxx__</code>对Python 来说有特殊含义，对于普通的变量应当避免这种命名风格。</p>
+<p>“单下划线” 开始的成员变量叫做保护变量，意思是只有类对象和子类对象自己能访问到这些变量；</p>
+<p>“双下划线” 开始的是私有成员，意思是只有类对象自己能访问，连子类对象也不能访问到这个数据。</p>
+<p>以单下划线开头（如_foo）的代表不能直接访问的类属性，需通过类提供的接口进行访问，不能用<code>“from xxx import *”</code>而导入；以双下划线开头的（如<code>__foo</code>）代表类的私有成员；以双下划线开头和结尾的（<code>__foo__</code>）代表python里特殊方法专用的标识，如<code>__init__()</code> 代表类的构造函数。</p>
+<p>附 PEP 规范：</p>
+<pre><code>PEP-0008:
+In addition, the following special forms using leading or trailing underscores are recognized (these can generally be combined with any case convention):
+  - _single_leading_underscore: weak &quot;internal use&quot; indicator. E.g. &quot;from M import *&quot; does not import objects whose name starts with an underscore.
+  - single_trailing_underscore_: used by convention to avoid conflicts with Python keyword, e.g.
+    Tkinter.Toplevel(master, class_=&apos;ClassName&apos;)
+  - __double_leading_underscore: when naming a class attribute, invokes name mangling (inside class FooBar, __boo becomes _FooBar__boo; see below).
+  - __double_leading_and_trailing_underscore__: &quot;magic&quot; objects or attributes that live in user-controlled namespaces. E.g. __init__,
+    __import__ or __file__. Never invent such names; only use them as documented.
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/05/转载-程序员必须知道的10大基础实用算法及其讲解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/05/转载-程序员必须知道的10大基础实用算法及其讲解/" itemprop="url">转载:程序员必须知道的10大基础实用算法及其讲解</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-05T08:52:38+08:00">
+                2015-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>转载自<a href="http://cricode.com/2001.html" target="_blank" rel="external">这里</a></p>
+<p>##算法一：快速排序算法</p>
+<p><strong>快速排序</strong>是由东尼·霍尔所发展的一种排序算法。在平均状况下，排序 n 个项目要<code>Ο(n log n)</code>次比较。在最坏状况下则需要<code>Ο(n2)</code>次比较，但这种状况并不常见。事实上，快速排序通常明显比其他<code>Ο(n log n)</code> 算法更快，因为它的内部循环<code>（inner loop）</code>可以在大部分的架构上很有效率地被实现出来。</p>
+<p>快速排序使用分治法<code>（Divide and conquer）</code>策略来把一个串行（list）分为两个子串行（sub-lists）。</p>
+<p><strong>算法步骤</strong>：</p>
+<ol>
+<li><p>从数列中挑出一个元素，称为 “基准”（pivot），</p>
+</li>
+<li><p>重新排序数列，所有元素比基准值小的摆放在基准前面，所有元素比基准值大的摆在基准的后面（相同的数可以到任一边）。在这个分区退出之后，该基准就处于数列的中间位置。这个称为分区（partition）操作。</p>
+</li>
+<li><p>递归地（recursive）把小于基准值元素的子数列和大于基准值元素的子数列排序。</p>
+</li>
+</ol>
+<p>递归的最底部情形，是数列的大小是零或一，也就是永远都已经被排序好了。虽然一直递归下去，但是这个算法总会退出，因为在每次的迭代（iteration）中，它至少会把一个元素摆到它最后的位置去。</p>
+<p><img src="http://zezhi.qiniudn.com/wp-content/uploads/2014/06/Sorting_quicksort_anim.gif" alt=""></p>
+<p><strong>详细介绍</strong>：<a href="http://cricode.com/970.html" target="_blank" rel="external">快速排序</a></p>
+<p>##算法二：堆排序算法</p>
+<p><strong>堆排序</strong>（Heapsort）是指利用堆这种数据结构所设计的一种排序算法。堆积是一个近似完全二叉树的结构，并同时满足堆积的性质：即子结点的键值或索引总是小于（或者大于）它的父节点。</p>
+<p>堆排序的平均时间复杂度为<code>Ο(nlogn)</code> 。</p>
+<p><strong>算法步骤</strong>：</p>
+<ol>
+<li>创建一个堆H[0..n-1]</li>
+<li>把堆首（最大值）和堆尾互换</li>
+<li><p>把堆的尺寸缩小1，并调用shift_down(0),目的是把新的数组顶端数据调整到相应位置</p>
+</li>
+<li><p>重复步骤2，直到堆的尺寸为1</p>
+</li>
+</ol>
+<p><img src="http://zezhi.qiniudn.com/wp-content/uploads/2014/06/Sorting_heapsort_anim.gif" alt=""></p>
+<p>详细介绍：<a href="http://cricode.com/977.html" target="_blank" rel="external">堆排序</a></p>
+<p>##算法三：归并排序</p>
+<p><strong>归并排序</strong>（Merge sort，台湾译作：合并排序）是建立在归并操作上的一种有效的排序算法。该算法是采用分治法（Divide and Conquer）的一个非常典型的应用。</p>
+<p><strong>算法步骤</strong>：</p>
+<ol>
+<li><p>申请空间，使其大小为两个已经排序序列之和，该空间用来存放合并后的序列</p>
+</li>
+<li><p>设定两个指针，最初位置分别为两个已经排序序列的起始位置</p>
+</li>
+<li><p>比较两个指针所指向的元素，选择相对小的元素放入到合并空间，并移动指针到下一位置</p>
+</li>
+<li><p>重复步骤3直到某一指针达到序列尾</p>
+</li>
+<li><p>将另一序列剩下的所有元素直接复制到合并序列尾</p>
+</li>
+</ol>
+<p><img src="http://zezhi.qiniudn.com/wp-content/uploads/2014/06/Merge_sort_animation2.gif" alt=""></p>
+<p>详细介绍：<a href="http://taop.marchtea.com/04.01.html" target="_blank" rel="external">归并排序</a></p>
+<p>##算法四：二分查找算法</p>
+<p><strong>二分查找算法</strong>是一种在有序数组中查找某一特定元素的搜索算法。搜素过程从数组的中间元素开始，如果中间元素正好是要查找的元素，则搜素过程结束；如果某一特定元素大于或者小于中间元素，则在数组大于或小于中间元素的那一半中查找，而且跟开始一样从中间元素开始比较。如果在某一步骤数组为空，则代表找不到。这种搜索算法每一次比较都使搜索范围缩小一半。折半搜索每次把搜索区域减少一半，时间复杂度为<code>Ο(logn)</code>。</p>
+<p>详细介绍：<a href="http://taop.marchtea.com/04.01.html" target="_blank" rel="external">二分查找算法</a></p>
+<p>##算法五：BFPRT(线性查找算法)</p>
+<p><strong>BFPRT算法</strong>解决的问题十分经典，即从某n个元素的序列中选出第k大（第k小）的元素，通过巧妙的分析，BFPRT可以保证在最坏情况下仍为线性时间复杂度。该算法的思想与快速排序思想相似，当然，为使得算法在最坏情况下，依然能达到o(n)的时间复杂度，五位算法作者做了精妙的处理。</p>
+<p><strong>算法步骤</strong>：</p>
+<ol>
+<li><p>将n个元素每5个一组，分成n/5(上界)组。</p>
+</li>
+<li><p>取出每一组的中位数，任意排序方法，比如插入排序。</p>
+</li>
+<li><p>递归的调用selection算法查找上一步中所有中位数的中位数，设为x，偶数个中位数的情况下设定为选取中间小的一个。</p>
+</li>
+<li><p>用x来分割数组，设小于等于x的个数为k，大于x的个数即为n-k。</p>
+</li>
+<li><p>若i==k，返回x；若i<k，在小于x的元素中递归查找第i小的元素；若i>k，在大于x的元素中递归查找第i-k小的元素。</k，在小于x的元素中递归查找第i小的元素；若i></p>
+</li>
+</ol>
+<p><strong>终止条件</strong>：n=1时，返回的即是i小元素。</p>
+<p>详细介绍：</p>
+<p><a href="http://cricode.com/968.html" target="_blank" rel="external">寻找最小(最大)的k个数</a></p>
+<p><a href="http://taop.marchtea.com/02.01.html" target="_blank" rel="external">线性查找相关算法</a></p>
+<p>##算法六：DFS（深度优先搜索）</p>
+<p><strong>深度优先搜索算法</strong>（Depth-First-Search），是搜索算法的一种。它沿着树的深度遍历树的节点，尽可能深的搜索树的分支。当节点v的所有边都己被探寻过，搜索将回溯到发现节点v的那条边的起始节点。这一过程一直进行到已发现从源节点可达的所有节点为止。如果还存在未被发现的节点，则选择其中一个作为源节点并重复以上过程，整个进程反复进行直到所有节点都被访问为止。DFS属于盲目搜索。</p>
+<p>深度优先搜索是图论中的经典算法，利用深度优先搜索算法可以产生目标图的相应拓扑排序表，利用拓扑排序表可以方便的解决很多相关的图论问题，如最大路径问题等等。一般用堆数据结构来辅助实现DFS算法。</p>
+<p><strong>深度优先遍历图算法步骤</strong>：</p>
+<ol>
+<li><p>访问顶点v；</p>
+</li>
+<li><p>依次从v的未被访问的邻接点出发，对图进行深度优先遍历；直至图中和v有路径相通的顶点都被访问；</p>
+</li>
+<li><p>若此时图中尚有顶点未被访问，则从一个未被访问的顶点出发，重新进行深度优先遍历，直到图中所有顶点均被访问过为止。</p>
+</li>
+</ol>
+<p>上述描述可能比较抽象，举个实例：</p>
+<p>DFS 在访问图中某一起始顶点 v 后，由 v 出发，访问它的任一邻接顶点 w1；再从 w1 出发，访问与 w1邻 接但还没有访问过的顶点 w2；然后再从 w2 出发，进行类似的访问，… 如此进行下去，直至到达所有的邻接顶点都被访问过的顶点 u 为止。</p>
+<p>接着，退回一步，退到前一次刚访问过的顶点，看是否还有其它没有被访问的邻接顶点。如果有，则访问此顶点，之后再从此顶点出发，进行与前述类似的访问；如果没有，就再退回一步进行搜索。重复上述过程，直到连通图中所有顶点都被访问过为止。</p>
+<p>详细介绍：<a href="http://www.cnblogs.com/skywang12345/p/3711483.html" target="_blank" rel="external">深度优先搜索</a></p>
+<p>##算法七：BFS(广度优先搜索)</p>
+<p><strong>广度优先搜索算法</strong>（Breadth-First-Search），是一种图形搜索算法。简单的说，BFS是从根节点开始，沿着树(图)的宽度遍历树(图)的节点。如果所有节点均被访问，则算法中止。BFS同样属于盲目搜索。一般用队列数据结构来辅助实现BFS算法。</p>
+<p><strong>算法步骤</strong>：</p>
+<ol>
+<li><p>首先将根节点放入队列中。</p>
+</li>
+<li><p>从队列中取出第一个节点，并检验它是否为目标。</p>
+</li>
+<li><p>如果找到目标，则结束搜寻并回传结果。<br>否则将它所有尚未检验过的直接子节点加入队列中。</p>
+</li>
+<li><p>若队列为空，表示整张图都检查过了——亦即图中没有欲搜寻的目标。结束搜寻并回传“找不到目标”。</p>
+</li>
+<li><p>重复步骤2。</p>
+</li>
+</ol>
+<p><img src="http://zezhi.qiniudn.com/wp-content/uploads/2014/06/Animated_BFS.gif" alt=""></p>
+<p>详细介绍：<a href="http://www.cnblogs.com/skywang12345/p/3711483.html" target="_blank" rel="external">广度优先搜索</a></p>
+<p>##算法八：Dijkstra算法</p>
+<p><strong>戴克斯特拉算法</strong>（Dijkstra’s algorithm）是由荷兰计算机科学家艾兹赫尔·戴克斯特拉提出。迪科斯彻算法使用了广度优先搜索解决非负权有向图的单源最短路径问题，算法最终得到一个最短路径树。该算法常用于路由算法或者作为其他图算法的一个子模块。</p>
+<p>该算法的输入包含了一个有权重的有向图 G，以及G中的一个来源顶点 S。我们以 V 表示 G 中所有顶点的集合。每一个图中的边，都是两个顶点所形成的有序元素对。(u, v) 表示从顶点 u 到 v 有路径相连。我们以 E 表示G中所有边的集合，而边的权重则由权重函数 w: E → [0, ∞] 定义。因此，w(u, v) 就是从顶点 u 到顶点 v 的非负权重（weight）。边的权重可以想像成两个顶点之间的距离。任两点间路径的权重，就是该路径上所有边的权重总和。已知有 V 中有顶点 s 及 t，Dijkstra 算法可以找到 s 到 t的最低权重路径(例如，最短路径)。这个算法也可以在一个图中，找到从一个顶点 s 到任何其他顶点的最短路径。对于不含负权的有向图，Dijkstra算法是目前已知的最快的单源最短路径算法。</p>
+<p><strong>算法步骤</strong>：</p>
+<ol>
+<li><p>初始时令 S={V0},T={其余顶点}，T中顶点对应的距离值</p>
+<ul>
+<li><p>若存在<v0,vi>，d(V0,Vi)为<v0,vi>弧上的权值</v0,vi></v0,vi></p>
+</li>
+<li><p>若不存在<v0,vi>，d(V0,Vi)为∞</v0,vi></p>
+</li>
+</ul>
+</li>
+<li><p>从T中选取一个其距离值为最小的顶点W且不在S中，加入S</p>
+</li>
+<li><p>对其余T中顶点的距离值进行修改：若加进W作中间顶点，从V0到Vi的距离值缩短，则修改此距离值</p>
+</li>
+</ol>
+<p>重复上述步骤2、3，直到S中包含所有顶点，即W=Vi为止</p>
+<p><img src="http://zezhi.qiniudn.com/wp-content/uploads/2014/06/Dijkstra_Animation.gif" alt=""></p>
+<p>详细：<a href="http://www.cnblogs.com/skywang12345/p/3711512.html" target="_blank" rel="external">Dijkstra算法</a></p>
+<p>##算法九：动态规划算法</p>
+<p><strong>动态规划</strong>（Dynamic programming）是一种在数学、计算机科学和经济学中使用的，通过把原问题分解为相对简单的子问题的方式求解复杂问题的方法。 动态规划常常适用于有重叠子问题和最优子结构性质的问题，动态规划方法所耗时间往往远少于朴素解法。</p>
+<p>动态规划背后的基本思想非常简单。大致上，若要解一个给定问题，我们需要解其不同部分（即子问题），再合并子问题的解以得出原问题的解。 通常许多子问题非常相似，为此动态规划法试图仅仅解决每个子问题一次，从而减少计算量： 一旦某个给定子问题的解已经算出，则将其记忆化存储，以便下次需要同一个子问题解之时直接查表。 这种做法在重复子问题的数目关于输入的规模呈指数增长时特别有用。</p>
+<p>关于动态规划最经典的问题当属背包问题。</p>
+<p><strong>算法步骤</strong>：</p>
+<ol>
+<li><p>最优子结构性质。如果问题的最优解所包含的子问题的解也是最优的，我们就称该问题具有最优子结构性质（即满足最优化原理）。最优子结构性质为动态规划算法解决问题提供了重要线索。</p>
+</li>
+<li><p>子问题重叠性质。子问题重叠性质是指在用递归算法自顶向下对问题进行求解时，每次产生的子问题并不总是新问题，有些子问题会被重复计算多次。动态规划算法正是利用了这种子问题的重叠性质，对每一个子问题只计算一次，然后将其计算结果保存在一个表格中，当再次需要计算已经计算过的子问题时，只是在表格中简单地查看一下结果，从而获得较高的效率。</p>
+</li>
+</ol>
+<p><strong>详细参考</strong>：</p>
+<p><a href="http://cricode.com/1096.html" target="_blank" rel="external">从全球导航到输入法：谈谈动态规划</a></p>
+<p><a href="http://hawstein.com/posts/dp-novice-to-advanced.html" target="_blank" rel="external">动态规划</a></p>
+<p>##算法十：朴素贝叶斯分类算法</p>
+<p>朴素贝叶斯分类算法是一种基于贝叶斯定理的简单概率分类算法。贝叶斯分类的基础是概率推理，就是在各种条件的存在不确定，仅知其出现概率的情况下，如何完成推理和决策任务。概率推理是与确定性推理相对应的。而朴素贝叶斯分类器是基于独立假设的，即假设样本每个特征与其他特征都不相关。</p>
+<p>朴素贝叶斯分类器依靠精确的自然概率模型，在有监督学习的样本集中能获取得非常好的分类效果。在许多实际应用中，朴素贝叶斯模型参数估计使用最大似然估计方法，换言之朴素贝叶斯模型能工作并没有用到贝叶斯概率或者任何贝叶斯模型。</p>
+<p>尽管是带着这些朴素思想和过于简单化的假设，但朴素贝叶斯分类器在很多复杂的现实情形中仍能够取得相当好的效果。</p>
+<p><strong>详细参考</strong>：</p>
+<p><a href="http://cricode.com/1078.html" target="_blank" rel="external">贝叶斯网络</a></p>
+<p><a href="http://cricode.com/1098.html" target="_blank" rel="external">朴素贝叶斯分类算法</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2788,7 +3170,7 @@ print sorted_ignore_case([&apos;bob&apos;, &apos;about&apos;, &apos;Zoo&apos;, &
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">193</span>
+                <span class="site-state-item-count">163</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

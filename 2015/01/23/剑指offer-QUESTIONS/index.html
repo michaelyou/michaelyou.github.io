@@ -94,18 +94,18 @@
 
 
 
-<meta name="description" content="##sizeof问：C++里定义一个空的类型，里面没有任何成员变量和成员函数。对该类型求sizeof，得到的结果是多少？ 答：1 问：为什么不是0？ 答：空类型的实例中不包含任何信息，本来求sizeof应该是0，但是当我们声明该类型的实例的时候，它必须在内存中占有一定的空间，否则无法使用这些实例。至于占用多少内存，由编译器决定。Visual Studio中每个空类型的实例占用1字节的空间。 问：如">
+<meta name="description" content="sizeof问：C++里定义一个空的类型，里面没有任何成员变量和成员函数。对该类型求sizeof，得到的结果是多少？ 答：1 问：为什么不是0？ 答：空类型的实例中不包含任何信息，本来求sizeof应该是0，但是当我们声明该类型的实例的时候，它必须在内存中占有一定的空间，否则无法使用这些实例。至于占用多少内存，由编译器决定。Visual Studio中每个空类型的实例占用1字节的空间。 问：如果在">
 <meta name="keywords" content="linux,c,面试">
 <meta property="og:type" content="article">
-<meta property="og:title" content="剑指offer-QUESTIONS">
+<meta property="og:title" content="剑指offer-问题集锦">
 <meta property="og:url" content="http://yoursite.com/2015/01/23/剑指offer-QUESTIONS/index.html">
 <meta property="og:site_name" content="Youmai の Blog">
-<meta property="og:description" content="##sizeof问：C++里定义一个空的类型，里面没有任何成员变量和成员函数。对该类型求sizeof，得到的结果是多少？ 答：1 问：为什么不是0？ 答：空类型的实例中不包含任何信息，本来求sizeof应该是0，但是当我们声明该类型的实例的时候，它必须在内存中占有一定的空间，否则无法使用这些实例。至于占用多少内存，由编译器决定。Visual Studio中每个空类型的实例占用1字节的空间。 问：如">
+<meta property="og:description" content="sizeof问：C++里定义一个空的类型，里面没有任何成员变量和成员函数。对该类型求sizeof，得到的结果是多少？ 答：1 问：为什么不是0？ 答：空类型的实例中不包含任何信息，本来求sizeof应该是0，但是当我们声明该类型的实例的时候，它必须在内存中占有一定的空间，否则无法使用这些实例。至于占用多少内存，由编译器决定。Visual Studio中每个空类型的实例占用1字节的空间。 问：如果在">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta property="og:updated_time" content="2017-12-11T11:32:02.258Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="剑指offer-QUESTIONS">
-<meta name="twitter:description" content="##sizeof问：C++里定义一个空的类型，里面没有任何成员变量和成员函数。对该类型求sizeof，得到的结果是多少？ 答：1 问：为什么不是0？ 答：空类型的实例中不包含任何信息，本来求sizeof应该是0，但是当我们声明该类型的实例的时候，它必须在内存中占有一定的空间，否则无法使用这些实例。至于占用多少内存，由编译器决定。Visual Studio中每个空类型的实例占用1字节的空间。 问：如">
+<meta name="twitter:title" content="剑指offer-问题集锦">
+<meta name="twitter:description" content="sizeof问：C++里定义一个空的类型，里面没有任何成员变量和成员函数。对该类型求sizeof，得到的结果是多少？ 答：1 问：为什么不是0？ 答：空类型的实例中不包含任何信息，本来求sizeof应该是0，但是当我们声明该类型的实例的时候，它必须在内存中占有一定的空间，否则无法使用这些实例。至于占用多少内存，由编译器决定。Visual Studio中每个空类型的实例占用1字节的空间。 问：如果在">
 
 
 
@@ -140,7 +140,7 @@
 
 
 
-  <title>剑指offer-QUESTIONS | Youmai の Blog</title>
+  <title>剑指offer-问题集锦 | Youmai の Blog</title>
   
 
 
@@ -303,7 +303,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">剑指offer-QUESTIONS</h1>
+          <h1 class="post-title" itemprop="name headline">剑指offer-问题集锦</h1>
         
 
         <div class="post-meta">
@@ -375,7 +375,7 @@
       
 
       
-        <p>##sizeof<br>问：C++里定义一个空的类型，里面没有任何成员变量和成员函数。对该类型求sizeof，得到的结果是多少？</p>
+        <h2 id="sizeof"><a href="#sizeof" class="headerlink" title="sizeof"></a>sizeof</h2><p>问：C++里定义一个空的类型，里面没有任何成员变量和成员函数。对该类型求sizeof，得到的结果是多少？</p>
 <p>答：1</p>
 <p>问：为什么不是0？</p>
 <p>答：空类型的实例中不包含任何信息，本来求sizeof应该是0，但是当我们声明该类型的实例的时候，它必须在内存中占有一定的空间，否则无法使用这些实例。至于占用多少内存，由编译器决定。Visual Studio中每个空类型的实例占用1字节的空间。</p>
@@ -383,7 +383,7 @@
 <p>答：和前面一样，还是1。调用构造函数和析构函数只需要知道函数的地址即可，而这些函数的地址只与类型相关，而与类型的实例无关，编译器也不会因为这两个函数而在实例内添加任何额外的信息。</p>
 <p>问：那如果把析构函数标记为虚函数呢？ </p>
 <p>答：C++编译器一旦发现一个类型中有虚函数，就会为该类型生成虚函数表，并在该类型的每一个实例中添加一个虚函数表的指针。在32位的机器上，一个指针占4字节的空间，因此求sizeof得到4；如果是64位的机器，一个指针占8字节的空间，因此求sizeof则得到8。</p>
-<p>##数组与指针<br>运行下面的代码，结果是什么？</p>
+<h2 id="数组与指针"><a href="#数组与指针" class="headerlink" title="数组与指针"></a>数组与指针</h2><p>运行下面的代码，结果是什么？</p>
 <pre><code>int _tmain(int argc, _TCHAR* argv[])
 {
     char str1[] = &quot;hello world&quot;;
@@ -406,7 +406,14 @@
 }
 </code></pre><p>str1和str2是两个字符串数组，我们会为它们分配两个长度为12个字节的空间，并把”hello world”的内容<strong><em>分别复制到数组</em></strong>中去。这是两个初始地址不同的数组，因此str1和str2的值也不相同，所以输出的第一行是”str1 and str2 are not same”。</p>
 <p>str3和str4是两个指针，我们无须为它们分配内存以存储字符串的内容，而只需要把它们指向”hello world”在内存中的地址就可以了。由于<strong><em>“hello world”是常量字符串，它在内存中只有一个拷贝，因此str3和str4指向的是同一个地址</em></strong>。所以比较str3和str4的值得到的结果是相同的，输出的第二行是”str3 and str4 are same”。</p>
-<p>##关于(&amp;a + 1)和<em>(a + 1)<br>    main()<br>    {<br>    int a[5]={1,2,3,4,5};<br>    int </em>ptr=(int <em>)(&amp;a+1);<br>    printf(“%d,%d”,</em>(a+1),*(ptr-1));<br>    }<br>程序输出为：2,5</p>
+<h2 id="关于-amp-a-1-和-a-1"><a href="#关于-amp-a-1-和-a-1" class="headerlink" title="关于(&amp;a + 1)和*(a + 1)"></a>关于(&amp;a + 1)和*(a + 1)</h2><pre><code class="c">main()
+{
+<span class="keyword">int</span> a[<span class="number">5</span>]={<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>};
+<span class="keyword">int</span> *ptr=(<span class="keyword">int</span> *)(&amp;a+<span class="number">1</span>);
+<span class="built_in">printf</span>(<span class="string">"%d,%d"</span>,*(a+<span class="number">1</span>),*(ptr<span class="number">-1</span>));
+}
+</code></pre>
+<p>程序输出为：2,5</p>
 <p>解释：</p>
 <p><code>*(a+1)</code>其实很简单就是指<code>a[1]</code>,输出为2.</p>
 <p>问题关键就在于第二个点，<code>*(ptr-1)</code>输出为多少？</p>
@@ -511,8 +518,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/img/lufei.jpeg"
@@ -527,7 +543,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">193</span>
+                <span class="site-state-item-count">163</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -598,6 +614,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#sizeof"><span class="nav-number">1.</span> <span class="nav-text">sizeof</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数组与指针"><span class="nav-number">2.</span> <span class="nav-text">数组与指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于-amp-a-1-和-a-1"><span class="nav-number">3.</span> <span class="nav-text">关于(&a + 1)和*(a + 1)</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

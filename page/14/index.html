@@ -286,7 +286,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/进程与线程/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -305,7 +305,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/04/进程与线程/" itemprop="url">进程与线程</a></h1>
+                <a class="post-title-link" href="/2015/02/02/每天一个python小程序-4/" itemprop="url">每天一个python小程序(4)--统计单词频数</a></h1>
         
 
         <div class="post-meta">
@@ -317,8 +317,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-04T10:54:11+08:00">
-                2015-03-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-02T23:08:42+08:00">
+                2015-02-02
               </time>
             
 
@@ -340,8 +340,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
                   </a>
                 </span>
 
@@ -379,53 +379,1267 @@
       
         
           
-            <p>##多进程与多线程的对比</p>
-<p><img src="/img/多进程与多线程.png" alt="多进程与多线程"></p>
-<p>这里的<code>一个线程挂掉将导致整个进程挂掉</code>是指线程非正常退出或调用exit，正常return是不会导致进程挂掉的</p>
-<p>##进程与线程的对比</p>
-<p><img src="/img/进程与线程.png" alt="进程与线程"></p>
+            <blockquote>
+<p>任一个英文的纯文本文件，统计其中每个单词出现的频数。</p>
+</blockquote>
+<p>这一题使用collections模块会非常简单</p>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
+
+import collections
+import re
+
+#增加统计单词总数和最长行
+def count_word(file_name):
+    f = open(file_name)
+
+    word_counter = collections.Counter()
+
+    #文件对象使用迭代器
+    for line in f:
+        words = re.findall(&apos;\w+&apos;, line.lower())
+        word_counter.update(words)
+
+    #迭代器对象只能遍历一次，欲再次遍历需要重现构建迭代器对象
+    f = open(file_name)
+    #计算单词总数 p206
+    word_sum = len([word for line in f for word in line.split()])
+
+
+    #最长行
+    f = open(file_name)
+    longest = max(len(line.split()) for line in f)
+
+    print &quot;the longest line&apos;s length is %d&quot; % longest
+    f.close()
+
+    return word_counter, word_sum
+
+if __name__ == &apos;__main__&apos;:
+    world_counter, word_sum = count_word(&apos;test.txt&apos;)
+    print &apos;there are %d words in this article&apos; % word_sum
+    #most_common打印出现次数最多的单词，这里most_common(3)表示出现次数最多的3个单词
+    for key,count in world_counter.most_common(3):
+        print &apos;%s: %d&apos; % (key, count)
+</code></pre><p>代码在<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.4" target="_blank" rel="external">这里</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/02/每天一个python小程序-3/" itemprop="url">每天一个python小程序(3)--保存激活码</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-02T23:04:29+08:00">
+                2015-02-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>将<a href="http://michaelyou.github.io/2015/02/02/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AApython%E5%B0%8F%E7%A8%8B%E5%BA%8F-2/" target="_blank" rel="external">这一题</a>生成的 200 个激活码（或者优惠券）保存到 mongodb 非关系型数据库中</p>
+</blockquote>
+<p>python连接mongodb需要用到pymongo模块，对数据库操作和单独操作mongodb是一样的</p>
+<pre><code>#usr/bin/python
+#encoding=utf-8
+
+import pymongo
+import uuid
+#连接到mongodb,这里的mongodb在本地运行，默认监听27017端口
+connection = pymongo.Connection(&apos;localhost&apos;, 27017)
+#连接到指定数据库，不存在即创建
+db = connection.python_study
+#指定collection，不存在即创建
+collection = db.uuid
+
+for i in range(200):
+    #向指定的collection中插入数据
+    collection.insert({&quot;id&quot;: i, &quot;value&quot;: uuid.uuid4()})
+</code></pre><p>代码可以在<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.2" target="_blank" rel="external">这里</a>下载</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/02/每天一个python小程序-2/" itemprop="url">每天一个python小程序(2)--生成激活码</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-02T22:58:51+08:00">
+                2015-02-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>作为 Apple Store App 独立开发者，你要搞限时促销，为你的应用生成激活码（或者优惠券），使用 Python 如何生成 200 个激活码（或者优惠券）？</p>
+</blockquote>
+<p>本题主要是熟悉python的uuid模块，uuid生成有4个算法，这里采用的是uuid4</p>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
+import uuid
+
+def generate_activation_code(count):
+    code_list = []
+    for i in xrange(count):
+        code = str(uuid.uuid4()).replace(&apos;-&apos;,&apos;&apos;).upper()
+        #uuid4的算法有一定的重复概率，所以下面作了判断
+        if not code in code_list:
+            code_list.append(code)
+
+    return code_list
+
+if __name__ == &apos;__main__&apos;:
+    code_list = generate_activation_code(200)
+    for code in code_list:
+        print code
+</code></pre><p>代码可以在<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.1" target="_blank" rel="external">这里</a>下载</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/02/每天一个python小程序-1/" itemprop="url">每天一个python小程序(1)-修改QQ头像</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-02T22:38:43+08:00">
+                2015-02-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>将你的 QQ 头像（或者微博头像）右上角加上红色的数字，类似于微信未读信息数量那种提示效果。 类似于图中效果</p>
+</blockquote>
+<p><img src="/img/question1.png" alt="头像"></p>
+<p>本题用到的知识点主要是python的PIL模块，PIL是python中最常用的图像处理库</p>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
+
+from PIL import Image, ImageDraw, ImageFont
+
+def write_num_on_img(filePath, num):
+    img = Image.open(filePath)
+    #img.size返回一个元组(width, height)
+    size = img.size
+    draw = ImageDraw.Draw(img)
+    #colour设置数字的颜色，这里是红色
+    colour = (255, 0, 0)
+    ttfont = ImageFont.truetype(&apos;ahronbd.ttf&apos;, 50)
+    #关键函数，参数包括，文字的位置，内容，颜色，字体
+    draw.text((size[0]-30, 0), str(num), fill=colour, font=ttfont)
+    #显示一幅已载入的图像
+    img.show()
+    img.save(&apos;changed.jpg&apos;)
+
+if __name__ == &apos;__main__&apos;:
+    write_num_on_img(&quot;test.jpg&quot;, 4)
+</code></pre><p>代码可以在<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.0" target="_blank" rel="external">这里</a>下载</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/01/python试题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/01/python试题/" itemprop="url">python试题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-01T14:19:48+08:00">
+                2015-02-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##list与tuple的区别 ？dictionary与set的区别？<br>对于list与tupel的区别，在《Python核心编程2》中讲解的很清楚，可以总体概括为，可变与不可变、他们本质相同，但是就因为可变性就延伸了很多不同点。如list类型可以进行相应更改和方法操作，但tupel就没有这个功能。</p>
+<p>对于dict和set，一个是Python唯一的映射类型，一个是Python集合。python中集合对象（set）是一组无序排列的可哈希的值，包含两种类型：可变集合（set）和不可变集合（frozenset），所以set不是可哈希的，frozenset是可哈希的，能当作字典的键。字典和集合的详细区别可以点<a href="http://codingnow.cn/language/353.html" target="_blank" rel="external">这里</a></p>
+<p>##python中String类型和unicode什么关系?<br>string是字节串，而unicode是一个统一的字符集，utf-8是它的一种存储实现形式，string可为utf-8编码，也可编码为GBK等各种编码格式</p>
+<p>##输出从1加到100的和<br>    sum = 0<br>    for i in range(1, 101):<br>        sum += i<br>    print sum </p>
+<pre><code>#注意点：range的右范围是取不到的
+</code></pre><p>##如何在一个函数内修改一个全局变量？<br>在函数中使用global关键字声明全局变量，然后修改。如： </p>
+<pre><code>a = 10
+
+def add1():
+    global a
+    print a + 1
+
+add1()
+</code></pre><p>##except的用法和作用<br>Python的except用来捕获所有异常， 因为Python里面的每次错误都会抛出 一个异常，所以每个程序的错误都被当作一个运行时错误。</p>
+<p>以下是使用except的一个例子：</p>
+<pre><code>try:    
+    foo = opne(“file”) #open被错写为opne    
+except: 
+    sys.exit(“could not open file!”)
+</code></pre><p>因为这个错误是由于open被拼写成opne而造成的，然后被except捕获，所以debug程序的时候很容易不知道出了什么问题</p>
+<p>下面这个例子更好点：</p>
+<pre><code>try:
+    foo = opne(“file”) # 这时候except只捕获IOError
+except IOError:
+    sys.exit(“could not open file”)
+</code></pre><p>##如何反序的迭代一个序列?how do I iterate over a sequence in reverse order</p>
+<p>如果是一个list, 最快的解决方案是：</p>
+<pre><code>list.reverse()
+try:
+    for x in list:
+        “do something with x”
+finally:
+list.reverse()
+</code></pre><p>如果不是list, 最通用但是稍慢的解决方案是：</p>
+<pre><code>#range函数的参数
+#第一个：从这个数开始迭代
+#第二个：迭代到这个数
+#第三个：步长，为负表示倒序
+for i in range(len(sequence)-1, -1, -1):
+    x = sequence[i]
+</code></pre><p>##判断当前用户是否是root<br>    import os<br>    if os.geteuid() != 0:<br>        print “This program must be run as root. Aborting.”<br>    sys.exit(1)</p>
+<p>##什么是lambda函数?<br>Python允许你定义一种单行的小函数。定义lambda函数的形式如下：labmda 参数：表达式lambda函数默认返回表达式的值。你也可以将其赋值给一个变量。lambda函数可以接受任意个参数，包括可选参数，但是表达式只有一个：</p>
+<pre><code>&gt;&gt;&gt; g = lambda x, y: x*y
+&gt;&gt;&gt; g(3,4)
+12
+&gt;&gt;&gt; g = lambda x, y=0, z=0: x+y+z
+&gt;&gt;&gt; g(1)
+1
+&gt;&gt;&gt; g(3, 4, 7)
+14
+</code></pre><p>也能够直接使用lambda函数，不把它赋值给变量：</p>
+<pre><code>&gt;&gt;&gt; (lambda x,y=0,z=0:x+y+z)(3,5,6)
+14
+</code></pre><p>如果你的函数非常简单，只有一个表达式，不包含命令，可以考虑lambda函数。否则，你还是定义函数才对，毕竟函数没有这么多限制。</p>
+<p>##Python是如何进行内存管理的?<br>Python的内存管理是由Python得解释器负责的，开发人员可以从内存管理事务中解放出来，致力于应用程序的开发，这样就使得开发的程序错误更少，程序更健壮，开发周期更短</p>
+<p>##如何用Python来发送邮件?<br>以下代码可以在支持SMTP监听器的服务器上执行。</p>
+<pre><code>import sys, smtplib
+
+fromaddr = raw_input(“From: “)
+toaddrs = raw_input(“To: “).split(‘,’)
+print “Enter message, end with ^D:”
+msg = &quot;&quot;
+while 1:
+    line = sys.stdin.readline()
+    if not line:
+        break
+    msg = msg + line
+
+# 发送邮件部分
+server = smtplib.SMTP(‘localhost’)
+server.sendmail(fromaddr, toaddrs, msg)
+server.quit()
+</code></pre><p>##Python输出一个Fibonacci数列?</p>
+<p>方法一：</p>
+<pre><code>a,b = 0, 1
+while b&lt;100:
+    print (b),
+    a, b = b, a+b
+</code></pre><p>方法二：递归</p>
+<pre><code>def fibonacci2(n):  
+    if n == 1 or n == 2:  
+        return 1  
+    else:  
+        return fibonacci2(n-1) + fibonacci2(n-2)
+</code></pre><p>方法三：迭代</p>
+<pre><code>def fibonacci(n):  
+    if n == 1 or n == 2:  
+        return 1  
+
+    nPre = 1  
+    nLast = 1  
+    nResult = 0  
+    i = 2  
+    while i &lt; n:  
+        nResult = nPre + nLast  
+        nPre = nLast  
+        nLast = nResult  
+        i += 1  
+
+    return nResult  
+</code></pre><p>##Python里面如何生成随机数?<br>标准库random实现了一个随机数生成器，实例代码如下：</p>
+<pre><code>import random
+
+random.random()
+</code></pre><p>它会返回一个随机的0和1之间的浮点数</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/31/python的socket编程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/31/python的socket编程/" itemprop="url">python的socket编程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-31T20:29:30+08:00">
+                2015-01-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>python的网络编程比c语言简单许多, 封装许多底层的实现细节, 方便程序员使用的同时, 也使程序员比较难了解一些底层的东西, 我觉得学网络编程还是用c语言更好一点。</p>
+<p>这篇文章将一些Linux网络编程的函数和Python网络编程函数做了一个简单的对照, 方便记忆。</p>
+<p>##Socket套接字的概念<br>Socket，是操作系统内核中的一个数据结构，它是网络中的节点进行相互通信的门户。它是网络进程的ID。网络通信，归根到底还是进程间的通信（不同计算机上的进程间通信, 又称进程间通信, IP协议进行的主要是端到端通信）。在网络中，每一个节点（计算机或路由）都有一个网络地址，也就是IP地址。两个进程通信时，首先要确定各自所在的网络节点的网络地址。但是，网络地址只能确定进程所在的计算机，而一台计算机上很可能同时运行着多个进程，所以仅凭网络地址还不能确定到底是和网络中的哪一个进程进行通信，因此套接口中还需要包括其他的信息，也就是端口号（PORT）。在一台计算机中，一个端口号一次只能分配给一个进程，也就是说，在一台计算机中，端口号和进程之间是一一对应关系。</p>
+<p>所以，使用端口号和网络地址的组合可以唯一的确定整个网络中的一个网络进程.<br>端口号的范围从0~65535，一类是由互联网指派名字和号码公司ICANN负责分配给一些常用的应用程序固定使用的“周知的端口”，其值一般为0~1023, 用户自定义端口号一般大于等于1024。</p>
+<p>每一个socket都用一个半相关描述{协议、本地地址、本地端口}来表示；一个完整的套接字则用一个相关描述{协议、本地地址、本地端口、远程地址、远程端口}来表示。socket也有一个类似于打开文件的函数调用，该函数返回一个整型的socket描述符，随后的连接建立、数据传输等操作都是通过socket来实现的</p>
+<p>###Socket类型<br>socket类型在Liunx和Python是一样的, 只是Python中的类型都定义在socket模块中, 调用方式socket.SOCK_XXXX</p>
 <ul>
-<li><p>进程是具有一定独立功能的程序关于某个数据集合上的一次运行活动,进程是系统进行资源分配和调度的一个独立单位。</p>
-</li>
-<li><p>线程是进程的一个实体, 是CPU调度和分派的基本单位,它是比进程更小的能独立运行的基本单位.线程自己基本上不拥有系统资源,只拥有一点在运行中必不可少的资源(如程序计数器,一组寄存器和栈),但是它可与同属一个进程的其他的线程共享进程所拥有的全部资源。</p>
-</li>
-<li><p>一个线程可以创建和撤销另一个线程，同一个进程中的多个线程之间可以并发执行。</p>
-</li>
+<li>流式socket（SOCK_STREAM） 用于TCP通信</li>
 </ul>
 <blockquote>
-<p>进程和线程的主要差别在于它们是不同的操作系统资源管理方式。进程有独立的地址空间，一个进程崩溃后，在保护模式下不会对其它进程产生影响，而线程只是一个进程中的不同执行路径。线程有自己的堆栈和局部变量，但线程之间没有单独的地址空间，一个线程死掉就等于整个进程死掉，所以多进程的程序要比多线程的程序 健壮，但在进程切换时，耗费资源较大，效率要差一些。但对于一些要求同时进行并且又要共享某些变量的并发操作，只能用线程，不能用进程。</p>
+<p>流式套接字提供可靠的、面向连接的通信流；它使用TCP协议，从而保证了数据传输的正确性和顺序性</p>
 </blockquote>
-<p>##一个有趣的解释-进程与线程</p>
-<ol>
-<li>计算机的核心是CPU，它承担了所有的计算任务。它就像一座工厂，时刻在运行。</li>
-<li>假定工厂的电力有限，一次只能供给一个车间使用。也就是说，一个车间开工的时候，其他车间都必须停工。背后的含义就是，单个CPU一次只能运行一个任务。</li>
-<li>进程就好比工厂的车间，它代表CPU所能处理的单个任务。任一时刻，CPU总是运行一个进程，其他进程处于非运行状态。</li>
-<li>一个车间里，可以有很多工人。他们协同完成一个任务。</li>
-<li>线程就好比车间里的工人。一个进程可以包括多个线程。</li>
-<li>车间的空间是工人们共享的，比如许多房间是每个工人都可以进出的。这象征一个进程的内存空间是共享的，每个线程都可以使用这些共享内存。</li>
-<li>可是，每间房间的大小不同，有些房间最多只能容纳一个人，比如厕所。里面有人的时候，其他人就不能进去了。这代表一个线程使用某些共享内存时，其他线程必须等它结束，才能使用这一块内存。</li>
-<li>一个防止他人进入的简单方法，就是门口加一把锁。先到的人锁上门，后到的人看到上锁，就在门口排队，等锁打开再进去。这就叫”互斥锁”（Mutual exclusion，缩写 Mutex），防止多个线程同时读写某一块内存区域。</li>
-<li>还有些房间，可以同时容纳n个人，比如厨房。也就是说，如果人数大于n，多出来的人只能在外面等着。这好比某些内存区域，只能供给固定数目的线程使用。</li>
-<li>这时的解决方法，就是在门口挂n把钥匙。进去的人就取一把钥匙，出来时再把钥匙挂回原处。后到的人发现钥匙架空了，就知道必须在门口排队等着了。这种做法叫做”信号量”（Semaphore），用来保证多个线程不会互相冲突。不难看出，mutex是semaphore的一种特殊情况（n=1时）。也就是说，完全可以用后者替代前者。但是，因为mutex较为简单，且效率高，所以在必须保证资源独占的情况下，还是采用这种设计。</li>
-<li>操作系统的设计，因此可以归结为三点：<ul>
-<li>以多进程形式，允许多个任务同时运行；</li>
-<li>以多线程形式，允许单个任务分成不同的部分运行；</li>
-<li>提供协调机制，一方面防止进程之间和线程之间产生冲突，另一方面允许进程之间和线程之间共享资源。</li>
-</ul>
-</li>
-</ol>
-<p>##总结</p>
 <ul>
-<li>一般运行一个程序称为一个进程。</li>
-<li>进程可以创建线程，也可以创建进程。</li>
-<li>线程是由进程管理的，线程之间、线程和父进程（创建线程的进程）之间可以共享内存变量（需要使用策略的）。</li>
-<li>进程之间一般不可以直接共享内存变量，需要使用一些进程间的控制共享内存变量。</li>
-<li>如果你使用并行计算，建议使用线程。</li>
-<li>进程就是地址空间，通常在Win32下就是4G，当然这是虚拟地址，有操作系统把这个虚拟的地址在背后转换到实际的物理地址。</li>
-<li>线程是具体的执行体，每一个进程必定有一个主线程。也是CPU、OS调度的基本单位。</li>
-<li>函数当然是在线程内，但更在进程内，通常一个函数一个自己的栈，但这个栈空间实际上呢，是在进程意义的，线程可以申请自己的存储，这叫“线程局部存储”。</li>
+<li>数据报socket（SOCK_DGRAM） 用于UDP通信</li>
 </ul>
-<p>##参考<br><a href="http://www.ruanyifeng.com/blog/2013/04/processes_and_threads.html" target="_blank" rel="external">进程与线程的一个简单解释</a></p>
+<blockquote>
+<p>数据报套接字定义了一种无连接的服务，数据通过相互独立的报文进行传输，是无序的，并且不保证是可靠、无差错的。它使用数据报协议UDP</p>
+</blockquote>
+<ul>
+<li>原始socket（SOCK_RAW） 用于新的网络协议实现的测试等</li>
+</ul>
+<blockquote>
+<p>原始套接字，普通的套接字无法处理ICMP、IGMP等网络报文，而SOCK_RAW可以, 其次，SOCK_RAW也可以处理特殊的IPv4报文；此外，利用原始套接字，可以通过IP_HDRINCL套接字选项由用户构造IP头。</p>
+</blockquote>
+<p>##Socket编程</p>
+<p>###TCP通信<br>TCP通信的基本步骤如下：</p>
+<p>服务端：socket—-bind—-listen—-while(True){—-accept—-recv—-send——}—-close</p>
+<p>客户端：socket———————————————connect—-send—-recv———-close</p>
+<p><img src="/img/TCP通信.png" alt="TCP通信.png"></p>
+<p>####socket函数<br>使用给定的地址族、套接字类型、协议编号（默认为0）来创建套接字</p>
+<pre><code>#Linux
+int socket(int domain, int type, int protocol);
+domain：AF_INET：Ipv4网络协议 AF_INET6：IPv6网络协议
+type : tcp：SOCK_STREAM   udp：SOCK_DGRAM
+protocol : 指定socket所使用的传输协议编号。通常为0.
+返回值：成功则返回套接口描述符，失败返回-1。
+
+
+#python
+socket.socket([family[, type[, proto]]])
+family : AF_INET (默认ipv4), AF_INET6(ipv6) or AF_UNIX(Unix系统进程间通信). 
+type : SOCK_STREAM (TCP), SOCK_DGRAM(UDP) . 
+protocol : 一般为0或者默认
+如果socket创建失败会抛出一个socket.error异常
+</code></pre><p>####服务器端函数</p>
+<p>#####bind函数<br>将套接字绑定到地址, python下,以元组（host,port）的形式表示地址, Linux下使用sockaddr_in结构体指针</p>
+<pre><code>#Linux
+int bind(int sockfd, struct sockaddr * my_addr, int addrlen);
+sockfd : 前面socket()的返回值
+my_addr : 结构体指针变量
+#####
+struct sockaddr_in  //常用的结构体
+{
+unsigned short int sin_family;  //即为sa_family AF_INET
+uint16_t sin_port;  //为使用的port编号
+struct in_addr sin_addr;  //为IP地址
+unsigned char sin_zero[8];  //未使用
+};
+struct in_addr
+{
+uint32_t s_addr;
+};
+####
+addrlen : sockaddr的结构体长度。通常是计算sizeof(struct sockaddr);
+返回值：成功则返回0，失败返回-1
+
+
+#python
+s.bind(address)
+s为socket.socket()返回的套接字对象
+address为元组（host,port）
+host: ip地址, 为一个字符串
+post: 自定义主机号, 为整型
+</code></pre><p>#####listen函数<br>使服务器的这个端口和IP处于监听状态，等待网络中某一客户机的连接请求。如果客户端有连接请求，端口就会接受这个连接</p>
+<pre><code>#Linux
+int listen(int sockfd,int backlog);
+sockfd : 为前面socket的返回值.
+backlog : 指定同时能处理的最大连接要求，通常为10或者5。最大值可设至128
+返回值：成功则返回0，失败返回-1
+
+
+#python
+s.listen(backlog)
+s为socket.socket()返回的套接字对象
+backlog : 操作系统可以挂起的最大连接数量。该值至少为1，大部分应用程序设为5就可以了
+</code></pre><p>#####accept函数<br>接受远程计算机的连接请求，建立起与客户机之间的通信连接。服务器处于监听状态时，如果某时刻获得客户机的连接请求，此时并不是立即处理这个请求，而是将这个请求放在等待队列中，当系统空闲时再处理客户机的连接请求。</p>
+<pre><code>#Linux
+int accept(int s,struct sockaddr * addr,int * addrlen);
+sockfd : 为前面socket的返回值.
+addr : 为结构体指针变量，和bind的结构体是同种类型的，系统会把远程主机的信息（远程主机的地址和端口号信息）保存到这个指针所指的结构体中。
+addrlen : 表示结构体的长度，为整型指针 
+返回值：成功则返回新的socket处理代码new_fd，失败返回-1
+#python
+s.accept()
+s为socket.socket()返回的套接字对象
+返回（conn,address）,其中conn是新的套接字对象，可以用来接收和发送数据。address是连接客户端的地址
+</code></pre><p>####客户端函数</p>
+<p>#####connect函数<br>用来请求连接远程服务器</p>
+<pre><code>#Linux
+int connect (int sockfd,struct sockaddr * serv_addr,int addrlen);
+sockfd : 为前面socket的返回值.
+serv_addr : 为结构体指针变量，存储着远程服务器的IP与端口号信息
+addrlen : 表示结构体变量的长度
+返回值：成功则返回0，失败返回-1
+
+
+#python
+s.connect(address)
+s为socket.socket()返回的套接字对象
+address : 格式为元组（hostname,port），如果连接出错，返回socket.error错误
+</code></pre><p>####通用函数<br>接收远端主机传来的数据</p>
+<p>#####recv函数</p>
+<pre><code>#Linux
+int recv(int sockfd,void *buf,int len,unsigned int flags);
+sockfd : 为前面accept的返回值.也就是新的套接字。
+buf : 表示缓冲区
+len : 表示缓冲区的长度
+flags : 通常为0
+返回值：成功则返回实际接收到的字符数，可能会少于你所指定的接收长度。失败返回-1
+
+
+#python
+s.recv(bufsize[,flag])
+s为socket.socket()返回的套接字对象
+bufsize : 指定要接收的数据大小
+flag : 提供有关消息的其他信息，通常可以忽略
+返回值为数据以字符串形式
+</code></pre><p>#####send函数<br>发送数据给指定的远端主机</p>
+<pre><code>#Linux
+int send(int s,const void * msg,int len,unsigned int flags);
+sockfd : 为前面socket的返回值.
+msg : 一般为常量字符串
+len : 表示长度
+flags : 通常为0
+返回值：成功则返回实际传送出去的字符数，可能会少于你所指定的发送长度。失败返回-1
+
+
+#python
+s.send(string[,flag])
+s为socket.socket()返回的套接字对象
+string : 要发送的字符串数据 
+flag : 提供有关消息的其他信息，通常可以忽略
+返回值是要发送的字节数量，该数量可能小于string的字节大小。
+s.sendall(string[,flag])
+#完整发送TCP数据。将string中的数据发送到连接的套接字，但在返回之前会尝试发送所有数据。
+返回值 : 成功返回None，失败则抛出异常。
+</code></pre><p>#####close函数<br>关闭套接字</p>
+<pre><code>#Linux
+int close(int fd);
+fd : 为前面的sockfd
+返回值：若文件顺利关闭则返回0，发生错误时返回-1
+
+
+#python
+s.close()
+s为socket.socket()返回的套接字对象
+</code></pre><p>####简单的客户端服务器TCP连接<br>一个简单的回显服务器和客户端模型, 客户端发出的数据, 服务器会回显到客户端的终端上(只是一个简单的模型, 没考虑错误处理等问题)</p>
+<pre><code>#服务器端
+#!/usr/bin/python
+# -*- coding:utf-8 -*-
+import socket   #socket模块
+import commands   #执行系统命令模块
+BUF_SIZE = 1024  #设置缓冲区大小
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #生成一个新的socket对象
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  #设置地址复用
+server.bind(server_addr)  #绑定地址
+server.listen(5)  #监听, 最大监听数为5
+while True:
+    client, client_addr = server.accept()  #接收TCP连接, 并返回新的套接字和地址
+    print &apos;Connected by&apos;, client_addr
+    while True :
+        data = client.recv(BUF_SIZE)  #从客户端接收数据
+        print data
+        client.sendall(data)  #发送数据到客户端
+server.close()
+
+
+
+#客户端
+#!/usr/bin/python
+# -*- coding:utf-8 -*-
+import socket
+BUF_SIZE = 1024  #设置缓冲区的大小
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #返回新的socket对象
+client.connect(server_addr)  #要连接的服务器地址
+while True:
+    data = raw_input(&quot;Please input some string &gt; &quot;)  
+    client.sendall(data)  #发送数据到服务器
+    data = client.recv(BUF_SIZE)  #从服务器端接收数据
+    print data
+client.close()
+</code></pre><p>####带错误处理的客户端服务器TCP连接<br>在进行网络编程时, 最好使用大量的错误处理, 能够尽量的发现错误, 也能够使代码显得更加严谨</p>
+<pre><code>#服务器端
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+import sys
+import socket   #socket模块
+BUF_SIZE = 1024  #设置缓冲区大小
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+try :
+  server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #生成一个新的socket对象
+except socket.error, msg :
+    print &quot;Creating Socket Failure. Error Code : &quot; + str(msg[0]) + &quot; Message : &quot; + msg[1]
+    sys.exit()
+print &quot;Socket Created!&quot;
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  #设置地址复用
+try : 
+    server.bind(server_addr)  #绑定地址
+except socket.error, msg :
+  print &quot;Binding Failure. Error Code : &quot; + str(msg[0]) + &quot; Message : &quot; + msg[1]
+  sys.exit()
+print &quot;Socket Bind!&quot;
+server.listen(5)  #监听, 最大监听数为5
+print &quot;Socket listening&quot;
+while True:
+    client, client_addr = server.accept()  #接收TCP连接, 并返回新的套接字和地址, 阻塞函数
+    print &apos;Connected by&apos;, client_addr
+    while True :
+        data = client.recv(BUF_SIZE)  #从客户端接收数据
+        print data
+        client.sendall(data)  #发送数据到客户端
+server.close()
+
+
+#客户端
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+import sys
+import socket
+BUF_SIZE = 1024  #设置缓冲区的大小
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+try : 
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #返回新的socket对象
+except socket.error, msg :
+    print &quot;Creating Socket Failure. Error Code : &quot; + str(msg[0]) + &quot; Message : &quot; + msg[1]
+    sys.exit()
+client.connect(server_addr)  #要连接的服务器地址
+while True:
+    data = raw_input(&quot;Please input some string &gt; &quot;)  
+    if not data :
+        print &quot;input can&apos;t empty, Please input again..&quot;
+        continue
+    client.sendall(data)  #发送数据到服务器
+    data = client.recv(BUF_SIZE)  #从服务器端接收数据
+    print data
+client.close()
+</code></pre><p>###UDP通信<br>UDP通信流程图如下：</p>
+<p>服务端：socket—-bind—-recvfrom—-sendto—-close</p>
+<p>客户端：socket—————sendto—-recvfrom—-close</p>
+<p><img src="/img/UDP通信.png" alt="UDP通信"></p>
+<p>#####sendto()函数<br>发送UDP数据, 将数据发送到套接字</p>
+<pre><code>#Linux
+int sendto(int sockfd, const void *msg,int len,unsigned int flags,const struct sockaddr *to, int tolen);
+sockfd : 为前面socket的返回值.
+msg : 一般为常量字符串
+len : 表示长度
+flags : 通常为0
+to : 表示目地机的IP地址和端口号信息, 表示地址的结构体
+tolen : 常常被赋值为sizeof (struct sockaddr)
+返回值 :　返回实际发送的数据字节长度或在出现发送错误时返回-1。
+
+
+#Python
+s.sendto(string[,flag],address)
+s为socket.socket()返回的套接字对象
+address : 指定远程地址, 形式为（ipaddr，port）的元组
+flag : 提供有关消息的其他信息，通常可以忽略
+返回值 : 发送的字节数。
+</code></pre><p>#####recvfrom()函数<br>接受UDP套接字的数据, 与recv()类似</p>
+<pre><code>#Linux
+int recvfrom(int sockfd,void *buf,int len,unsigned int flags,struct sockaddr *from,int *fromlen);
+sockfd : 为前面socket的返回值.
+msg : 一般为常量字符串
+len : 表示长度
+flags : 通常为0
+from :是一个struct sockaddr类型的变量，该变量保存连接机的IP地址及端口号
+fromlen : 常置为sizeof (struct sockaddr)。
+返回值 : 返回接收到的字节数或当出现错误时返回-1，并置相应的errno。
+
+
+#Python
+s.recvfrom(bufsize[.flag])
+返回值 : （data,address）元组, 其中data是包含接收数据的字符串，address是发送数据的套接字地址
+bufsize : 指定要接收的数据大小
+flag : 提供有关消息的其他信息，通常可以忽略
+</code></pre><p>####2.4. 简单的客户端服务器UDP连接</p>
+<pre><code>#服务器端
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+import socket
+BUF_SIZE = 1024  #设置缓冲区大小
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  #生成新的套接字对象
+server.bind(server_addr)  #套接字绑定IP和端口
+while True :
+    print &quot;waitting for data&quot;
+    data, client_addr = server.recvfrom(BUF_SIZE)  #从客户端接收数据
+    print &apos;Connected by&apos;, client_addr, &apos; Receive Data : &apos;, data
+    server.sendto(data, client_addr)  #发送数据给客户端
+server.close()
+
+
+#客户端
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+import socket
+import struct
+BUF_SIZE = 1024  #设置缓冲区
+server_addr = (&apos;127.0.0.1&apos;, 8888)  #IP和端口构成表示地址
+client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  #生成新的套接字对象
+while True :
+    data = raw_input(&apos;Please Input data &gt; &apos;)
+    client.sendto(data, server_addr)  #向服务器发送数据
+    data, addr = client.recvfrom(BUF_SIZE)  #从服务器接收数据
+    print &quot;Data : &quot;, data
+client.close()
+</code></pre><p>###2.5. 其他</p>
+<pre><code>s.getpeername()
+#返回连接套接字的远程地址。返回值通常是元组（ipaddr,port）。
+s.getsockname()
+#返回套接字自己的地址。通常是一个元组(ipaddr,port)
+s.setsockopt(level,optname,value)
+#设置给定套接字选项的值。
+s.getsockopt(level,optname[.buflen])
+#返回套接字选项的值。
+s.settimeout(timeout)
+#设置套接字操作的超时期，timeout是一个浮点数，单位是秒。值为None表示没有超时期。一般，超时期应该在刚创建套接字时设置，因为它们可能用于连接的操作（如connect()）
+s.gettimeout()
+#返回当前超时期的值，单位是秒，如果没有设置超时期，则返回None。
+s.fileno()
+#返回套接字的文件描述符。
+s.setblocking(flag)
+#如果flag为0，则将套接字设为非阻塞模式，否则将套接字设为阻塞模式（默认值）。非阻塞模式下，如果调用recv()没有发现任何数据，或send()调用无法立即发送数据，那么将引起socket.error异常。
+s.makefile()
+#创建一个与该套接字相关连的文件
+</code></pre><p>##3. 参考链接<br><a href="https://docs.python.org/2/library/socket.html" target="_blank" rel="external">python-socket官方文档</a></p>
 
           
         
@@ -474,7 +1688,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/03/网络编程的一些知识点/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/如何重命名scrapy下载的图片/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -493,7 +1707,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/03/网络编程的一些知识点/" itemprop="url">网络编程的一些知识点</a></h1>
+                <a class="post-title-link" href="/2015/01/30/如何重命名scrapy下载的图片/" itemprop="url">如何重命名scrapy下载的图片</a></h1>
         
 
         <div class="post-meta">
@@ -505,8 +1719,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-03T20:02:05+08:00">
-                2015-03-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T17:07:32+08:00">
+                2015-01-30
               </time>
             
 
@@ -528,8 +1742,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
-                    <span itemprop="name">unix网络编程</span>
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
                   </a>
                 </span>
 
@@ -567,274 +1781,49 @@
       
         
           
-            <p>##socket的缓冲区<br>每个套接字都有一个发送缓冲区和一个接收缓冲区.</p>
-<p> 接收缓冲区被TCP，UDP和SCTCP用来保存接收到的数据，直到由应用进程读取。<strong>对于TCP来说，套接字接收缓冲区可用空间的大小限制了TCP通告对端的窗口大小。TCP套接字接收缓冲区不可以溢出，因为不允许对端发出超过本端所通告窗口大小的数据，这就是TCP的流量控制。</strong>如果对端无视窗口大小而发出了超过窗口大小的数据，本端TCP将丢弃它们。然而对于UDP来说，当接收到的数据报装不进套接字接收缓冲区时，该数据报就被丢弃。回顾一下，<strong>UDP是没有流量控制的：较快的发送端可以很容易的淹没较慢的接收端，导致接收端的UDP丢弃数据报。</strong></p>
-<p>##socket 在什么情况下可读？</p>
-<ol>
-<li>正常有数据输入的时候；</li>
-<li>有异常发生的时候，read 返回 -1，errno 置为错误编号；</li>
-<li>对端关闭的时候，read 返回 0， 表示读文件结束；</li>
-<li>当这个socket 是一个监听 socket ，且连接数不为0，又有 SYN 进来时。</li>
-</ol>
-<p>##listen不是一个阻塞函数<br>listen的作用是将一个套接字设置为监听状态，并且设置监听数目</p>
-<p>他不是一个阻塞函数，设置完套接字后它就没有作用了，以后就是套接字在等待来自客户端的连接  </p>
-<p>##tcp三次握手的过程，accept发生在三次握手哪个阶段</p>
-<p>当客户发起请求时，内核将为每个新到的客户完成3次握手，直到达到相应套接字上listen调用的backlog数为止，然后在服务器调用accept时把这些已完成的连接传递给它。</p>
-<p>所以说，accept是在三次握手完成之后执行的</p>
+            <p>默认情况下，使用ImagePipeline组件下载图片的时候，图片名称是以图片URL的SHA1值进行保存的。</p>
+<p>如：<br>图片URL:<a href="http://www.example.com/image.jpg" target="_blank" rel="external">http://www.example.com/image.jpg</a></p>
+<p>SHA1结果：3afec3b4765f8f0a07b78f98c07b83f013567a0a</p>
+<p>则图片名称：3afec3b4765f8f0a07b78f98c07b83f013567a0a.jpg</p>
+<p>但是，我想要以原来的图片名称进行保存，比如上面例子中的图片保存到本地的话，图片名称就应该是：image.jpg</p>
+<p>stackoverflow上说是可以重写<code>image_key</code>函数，不过我试了下，结果发现不行，重写的image_key函数没被调用。其实不是stackoverflow上的回答是错误的，在<code>scrapy 0.12</code>之前，确实应该这样来解决此问题，现在scrapy的版本已经更新了很多，这个方法不适用了，下面是ImagePipeline的源码中的提醒：</p>
+<blockquote>
+<p>ImagesPipeline.image_key(url) and file_key(url) methods are deprecated, please use file_path(request, response=None, info=None) instead</p>
+</blockquote>
+<p>也就是说，在最新版本的Scrapy中（0.24.4），使用<code>file_path</code>代替<code>image_key</code>函数。</p>
+<p>下面是新版本的解决方法，在<code>scrapy 0.24.4</code>中测试通过</p>
 <ul>
-<li>第一次握手：客户端发送syn包(syn=j)到服务器。</li>
-<li>第二次握手：服务器收到syn包，必须确认客户的SYN（ack=j+1），同时自己也发送一个ASK包（ask=k）。</li>
-<li>第三次握手：客户端收到服务器的SYN＋ACK包，向服务器发送确认包ACK(ack=k+1)。</li>
-</ul>
-<p>三次握手完成后，客户端和服务器就建立了tcp连接。这时可以调用accept函数获得此连接。</p>
-<p>accept会阻塞直到3次握手成功为止</p>
-<p>##为什么客户端不需要调用bind<br>   客户端在调用函数connect之前不必非得调用bind函数（当然也可以调用），因为如果需要的话，内核会确定源ip地址，并选择一个临时端口作为源端口。</p>
-<p>   服务在listen之前也可以不调用bind函数，这样内核同样会为套接字选一个ip和临时端口。让内核来选择临时端口对tcp客户端来说是常见的。但是对于tcp服务器来说却即为罕见，因为服务器是通过众所周知端口被大家认识的。</p>
-<p>   同样，调用bind可以指定ip地址或端口，可以都指定，也可以都不指定，也可以只指定其中一个。</p>
-<p>##traceroute的实现原理<br>   每个IP数据报都有TTL字段，每经过一个路由器，该字段就被减1，抵达路由器的数据报的TTL为1或0时，就会被丢弃，同时会发送一个ICMP“传输超时”错误报文给原始发送者。traceroute利用了这个特性，它首先向目的地发送一个TTL设置为1的UDP数据报。当这个UDP数据报抵达第一跳时，路由器注意到TTL为1，就会将其丢弃，并发回一个ICMP报文，从这个ICMP报文的源地址中，可以得到第一跳的IP地址，然后traceroute用gethostbyaddr来查询它的名字。为获得下一跳的标识，traceroute重复这个过程，只是把TTL设置为2，当这个数据报到达第一跳时，TTL被减为1并转发往下一跳，在那里发现TTL为1，丢弃它，并返回ICMP报文，通过不断增加TTL来重复这个过程，traceroute就可以获得从源到目的地之间的路径消息。</p>
-<p>##TCP 的头有多少个字节？有哪些字段？<br>TCP 头有 20个字节，选项12个字节.</p>
-<ul>
-<li>源端口号16位</li>
-<li>目的端口号16位</li>
-<li>SEQ32位(序列号)</li>
-<li>ACK32位(确认序列号)</li>
-<li>包头长度4位</li>
-<li>保留字段6位</li>
-<li>包类型6位</li>
-<li>窗口大小16位</li>
-<li>校验和16位</li>
-<li>紧急指针16位</li>
-<li>可选项32位</li>
-</ul>
-<p>之后是<strong>数据</strong></p>
-<p>##keepalive 是什么？起什么作用？起作用的过程是什么？<br>keepalive 是 TCP 协议内的心跳机制，用来维护链接的状态，默认不开启。服务器端每隔一段事件会向空闲两小时以上的链接的对端发送一个 keepalive 包，有以下情形：</p>
-<ol>
-<li>对端回复 ACK，链接保活，再次空闲两小时后重新探测；</li>
-<li>对端的应用程序已经退出，TCP 回复一个 RST包，链接关闭；</li>
-<li>对端的应用程序卡死/无反应，TCP 回复一个 FIN包，来终止链接；</li>
-<li>对端机器无任何反应，服务器端将持续发送 keepalive 包，超时则关闭链接。时间范围半小时到两小时。</li>
-</ol>
-<p>##UDP的recvfrom函数可以返回0</p>
-<p>写一个长度为0的数据报是可行的。在UDP情况下，这会形成一个只包含一个IP首部（对于IPv4通常为20字节，对于IPv6通常为40字节）和一个8字节UDP首部而没有数据的IP数据报。这也意味着对于数据报协议，recvfrom返回0值是可以接受的：它不像TCP套接字上read返回0值那样表示对端关闭连接。既然UDP是无连接的，因此也就没有诸如关闭一个UDP连接之类的事情</p>
-<p>##UDP 的 connect 有什么作用？<br>UDP 的 connect  和 TCP 的 connect 不同之处在于，UDP connect 的时候只会进行对端的记录，以及显而易见的错误的检查（比如 IP 压根儿填错了啊），而没有 TCP 的三次握手操作；这时，当前的 UDP socket 也被限定于只与 connect 指定的对端通信，当前的 socket 发生的异常也只会通知到 当前进程；同时，UDP 的 connect 是可以进行重复操作进行对端更新的，即 connect 完 A 之后，再调用 connect B 也是可以的，这与 TCP 不同。</p>
-<p>UDP 链接的两种模式：</p>
-<ol>
-<li>socket —&gt; sendto —&gt; recvfrom</li>
-<li>socket —&gt; connect —&gt; send —&gt; recv </li>
-</ol>
-<p>第二种模式也是可以使用 sendto 和 recvfrom 的，但是 参数内的 地址信息需要置成 NULL。</p>
-<p>##EAGAIN错误的含义</p>
-<p>在Linux环境下开发经常会碰到很多错误(设置errno)，其中EAGAIN是其中比较常见的一个错误(比如用在非阻塞操作中)。</p>
-<p>从字面上来看，是提示再试一次。这个错误经常出现在当应用程序进行一些非阻塞(non-blocking)操作(对文件或socket)的时候。例如，以 O_NONBLOCK的标志打开文件/socket/FIFO，如果你连续做read操作而没有数据可读。此时程序不会阻塞起来等待数据准备就绪返回，read函数会返回一个错误EAGAIN，提示你的应用程序现在没有数据可读请稍后再试。</p>
-<p>又例如，当一个系统调用(比如fork)因为没有足够的资源(比如虚拟内存)而执行失败，返回EAGAIN提示其再调用一次(也许下次就能成功)。</p>
-<p><strong>Linux - 非阻塞socket编程处理EAGAIN错误</strong><br>　在linux进行非阻塞的socket接收数据时经常出现Resource temporarily unavailable，errno代码为11(EAGAIN)，这是什么意思？</p>
-<p>这表明你在非阻塞模式下调用了阻塞操作，在该操作没有完成就返回这个错误，这个错误不会破坏socket的同步，不用管它，下次循环接着recv就可以。<strong><em>对非阻塞socket而言，EAGAIN不是一种错误。在VxWorks和Windows上，EAGAIN的名字叫做EWOULDBLOCK</em></strong>。</p>
-<p>另外，如果出现EINTR即errno为4，错误描述Interrupted system call，操作也应该继续。</p>
-<p>最后，如果recv的返回值为0，那表明连接已经断开，我们的接收操作也应该结束。</p>
+<li><p>在pipelines.py中自定义ImagePipeline类，并重写file_path函数</p>
+<pre><code>from scrapy.contrib.pipeline.images import ImagesPipeline
+from scrapy.http import Request
+from scrapy.exceptions import DropItem
 
-          
-        
-      
-    </div>
-    
-    
-    
+class MyImagesPipeline(ImagesPipeline):
+    def file_path(self, request, response=None, info=None):
+        image_guid = request.url.split(&apos;/&apos;)[-1]
+        return &apos;full/%s&apos; % (image_guid)
 
-    
+    #item[&apos;image_urls&apos;]是我们在item.py中定义的存放图片url的变量，如果定义了别的变量名，注意更换
+    def get_media_requests(self, item, info):
+        for image_url in item[&apos;image_urls&apos;]:
+            yield Request(image_url)
 
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/03/connect函数会阻塞，怎么解决？/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/03/connect函数会阻塞，怎么解决？/" itemprop="url">connect函数会阻塞，怎么解决？</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-03T19:57:01+08:00">
-                2015-03-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
-                    <span itemprop="name">unix网络编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>建立socket后默认connect()函数为阻塞连接状态，在大多数实现中，connect的超时时间在75s至几分钟之间，想要缩短超时时间，可解决问题的两种方法：</p>
-<ul>
-<li>方法一、将socket句柄设置为非阻塞状态。</li>
-<li>方法二、采用信号处理函数设置阻塞超时控制。</li>
-</ul>
-<p>##设置套接字为非阻塞<br>可以将套接字设置为非阻塞，下面是具体步骤</p>
-<ol>
-<li>建立socket</li>
-<li>将该socket设置为非阻塞模式</li>
-<li>调用connect()，如果返回0，则连接建立；如果返回-1，检查errno ，如果值为 EINPROGRESS，则连接正在建立。</li>
-<li>使用select()检查该socket描述符是否可写（注意，是可写）</li>
-<li>根据select()返回的结果判断connect()结果，如果规定时间内成功建立，则描述符变为可写；否则，采用getsockopt函数捕获错误信息</li>
-<li>将socket设置为阻塞模式（<strong>如果你的程序不需要用阻塞模式的，这步就省了，不过一般情况下都是用阻塞模式的，这样也容易管理</strong>）</li>
-</ol>
-<p>下面是设置套接字为非阻塞的例程  </p>
-<pre><code>{
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if(sockfd &lt; 0) exit(1);
-    struct sockaddr_in serv_addr;
-    ………//以服务器地址填充结构serv_addr
-    int error=-1, len;
-    len = sizeof(int);
-    timeval tm;
-    fd_set set;
-    unsigned long ul = 1;
-
-    ioctl(sockfd, FIONBIO, &amp;ul); //设置为非阻塞模式
-    bool ret = false;
-
-    if( connect(sockfd, (struct sockaddr *)&amp;serv_addr, sizeof(serv_addr)) == -1)
-    {
-            tm.tv_set = TIME_OUT_TIME;
-            tm.tv_uset = 0;
-            FD_ZERO(&amp;set);
-            FD_SET(sockfd, &amp;set);
-            if( select(sockfd+1, NULL, &amp;set, NULL, &amp;tm) &gt; 0)
-            {
-                    getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &amp;error, (socklen_t *)&amp;len);
-                    if(error == 0) ret = true;
-                        else ret = false;
-            } 
-            else 
-                ret = false;
+    def item_completed(self, results, item, info):
+        image_paths = [x[&apos;path&apos;] for ok, x in results if ok]
+        if not image_paths:
+            raise DropItem(&quot;Item contains no images&quot;)
+        return item
+</code></pre></li>
+<li><p>修改setting.py</p>
+<pre><code>ITEM_PIPELINES = {
+    # &apos;scrapy.contrib.pipeline.images.ImagesPipeline&apos;: 1
+    &apos;sis.pipelines.MyImagesPipeline&apos;
     }
-    else 
-        ret = true;
-    ul = 0;
-    ioctl(sockfd, FIONBIO, &amp;ul); //设置为阻塞模式
-    //下面还可以进行发包收包操作
-    ……………
-}
-</code></pre><p>##采用信号处理函数设置阻塞超时控制</p>
-<pre><code>sigset(SIGALRM, u_alarm_handler);
-alarm(2);
-code = connect(socket_fd, (struct sockaddr*)&amp;socket_st, sizeof(struct sockaddr_in));
-alarm(0);
-sigrelse(SIGALRM);
-</code></pre><p>首先定义一个中断信号处理函数u_alarm_handler，用于超时后的报警处理，然后定义一个2秒的定时器，执行connect，当系统connect成功，则系统正常执行下去；如果connect不成功阻塞在这里，则超过定义的2秒后，系统会产生一个信号，触发执行u_alarm_handler函数， 当执行完u_alarm_handler后，程序将继续从connect的下面一行执行下去。</p>
-<p>其中，处理函数可以如下定义，也可以加入更多的错误处理。</p>
-<pre><code>void u_alarm_handler()
-{
-}
-</code></pre>
+</code></pre></li>
+</ul>
+<p>可以参考stackoverflow上<a href="http://stackoverflow.com/questions/6194041/scrapy-image-download-how-to-use-custom-filename/22263951#22263951" target="_blank" rel="external">此问题的讨论</a></p>
+<p>原文地址在<a href="http://www.it165.net/pro/html/201402/9615.html" target="_blank" rel="external">这里</a>，本文做了一些删除和修改</p>
+
           
         
       
@@ -882,7 +1871,7 @@ sigrelse(SIGALRM);
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/03/UNP上的一些问题与回答/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/29/scrapy如何获取完整的url/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -901,7 +1890,7 @@ sigrelse(SIGALRM);
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/03/UNP上的一些问题与回答/" itemprop="url">UNP上的一些问题与回答</a></h1>
+                <a class="post-title-link" href="/2015/01/29/scrapy如何获取完整的url/" itemprop="url">scrapy如何获取完整的url</a></h1>
         
 
         <div class="post-meta">
@@ -913,8 +1902,8 @@ sigrelse(SIGALRM);
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-03T19:07:37+08:00">
-                2015-03-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-29T20:31:07+08:00">
+                2015-01-29
               </time>
             
 
@@ -936,8 +1925,398 @@ sigrelse(SIGALRM);
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
-                    <span itemprop="name">unix网络编程</span>
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>用scrapy抓取网页的时候，有时抓取到的并不是完整的url，而是url的后面部分。例如，完整的url是<code>http://michaelyou.github.io/categories/scrapy/</code>，我们抓到的只是<code>/categories/scrapy/</code>,这个时候如何获取完整的url呢？或者说，如何将完整的url拼出来呢？</p>
+<p>解决方法如下：</p>
+<ul>
+<li><p>首先在我们的spider文件头上加上：</p>
+<pre><code>from scrapy.utils.response import get_base_url
+from scrapy.utils.url import urljoin_rfc
+</code></pre></li>
+<li><p>第二步在我们定义的parse函数中加上：</p>
+<pre><code>#这一句便是取url的开头部分
+base_url = get_base_url(response)
+#省略若干行
+#这一句是取url的后面部分
+relative_url = sel.xpath(&apos;***&apos;).extract()[0]
+#将两部分合并
+item[&apos;link&apos;] = urljoin_rfc(base_url, relative_url)
+</code></pre></li>
+</ul>
+<p>严重提醒：</p>
+<p>在求<code>relative_url</code>时，我们在<code>extract()</code>后面加了<code>[0]</code>,因为<code>extract()</code>取出来的是一个数组，而函数<code>urljoin_rfc</code>需要的参数是字符串，所以要从数组中将值取出来，这时的数组内只有一个值，<code>index=0</code>，所以加上了<code>[0]</code>.很多人忘记了加<code>[0]</code>,最后导致合并的时候失败。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/28/笔试题总结4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/28/笔试题总结4/" itemprop="url">笔试题总结4</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-28T19:36:16+08:00">
+                2015-01-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>nux的crontab定时执行任务：<br>基本格式为：</p>
+<p>*　　*　　*　　*　　*　　command </p>
+<p>分　时　日　 月 周　 命令 </p>
+<p>第1列表示分钟1～59 每分钟用<code>*</code>或者<code>*/1</code>表示 </p>
+<p>第2列表示小时1～23（0表示0点） </p>
+<p>第3列表示日期1～31 </p>
+<p>第4列表示月份1～12</p>
+<p>第5列标识号星期0～6（0表示星期天） </p>
+<p>第6列要运行的命令</p>
+<hr>
+<pre><code>Class A;
+Class B;
+void F() {
+        A a;
+        B b;
+}
+</code></pre><blockquote>
+<p>在函数F中，本地变量a和b的构造函数(constructor)和析构函数(destructor)的调用顺序是:D</p>
+<p>A.b构造 a构造 a析构 b析构</p>
+<p>B.a构造 a析构 b构造 b析构</p>
+<p>C.b构造 a构造 b析构 a析构</p>
+<p>D.a构造 b构造 b析构 a析构</p>
+</blockquote>
+<p>解释：按变量声明顺序构造对象，然后入栈<br>按相反顺序出栈，析构对象。</p>
+<hr>
+<blockquote>
+<p>一棵有124个叶节点的完全二叉树，最多有（B）个节点。</p>
+<p>A.247</p>
+<p>B.248</p>
+<p>C.249</p>
+<p>D.250</p>
+</blockquote>
+<p>解释：n0 = n2 + 1，于是度为2的结点个数123个<br>完全二叉树中度为1结点个数最多1个</p>
+<p>因此该完全二叉树中结点最多有123+1+124=248个</p>
+<p>最少的话就是度为1的节点是0个，共有节点247个</p>
+<hr>
+<blockquote>
+<p>在排序方法中，元素比较次数与元素的初始排列无关的是（D）</p>
+<p>A.Shell 排序</p>
+<p>B.归并排序</p>
+<p>C.直接插入排序</p>
+<p>D.选择排序</p>
+</blockquote>
+<p>解释：选择排序无视队列原来是否有序，他自己都会再排一遍，所以它的时间复杂度一直是最差的O（n2），最好情况和最差情况一样.每一趟从待排序的数据元素中选出最小（或最大）的一个元素，顺序放在已排好序的数列的最后，直到全部待排序的数据元素排完。 选择排序是不稳定的排序方法</p>
+<hr>
+<blockquote>
+<p>给定如下代码： int x[4]={0}; int y[4]={1}; 数组x和y的值为（B）</p>
+<p>A.{0，0，0，0}，{1，1，1，1}</p>
+<p>B.{0，0，0，0}，{1，0，0，0}</p>
+<p>C.{0，不确定}，{1，不确定}</p>
+<p>D.与编译器相关</p>
+<hr>
+<p>如何判断一个单项链表中是否有环：</p>
+</blockquote>
+<p>解答：<br> 用两个指针，pSlow，pFast，就是一个慢一个快</p>
+<p>   慢的一次跳一步</p>
+<p>   快的一次跳两步</p>
+<p>   往链表末端移动。如果pFast==NULL，则说明链表没有环，如果pSlow==pFast，则说明链表存在环。</p>
+<hr>
+<blockquote>
+<p>-7的二进制补码为：11111001</p>
+</blockquote>
+<p>解释：正数的补码是自身，负数的补码是原码的高位不变，数值位取反加1</p>
+<hr>
+<blockquote>
+<p>中断响应时间是指（ C ）。</p>
+<p>A.从中断处理开始到中断处理结束所用的时间</p>
+<p>B.从发出中断请求到中断处理结束所用的时间</p>
+<p>C.从发出中断请求到进进中断处理所用的时间</p>
+<p>D.从中断处理结束到再次中断请求的时间</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>在下列排序方法中，不稳定的方法有 C</p>
+<p>A.归并排序与基数排序</p>
+<p>B.插进排序与希尔排序</p>
+<p>C.堆排序与快速排序</p>
+<p>D.选择排序与冒泡排序</p>
+</blockquote>
+<p><img src="/img/排序算法总结.png" alt="排序算法总结"></p>
+<hr>
+<blockquote>
+<p>下面的排序算法中，初始数据集的排列顺序对算法的性能无影响的是 B</p>
+<p>A.插入排序</p>
+<p>B.堆排序</p>
+<p>C.冒泡排序</p>
+<p>D.快速排序</p>
+</blockquote>
+<p>解释：有影响就是这个排序算法最好情况和最差情况的时间复杂度不同。对于无影响，我们只要找最好情况和最差情况时间复杂度一样的算法就可以了，所以是堆排序</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/27/面试题总结3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/27/面试题总结3/" itemprop="url">笔试题总结3</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-27T15:08:28+08:00">
+                2015-01-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
                   </a>
                 </span>
 
@@ -976,1137 +2355,78 @@ sigrelse(SIGALRM);
         
           
             <blockquote>
-<p>在一个以太网上的主机和一个令牌环网上的主机之间建立一个连接，其中以太网上的主机的TCP通告的MSS为1460，令牌环网上的主机的TCP通告的MSS为4096.两个主机都没有实现路径MTU发现功能。观察分组，我们在另个相反方向上都找不到大于1460字节的数据，为什么？</p>
+<p>下列关于线程说法错误的是（B）</p>
+<p>A.耗时的操作使用线程，提高程序响应</p>
+<p>B.耗内存的操作使用线程，提高内存利用率</p>
+<p>C.多CPU的系统使用线程，提高CPU利用率</p>
+<p>D.并行操作使用线程，如c/s架构中服务端程序为每个客户端请求创建一个线程来响应</p>
 </blockquote>
-<p>答：令牌环网上的主机不能发送超过1460字节的数据，因为它接受到的MSS是1460.以太网上的主机可以发送最多4096的数据（因为他接收到的MSS是4096），但是为了避免分片，它不会超过外出接口（即以太网）的MTU。TCP净荷不能超过对端宣告的MSS，但是净荷小于这个数量的TCP分节总是可以发送的。</p>
+<p>解释：多线程可以提高CPU利用率，不能提高内存利用率</p>
+<hr>
 <blockquote>
-<p>如果没有收到来自对端的MSS选项，本端的TCP就采用536这个MSS值。为什么使用这个值？</p>
+<p>个数约为 50k 的数列需要从小到大排序， 数列特征是基本逆序 （多数数字从大到小，个别乱序） ，以下哪种排序算法在事先不了解数列特征的情况下性能大概率最优（不考虑空间限制）_E__.</p>
+<p>A.冒泡排序</p>
+<p>B.改进冒泡排序</p>
+<p>C.选择排序</p>
+<p>D.快速排序</p>
+<p>E.堆排序</p>
+<p>F.插入排序</p>
 </blockquote>
-<p>答：对于IPv4这个默认值产生576字节的IP数据报（其中IPv4首部占用20字节，TCP首部占用20字节，剩下536字节的TCP净荷），这是IPv4的最小重组缓冲区的大小</p>
+<p>解释：个数约为50K，基本可以秒杀一般的<code>冒泡</code>，<code>改进冒泡</code>，<code>选择</code>，<code>插入</code>等基本的排序。加上数列的特征是基本逆序，而快速排序的worst case就是基本逆序或者基本有序的情况。综上所述，堆排序应该是大概率最优的。</p>
+<hr>
 <blockquote>
-<p>对于一个TCP套接字调用close会导致发送一个FIN，然后是正常的TCP连接终止序列。在使用fork的并发程序中，为什么父进程对connfd调用close没有终止它与客户端的连接，子进程依然能够运行呢(unp-p92)？</p>
+<p>下列方法中，<em>B__</em>不可以用来程序调优？</p>
+<p>A.改善数据访问方式以提升缓存命中率</p>
+<p>B.使用多线程的方式提高 I/O 密集型操作的效率</p>
+<p>C.利用数据库连接池替代直接的数据库访问</p>
+<p>C.利用迭代替代递归</p>
+<p>E.合并多个远程调用批量发送</p>
+<p>F.共享冗余数据提高访问效率</p>
 </blockquote>
-<p>答：每个文件或套接字都有一个引用计数。引用计数在文件表项中维护，它是当前打开着的引用该文件或套接字的描述符的个数。socket返回后与listened关联的文件表项的引用计数值为1.  accept返回后与connfd关联的文件表项的引用计数值为1.然而fork返回后，这两个描述符就在父进程与子进程间共享（也就是被复制），因此与这两个套接字相关联的文件表项各自的访问计数值均为2。这么一来，当父进程关闭connfd时，它只是把相应的引用计数值从2减为1。该套接字真正清理和资源释放要等到其引用计数值达到0时才发生。这会在稍后子进程也关闭connfd时发生</p>
+<p>解释：</p>
+<p>A缓存命中率提高，减少访问存储器的开销</p>
+<p>B多线程并不能使IO操作并行化。可以通过异步读写、合并读写、计算代替读写等方式优化。 I/O密集型问题一般是硬件层面的问题，比如硬盘，它的I/O就摆在那里，无论你在怎么多线程，瓶颈就在硬盘那，所以B的说法是不可行的。对于“I/O密集型”的应用程序可以采用I/O效率较高的SCSI硬盘，或者采用集群的方式。</p>
+<p>C可以减少连接和断开数据库的开销</p>
+<p>D可以减少运行时对程序栈进行操作的开销</p>
+<p>E减少远程调用的次数</p>
+<hr>
 <blockquote>
-<p>调用fork的时候，套接字描述符在父进程和子进程间共享，但是子进程调用exec程序，不就是失去对端地址了吗？</p>
+<p>最小堆[0,3,2,5,7,4,6,8],在删除堆顶元素0之后，其结果是（C）</p>
+<p>A.[3，2，5，7，4，6，8]</p>
+<p>B.[2，3，5，7，4，6，8]</p>
+<p>C.[2，3，4，5，7，8，6]</p>
+<p>D.[2，3，4，5，6，7，8]</p>
 </blockquote>
-<p>答：当子程序调用exec执行真正的服务器程序（譬如说telnet服务器程序）时，子进程的内存印象被替换成新的telnet服务器的程序文件（也就是说包含对端地址的那个套接字地址结构就此丢失），不过那个已连接套接字描述符跨exec继续保持开放。telnet服务器首先调用的函数之一便是getpeername，用于获取客户的IP地址和端口号</p>
+<p>解释：删除0之后，末尾8代替0的位置</p>
+<hr>
 <blockquote>
-<p>对于UDP，调用recvfrom，不管应用请求多大，recvfrom绝不会返回多于一个数据报的数据。而TCP可以！</p>
+<p>在CPU内存之间进行地址转换时，（B）将地址从虚拟（逻辑）地址空间映射到物理地址空间。</p>
+<p>A.TCB</p>
+<p>B.MMU</p>
+<p>C.CACHE</p>
+<p>D.DMA</p>
 </blockquote>
-<p> 例如,我们连续发送三个数据包,大小分别是2k, 4k , 8k,这三个数据包,都已经到达了接收端的网络堆栈中,如果使 用UDP协议,不管我们使用多大的接收缓冲区去接收数据,我们必须有 三次接收动作,才能够把所有的数据包接收完.而使用TCP协议,我们 只要把接收的缓冲区大小设置在14k以上,我们就能够一次把所有的 数据包接收下来.只需要有一次接收动作.</p>
-<p>这就是因为UDP协议的保护消息边界使得每一个消息都是独立的.而 流传输,却把数据当作一串数据流,他不认为数据是一个一个的消息.</p>
-<p>所以有很多人在使用tcp协议通讯的时候,并不清楚tcp是基于流的 传输,当连续发送数据的时候,他们时常会认识tcp会丢包.其实不然, 因为当他们使用的缓冲区足够大时,他们有可能会一次接收到两个甚 至更多的数据包,而很多人往往会忽视这一点,只解析检查了第一个<br>数据包,而已经接收的其他数据包却被忽略了.所以大家如果要作这 类的网络编程的时候,必须要注意这一点.</p>
-<p><strong>结论</strong></p>
-<p>根据以上所说，可以这样理解，TCP为了保证可靠传输，尽量减少额外开销（每次发包都要验证），因此采用了流式传输，面向流的传输，相对于面向消息的传输，可以减少发送包的数量。从而减少了额外开销。但是，对于数据传输频繁的程序来讲，使用TCP可能会容易粘包。当然，对接收端的程序来讲，如果机器负荷很重，也会在接收缓冲里粘包。这样，就需要接收端额外拆包，增加了工作量。因此，这个特别适合的是数据要求可靠传输，但是不需要太频繁传输的场合（两次操作间隔100ms，具体是由TCP等待发送间隔决定的，取决于内核中的socket的写法）</p>
-<p>而UDP，由于面向的是消息传输，它把所有接收到的消息都挂接到缓冲区的接受队列中，因此，它对于数据的提取分离就更加方便，但是，它没有粘包机制，因此，当发送数据量较小的时候，就会发生数据包有效载荷较小的情况，也会增加多次发送的系统发送开销（系统调用，写硬件等）和接收开销。因此，应该最好设置一个比较合适的数据包的包长，来进行UDP数据的发送。（UDP最大载荷为1472，因此最好能每次传输接近这个数的数据量，这特别适合于视频，音频等大块数据的发送，同时，通过减少握手来保证流媒体的实时性）</p>
+<p>解释：MMU是Memory Management Unit的缩写，中文名是内存管理单元，它是中央处理器（CPU）中用来管理虚拟存储器、物理存储器的控制线路，同时也负责虚拟地址映射为物理地址，以及提供硬件机制的内存访问授权，多用户多进程操作系统。</p>
+<hr>
 <blockquote>
-<p>对于UDP/IPv4套接字，可传递给sendto的最大长度是多少；也就是说，可装填在一个UDP/IPv4数据报中的最大数据量是多少？</p>
+<pre><code>#include&lt;stdio.h&gt;
+int main()                                                                    
+{
+    unsigned int a = 6;
+    int b = -20;
+    (a + b &gt; 6) ? printf(&quot;&gt;6\n&quot;) : printf(&quot;&lt;=6\n&quot;);
+    printf(&quot;%d\n&quot;, (a + b));
+    return 0;
+} 
+</code></pre><p>输出为：&gt;6<br>解释：执行a+b的时候会将b转换成无符号数，所得的结果也是无符号数，将会是一个很大的正数，自然是大于6的</p>
 </blockquote>
-<p><img src="ipv4首部.png" alt="ipv4首部格式"></p>
-<p>IPv4数据报最大为65536字节，这是由上图中16位的总长度字段决定的。IPv4的首部需要20字节，UDP首部需要8字节。留给UDP用户的数据最大为65507字节.</p>
-<p>那么我们使用UDP的时候，是否就能发送65507字节的数据呢？答案是否定的</p>
-<p>在进行UDP编程的时候,我们最容易想到的问题就是,一次发送多少bytes好?</p>
-<p>首先,我们知道,TCP/IP通常被认为是一个四层协议系统,包括链路层,网络层,运输层,应用层.</p>
-<p>UDP属于运输层,下面我们由下至上一步一步来看:</p>
-<p>以太网(Ethernet)数据帧的长度必须在46-1500字节之间，这是由以太网的物理特性决定的。这个1500字节被称为链路层的MTU(最大传输单元)。但这并不是指链路层的长度被限制在1500字节，其实这这个MTU指的是链路层的数据区，并不包括链路层的首部和尾部的18个字节。所以，事实上，这个1500字节就是网络层IP数据报的长度限制。因为IP数据报的首部为20字节，所以IP数据报的数据区长度最大为1480字节。而这个1480字节就是用来放TCP传来的TCP报文段或UDP传来的UDP数据报的。又因为UDP数据报的首部8字节，所以UDP数据报的数据区最大长度为1472字节。这个1472字节就是我们可以使用的字节数。:)</p>
-<p>当我们发送的UDP数据大于1472的时候会怎样呢？</p>
-<p>这也就是说IP数据报大于1500字节，大于MTU。这个时候发送方IP层就需要分片(fragmentation)。把数据报分成若干片，使每一片都小于MTU。而接收方IP层则需要进行数据报的重组。这样就会多做许多事情，而更严重的是，由于UDP的特性，当某一片数据传送中丢失时，接收方便无法重组数据报。将导致丢弃整个UDP数据报。</p>
-<p>因此，在普通的局域网环境下，我建议将UDP的数据控制在1472字节以下为好。</p>
-<p>进行Internet编程时则不同，因为Internet上的路由器可能会将MTU设为不同的值。</p>
-<p>如果我们假定MTU为1500来发送数据的，而途经的某个网络的MTU值小于1500字节，那么系统将会使用一系列的机<br>制来调整MTU值，使数据报能够顺利到达目的地，这样就会做许多不必要的操作.</p>
-<p>鉴于Internet上的标准MTU值为576字节，所以我建议在进行Internet的UDP编程时.</p>
-<p>最好将UDP的数据长度控件在548字节(576-8-20)以内.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/03/SO-REUSEADDR套接字选项/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/03/SO-REUSEADDR套接字选项/" itemprop="url">SO_REUSEADDR套接字选项</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-03T19:06:08+08:00">
-                2015-03-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
-                    <span itemprop="name">unix网络编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##features<br>SO_REUSEADDR套接字选项能起到以下4个不同的功用。</p>
-<ul>
-<li>SO_REUSEADDR允许启动一个监听服务器并捆绑其众所周知的端口，即使以前建立的将该端口用作他们的本地端口的连接仍存在。这个条件通常是这样碰到的：<ol>
-<li>启动一个监听服务器；</li>
-</ol>
-<ul>
-<li>连接请求到达，派生一个子进程来处理这个客户；</li>
-<li>监听服务器终止，但子进程继续为现有连接上的客户提供服务；</li>
-<li>重启监听服务器。      </li>
-</ul>
-</li>
-</ul>
-<p>　　默认情况下，当监听服务器在步骤4通过调用socket，bind和listen重新启动时，由于他试图捆绑一个现有连接（即正由早先派生的那个子进程处理着的连接）上的端口，从而bind调用会失败。但是如果该服务器在socket和bind两个调用之间设置了SO_REUSEADDR套接字选项，那么将成功。所有TCP服务器都应该指定本套接字选项，以允许服务器在这种情况下被重新启动。</p>
-<ul>
-<li><code>SO_REUSEADDR</code>允许在同一端口上启动同一服务器的多个实例，只要每个实例捆绑一个不同的本地IP地址即可。这对于使用IP别名技术托管多个http服务器的网点来说是很常见的。举例来说，假设本地主机的主ip地址是198.19.10.2，不过他有两个别名：198.69.10.128和198.69.10.129。在其上启动三个http服务器。第一个http服务器以本地通配ip地址<code>INADDR_ANY</code>和本地端口号80（http的众所周知端口）调用bind。第二个http服务器以本地ip地址198.69.10.128和本地端口号80调用bind。这次调用bind将失败，除非在调用前设置了<code>SO_REUSEADDR</code>套接字选项。第三个http服务器以本地ip地址198.69.10.129和本地端口号80调用bind。这次调用bind成功的先决条件同样是预先设置<code>SO_REUSEADDR</code>。假设<code>SO_REUSEADDR</code>均已设置，从而三个服务器都启动了，目的ip地址为198.69.10.128、目的端口号为80的外来tcp请求将被递送给第二个服务器，目的地址为198.69.10.129、目的端口号为80的外来连接请求将被递送给第三个服务器，目的端口号为80的所有其他tcp连接请求都将递送给第一个服务器，这个“默认”服务器处理目的地址为198.69.10.2或该主机已配置的任何其他ip别名的请求。这里通配地址的意思是“没有更好的（即更为明确的）匹配地址”。注意，允许某个给定服务存在多个服务器的情形在服务器设置SO_REUSEADDR套接字选项时是自动处理的（我们建议设置这个选项）</li>
-</ul>
-<p>对于TCP，我们绝对不可能启动捆绑相同IP地址和相同端口号的多个服务器：这是完全重复的捆绑。也就是说，我们不可能在启动绑定198.69.10.2和端口80的服务器之后，再启动同样捆绑198.69.10.2和端口80的另一个服务器，即使我们给第二个服务器设置了<code>SO_REUSEADDR</code>套接字也不管用。</p>
-<ul>
-<li><p>SO_REUSEADDR 允许单个进程捆绑同一端口到多个套接字上，只要每次捆绑指定不同的本地IP地址即可。</p>
-</li>
-<li><p>SO_REUSEADDR允许完全重复的捆绑：当一个IP地址和端口号已绑定到某个套接字上时，如果传输协议支持，同样的IP地址和端口还可以捆绑到另一个套接字上。一般来说本特性仅支持UDP套接字。</p>
-</li>
-</ul>
-<p>##problem</p>
+<hr>
+<p>程序的局部变量存放在<code>栈区</code>，全局变量存放在<code>全局静态区</code>，动态申请的数据存放在<code>堆区</code></p>
+<hr>
 <blockquote>
-<p>这就引出了另外的一个问题，就是设置这个属性后允许一个套接字上同时有两个应用程序进行监听，那系统究竟会将数据发送给哪一个程序呢？</p>
+<p>用希尔(Shell)方法排序时,若关键字的初始排序杂乱无序,则排序效率就低(错)</p>
 </blockquote>
-<p>系统会将数据首先交给监听IP最确定的应用程序。例如应用程序A在调用监听函数时设置的属性是<code>addr.sin_addr.S_addr = INADDR_ANY</code>;而另外的一个应用程序B则监听的地址为<code>addr.sin_addr.S_addr = inet_addr(PChar(sMainIP))</code>，同时这两个应用程序监听的端口都是相同的，这时系统接收到数据后会首先交给B然后再交给A。因此一般为了程序安全我们会禁止这种情况的发生。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/03/TIME-WAIT状态详解/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/03/TIME-WAIT状态详解/" itemprop="url">TIME_WAIT状态详解</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-03T11:26:25+08:00">
-                2015-03-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
-                    <span itemprop="name">TCP/IP</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>TCP 的 timewait 状态是什么？谁会有 timewait 状态？timewait 状态存在的作用是什么？如何避免大量的 timewait 状态占用系统资源？</p>
-</blockquote>
-<p> timewait 状态是 TCP 链接的主动关闭方会有的状态，在发出最后一个 ACK 包之后，主动关闭方进入 timewait 状态，以确保 ACK 包到达对端，以及等待网络中之前迷路的数据包完全消失，防止在端口被复用的时候收到迷路包从而出现收包错误。</p>
-<p>timewait 状态会持续 2MSL（max segment lifetime) 的时间，一般会有 1分钟到4分钟事件。这段事件内 端口不可被重分配使用。</p>
-<p><strong>timewait 并不会占用更多系统资源，但是可以通过修改内核参数 /etc/sysctl.conf 来达到 限制timewait 数量的功能。</strong></p>
-<p><img src="/img/time_wait.png" alt="time_wait"></p>
-<p>##TIME_WAIT状态原理</p>
-<p>通信双方建立TCP连接后，主动关闭连接的一方就会进入<code>TIME_WAIT</code>状态。客户端主动关闭连接时，会发送最后一个ack，然后会进入TIME_WAIT状态，再停留2个MSL时间(后有MSL的解释)，进入CLOSED状态。</p>
-<p>上图是以客户端主动关闭连接为例，说明这一过程的。</p>
-<p>##TIME_WAIT状态存在的理由</p>
-<p>TCP/IP协议就是这样设计的，是不可避免的。主要有两个原因:</p>
-<p>###可靠地实现TCP全双工连接的终止</p>
-<p>TCP协议在关闭连接的四次握手过程中，最终的ACK是由主动关闭连接的一端（后面统称A端）发出的，如果这个ACK丢失，对方（后面统称B端）将重发出最终的FIN，因此A端必须维护状态信息（TIME_WAIT）允许它重发最终的ACK。如果A端不维持TIME_WAIT状态，而是处于CLOSED 状态，那么A端将响应RST分节，B端收到后将此分节解释成一个错误（在java中会抛出connection reset的SocketException)。<br>因而，要实现TCP全双工连接的正常终止，必须处理终止过程中四个分节任何一个分节的丢失情况，主动关闭连接的A端必须维持TIME_WAIT状态 。</p>
-<p>###允许老的重复分节在网络中消逝<br>TCP分节可能由于路由器异常而“迷途”，在迷途期间，TCP发送端可能因确认超时而重发这个分节，迷途的分节在路由器修复后也会被送到最终目的地，这个迟到的迷途分节到达时可能会引起问题。在关闭“前一个连接”之后，马上又重新建立起一个相同的IP和端口之间的“新连接”，“前一个连接”的迷途重复分组在“前一个连接”终止后到达，而被“新连接”收到了。为了避免这个情况，TCP协议不允许处于<code>TIME_WAIT</code>状态的连接启动一个新的可用连接，因为<code>TIME_WAIT</code>状态持续2MSL，就可以保证当成功建立一个新TCP连接的时候，来自旧连接重复分组已经在网络中消逝。</p>
-<h2 id="MSL时间"><a href="#MSL时间" class="headerlink" title="MSL时间"></a>MSL时间</h2><p>MSL就是maximum segment lifetime(最大分节生命期），这是一个IP数据包能在互联网上生存的最长时间，超过这个时间IP数据包将在网络中消失 。MSL在RFC 1122上建议是2分钟，而源自berkeley的TCP实现传统上使用30秒。</p>
-<h2 id="TIME-WAIT状态维持时间"><a href="#TIME-WAIT状态维持时间" class="headerlink" title="TIME_WAIT状态维持时间"></a>TIME_WAIT状态维持时间</h2><p>TIME_WAIT状态维持时间是两个MSL时间长度，也就是在1-4分钟。Windows操作系统就是4分钟。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/03/write的写停止问题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/03/write的写停止问题/" itemprop="url">write的写停止问题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-03T10:05:53+08:00">
-                2015-03-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
-                    <span itemprop="name">unix网络编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##例程</p>
-<pre><code>#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;string.h&gt;
-#include&lt;unistd.h&gt;
-
-int main()
-{
-    char buf[100];
-    strcpy(buf, &quot;hello\nworld&quot;);
-    write(STDOUT_FILENO, buf, strlen(buf));
-}
-</code></pre><p>输出为</p>
-<pre><code>hello
-world（光标在这里）
-</code></pre><hr>
-<pre><code>int main()
-{
-    char buf[100];
-    strcpy(buf, &quot;hel\0lo\nworld&quot;);
-    write(STDOUT_FILENO, buf, strlen(buf));
-}
-</code></pre><p>输出为</p>
-<pre><code>hel（光标在这里）
-</code></pre><hr>
-<pre><code>int main()
-{
-    char buf[100];
-    strcpy(buf, &quot;hello\nworld&quot;);
-    fputs(buf, stdout);
-}
-</code></pre><p>输出为：</p>
-<pre><code>hello
-world
-</code></pre><hr>
-<pre><code>int main()
-{
-    char buf[100];
-    strcpy(buf, &quot;hel\0lo\nworld&quot;);
-    fputs(buf, stdout);
-}
-</code></pre><p>输出为：</p>
-<pre><code>hel（光标在这里）
-</code></pre><hr>
-<pre><code>int main()
-{
-    char buf[100];
-    strcpy(buf, &quot;hello\nworld&quot;);
-    write(STDOUT_FILENO, buf, strlen(buf));
-}
-</code></pre><p>输出：</p>
-<pre><code>hello
-world(光标在这里)
-</code></pre><p>##总结<br>其余socket的数据传输函数也是如此，只以\0作为字符串的结尾，而不是\n，\n将被认为是字符进行传输，并且后面的字符也会传输，直到遇到\0为止</p>
-<p>如果只要打印某一部分字符，则在此字符串之后一定要加\0，因为\0才被认为是一个字符串的结束符</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/02/TCP和udp的一些特性/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/02/TCP和udp的一些特性/" itemprop="url">TCP和udp的一些特性</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-02T15:34:38+08:00">
-                2015-03-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
-                    <span itemprop="name">TCP/IP</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>转载自<a href="http://armsword.com/2014/02/14/tcp-and-udp-note/" target="_blank" rel="external">这里</a></p>
-<p>在TCP/IP中能够实现传输层功能的、具有代表性的协议是TCP和UDP。</p>
-<p>##TCP：</p>
-<p>TCP是面向连接的、可靠的流协议。流就是指不间断的数据结构，你可以把它想象成排水道中的水流。当应用程序采用TCP发送消息时，虽然可以保证发送的顺序，但还是犹如没有任何间隔的数据流发送给接收端。TCP充分地实现了数据传输时各种控制功能，可以进行丢包时的重发控制，还可以对次序乱掉的分包进行顺序控制。而这些在UDP中都没有。此外，TCP作为一种面向有连接的协议，只有在确认通信对端存在时才会发送数据，从而可以控制通信流量的浪费。根据TCP的这些机制，在IP这种无连接的网络上也能够实现高可靠性的通信。</p>
-<p>TCP为提供可靠性传输，实行“顺序控制”或“重发控制”机制。此外还具备“流控制（流量控制）”、“拥塞控制”、提供网络利用率等众多功能。</p>
-<p>TCP通过检验和、序列号、确认应答、重发控制、连接管理以及窗口控制等机制实现可靠性传输。</p>
-<p>###通过序列号与确认应答提高可靠性<br>在TCP中，当发送端的数据到达接收主机时，接收端主机会返回一个已收到消息的通知。这个消息叫做确认应答（ACK）。</p>
-<p><img src="/img/20140214001551.png" alt=""></p>
-<p>TCP通过肯定的确认应答（ACK）实现可靠的数据传输。当发送端将数据发出之后会等待对端的确认应答。如果有确认应答，说明数据已经成功到达对端。反之，则数据丢失的可能性很大。在一定时间内没有等到确认应答，发送端就可以认为数据已经丢失，并进行重发。由此，即使产生了丢包，仍然能够保证数据能够到达对端，实现可靠传输。未收到确认应答并不意味着数据一定丢失。也有可能是数据对方已经收到，只是返回的确认应答在途中丢失。这种情况也会导致发送端因没有收到确认应答，而认为数据没有到达目的地，从而进行重新发发送。</p>
-<p>上述这些确认应答处理、重发控制以及重复控制等功能都可以通过序列号实现。序列号是按顺序给发送数据的每一个字节（8位字节）都标上号码的编号。接收端查询接收数据TCP首部中的序列号和数据的长度，将自己下一步应该接收的序号作为确认应答返送回去。就这样，通过序列号和确认应答号，TCP可以实现可靠传输。</p>
-<p>###重发超时如何确定<br>重发超时是指在重发数据之前，等待确认应答到来的那个特定时间间隔。如果超过了这个时间仍未收到确认应答，发送端将进行数据重发。那么这个重发超时的具体时间长度又是如何确定的呢？</p>
-<p>最理想的是，找到一个最小时间，它能保证“确认应答一定能在这个时间内返回”。然而这个时间长短随着数据包途径的网络环境的不同而有所变化。例如在高速的LAN中时间相对较短，而在长距离的通信当中应该比LAN要长一些。即使是在同一个网络中，根据不同时段的网络堵塞程度时间的长短也会发生变化。TCP要求不论处在何种网络环境下都要提供高性能通信，并且无论网络拥堵情况发生何种变化，都必须保持这一特性。为此，它在每次发包时都会计算往返时间及其偏差。将这个往返时间和偏差相加重发超时的时间，就是比这个总和要稍大一点的值。</p>
-<p>在BSD的Unix以及Windows系统中，超时都以0.5秒为单位进行控制，因此重发超时都是0.5秒的整数倍。不过，由于最初的数据包还不知道往返时间，所以其重发超时一般设置为6秒左右。数据被重发之后若还是收不到确认应答，则进行再次发送。此时，等待确认应答的时间将会以2倍、4倍的指数函数延长。此外，数据也不会被无限、反复地重发。达到一定重发次数之后，如果仍没有任何确认应答返回，就会判断为网络或对端主机发生了异常，强制关闭连接。并且通知应用通信异常强行终止。</p>
-<p>###连接管理<br>UDP是一种面向无连接的通信协议，因此不检查对端是否可以通信，直接将UDP包发送出去。TCP与此相反，它会在数据通信之前，通过TCP首部发送一个SYN包作为建立连接的请求等待确认应答。如果对端发来确认应答，则认为可以进行数据通信。如果对端的确认应答未能到达，就不会进行数据通信。此外，在通信结束时会进行断开连接的处理（FIN包）。</p>
-<p>可以使用TCP首部用于控制的字段来管理TCP连接。一个连接的建立与断开，正常过程至少需要来回发送7个包才能完成。</p>
-<p><img src="/img/20140214001552.png" alt=""></p>
-<p>###TCP以段为单位发送数据<br>在建立TCP连接的同时，也可以确认发送数据包的单位，我们也可以称其为“最大消息长度”（MSS：Maximum Segment Size）。最理想的情况是，最大消息长度正好是IP中不会被分片处理的最大数据长度。</p>
-<p>TCP在传送大量数据时，是以MSS的大小将数据进行分割发送。进行重发时也是以MSS为单位。</p>
-<p>MSS是在三次握手的时候，在两端主机之间被计算得出。两端的主机在发出建立连接的请求时，会在TCP首部中写入MSS选项，告诉对方自己的接口能够适应MSS的大小。然后会在两者之间选择一个较小的值投入使用。</p>
-<p><img src="/img/20140214001553.png" alt=""></p>
-<p>###利用窗口控制提高速度<br>TCP以1个段为单位，每发一个段进行一次确认应答的处理，这样的传输方式有一个缺点，那就是，包的往返时间越长通信性能就越低。</p>
-<p>为解决这个问题，TCP引入了窗口这个概念。即使在往返时间较长的情况下，它也能控制网络性能的下降。确认应答不再是以每个分段，而是以更大的单位进行确认时，转发时间将会大幅度的缩短。也就是说，发送端主机，在发送了一个段以后不必要一直等待确认应答，而是继续发送。</p>
-<p><img src="/img/20140214001554.png" alt=""></p>
-<p>窗口大小就是无需等待确认应答而可以继续发送数据的最大值，如上，窗口大小为4个段。这个机制实现了使用大量的缓冲区，通过对多个段同时进行确认应答的功能。<br>收到确认应答的情况下，将窗口滑动到确认应答中的序列号的位置。这样可以顺序地将多个段同时发送提高通信性能。这种机制也被成为滑动窗口控制。</p>
-<p><img src="/img/20140214001555.png" alt=""></p>
-<p>###流控制<br>发送端根据自己的实际情况发送数据。但是，接收端可能收到的是一个毫无关系的数据包又可能会在处理其他问题上花费一些时间。因此在为这个数据包做其他处理时会耗费一些时间，甚至在高负荷的情况下无法接收任何数据。如此一来，如果接收端将本应该接收的数据丢弃的话，就又会触发重发机制，从而导致网络流量的无端浪费。<br>为了防止这种现象的发生，TCP提供一种机制可以让发送端根据接收端的实际接收能力控制发送的数据量。这就是所谓的流控制。它的具体操作是，接收端主机向发送端主机通知自己可以接收数据的大小，于是发送端会发送不超过这个限度的数据。该大小限度就被称作窗口大小。</p>
-<p>TCP首部中，专门有一个字段用来通知窗口大小。接收主机将自己可以接收的缓冲区大小放入这个字段中通知给发送端。这个字段的值越大，说明网络的吞吐量越高。<br>不过，接收端的这个缓冲区一旦面临数据溢出时，窗口大小的值也会随之被设置为一个更小的值通知给发送端，从而控制数据发送量。也就是说，发送端主机会根据接收端主机的指示，对发送数据的量进行控制。这也就形成了一个完整的TCP流控制（流量控制）。</p>
-<p><img src="/img/20140214114741.png" alt=""></p>
-<p>###拥塞控制<br>有了TCP的窗口控制，收发主机之间即使不再以一个数据段为单位发送确认应答，也能够连续发送大量数据包。然而，如果在通信刚开始时就发送大量数据，也可能会引发其他问题。在网络出现堵塞时，如果突然发送一个较大量的数据，极有可能导致整个网络的瘫痪。TCP为了防止该问题的出现，在通信一开始时就会通过一个叫做慢启动的算法得出的数值，对发送数据量进行控制。</p>
-<p>首先，为了在发送端调节所要发送数据的量，定义了一个叫做“拥塞窗口”的概念。于是在慢启动的时候，将这个拥塞窗口的大小设置为1个数据段（1MSS）发送数据，之后每收到一次确认应答（ACK），拥塞窗口的值就加1.在发送数据包时，将拥塞窗口的大小与接收端主机通知的窗口大小做比较，然后按照它们当中较小的那个值，发送比其还要小的数据量。</p>
-<p>###提高网络利用率的规范<br>Nagle算法：<br>TCP中为了提高网络的利用率，经常使用一个叫做Nagle的算法。该算法是指发送端即使还有应该发送的数据，但如果这部分数据很少的话，则进行延迟发送的一种处理机制。具体来说，就是仅在下列任意一种条件下才能发送数据。如果两个条件都不满足，那么暂时等待一段时间以后再进行数据发送。</p>
-<ol>
-<li>已发送的数据都已经收到确认应答时</li>
-<li>可以发送最大段长度（MSS）的数据时</li>
-</ol>
-<p><strong>延迟确认应答</strong>：</p>
-<p>当某个接收端收到这个小窗口的通知以后，会以它为上限发送数据，从而又降低了网络的利用率。为此，引入了一个方法，那就是收到数据以后并不立即返回确认应答，而是延迟一段时间的机制。</p>
-<p><strong>捎带应答</strong>：</p>
-<p>捎带应答是指在同一个TCP包中既发送数据又发送确认应答的一种机制。由此，网络的利用率会提高，计算机的负荷也会减轻。不过，确认应答必须得等到应用处理完数据并将作为回执的数据返回为止，才能进行捎带应答。</p>
-<p>##UDP：<br>UDP是User Datagram Protocol的缩写。UDP是不具有可靠性的数据报协议。细微的处理它会交给上层的应用去完成。在UDP的情况下，虽然可以确保发送消息的大小，却不能保证消息一定会到达。因此，应用有时会根据自己的需要进行重发处理。</p>
-<p>UDP不提供复杂的控制机制，利用IP提供面向无连接的通信服务。并且它是将应用程序发来的数据在收到的那一刻，立即按照原样发送到网络上的一种机制。</p>
-<p>即使是出现网络堵塞的情况下，UDP也无法进行流量控制等避免网络拥塞的行为。此外，传输途中即使出现丢包，UDP也不负责重发。甚至当出现包的到达顺序乱掉时也没有纠正的功能。如果需要这些细节控制，那么不得不交由采用UDP的应用程序去处理。UDP有点类似于用户说什么听什么的机制，但是需要用户充分考虑好上层协议类型并制作相应的应用程序。因此，也可以说，UDP按照“制造程序的那些用户的指示行事”。<br>由于UDP面向无连接，它可以随时发送数据。再加上UDP本身的处理既简单又高效，因此经常用于以下几个方面：</p>
-<ol>
-<li>包总量较少的通信（DNS、SNMP等）</li>
-<li>视频、音频等多媒体通信（即时通信）</li>
-<li>限定于LAN等特定网络中的应用通信</li>
-<li>广播通信（广播、多播）</li>
-</ol>
-<p>可能有人会认为，鉴于TCP是可靠的传输协议，那么它一定优于UDP。其实不然。TCP与UDP的优缺点无法简单地、绝对地去做比较。那么，对这两种协议应该如何加以区分使用呢？下面，我就对此问题做一简单说明。</p>
-<p>TCP用于在传输层有必要实现可靠的情况。由于它是面向有连接并具备顺序控制、重发控制等机制的，所以它可以为应用提供可靠传输。</p>
-<p>而UDP主要用于那些对高速传输和实时性有较高要求的通信或广播通信。我们拿通过IP电话进行通话作为例子。如果使用TCP，数据在传送途中如果丢失会重发，但这样无法刘畅地传输通话人的声音，会导致无法进行正常交流。而采用UDP，它不会进行重发处理。从而也就不会有声音大幅度延迟到达的问题。即使有部分数据丢失，也只是会影响某一小部分的通话。此外，在多播与广播通信中也使用UDP而不是TCP。RIP、DHCP等基于广播的协议也要依赖于UDP。因此，TCP和UDP应该根据应用的目的按需使用。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/02/语言中的指针和内存泄漏/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/02/语言中的指针和内存泄漏/" itemprop="url">语言中的指针和内存泄漏</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-02T09:27:39+08:00">
-                2015-03-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>转载自<a href="http://www.ibm.com/developerworks/cn/aix/library/au-toughgame/" target="_blank" rel="external">这里</a></p>
-<p>##引言</p>
-<p>对于任何使用 C 语言的人，如果问他们 C 语言的最大烦恼是什么，其中许多人可能会回答说是指针和内存泄漏。这些的确是消耗了开发人员大多数调试时间的事项。指针和内存泄漏对某些开发人员来说似乎令人畏惧，但是一旦您了解了指针及其关联内存操作的基础，它们就是您在 C 语言中拥有的最强大工具。</p>
-<p>本文将与您分享开发人员在开始使用指针来编程前应该知道的秘密。本文内容包括：</p>
-<ul>
-<li>导致内存破坏的指针操作类型</li>
-<li>在使用动态内存分配时必须考虑的检查点</li>
-<li>导致内存泄漏的场景</li>
-</ul>
-<p>如果您预先知道什么地方可能出错，那么您就能够小心避免陷阱，并消除大多数与指针和内存相关的问题。</p>
-<p>##什么地方可能出错？<br>有几种问题场景可能会出现，从而可能在完成生成后导致问题。在处理指针时，您可以使用本文中的信息来避免许多问题。</p>
-<p>###未初始化的内存<br>在本例中，p 已被分配了 10 个字节。这 10 个字节可能包含垃圾数据，如图 1 所示。</p>
-<pre><code>char *p = malloc ( 10 );
-</code></pre><p><img src="/img/垃圾数据.png" alt="图1.垃圾数据"></p>
-<p>如果在对这个 p 赋值前，某个代码段尝试访问它，则可能会获得垃圾值，您的程序可能具有不可预测的行为。p 可能具有您的程序从未曾预料到的值。</p>
-<p><strong>良好的实践是始终结合使用 memset 和 malloc，或者使用 calloc。</strong></p>
-<pre><code>char *p = malloc (10);
-memset(p,’’,10);
-</code></pre><p>现在，即使同一个代码段尝试在对 p 赋值前访问它，该代码段也能正确处理 Null 值（在理想情况下应具有的值），然后将具有正确的行为。</p>
-<p>###内存覆盖<br>由于 p 已被分配了 10 个字节，如果某个代码片段尝试向 p 写入一个 11 字节的值，则该操作将在不告诉您的情况下自动从其他某个位置“吃掉”一个字节。让我们假设指针 q 表示该内存。</p>
-<p><img src="/img/原始q内容.png" alt="图2.原始q内容"></p>
-<p><img src="/img/覆盖后的q内容.png" alt="图3.覆盖后的q内容"></p>
-<p>结果，指针 q 将具有从未预料到的内容。即使您的模块编码得足够好，也可能由于某个共存模块执行某些内存操作而具有不正确的行为。下面的示例代码片段也可以说明这种场景。</p>
-<pre><code>char *name = (char *) malloc(11);
-// Assign some value to name
-memcpy ( p,name,11); // Problem begins here
-</code></pre><p>在本例中，memcpy 操作尝试将 11 个字节写到 p，而后者仅被分配了 10 个字节。</p>
-<p>作为良好的实践，每当向指针写入值时，都要确保对可用字节数和所写入的字节数进行交叉核对。一般情况下，memcpy 函数将是用于此目的的检查点。</p>
-<p>###内存读取越界<br>内存读取越界 (overread) 是指所读取的字节数多于它们应有的字节数。这个问题并不太严重，在此就不再详述了。下面的代码提供了一个示例。</p>
-<pre><code>char *ptr = (char *)malloc(10);
-char name[20] ;
-memcpy ( name,ptr,20); // Problem begins here
-</code></pre><p>在本例中，memcpy 操作尝试从 ptr 读取 20 个字节，但是后者仅被分配了 10 个字节。这还会导致不希望的输出。</p>
-<p>###内存泄漏<br>内存泄漏可能真正令人讨厌。下面的列表描述了一些导致内存泄漏的场景。<br>重新赋值我将使用一个示例来说明重新赋值问题。</p>
-<pre><code>char *memoryArea = malloc(10);
-char *newArea = malloc(10);
-</code></pre><p>这向如下面的图 4 所示的内存位置赋值。</p>
-<p><img src="/img/图4.内存位置.png" alt="图4.内存位置"></p>
-<p>memoryArea 和 newArea 分别被分配了 10 个字节，它们各自的内容如图 4 所示。如果某人执行如下所示的语句（指针重新赋值）……</p>
-<pre><code>memoryArea = newArea;
-</code></pre><p>则它肯定会在该模块开发的后续阶段给您带来麻烦。</p>
-<p>在上面的代码语句中，开发人员将 memoryArea 指针赋值给 newArea 指针。结果，memoryArea 以前所指向的内存位置变成了孤立的，如下面的图 5 所示。它无法释放，因为没有指向该位置的引用。这会导致 10 个字节的内存泄漏。</p>
-<p><img src="/img/内存泄漏.png" alt="图5.内存泄漏"></p>
-<p>在对指针赋值前，请确保内存位置不会变为孤立的。</p>
-<ul>
-<li>首先释放父块</li>
-</ul>
-<p>假设有一个指针 memoryArea，它指向一个 10 字节的内存位置。该内存位置的第三个字节又指向某个动态分配的 10 字节的内存位置，如图 6 所示。</p>
-<p><img src="/img/图6.动态分配的内存.png" alt="图6.动态分配的内存"></p>
-<pre><code>free(memoryArea)
-</code></pre><p>如果通过调用 free 来释放了 memoryArea，则 newArea 指针也会因此而变得无效。newArea 以前所指向的内存位置无法释放，因为已经没有指向该位置的指针。换句话说，newArea 所指向的内存位置变为了孤立的，从而导致了内存泄漏。</p>
-<p>每当释放结构化的元素，而该元素又包含指向动态分配的内存位置的指针时，应首先遍历子内存位置（在此例中为 newArea），并从那里开始释放，然后再遍历回父节点。</p>
-<p>这里的正确实现应该为：</p>
-<pre><code>free( memoryArea-&gt;newArea);
-free(memoryArea);
-</code></pre><ul>
-<li>返回值的不正确处理</li>
-</ul>
-<p>有时，某些函数会返回对动态分配的内存的引用。跟踪该内存位置并正确地处理它就成为了 calling 函数的职责。</p>
-<pre><code>char *func ( )
-{
- return malloc(20); // make sure to memset this location to ‘’…
-}
-void callingFunc ( )
-{
- func ( ); // Problem lies here
-}
-</code></pre><p>在上面的示例中，callingFunc() 函数中对 func() 函数的调用未处理该内存位置的返回地址。结果，func() 函数所分配的 20 个字节的块就丢失了，并导致了内存泄漏。</p>
-<p>###归还您所获得的<br>在开发组件时，可能存在大量的动态内存分配。您可能会忘了跟踪所有指针（指向这些内存位置），并且某些内存段没有释放，还保持分配给该程序。</p>
-<p>始终要跟踪所有内存分配，并在任何适当的时候释放它们。事实上，可以开发某种机制来跟踪这些分配，比如在链表节点本身中保留一个计数器（但您还必须考虑该机制的额外开销）。</p>
-<p>###访问空指针<br>访问空指针是非常危险的，因为它可能使您的程序崩溃。始终要确保您不是 在访问空指针。</p>
-<p>##总结<br>本文讨论了几种在使用动态内存分配时可以避免的陷阱。要避免内存相关的问题，良好的实践是：</p>
-<ul>
-<li>始终结合使用 memset 和 malloc，或始终使用 calloc。</li>
-<li>每当向指针写入值时，都要确保对可用字节数和所写入的字节数进行交叉核对。</li>
-<li>在对指针赋值前，要确保没有内存位置会变为孤立的。</li>
-<li>每当释放结构化的元素（而该元素又包含指向动态分配的内存位置的指针）时，都应首先遍历子内存位置并从那里开始释放，然后再遍历回父节点。</li>
-<li>始终正确处理返回动态分配的内存引用的函数返回值。</li>
-<li>每个 malloc 都要有一个对应的 free。</li>
-<li>确保您不是在访问空指针。</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/01/线程安全/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/01/线程安全/" itemprop="url">线程安全</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-01T22:01:15+08:00">
-                2015-03-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>如果你的代码所在的进程中有多个线程在同时运行，而这些线程可能会同时运行这段代码。如果每次运行结果和单线程运行的结果是一样的，而且其他的变量的值也和预期的是一样的，就是线程安全的。</p>
-<p>或者说:一个类或者程序所提供的接口对于线程来说是原子操作或者多个线程之间的切换不会导致该接口的执行结果存在二义性,也就是说我们不用考虑同步的问题。</p>
-<p>线程安全问题都是由全局变量及静态变量引起的。</p>
-<p>若每个线程中对全局变量、静态变量只有读操作，而无写操作，一般来说，这个全局变量是线程安全的；若有多个线程同时执行写操作，一般都需要考虑线程同步，否则的话就可能影响线程安全。</p>
-<p>##举例<br>比如一个 ArrayList 类，在添加一个元素的时候，它可能会有两步来完成：</p>
-<ol>
-<li>在 Items[Size] 的位置存放此元素</li>
-<li>增大 Size 的值。</li>
-</ol>
-<p>在单线程运行的情况下，如果 Size = 0，添加一个元素后，此元素在位置 0，而且 Size=1；</p>
-<p>而如果是在多线程情况下，比如有两个线程，线程 A 先将元素存放在位置 0。但是此时 CPU 调度线程A暂停，线程 B 得到运行的机会。线程B也向此 ArrayList 添加元素，因为此时 Size 仍然等于 0 （注意哦，我们假设的是添加一个元素是要两个步骤哦，而线程A仅仅完成了步骤1），所以线程B也将元素存放在位置0。然后线程A和线程B都继续运行，都增加 Size 的值。</p>
-<p>那好，我们来看看 ArrayList 的情况，元素实际上只有一个，存放在位置 0，而 Size 却等于 2。这就是“线程不安全”了。</p>
+<p>解释：希尔排序又称“缩小增量排序”，即每趟只对相同增量距离的关键字进行比较，这与关键字序列初始有序或无序无关</p>
 
           
         
@@ -2146,7 +2466,7 @@ void callingFunc ( )
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/13/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/15/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/13/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/15/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2192,7 +2512,7 @@ void callingFunc ( )
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">193</span>
+                <span class="site-state-item-count">163</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

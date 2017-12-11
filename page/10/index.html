@@ -286,7 +286,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/socket的长连接和短连接/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/06/IO复用-select-poll-epoll比较/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -305,7 +305,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/20/socket的长连接和短连接/" itemprop="url">socket的长连接和短连接</a></h1>
+                <a class="post-title-link" href="/2015/03/06/IO复用-select-poll-epoll比较/" itemprop="url">IO复用--select,poll,epoll比较</a></h1>
         
 
         <div class="post-meta">
@@ -317,8 +317,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T16:20:43+08:00">
-                2015-03-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-06T20:58:51+08:00">
+                2015-03-06
               </time>
             
 
@@ -379,25 +379,29 @@
       
         
           
-            <p>所谓<code>长连接</code>，指在一个TCP连接上可以连续发送多个数据包，在TCP连接保持期间，如果没有数据包发送，需要双方发检测包以维持此连接，一般需要自己做在线维持。 </p>
-<p><code>短连接</code>是指通信双方有数据交互时，就建立一个TCP连接，数据发送完成后，则断开此TCP连接，一般银行都使用短连接。  </p>
-<p>比如http的，只是连接、请求、关闭，过程时间较短,服务器若是一段时间内没有收到请求即可关闭连接。 </p>
-<p>其实长连接是相对于通常的短连接而说的，也就是长时间保持客户端与服务端的连接状态。</p>
-<p>##长连接与短连接的操作过程</p>
-<p>通常的短连接操作步骤是：<br>连接→数据传输→关闭连接；</p>
-<p>而长连接通常就是：<br>连接→数据传输→保持连接(心跳)→数据传输→保持连接(心跳)→……→关闭连接；<br>这就要求长连接在没有数据通信时，定时发送数据包(心跳)，以维持连接状态，短连接在没有数据传输时直接关闭就行了</p>
-<p>##什么时候用长连接，短连接？</p>
-<p>长连接多用于操作频繁，点对点的通讯，而且连接数不能太多情况，。每个TCP连接都需要三步握手，这需要时间，如果每个操作都是先连接，再操作的话那么处理速度会降低很多，所以每个操作完后都不断开，次处理时直接发送数据包就OK了，不用建立TCP连接。例如：数据库的连接用长连接， 如果用短连接频繁的通信会造成socket错误，而且频繁的socket 创建也是对资源的浪费。</p>
-<p>而像WEB网站的http服务一般都用短链接，因为长连接对于服务端来说会耗费一定的资源，而像WEB网站这么频繁的成千上万甚至上亿客户端的连接用短连接会更省一些资源，如果用长连接，而且同时有成千上万的用户，如果每个用户都占用一个连接的话，那可想而知吧。所以并发量大，但每个用户无需频繁操作情况下需用短连好。 </p>
-<p>##发送接收方式</p>
-<p>###异步<br>报文发送和接收是分开的，相互独立的，互不影响。这种方式又分两种情况：</p>
+            <p>##select模型</p>
 <ol>
-<li>异步双工：接收和发送在同一个程序中，由两个不同的子进程分别负责发送和接收 </li>
-<li>异步单工：接收和发送是用两个不同的程序来完成。<br>###同步<br>报文发送和接收是同步进行，既报文发送后等待接收返回报文。 同步方式一般需要考虑超时问题，即报文发出去后不能无限等待，需要设定超时时间，超过该时间发送方不再等待读返回报文，直接通知超时返回。</li>
+<li>最大并发数限制，因为一个进程所打开的FD（文件描述符）是有限制的，由FD_SETSIZE设置，默认值是1024/2048，因此Select模型的最大并发数就被相应限制了。自己改改这个FD_SETSIZE？想法虽好，可是先看看下面吧…</li>
+<li>效率问题，select每次调用都会线性扫描全部的FD集合，这样效率就会呈现线性下降，把FD_SETSIZE改大的后果就是，大家都慢慢来，什么？都超时了？？！！</li>
+<li>内核/用户空间 内存拷贝问题，如何让内核把FD消息通知给用户空间呢？在这个问题上select采取了内存拷贝方法。</li>
 </ol>
-<p><strong>在长连接中一般是没有条件能够判断读写什么时候结束，所以必须要加长度报文头。读函数先是读取报文头的长度，再根据这个长度去读相应长度的报文。</strong>具体原因可以参考<a href="http://michaelyou.github.io/2015/03/13/tcp%E6%98%AF%E6%B5%81%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83-%E6%8B%86%E5%8C%85%E5%92%8C%E7%B2%98%E5%8C%85/" target="_blank" rel="external">这里</a></p>
-<p>##补充：HTTP的长连接</p>
-<p>HTTP也可以建立长连接的，使用Connection:keep-alive，HTTP 1.1默认进行持久连接。HTTP1.1和HTTP1.0相比较而言，最大的区别就是增加了持久连接支持(貌似最新的 http1.0 可以显示的指定 keep-alive)，但还是无状态的，或者说是不可以信任的。 </p>
+<p>##poll模型</p>
+<p>基本上效率和select是相同的，select缺点的2和3它都没有改掉。</p>
+<p>##Epoll的提升</p>
+<p>把其他模型逐个批判了一下，再来看看Epoll的改进之处吧，其实把select的缺点反过来那就是Epoll的优点了。</p>
+<ol>
+<li>Epoll没有最大并发连接的限制，上限是最大可以打开文件的数目，这个数字一般远大于2048, 一般来说这个数目和系统内存关系很大，具体数目可以cat /proc/sys/fs/file-max察看。</li>
+<li>效率提升，Epoll最大的优点就在于它只管你“活跃”的连接，而跟连接总数无关，因此在实际的网络环境中，Epoll的效率就会远远高于select和poll。</li>
+<li>内存拷贝，Epoll在这点上使用了“共享内存”，这个内存拷贝也省略了。</li>
+</ol>
+<p>##总结</p>
+<p><strong>select</strong> 是采用内核轮询方式，每次调用都需要轮询 FD_SET，默认最多可以接受 1024 个fd，可更改为更大，但是随着数量的增多，轮询周期的变长，性能会急剧下降；</p>
+<p><strong>poll</strong> 是 select 的改进版，将 FD_SET 改造成由（ fd，监听事件类型，实际事件类型 ）为节点组成的链，解除了1024 的限制，其他并无大的区别，当 fd 多时，同样会造成效率下降；</p>
+<p><strong>epoll</strong> 将 轮询机制 改造为 事件触发机制，给每一个 fd 附上一个 callback，当监听事件发生时，就将 fd 链接到 就绪链表，调用 epoll_wait 时，只用检查就绪链表就可以了，而不需要像 select 和 poll 一样进行轮询。</p>
+<p>另外，<strong>select</strong> 和 <strong>poll</strong> 是将存有 fd 的结构或者数组再每次调用的时候都复制到内核态，然后调用完再复制回用户态，而无所谓是否有意义。<strong>epoll</strong> 使用内存映射，减去了这部分的data-copy操作。</p>
+<p>再者，从触发方式上来看，<strong>select</strong> 和 <strong>poll</strong> 都只有 条件触发（也可以叫水平触发），<strong>epoll</strong> 则有条件触发 和 事件触发（也可以叫边缘触发）两种。</p>
+<p>在选择使用哪种方式的时候，需要根据 fd 的多少和活跃程度来判断。当fd 数量较少，且都比较活跃的时候，使用 <strong>select</strong> 或者 <strong>poll</strong> 反而有可能效率更高，因为毕竟 <strong>epoll</strong>  要有多次的回调函数。</p>
+<p>好东西都是要付出代价的！</p>
 
           
         
@@ -446,7 +450,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/diff比较两个文件夹/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/06/keepalive机制/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -465,7 +469,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/20/diff比较两个文件夹/" itemprop="url">diff比较两个文件夹</a></h1>
+                <a class="post-title-link" href="/2015/03/06/keepalive机制/" itemprop="url">keepalive机制 </a></h1>
         
 
         <div class="post-meta">
@@ -477,890 +481,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T10:47:13+08:00">
-                2015-03-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>diff -urNa dir1 dir2</p>
-<p><strong>-a</strong>： Treat  all  files  as text and compare them  line-by-line, even if they do not seem to be text.</p>
-<p><strong>-N</strong>： In  directory  comparison, if a file is found in only one directory, treat it as present but empty in the other directory.</p>
-<p><strong>-r</strong>： When comparing directories, recursively compare any subdirectories found.</p>
-<p><strong>-u</strong>： Use the unified output format.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/19/DNS原理及其解析过程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/19/DNS原理及其解析过程/" itemprop="url">DNS原理及其解析过程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-19T21:21:26+08:00">
-                2015-03-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/网络/" itemprop="url" rel="index">
-                    <span itemprop="name">网络</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>网络通讯大部分是基于TCP/IP的，而TCP/IP是基于IP地址的，所以计算机在网络上进行通讯时只能识别如<code>202.96.134.133</code>之类的IP地址，而不能认识域名。我们无法记住10个以上网站的IP地址，所以我们访问网站时，更多的是在浏览器地址栏中输入域名，就能看到所需要的页面，这是因为有一个叫<code>DNS服务器</code>的计算机自动把我们的域名“翻译”成了相应的IP地址，然后调出IP地址所对应的网页。</p>
-<p>##什么是DNS<br> DNS( Domain Name System)是<code>域名系统</code>的英文缩写，是一种组织成域层次结构的计算机和网络服务命名系统，它用于TCP/IP网络，它所提供的服务是用来将主机名和域名转换为IP地址的工作。DNS就是这样的一位“翻译官”，它的基本工作原理可用下图来表示。</p>
-<p><img src="/img/DNS.jpg" alt=""></p>
-<p>##DNS使用的协议<br>DNS<strong>同时占用UDP和TCP端口53</strong>是公认的，这种单个应用协议同时使用两种传输协议的情况在TCP/IP栈也算是个另类。但很少有人知道DNS分别在什么情况下使用这两种协议。 </p>
-<blockquote>
-<p>DNS在进行区域传输的时候使用TCP协议，其它时候则使用UDP协议；</p>
-</blockquote>
-<p> DNS的规范规定了2种类型的DNS服务器，一个叫主DNS服务器，一个叫辅助DNS服务器。在一个区中主DNS服务器从自己本机的数据文件中读取该区的DNS数据信息，而辅助DNS服务器则从区的主DNS服务器中读取该区的DNS数据信息。当一个辅助DNS服务器启动时，它需要与主DNS服务器通信，并加载数据信息，这就叫做区传送（zone transfer）。 </p>
-<p>为什么既使用TCP又使用UDP？ </p>
-<p>首先了解一下TCP与UDP传送字节的长度限制： </p>
-<blockquote>
-<p>UDP报文的最大长度为512字节，而TCP则允许报文长度超过512字节。当DNS查询超过512字节时，协议的TC标志出现删除标志，这时则使用TCP发送。通常传统的UDP报文一般不会大于512字节。 </p>
-</blockquote>
-<p><strong>区域传送时使用TCP</strong>，主要有一下两点考虑： </p>
-<ol>
-<li>辅域名服务器会定时（一般时3小时）向主域名服务器进行查询以便了解数据是否有变动。如有变动，则会执行一次区域传送，进行数据同步。区域传送将使用TCP而不是UDP，因为数据同步传送的数据量比一个请求和应答的数据量要多得多。 </li>
-<li>TCP是一种可靠的连接，保证了数据的准确性。 </li>
-</ol>
-<p>域名解析时使用UDP协议： </p>
-<p><strong>客户端向DNS服务器查询域名，一般返回的内容都不超过512字节，用UDP传输即可</strong>。不用经过TCP三次握手，这样DNS服务器负载更低，响应更快。虽然从理论上说，客户端也可以指定向DNS服务器查询的时候使用TCP，但事实上，很多DNS服务器进行配置的时候，仅支持UDP查询包。</p>
-<p>##DNS的查询过程</p>
-<p><img src="/img/DNS的查询过程.jpg" alt=""></p>
-<ol>
-<li>在浏览器中输入www.qq.com域名，操作系统会先检查自己本地的hosts文件是否有这个网址映射关系，如果有，就先调用这个IP地址映射，完成域名解析。 </li>
-<li>如果hosts里没有这个域名的映射，则查找<strong>本地DNS解析器缓存</strong>，是否有这个网址映射关系，如果有，直接返回，完成域名解析。 </li>
-<li>如果hosts与本地DNS解析器缓存都没有相应的网址映射关系，首先会找TCP/ip参数中设置的首选DNS服务器，在此我们叫它<strong>本地DNS服务器</strong>，此服务器收到查询时，如果要查询的域名，包含在本地配置区域资源中，则返回解析结果给客户机，完成域名解析，此解析具有权威性。 </li>
-<li>如果要查询的域名，不由本地DNS服务器区域解析，但该服务器已缓存了此网址映射关系，则调用这个IP地址映射，完成域名解析，此解析不具有权威性。 </li>
-<li>如果本地DNS服务器本地区域文件与缓存解析都失效，则根据本地DNS服务器的设置（是否设置转发器）进行查询，如果未用转发模式，本地DNS就把请求发至13台根DNS，根DNS服务器收到请求后会判断这个域名(.com)是谁来授权管理，并会返回一个负责该顶级域名服务器的一个IP。本地DNS服务器收到IP信息后，将会联系负责.com域的这台服务器。这台负责.com域的服务器收到请求后，如果自己无法解析，它就会找一个管理.com域的下一级DNS服务器地址(qq.com)给本地DNS服务器。当本地DNS服务器收到这个地址后，就会找qq.com域服务器，重复上面的动作，进行查询，直至找到www.qq.com主机。 </li>
-<li>如果用的是转发模式，此DNS服务器就会把请求转发至上一级DNS服务器，由上一级服务器进行解析，上一级服务器如果不能解析，或找根DNS或把转请求转至上上级，以此循环。不管是本地DNS服务器用是是转发，还是根提示，最后都是把结果返回给本地DNS服务器，由此DNS服务器再返回给客户机。 </li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/17/能够关闭（close）一个套接字，为何还使用shutdown/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/17/能够关闭（close）一个套接字，为何还使用shutdown/" itemprop="url">能够关闭（close）一个套接字，为何还使用shutdown</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-17T23:22:17+08:00">
-                2015-03-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
-                    <span itemprop="name">unix网络编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ol>
-<li><p>只有一个最后一个活动关闭时，close才释放网络断点。这意味着如果复制一个套接字（如采用dup），要直到关闭了最后一个引用它的文件描述符才会释放这个套接字。而shutdown允许使一个套接字处于不活动状态，和引用它的文件描述符无关</p>
-</li>
-<li><p>有时可以很方便地关闭套接字双向传输中的一个方向。例如，如果想让所通信的进程能够确定数据传输何时结束，可以关闭该套接字的写段，然而通过该套接字读端仍可以继续接受数据</p>
-</li>
-</ol>
-<p><strong>注意</strong>：</p>
-<p>在unix中调用了shutdown后，以shutdown（s, 0）为例，此函数为关闭s的接收端，unix会刷新输入队列，以丢弃应用程序还未读取的所有数据。如果有新数据到达，TCP会进行ACK，然后悄悄地将其丢弃。因为应用程序再也无法接收数据了</p>
-<p>shutdown（s，1）关闭连接的发送端。将套接字标识为无法发送任何额外的数据，后继所有试图对套接字进行的写操作都会出错。将发送缓冲区中所有的数据都发送出去之后，TCP会向其对等实体发送一个FIN，通知它没有其他数据了。这被称为半关闭（half close）</p>
-<p>只有关闭连接的发送端被称为半关闭，它虽然也发送FIN，但此FIN与close的FIN有差别，这个FIN表示的是“我已经完成了数据的传送，因此发送一个FIN到另一端，但我还想接收另一端发来的消息，直到他给我发来文件结束（FIN）</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/16/海量数据处理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/16/海量数据处理/" itemprop="url">海量数据处理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-16T17:04:51+08:00">
-                2015-03-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>转载自<a href="http://blog.csdn.net/v_july_v/article/details/6685962" target="_blank" rel="external">这里</a></p>
-<p>##海量日志数据，提取出某日访问百度次数最多的那个IP。</p>
-<p>算法思想：分而治之+Hash</p>
-<ol>
-<li>IP地址最多有2^32=4G种取值情况，所以不能完全加载到内存中处理； </li>
-<li>可以考虑采用“分而治之”的思想，按照IP地址的Hash(IP)%1024值，把海量IP日志分别存储到1024个小文件中。这样，每个小文件最多包含4MB个IP地址； </li>
-<li>对于每一个小文件，可以构建一个IP为key，出现次数为value的Hash map，同时记录当前出现次数最多的那个IP地址；</li>
-<li>可以得到1024个小文件中的出现次数最多的IP，再依据常规的排序算法得到总体上出现次数最多的IP；</li>
-</ol>
-<p>##给定a、b两个文件，各存放50亿个url，每个url各占64字节，内存限制是4G，让你找出a、b文件共同的url？</p>
-<p><strong>方法</strong>：可以估计每个文件安的大小为5G×64=320G，远远大于内存限制的4G。所以不可能将其完全加载到内存中处理。考虑采取分而治之的方法。</p>
-<ol>
-<li>遍历文件a，对每个url求取<code>hash(url)%1000</code>，然后根据所取得的值将url分别存储到1000个小文件中(每个小文件存放的是经过<code>hash(url)%1000</code>计算后结果相同的url)，记为<code>a1a2a3...a999</code>。这样每个小文件的大约为300M。</li>
-</ol>
-<ul>
-<li><p>遍历文件b，采取和a相同的方式将url分别存储到1000小文件中，记为<code>b1b2b3...b999</code>。这样处理后，所有可能相同的url都在对应的小文件中，<code>a1-&gt;b1，a2-&gt;b2，...，a999-&gt;b999</code>，不对应的小文件不可能有相同的url(相同的url的<code>hash(url)%1000</code>的值也必然相等)。然后我们只要求出1000对小文件中相同的url即可。</p>
-</li>
-<li><p>求每对小文件中相同的url时，可以把其中一个小文件的url存储到<code>hash_set</code>中。然后遍历另一个小文件的每个url，看其是否在刚才构建的<code>hash_set</code>中，如果是，那么就是共同的url，存到文件里面就可以了。</p>
-</li>
-</ul>
-<p>注意点：</p>
-<ol>
-<li>hash后要判断每个文件大小，如果hash分的不均衡有文件较大，还应继续hash分文件，换个hash算法第二次再分较大的文件，一直分到没有较大的文件为止。这样文件标号可以用A1-2表示（第一次hash编号为1，文件较大所以参加第二次hash，编号为2）</li>
-<li>由于1存在，第一次hash如果有大文件，不能用直接set的方法。建议对每个文件都先用字符串自然顺序排序，然后具有相同hash编号的（如都是1-3，而不能a编号是1，b编号是1-1和1-2），可以直接从头到尾比较一遍。对于层级不一致的，如a1，b有1-1，1-2-1，1-2-2，层级浅的要和层级深的每个文件都比较一次，才能确认每个相同的url。</li>
-</ol>
-<p>##有10个文件，每个文件1G，每个文件的每一行存放的都是用户的query，每个文件的query都可能重复。要求你按照query的频度排序。</p>
-<p>方案1：</p>
-<ol>
-<li>顺序读取10个文件，按照<code>hash(query)%10</code>的结果将query写入到另外10个文件中。这样新生成的文件每个的大小大约也1G（假设hash函数是随机的）。</li>
-</ol>
-<ul>
-<li>找一台内存在2G左右的机器，依次对1中生成的10个文件用<code>hash_map(query, query_count)</code>来统计每个query出现的次数。利用快速/堆/归并排序按照出现次数进行排序。将排序好的<code>query</code>和对应的<code>query_cout</code>输出到文件中。这样得到了10个排好序的文件。</li>
-<li>对这10个文件进行归并排序（内排序与外排序相结合）。</li>
-</ul>
-<p>方案2：</p>
-<p>一般query的总量是有限的，只是重复的次数比较多而已，可能对于所有的query，一次性就可以加入到内存了。这样，我们就可以采用trie树/hash_map等直接来统计每个query出现的次数，然后按出现次数做快速/堆/归并排序就可以了</p>
-<p>##寻找热门查询：</p>
-<p>搜索引擎会通过日志文件把用户每次检索使用的所有检索串都记录下来，每个查询串的长度为1-255字节。假设目前有一千万个记录，这些查询串的重复读比较高，虽然总数是1千万，但是如果去除重复和，不超过3百万个。一个查询串的重复度越高，说明查询它的用户越多，也就越热门。请你统计最热门的10个查询串，要求使用的内存不能超过1G。</p>
-<ol>
-<li>先对这批海量数据预处理，在O（N）的时间内用Hash表完成统计；</li>
-<li>借助堆这个数据结构，找出Top K，时间复杂度为<code>N&#39;*logK</code>。即，借助堆结构，我们可以在log量级的时间内查找和调整/移动。因此，维护一个K(该题目中是10)大小的小根堆，然后遍历300万的Query，分别和根元素进行对比所以，我们最终的时间复杂度是：<code>O（N） + N&#39;*O（logK）</code>，（N为1000万，N’为300万）。</li>
-</ol>
-<p>##有一个1G大小的一个文件，里面每一行是一个词，词的大小不超过16字节，内存限制大小是1M。返回频数最高的100个词。</p>
-<p>方案1：</p>
-<ol>
-<li>顺序读文件中，对于每个词x，取<code>hash(x)%5000</code>，然后按照该值存到5000个小文件中。这样每个文件大概是200k左右。如果其中的有的文件超过了1M大小，还可以按照类似的方法继续往下分，直到分解得到的小文件的大小都不超过1M。</li>
-</ol>
-<ul>
-<li>对每个小文件，统计每个文件中出现的词以及相应的频率（可以采用trie树/hash_map等），并取出出现频率最大的100个词（可以用含100个结点的最小堆），并把100词及相应的频率存入文件，这样又得到了5000个文件。</li>
-<li>把这5000个文件进行归并（类似于归并排序）排序。</li>
-</ul>
-<p>##在2.5亿个整数中找出不重复的整数，内存不足以容纳这2.5亿个整数。</p>
-<p><strong>方案1</strong>：采用2-Bitmap（每个数分配2bit，00表示不存在，01表示出现一次，10表示多次，11无意义）进行，共需内存2^32*2bit=1GB内存，还可以接受。然后扫描这2.5亿个整数，查看Bitmap中相对应位，如果是00变01，01变10，10保持不变。所描完事后，查看bitmap，把对应位是01的整数输出即可。</p>
-<p><strong>方案2</strong>：也可采用上题类似的方法，进行划分小文件的方法。然后在小文件中找出不重复的整数，并排序。然后再进行归并，注意去除重复的元素。</p>
-<p>##腾讯面试题：给40亿个不重复的unsigned int的整数，没排过序的，然后再给一个数，如何快速判断这个数是否在那40亿个数当中？</p>
-<p><strong>方案1</strong>：申请512M(<code>512*1024*1024*8 = 40亿bit</code>)的内存，一个bit位代表一个unsigned int值。读入40亿个数，设置相应的bit位，读入要查询的数，查看相应bit位是否为1，为1表示存在，为0表示不存在。</p>
-<p><strong>方案2</strong>：这个问题在《编程珠玑》里有很好的描述，大家可以参考下面的思路，探讨一下：</p>
-<p>因为2^32为40亿多，所以给定一个数可能在，也可能不在其中；<br>这里我们把40亿个数中的每一个用32位的二进制来表示<br>假设这40亿个数开始放在一个文件中。</p>
-<p>然后将这40亿个数分成两类:</p>
-<ol>
-<li>最高位为0</li>
-<li>最高位为1</li>
-</ol>
-<p>并将这两类分别写入到两个文件中，其中一个文件中数的个数&lt;=20亿，而另一个&gt;=20亿（这相当于折半了）；与要查找的数的最高位比较并接着进入相应的文件再查找</p>
-<p>再然后把这个文件为又分成两类:</p>
-<ol>
-<li>次最高位为0</li>
-<li>次最高位为1</li>
-</ol>
-<p>并将这两类分别写入到两个文件中，其中一个文件中数的个数&lt;=10亿，而另一个&gt;=10亿（这相当于折半了）；</p>
-<p>与要查找的数的次最高位比较并接着进入相应的文件再查找。</p>
-<p>…….</p>
-<p>以此类推，就可以找到了,而且时间复杂度为O(logn)，方案2完。</p>
-<p>附：这里，再简单介绍下，位图方法：</p>
-<blockquote>
-<p>使用位图法判断整形数组是否存在重复<br>判断集合中存在重复是常见编程任务之一，当集合中数据量比较大时我们通常希望少进行几次扫描，这时双重循环法就不可取了。</p>
-<p>位图法比较适合于这种情况，它的做法是按照集合中最大元素max创建一个长度为max+1的新数组，然后再次扫描原数组，遇到几就给新数组的第几位置上1，如遇到5就给新数组的第六个元素置1，这样下次再遇到5想置位时发现新数组的第六个元素已经是1了，这说明这次的数据肯定和以前的数据存在着重复。这种给新数组初始化时置零其后置一的做法类似于位图的处理方法故称位图法。它的运算次数最坏的情况为2N。如果已知数组的最大值即能事先给新数组定长的话效率还能提高一倍。</p>
-</blockquote>
-<p>##海量数据分布在100台电脑中，想个办法高效统计出这批数据的TOP10。</p>
-<p>方案1：</p>
-<ol>
-<li>在每台电脑上求出TOP10，可以采用包含10个元素的堆完成（TOP10小，用最大堆，TOP10大，用最小堆）。比如求TOP10大，我们首先取前10个元素调整成最小堆，如果发现，然后扫描后面的数据，并与堆顶元素比较，如果比堆顶元素大，那么用该元素替换堆顶，然后再调整为最小堆。最后堆中的元素就是TOP10大。</li>
-</ol>
-<ul>
-<li>求出每台电脑上的TOP10后，然后把这100台电脑上的TOP10组合起来，共1000个数据，再利用上面类似的方法求出TOP10就可以了。</li>
-</ul>
-<p>##怎么在海量数据中找出重复次数最多的一个？</p>
-<p><strong>方案1</strong>：先做hash，然后求模映射为小文件，求出每个小文件中重复次数最多的一个，并记录重复次数。然后找出上一步求出的数据中重复次数最多的一个就是所求（具体参考前面的题）。</p>
-<p>##上千万或上亿数据（有重复），统计其中出现次数最多的前N个数据。</p>
-<p><strong>方案1</strong>：上千万或上亿的数据，现在的机器的内存应该能存下。所以考虑采用hash_map/搜索二叉树/红黑树等来进行统计次数。然后就是取出前N个出现次数最多的数据了，可以用堆机制完成。</p>
-<p>##1000万字符串，其中有些是重复的，需要把重复的全部去掉，保留没有重复的字符串。请怎么设计和实现？</p>
-<p><strong>方案1</strong>：这题用trie树比较合适，hash_map也应该能行。</p>
-<p>##一个文本文件，大约有一万行，每行一个词，要求统计出其中最频繁出现的前10个词，请给出思想，给出时间复杂度分析。</p>
-<p><strong>方案1</strong>：这题是考虑时间效率。用trie树统计每个词出现的次数，时间复杂度是<code>O(n*le)</code>（le表示单词的平准长度）。然后是找出出现最频繁的前10个词，可以用堆来实现，前面的题中已经讲到了，时间复杂度是<code>O(n*lg10)</code>。所以总的时间复杂度，是<code>O(n*le)</code>与<code>O(n*lg10)</code>中较大的哪一个。</p>
-<p>##一个文本文件，找出前10个经常出现的词，但这次文件比较长，说是上亿行或十亿行，总之无法一次读入内存，问最优解。</p>
-<p><strong>方案1</strong>：首先根据用hash并求模，将文件分解为多个小文件，对于单个文件利用上题的方法求出每个文件件中10个最常出现的词。然后再进行归并处理，找出最终的10个最常出现的词。</p>
-<p>##100w个数中找出最大的100个数。</p>
-<p><strong>方案1</strong>：在前面的题中，我们已经提到了，用一个含100个元素的最小堆完成。复杂度为O(100w*lg100)。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/15/删除list里的重复元素/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/15/删除list里的重复元素/" itemprop="url">删除list里的重复元素</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-15T14:21:26+08:00">
-                2015-03-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##方法一：先排序后比较大小</p>
-<pre><code>if List:
-    List.sort()
-last = List[-1]
-for i in range(len(List)-2, -1, -1):
-    if last==List[i]: 
-        del List[i]
-    else: 
-        last=List[i]
-</code></pre><p>问题：为什么要从后往前迭代呢？我们可以从list[0]开始啊，代码如下：</p>
-<pre><code>if List:
-    List.sort()
-begin = List[0]
-for i in range(1, len(list)):
-    if begin==List[i]: 
-        del List[i]
-    else: 
-        begin=List[i]
-</code></pre><p>运行一下，报错如下：</p>
-<pre><code>IndexError: list index out of range
-</code></pre><p>数组访问越界了！why？</p>
-<p>我们调用del删除list里的元素，相应的list的长度也会自动减小，但我们迭代的范围range(1, len(list))是一开始就计算好的，所以必然会越界。比如说：</p>
-<pre><code>li = [1,1,2,2,3,3,3,4,5,6]
-</code></pre><p>调用len计算得到li的长度为10，range(1,10)得到我们迭代的序列是1-9，但是当我们删除了li中的重复元素1,2,3之后，li的长度只剩下了6，可是我们依然会访问li[7]，因为访问序列一开始就计算好了，所以必然造成了越界。</p>
-<p>那从后向前是如何避免越界的呢？从后向前遍历，删除元素后，只是把这个元素之后的已经没有重复元素的序列向前移动一位，数组依然在变短，但这个时候是不会影响到我们向前遍历的。</p>
-<p>##方法二：使用set</p>
-<pre><code>&gt;&gt;&gt; li = [1,2,4,5,7,8,2,3,4,56,7]
-&gt;&gt;&gt; list(set(li))
-&gt;&gt;&gt; [1, 2, 3, 4, 5, 7, 8, 56]
-</code></pre><p>##方法三：使用列表综合</p>
-<pre><code>l1 = [&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;b&apos;,&apos;c&apos;,&apos;a&apos;,&apos;a&apos;]  
-l2 = []  
-[l2.append(i) for i in l1 if not i in l2]  
-print l2
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/13/tcp是流的一些思考-拆包和粘包/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/13/tcp是流的一些思考-拆包和粘包/" itemprop="url">tcp是流的一些思考--拆包和粘包</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-13T16:19:01+08:00">
-                2015-03-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-06T20:51:39+08:00">
+                2015-03-06
               </time>
             
 
@@ -1421,30 +543,13 @@ print l2
       
         
           
-            <p>假设应用层协议是http</p>
-<p>我从浏览器中访问了一个网站，网站服务器给我发了200k的数据。建立连接的时候，通告的MSS是50k，所以为了防止ip层分片，tcp每次只会发送50k的数据，一共发了4个tcp数据包。如果我又访问了另一个网站，这个网站给我发了100k的数据，这次tcp会发出2个包，问题是，客户端收到6个包，怎么知道前4个包是一个页面，后两个是一个页面。既然是tcp将这些包分开了，那tcp会将这些包重组吗，它送给应用层的是什么？</p>
-<p>这是我自己想的一个场景，正式一点讲的话，这个现象叫<strong>拆包</strong>。</p>
-<p>我们再考虑一个问题。</p>
-<p>tcp中有一个negal算法，用途是这样的：通信两端有很多小的数据包要发送，虽然传送的数据很少，但是流程一点没少，也需要tcp的各种确认，校验。这样小的数据包如果很多，会造成网络资源很大的浪费，negal算法做了这样一件事，当来了一个很小的数据包，我不急于发送这个包，而是等来了更多的包，将这些小包组合成大包之后一并发送，不就提高了网络传输的效率的嘛。这个想法收到了很好的效果，但是我们想一下，如果是分属于两个不同页面的包，被合并在了一起，那客户那边如何区分它们呢？</p>
-<p>这就是<strong>粘包</strong>问题。</p>
-<p>从粘包问题我们更可以看出为什么tcp被称为流协议，因为它就跟水流一样，是没有边界的，没有消息的边界保护机制，所以tcp只有流的概念，没有包的概念。</p>
-<p>我们还需要有两个概念</p>
-<ul>
-<li><strong>长连接</strong>： Client方与Server方先建立通讯连接，连接建立后不断开， 然后再进行报文发送和接收。</li>
-<li><strong>短连接</strong>：Client方与Server每进行一次报文收发交易时才进行通讯连接，交易完毕后立即断开连接。此种方式常用于一点对多点  通讯，比如多个Client连接一个Server.</li>
-</ul>
-<p>下面我们揭晓答案：</p>
+            <p> keepalive 是 TCP 协议内的心跳机制，用来维护链接的状态，默认不开启。服务器端每隔一段事件会向空闲两小时以上的链接的对端发送一个 keepalive 包，有以下情形：</p>
 <ol>
-<li>我想象的关于粘包的场景是不对的，http连接是短连接，请求之后，收到回答，立马断开连接，不会出现粘包。</li>
-<li>拆包现象是有可能存在的</li>
+<li>对端回复 ACK，链接保活，再次空闲两小时后重新探测；</li>
+<li>对端的应用程序已经退出，TCP 回复一个 RST包，链接关闭；</li>
+<li>对端的应用程序卡死/无反应，TCP 回复一个 FIN包，来终止链接；</li>
+<li>对端机器无任何反应，服务器端将持续发送 keepalive 包，超时则关闭链接。时间范围半小时到两小时。</li>
 </ol>
-<p>##处理拆包<br>既然拆包现象可能存在，如果遇到了，那么该如何处理呢？这里提供两种方法</p>
-<ol>
-<li>通过包头+包长+包体的协议形式，当服务器端获取到指定的包长时才说明获取完整。 </li>
-<li>指定包的结束标识，这样当我们获取到指定的标识时，说明包获取完整。 </li>
-</ol>
-<p>##处理粘包<br>我们从上面的分析看到，虽然像http这样的短连接协议不会出现粘包的现象，但是一旦建立了长连接，粘包还是有可能会发生的。</p>
-<p>网上的处理方法有很多，这里不列举了，但大家看这些处理方法，都会发现，这些方法并不好，都会做一些牺牲。比如禁用negal算法，就是以网络性能作为牺牲。</p>
 
           
         
@@ -1493,7 +598,7 @@ print l2
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/一些阿里面试题/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/06/CLOSE-WAIT/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -1512,7 +617,7 @@ print l2
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/12/一些阿里面试题/" itemprop="url">一些阿里面试题</a></h1>
+                <a class="post-title-link" href="/2015/03/06/CLOSE-WAIT/" itemprop="url">CLOSE_WAIT</a></h1>
         
 
         <div class="post-meta">
@@ -1524,8 +629,8 @@ print l2
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T20:17:38+08:00">
-                2015-03-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-06T20:45:03+08:00">
+                2015-03-06
               </time>
             
 
@@ -1547,8 +652,8 @@ print l2
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/面试/" itemprop="url" rel="index">
-                    <span itemprop="name">面试</span>
+                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
+                    <span itemprop="name">TCP/IP</span>
                   </a>
                 </span>
 
@@ -1586,363 +691,1201 @@ print l2
       
         
           
-            <p>##内存泄露最终的结果在操作系统中的表现是什么？<br>内存泄漏形象的比喻是“操作系统可提供给所有进程的存储空间正在被某个进程榨干”，最终结果是<strong>程序运行时间越长，占用存储空间越来越多，最终用尽全部存储空间，整个系统崩溃。</strong>所以“内存泄漏”是从操作系统的角度来看的。这里的存储空间并不是指物理内存，而是指虚拟内存大小，这个虚拟内存大小取决于磁盘交换区设定的大小。由程序申请的一块内存，如果没有任何一个指针指向它，那么这块内存就泄漏了。</p>
-<p>从用户使用程序的角度来看，内存泄漏本身不会产生什么危害，作为一般的用户，根本感觉不到内存泄漏的存在。<strong>真正有危害的是内存泄漏的堆积，这会最终消耗尽系统所有的内存。</strong>从这个角度来说，一次性内存泄漏并没有什么危害，因为它不会堆积，而隐式内存泄漏危害性则非常大，因为较之于常发性和偶发性内存泄漏它更难被检测到。</p>
-<p>##malloc-free和new-delete的区别</p>
-<p>malloc-free是c/c++中的函数，new-delete是c++中的运算符</p>
-<p>##怎么知道http首部结束了？</p>
-<p>http首部由一个空行结束，也就是<code>\r\n\r\n</code>，表明了首部的结束和实体主体的开始。</p>
-<p>实体的主体部分包含一个由任意数据组成的数据块。并不是所有的报文都包含实体的主体部分。如<code>GET请求就不包含实体</code>。</p>
-<p>##tcpdump抓包是在哪一层？</p>
-<p>Linux下抓取报文的位置，是在链路层处理报文之后，交给网络层之前的位置。</p>
-<p>##同一端口可否同时被两个应用监听？<br>不可以，但是fork的子进程用netstat看确实和父进程监听在同一端口，但是这和两个独立的进程应该是有所区别的</p>
-<p>同一机器上的应用如果监听在同一端口，那socket的四元组就是一样的了，这是不可能的</p>
-<p>##查看命令的帮助文档的命令</p>
-<ul>
-<li>man是查看本地      </li>
-<li>info是查看在线</li>
-</ul>
-<p>##谁在决定是使用Big-endian，还是Little-endian？</p>
-<p>在计算存储中是CPU，也就是CPU的体系结构，还是有点抽象啊。比如x86的是小端，power-pc的是大端。</p>
-<p>##线性表的顺序结构和链表结构各有什么优缺点</p>
-<ul>
-<li><p>顺序结构：</p>
-<ul>
-<li>优点：易于查询，索引快 list[n]这样的操作，O(1)复杂度</li>
-<li>缺点：扩展性弱，不易删除、添加。</li>
-</ul>
-</li>
-<li><p>链表结构：</p>
-<ul>
-<li>优点：扩展性强，易于删除、添加</li>
-<li>缺点：不易于查询，索引慢，list[n]这样的操作，复杂度为O(n)</li>
-</ul>
-</li>
-</ul>
-<p>##shell的if和for语句</p>
-<p>if语句</p>
-<pre><code>if condition;
-then
-    commands
-fi
-</code></pre><p>for语句</p>
-<pre><code>for i in ***; do
-commands
-done
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/awk/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/12/awk/" itemprop="url">awk</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T20:15:22+08:00">
-                2015-03-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>awk是一款设计用于数据流的工具，可以进行高级文本处理。它颇有玩头的原因就在于可以对行和列进行操纵。awk有很多内建的功能，比如说数组，函数等，这是它和c语言的相同之处，灵活性是awk的最大优势。 另外，awk是一门语言哦，真的是一门语言，在<a href="http://news.163.com/15/0309/11/AK8TFD1P00014U9R.html" target="_blank" rel="external">TIOBE编程语言排行榜</a>中排名还在50之前呢。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/sed/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/12/sed/" itemprop="url">sed</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T20:13:45+08:00">
-                2015-03-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>sed是<strong>流编辑器</strong>(stream editor)的缩写。它是文本处理中不可或缺的工具，能够配合正则表达式使用，功能不同凡响。sed的一个众所周知的用法是进行文本替换</p>
-<p>##sed可以替换给定文本中的字符串<br>        sed ‘s/log/huhu/‘ ./time.sh //将log替换为huhu<br>或者</p>
-<pre><code>cat time.sh | sed &apos;s/log/huhu/&apos;  
-</code></pre><p>该命令从stdin读取输入。</p>
+            <p>关闭socket分为主动关闭（Active closure）和被动关闭（Passive closure）两种情况。前者是指有本地主机主动发起的关闭；而后者则是指本地主机检测到远程主机发起关闭之后，作出回应，从而关闭整个连接。</p>
+<p><img src="/img/time_wait.png" alt=""></p>
+<p>前者将会产生TIME_WAIT，而后者，则会产生CLOSE_WAIT</p>
+<p>##产生原因</p>
 <blockquote>
-<p>如果你用的是vi编辑器，你会发现它用于替换文本的命令和sed非常相似</p>
+<p>服务器A是一台爬虫服务器，它使用简单的HttpClient去请求资源服务器B上面的apache获取文件资源，正常情况下，如果请求成功，那么在抓取完资源后，服务器A会主动发出关闭连接的请求，这个时候就是主动关闭连接，服务器A的连接状态我们可以看到是<code>TIME_WAIT</code>。如果一旦发生异常呢？假设请求的资源服务器B上并不存在，那么这个时候就会由服务器B发出关闭连接的请求，服务器A就是被动的关闭了连接，如果服务器A被动关闭连接之后程序员忘了让HttpClient释放连接，那就会造成<code>CLOSE_WAIT</code>的状态了。</p>
 </blockquote>
-<p>##保存被sed替换后的文件</p>
-<p>上面的命令，sed会打印出字符串被替换之后的文件，但是对于源文件，什么事情都没有发生，源文件内的字符串并没有被替换，如果想保存替换后的文件怎么办呢？</p>
-<p>这里分两个点来说</p>
+<p>在被动关闭连接情况下，在已经接收到FIN，但是还没有发送自己的FIN的时刻，连接处于CLOSE_WAIT状态。</p>
+<p>通常来讲，CLOSE_WAIT状态的持续时间应该很短，正如SYN_RCVD状态。但是在一些特殊情况下，就会出现连接长时间处于CLOSE_WAIT状态的情况。</p>
+<p>出现大量close_wait的现象，<strong>主要原因是某种情况下对方关闭了socket链接，但是我方忙与读或者写，没有关闭连接。代码需要判断socket，一旦读到0，断开连接，read返回负，检查一下errno，如果不是AGAIN，就断开连接。</strong></p>
+<p>##解决方法</p>
+<p>基本的思想就是要检测出对方已经关闭的socket，然后关闭它。</p>
 <ol>
-<li><p>想保留源文件，那么直接将输出重定向，生成新的文件即可</p>
-<pre><code>sed &apos;s/log/huhu/&apos; ./time.sh &gt; newfile
-</code></pre></li>
-<li><p>源文件不需要了，就在源文件上修改</p>
-<pre><code>sed -i &apos;s/log/huhu/&apos; ./time.sh
-</code></pre><p>加上-i参数后，就可以将替换结果保存在源文件</p>
+<li><p>代码需要判断socket，一旦read返回0，断开连接，read返回负，检查一下errno，如果不是AGAIN，也断开连接。(注:在UNP 7.5节的图7.6中，可以看到使用select能够检测出对方发送了FIN，再根据这条规则就可以处理CLOSE_WAIT的连接)</p>
+</li>
+<li><p>给每一个socket设置一个时间戳last_update，每接收或者是发送成功数据，就用当前时间更新这个时间戳。定期检查所有的时间戳，如果时间戳与当前时间差值超过一定的阈值，就关闭这个socket。</p>
+</li>
+<li><p>使用一个Heart-Beat线程，定期向socket发送指定格式的心跳数据包，如果接收到对方的RST报文，说明对方已经关闭了socket，那么我们也关闭这个socket。</p>
+</li>
+<li><p>设置SO_KEEPALIVE选项，并修改内核参数（前提是启用socket的KEEPALIVE机制）</p>
 </li>
 </ol>
-<p>##替换全部，而不是每一行的第一个</p>
-<p>上面两个命令，细心的小伙伴会发现，它只替换每一行第一处符合模式的内容，如果要替换所有的内容，我们需要在命令的末尾加上参数g</p>
-<pre><code>sed &apos;s/log/huhu/g&apos; ./time.sh
-</code></pre><p>后缀/g意味着sed会替换每一处匹配。但是有时候我们只需要从第n处匹配开始替换，对此，我们可以使用/Ng选项。</p>
-<p>例如</p>
-<pre><code>[root@pc105 test]# echo thisthisthisthis | sed &apos;s/this/THIS/2g&apos;
-thisTHISTHISTHIS
-[root@pc105 test]# echo thisthisthisthis | sed &apos;s/this/THIS/3g&apos;
-thisthisTHISTHIS
-[root@pc105 test]# echo thisthisthisthis | sed &apos;s/this/THIS/4g&apos;
-thisthisthisTHIS
-</code></pre>
+<p>##如果服务器出了问题</p>
+<p>如果服务器出了异常，百分之八九十都是下面两种情况：</p>
+<ol>
+<li>服务器保持了大量TIME_WAIT状态</li>
+<li>服务器保持了大量CLOSE_WAIT状态</li>
+</ol>
+<p>因为linux分配给一个用户的文件句柄是有限的，而<code>TIME_WAIT</code>和<code>CLOSE_WAIT</code>两种状态如果一直被保持，那么意味着对应数目的通道就一直被占着，而且是“占着茅坑不使劲”，一旦达到句柄数上限，新的请求就无法被处理了，接着就是大量Too Many Open Files异常，tomcat崩溃。。。</p>
+<p>网上有很多资料把这两种情况的处理方法混为一谈，以为优化系统内核参数就可以解决问题，其实是不恰当的，优化系统内核参数(/etc/sysctl.conf)解决TIME_WAIT可能很容易，但是应对CLOSE_WAIT的情况还是需要从程序本身出发。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/06/listen函数的backlog参数/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/06/listen函数的backlog参数/" itemprop="url">listen函数的backlog参数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-06T17:32:46+08:00">
+                2015-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>listen函数将主动套接字转换为被动监控套接字，其第二个参数backlog决定了内核的连接缓存队列长度。对于一个给定的监听套接字，内核维护两个队列：</p>
+<ol>
+<li><p>未就绪队列，存放没有完成三路握手的连接，监听套接字收到SYN并返回ACK+SYN，连接处于SYN_RECV状态，等待对端发送ACK。如果已完成队列非满，则接收ACK，连接握手完成，进入已完成队列；如果已完成队列满则丢弃ACK，对端重发ACK（对端看到的连接是ESTABLISED状态），若未就绪队列中的SYN_RECV等待直到超时还没进入已完成队列则丢弃连接（对端不知道，只有在读写套接字时才知道）。</p>
+</li>
+<li><p>已完成队列，存放已经完成三路握手的连接（ESTABLISHED），等待accept取走连接。</p>
+</li>
+</ol>
+<p><img src="/img/tcp为监听套接字维护的两个队列.png" alt="tcp为监听套接字维护的两个队列"></p>
+<p>backlog决定了两个队列的长度之和（并不是说两个队列之和等于backlog，而是存在个转换，依赖于具体实现）</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/06/实现strcpy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/06/实现strcpy/" itemprop="url">实现strcpy</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-06T17:01:56+08:00">
+                2015-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##strcpy和memcpy<br>很容易写出下面的实现</p>
+<pre><code>char *my_strcpy(char *dst,const char *src)
+{
+    if(dst == NULL || src == NULL)
+        return NULL;
+    char *ret = dst;
+    while((* dst++ = * src++) != &apos;\0&apos;) 
+        ;
+    return ret;
+}
+</code></pre><p>上面的代码已经考虑到了</p>
+<ol>
+<li><p>检查指针有效性；</p>
+</li>
+<li><p>返回目的指针des；</p>
+</li>
+<li><p>源字符串的末尾 ‘\0’ 需要拷贝。</p>
+</li>
+</ol>
+<p>但是这个<code>字符串拷贝函数</code>有很大缺陷</p>
+<ol>
+<li><p>不能保证目标字符串有足够空间存放src</p>
+</li>
+<li><p>如果dst和src内存重叠，那输出是未定义的</p>
+</li>
+</ol>
+<p>但是即使是系统实现的strcpy好像也没有改正这两个bug。</p>
+<p>在linux上man strcpy得到描述是：</p>
+<blockquote>
+<p>DESCRIPTION</p>
+<p>The  strcpy() function copies the string pointed to by src, including the terminat-<br>ing null byte (‘\0’), to the buffer pointed to by dest.  The strings may not  over-<br>lap, and the destination string dest must be large enough to receive the copy.</p>
+<p>The  strncpy()  function is similar, except that at most n bytes of src are copied.<br>Warning: If there is no null byte among the first n bytes of src, the string placed<br>in dest will not be null terminated.</p>
+<p>If the length of src is less than n, strncpy() pads the remainder of dest with null<br>bytes.</p>
+<p>BUGS</p>
+<p>If  the  destination  string of a strcpy() is not large enough, then anything might happen.  Overflowing fixed-length string buffers is a  favorite  cracker  technique<br>       for  taking  complete  control  of the machine.  Any time a program reads or copies<br>       data into a buffer, the program first needs to check  that  there is  enough  space.<br>       This  may  be unnecessary if you can show that overflow is impossible, but be care-<br>       ful: programs can get changed over time, in ways that may make the impossible  pos-<br>       sible.</p>
+</blockquote>
+<p>strcpy和strncpy都需要<strong>程序员</strong>来保证dst有足够的空间来容纳将被拷贝的字符串，如果dst空间不足，得到的结果是未定义的；同样也需要<strong>程序员</strong>来保证他们的空间没有重叠。strncpy只是增加了一个拷贝长度的参数，针对这个参数也要做一些判断。</p>
+<ul>
+<li><p>如果src长度不足n，那么dst不足n的部分将会用null byte来补齐</p>
+<pre><code>char* strncpy(char *dest, const char *src, size_t n){
+    size_t i;
+
+    for (i = 0 ; i &lt; n &amp;&amp; src[i] != &apos;\0&apos; ; i++)
+        dest[i] = src[i];
+    for ( ; i &lt; n ; i++)
+        dest[i] = &apos;\0&apos;;
+
+    return dest;
+}
+</code></pre></li>
+</ul>
+<p>strcpy是高危函数，因为它遇到’\0’才停止运行，遇到没有’\0’的字符串，它就会一直运行下去。建议使用strncpy代替strcpy，它接收一个最大长度的参数。strcmp和strncmp也是如此。</p>
+<p>##memcpy</p>
+<p>上面提出的缺陷1确实想不到好方法来解决（只能交给程序员了），但是缺陷2在memcpy中已经解决了。memcpy在实现的时候考虑到了内存重叠的问题。</p>
+<pre><code>char *my_memcpy(char *dst,const char *src,unsigned int count)
+{
+     if(dst == NULL || src == NULL) 
+        return NULL;
+     char * ret = dst;
+     //源地址和目的地址不重叠，低字节向高字节拷贝
+     if (dst &lt;= src || dst &gt;= (src + count))
+     {
+         while(count--)
+         {
+             *dst = *src;
+             dst++;
+             src++;
+         }
+     }
+     //源地址和目的地址重叠，高字节向低字节拷贝
+     //这个时候src字符串的值会被改变，声明为const只是说不能通过
+     //src修改src指向的值。这里是通过dst改变了src的值，这是允许的。
+     else       
+     { 
+         dst = dst + count - 1;
+         src = src + count - 1; 
+         while(count--) 
+         {
+             *dst = *src;
+             dst--;
+             src--;
+         }
+    }
+    return ret;
+}
+</code></pre><p>##区别</p>
+<ol>
+<li>strcpy只能复制字符串，memcpy可以复制任何内容</li>
+<li>strcpy遇到<code>&#39;\0&#39;</code>就停止，memcpy一直复制到n个字符才停止，不管有没有<code>&#39;\0&#39;</code></li>
+<li>strcpy不支持内存重叠，memcpy支持</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/06/从socket读数据时，socket缓存里的数据，可能超过用户缓存的长度，如何处理？/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/06/从socket读数据时，socket缓存里的数据，可能超过用户缓存的长度，如何处理？/" itemprop="url">从socket读数据时，socket缓存里的数据，可能超过用户缓存的长度，如何处理？</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-06T14:22:34+08:00">
+                2015-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>从socket读数据时，socket缓存里的数据，可能超过用户缓存的长度，如何处理？ 例如，socket缓存有8kB的数据，而你的缓存只有2kB空间。</p>
+</blockquote>
+<p>可以调用realloc()，扩大原有的缓存块尺寸。 </p>
+<p>但是临时申请内存的有一定性能损失。</p>
+<p>这种情况要看接收缓存的方式。</p>
+<ul>
+<li>第一种方式：  使用100k的大接收缓存为例。 </li>
+</ul>
+<p>如果要等待数据，并进行解析。可能发生缓存不够的情况。此时只能扩充缓存，或先处理100k的数据，再接收新的数据。</p>
+<ul>
+<li>第二种方式： 使用缓存队列，分成8K大小的队列。</li>
+</ul>
+<p>不存在接收缓存不够的情况。 除非用户解析已出错，使用数据接收、使用脱勾。 这种方式的代价是，可能需要将缓存队列再次拷贝、拼接成一块大的缓存，再进行解析。 而在本人的系统中，只需要将socket接收的数据再次原样分发给客户， <code>所以这种方案是最佳方案</code>。</p>
+<blockquote>
+<p>向socket发送数据时， 可能只发送了用户缓存里的一半，如何处理？例如，需要向socket发送8kB数据，返回值只有2kB发送成功。</p>
+</blockquote>
+<p>记录缓存的偏移量。 下一次socket写事件时， 再从偏移的位置接着发送。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/06/使用linux-epoll模型，水平触发模式（Level-Triggered），当socket可写时，会不停的触发socket可写的事件，如何处理？/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/06/使用linux-epoll模型，水平触发模式（Level-Triggered），当socket可写时，会不停的触发socket可写的事件，如何处理？/" itemprop="url">使用linux epoll模型，水平触发模式（Level-Triggered），当socket可写时，会不停的触发socket可写的事件，如何处理？</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-06T14:16:02+08:00">
+                2015-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##第一种方法</p>
+<ol>
+<li><p>当需要向socket写数据时，将该socket加入到epoll模型（epoll_ctl）；等待可写事件。</p>
+</li>
+<li><p>接收到socket可写事件后，调用write()或send()发送数据。</p>
+</li>
+<li><p>当数据全部写完后， 将socket描述符移出epoll模型。</p>
+</li>
+</ol>
+<p>这种方式的缺点是：  即使发送很少的数据，也要将socket加入、移出epoll模型，有一定的操作代价。</p>
+<p>##第二种方法</p>
+<ol>
+<li><p>向socket写数据时，不将socket加入到epoll模型；而是直接调用send()发送；</p>
+</li>
+<li><p>只有当或send()返回错误码EAGAIN（系统缓存满），才将socket加入到epoll模型，等待可写事件后，再发送数据。</p>
+</li>
+<li><p>全部数据发送完毕，再移出epoll模型。</p>
+</li>
+</ol>
+<p>这种方案的优点：当用户数据比较少时，不需要epool的事件处理。 </p>
+<blockquote>
+<p>在高压力的情况下，性能怎么样呢？   </p>
+</blockquote>
+<p>对一次性直接写成功、失败的次数进行统计。如果成功次数远大于失败的次数， 说明性能良好。（如果失败次数远大于成功的次数，则关闭这种直接写的操作，改用第一种方案。同时在日志里记录警告）</p>
+<p>##第三种方法</p>
+<p>使用<code>Edge-Triggered（边沿触发）</code>，这样socket有可写事件，只会触发一次。 </p>
+<p>可以在应用层做好标记。以避免频繁的调用 <code>epoll_ctl( EPOLL_CTL_ADD, EPOLL_CTL_MOD)</code>。  这种方式是epoll 的 man 手册里推荐的方式， 性能最高。但如果处理不当容易出错，事件驱动停止。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/06/如果-select-返回可读，结果只读到-0-字节，这是什么情况？/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/06/如果-select-返回可读，结果只读到-0-字节，这是什么情况？/" itemprop="url">如果 select 返回可读，结果只读到 0 字节，这是什么情况？</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-06T14:07:23+08:00">
+                2015-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>对端关闭，可读，read 返回 0，表示已经读到文件末尾。</p>
+<ol>
+<li>read返回0的唯一条件是对方gracefully close了socket</li>
+<li>select ＞ 0，表示套接字里有东西，</li>
+<li>read ＝ 0，表示里面的东西是“对方关闭连接”。</li>
+</ol>
+<p>当select出错时，会将接口置为可读又可写。这时就要通过判断select的返回值为-1来区分。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/05/tcp并发服务器-区分监听套接字与已连接套接字/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/05/tcp并发服务器-区分监听套接字与已连接套接字/" itemprop="url">tcp并发服务器--区分监听套接字与已连接套接字</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-05T16:43:08+08:00">
+                2015-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>并发服务器中主服务器循环通过派生一个子进程来处理每个新的连接。如果一个子进程继续使用服务器众所周知的端口来服务一个长时间的请求，那将发生什么？让我们来看一个典型的序列。首先，在主机freebsd上启动服务器，该主机是多宿的，其IP地址为12.106.32.254和192.168.42.1。服务器在它的众所周知的端口（本例为21）上执行被动打开，从而开始等待客户的请求，如图1所示。</p>
+<p><img src="/img/TCP服务器在端口21上执行被动打开.png" alt="图1-TCP服务器在端口21上执行被动打开"></p>
+<p>我们使用记号<code>{*:21, *:*}</code>指出服务器的套接字对。服务器在任意本地接口（第一个星号）的端口21上等待连接请求。外地IP地址和外地端口都没有指定，我们用<code>&quot;*.*&quot;</code>来表示。我们称它为监听套接字（listening socket）。</p>
+<blockquote>
+<p>我们用冒号来分割IP地址和端口号，因为这是HTTP的用法，其他地方也常见。netstat程序使用点号来分割IP地址和端口号，不过如此表示有时候会让人混淆，因为点号既用于域名（如freebsd.unpbook.com.21），也用于IPv4的点分十进制数记法（如12.106.32. 254.21）。</p>
+</blockquote>
+<p>这里指定本地IP地址的星号称为通配（wildcard）符。如果运行服务器的主机是多宿的（如本例），服务器可以指定它只接受到达某个特定本地接口的外来连接。这里要么选一个接口要么选任意接口。服务器不能指定一个包含多个地址的清单。通配的本地地址表示”任意”这个选择。通配地址通过在调用bind之前把套接字地址结构中的IP地址字段设置成INADDR_ANY来指定。</p>
+<p>稍后在IP地址为206.168.112.219的主机上启动第一个客户，它对服务器的IP地址之一12.106.32.254执行主动打开。我们假设本例中客户主机的TCP为此选择的临时端口为1500，如图2-12所示。图中在该客户的下方标出了它的套接字对。</p>
+<p><img src="/img/客户对服务器的连接请求.png" alt="图2-客户对服务器的连接请求"></p>
+<p>当服务器接收并接受这个客户的连接时，它fork一个自身的副本，让子进程来处理该客户的请求，如图3所示。  </p>
+<p>至此，我们必须在服务器主机上区分监听套接字和已连接套接字（connected socket）。注意已连接套接字使用与监听套接字相同的本地端口（21）。还要注意在多宿服务器主机上，连接一旦建立，已连接套接字的本地地址（12.106.32.254）随即填入。</p>
+<p><img src="/img/并发服务器让子进程处理客户.png" alt="图3-并发服务器让子进程处理客户"></p>
+<p>下一步我们假设在客户主机上另有一个客户请求连接到同一个服务器。客户主机的TCP为这个新客户的套接字分配一个未使用的临时端口，譬如说1501，如图4所示。服务器上这两个连接是有区别的：第一个连接的套接字对和第二个连接的套接字对不一样，因为客户的TCP给第二个连接选择了一个未使用的端口（1501）。</p>
+<p><img src="/img/第二个客户与同一个服务器的连接.png" alt="图4-第二个客户与同一个服务器的连接"></p>
+<p>通过本例应注意，TCP无法仅仅通过查看目的端口号来分离外来的分节到不同的端点。它必须查看套接字对的所有4个元素才能确定由哪个端点接收某个到达的分节。图4中对于同一个本地端口（21）存在3个套接字。如果一个分节来自206.168.112.219端口1500，目的地为12.106.32.254端口21，它就被递送给第一个子进程。如果一个分节来自206.168.112.219端口1501，目的地为12.106.32.254端口21，它就被递送给第二个子进程。所有目的端口为21的其他TCP分节都被递送给拥有监听套接字的最初那个服务器（父进程）。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/05/建立tcp连接就好像打电话/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/05/建立tcp连接就好像打电话/" itemprop="url">建立tcp连接就好像打电话</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-05T15:31:01+08:00">
+                2015-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
+                    <span itemprop="name">TCP/IP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>建立TCP连接就好比一个电话系统［Nemeth 1997］。</p>
+<ul>
+<li>socket函数等同于有电话可用。</li>
+<li>bind函数是在告诉别人你的电话号码，这样他们可以呼叫你。</li>
+<li>listen函数是打开电话振铃，这样当有一个外来呼叫到达时，你就可以听到。</li>
+<li>connect函数要求我们知道对方的电话号码并拨打它。</li>
+<li>accept函数发生在被呼叫的人应答电话之时。</li>
+</ul>
+<p>由accept返回客户的标识（即客户的IP地址和端口号）类似于让电话机的呼叫者ID功能部件显示呼叫者的电话号码。然而两者的不同之处在于accept只在连接建立之后返回客户的标识，而呼叫者ID功能部件却在我们选择应答或不应答电话之前显示呼叫者的电话号码。如果使用域名系统DNS（见第11章），它就提供了一种类似于电话簿的服务。getaddrinfo类似于在电话簿中查找某个人的电话号码，getnameinfo则类似于有一本按照电话号码而不是按照用户名排序的电话簿。</p>
+<p>《unix网络编程》-p32</p>
+
           
         
       
@@ -1981,7 +1924,7 @@ thisthisthisTHIS
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/9/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/11/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/9/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/11/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2027,7 +1970,7 @@ thisthisthisTHIS
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">193</span>
+                <span class="site-state-item-count">163</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

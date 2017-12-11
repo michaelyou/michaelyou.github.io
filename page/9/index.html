@@ -286,7 +286,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/27/malloc和free的实现原理/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/用crontab定期执行脚本/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -305,7 +305,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/27/malloc和free的实现原理/" itemprop="url">malloc和free的实现原理</a></h1>
+                <a class="post-title-link" href="/2015/03/12/用crontab定期执行脚本/" itemprop="url">用crontab定期执行脚本</a></h1>
         
 
         <div class="post-meta">
@@ -317,372 +317,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-27T19:56:38+08:00">
-                2015-03-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>之前写过一篇<a href="http://michaelyou.github.io/2015/03/20/%E4%B8%BA%E4%BB%80%E4%B9%88malloc%E6%97%B6%E9%9C%80%E8%A6%81%E6%8C%87%E5%AE%9Asize%EF%BC%8C%E5%AF%B9%E5%BA%94%E7%9A%84free%E6%97%B6%E4%B8%8D%E9%9C%80%E8%A6%81%E6%8C%87%E5%AE%9Asize/" target="_blank" rel="external">为什么free函数不需要指定需要释放的内存大小</a>，这个问题算是解释清楚了，但是针对malloc的实现又不怎么记得了，抽空又把《深入理解计算机系统》相关段落看了一遍，真的是好书啊！浅显易懂，真是适合我。</p>
-<hr>
-<p>内存分配是按照<code>堆块</code>实现的，<strong>一个堆块是由头部和有效载荷量组成，其中的有效载荷量就是我们申请的堆的大小</strong>。<br>头部块包括 块大小和是否可用这两个部分组成。</p>
-<p><strong>在内存中这些堆块以链表形式组成</strong></p>
-<p>malloc函数的实质体现在：它有一个将可用的内存块连接为一个长长的列表的所谓空闲链表。调用malloc函数时，它沿<code>连接表</code>寻找一个大到足以满足用户请求所需要的内存块。然后，将该内存块一分为二（一块的大小与用户请求的大小相等，另一块的大小就是剩下的字节）。接下来，将分配给用户的那块内存传给用户，并将剩下的那块（如果有的话）返回到连接表上。</p>
-<blockquote>
-<p>这里注意，malloc找到的内存块大小一定是会大于等于我们需要的内存大小，下面会提到如果所有的内存块都比要求的小会怎么办？</p>
-</blockquote>
-<p>调用free函数时，它将用户释放的内存块连接到空闲链上。<strong><em>到最后，空闲链会被切成很多的小内存片段</em></strong>，如果这时用户申请一个大的内存片段，那么空闲链上可能没有可以满足用户要求的片段了。于是，malloc函数请求延时，并开始在空闲链上翻箱倒柜地检查各内存片段，对它们进行整理，<strong>将相邻的小空闲块合并成较大的内存块</strong>。</p>
-<p>glibc维护了<code>不止一个</code>不定长的内存块链表，而是好几个，每一个这种链表负责一个大小范围，这种做法有效<strong>减少了分配大内存时的遍历开销</strong>，类似于<code>哈希</code>的方式，将很大的范围的数据散列到有限的几个小的范围内而不是所有数据都放在一起，虽然最终还是要在小的范围内查找，但是最起码省去了很多的开销，如果只有一个不定长链表那么就要全部遍历，如果分成3个，就省去了2/3的开销，总之这个策略十分类似于散列。</p>
-<p>glibc另外的策略就是不止维护一类空闲链表，而是另外再维护一个缓冲链表和一个高速缓冲链表，在分配的时候首先在高速缓存中查找，失败之后再在空闲链表查找，如果找到的内存块比较大，那么将切割之后的剩余内存块插入到缓存链表，如果空闲链表查找失败那么就往缓存链表中查找. 如果还是没有合适的空闲块，就向内存申请比请求数更大的内存块，然后把剩下的内存放入链表中。</p>
-<p>在对内存块进行了 free 调用之后，我们需要做的是诸如将它们标记为未被使用的等事情，并且，在调用 malloc 时，我们要能够定位未被使用的内存块。因此， <strong>malloc返回的每块内存的起始处首先要有这个结构</strong>：</p>
-<p>这就解释了，为什么在程序中free之后，但是堆的内存还是没有释放。</p>
-<pre><code>内存控制块结构定义
-struct mem_control_block {
-    int is_available;
-    int size;
-};
-</code></pre><p>现在，您可能会认为当程序调用 malloc 时这会引发问题 —— 它们如何知道这个结构？答案是它们不必知道；在返回指针之前，我们会将其移动到这个结构之后，把它隐藏起来。这使得返回的指针指向没有用于任何其他用途的内存。那样，从调用程序的角度来看，它们所得到的全部是空闲的、开放的内存。然后，当通过 free() 将该指针传递回来时，<strong>我们只需要倒退几个内存字节就可以再次找到这个结构</strong>。</p>
-<p>在讨论分配内存之前，我们将先讨论释放，因为它更简单。为了释放内存，我们必须要做的惟一一件事情就是，获得我们给出的指针，回退 sizeof(struct mem_control_block) 个字节，并将其标记为可用的。这里是对应的代码：</p>
-<pre><code>解除分配函数
-void free(void *firstbyte) {
-        struct mem_control_block *mcb;
-        /* Backup from the given pointer to find the
-         * mem_control_block
-         */
-       mcb = firstbyte - sizeof(struct mem_control_block);
-        /* Mark the block as being available */
-          mcb-&gt;is_available = 1;
-        /* That&apos;&apos;s It!  We&apos;&apos;re done. */
-       return;
-}
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/26/python的装饰器/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/26/python的装饰器/" itemprop="url">python的装饰器</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-26T22:06:05+08:00">
-                2015-03-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>openstack的代码大量地使用了python的这个高级特性，之前看书的时候就没看明白，今天重新看了一遍，稍微懂一些了，记录一下。</p>
-<hr>
-<p>装饰器是一个很著名的设计模式，经常被用于有切面需求的场景，较为经典的有插入日志、性能测试、事务处理等。装饰器是解决这类问题的绝佳设计，有了装饰器，我们就可以抽离出大量函数中与函数功能本身无关的<strong>雷同代码</strong>并继续重用。概括的讲，装饰器的作用就是为已经存在的对象添加额外的功能。</p>
-<p>注意这一句</p>
-<blockquote>
-<p>抽离出大量函数中与函数功能本身无关的<strong>雷同代码</strong>并继续重用</p>
-</blockquote>
-<ol>
-<li>装饰器是用来装饰函数的</li>
-<li>装饰器是将很多函数都有的代码提取出来，写在装饰器里面，这样用装饰器装饰函数的时候，就赋予了函数一些新功能</li>
-</ol>
-<p>举个例子</p>
-<p>我希望在每个函数执行之前都能够将函数名打出来，大家知道函数有一个<code>__name__</code>属性是可以打印函数名的，那我每次定义函数都要这么写</p>
-<pre><code>def fun():
-    print fun.__name__
-    ...
-</code></pre><p>只有一行代码大家可能不以为然，就加上这行代码能费多大事情呢，但是在实际使用中往往不止一行代码这么简单，比如我还想知道这个函数有没有文档，那就要调用<code>__doc__</code>属性，我想在函数执行的时候捕获异常，有了异常要写入log，那你就要加上<code>try-except</code>，还需要加上写log，这样加起来就多了5,6行代码，每个函数都多这么重复代码简直是种折磨，<code>修饰器@</code>就是为了解决这个问题。</p>
-<pre><code>&gt;&gt;&gt; def deco(func):
-...     print(&quot;before myfunc() called.&quot;)
-...     func()
-...     print(&quot;after myfunc() called.&quot;)
-... 
-&gt;&gt;&gt; @deco
-... def myfunc():
-...     print(&quot;myfunc() called.&quot;)
-... 
-before myfunc() called.
-myfunc() called.
-after myfunc() called.
-</code></pre><p>只要在每个函数的定义之前加上<code>@deco</code>，就会在每次调用之前和调用之后打出代码中的字符串。</p>
-<p>这里大家有没有发现一个问题，我在这里根本没有调用函数，但是竟然有了输出，这不合理啊？</p>
-<p>这样写的话其实只是执行了初始化装饰器导致的输出，和我们对装饰器的要求是不一样的，<strong>正确的应该这么写</strong></p>
-<pre><code> 1 #!/usr/bin/python
- 2 
- 3 def deco(func):
- 4     def wrapper():
- 5         print(&quot;before myfunc() called.&quot;)
- 6         func()
- 7         print(&quot;after myfunc() called.&quot;)
- 8     return wrapper
- 9 
-10 @deco
-11 def myfunc():
-12     print(&quot;myfunc() called.&quot;)
-13 
-14 myfunc()
-</code></pre><p>我们在 deco 里面返回了一个 wrapper 函数对象。可以试着这么理解，deco的作用是给 func 进行装饰，wrapper 就是被装饰过的func。我们以后调用func就是在调用wrapper这个函数</p>
-<p>##装饰一个需要传参的函数</p>
-<p>##装饰参数列表不一样的多个函数</p>
-<p>未完待续…</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/25/fork和exec/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/25/fork和exec/" itemprop="url">fork和exec</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-25T21:06:20+08:00">
-                2015-03-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T19:14:16+08:00">
+                2015-03-12
               </time>
             
 
@@ -743,21 +379,175 @@ after myfunc() called.
       
         
           
-            <p>##fork（）<br>一个程序调用fork函数。首先，系统让新的进程与旧的进程使用同一个代码段，因为它们的程序还是相同的，对于数据段和堆栈段，系统则复制一份给新的进程，这样，父进程的所有数据都可以留给子进程，但是，子进程一旦开始运行，虽然它继承了父进程的一切数据，但实际上数据却已经分开，相互之间不再有影响了，也就是说，它们之间不再共享任何数据了。而如果两个进程要共享什么数据的话，就要使用另一套函数（shmget，shmat，shmdt等）来操作。现在，已经是两个进程了，对于父进程，fork函数返回了子程序的进程号，而对于子程序，fork函数则返回零，这样，对于程序，只要判断fork函数的返回值，就知道自己是处于父进程还是子进程中。</p>
-<p>事实上，目前大多数的unix系统在实现上并没有作真正的copy。一般的，CPU都是以“页”为单位分配空间的，象INTEL的CPU，其一页在通常情况下是4K字节大小，而无论是数据段还是堆栈段都是由许多“页”构成的，fork函数复制这两个段，只是“逻辑”上的，并非“物理”上的，也就是说，实际执行fork时，物理空间上两个进程的数据段和堆栈段都还是共享着的，当有一个进程写了某个数据时，这时两个进程之间的数据才有了区别，系统就将有区别的“页”从物理上也分开。系统在空间上的开销就可以达到最小。 </p>
-<p>##exec系列函数<br><strong>一个进程一旦调用exec类函数，它本身就“死亡”了</strong>，系统把代码段替换成新的程序的代码，废弃原有的数据段和堆栈段，并为新程序分配新的数据段与堆栈段，唯一留下的，就是进程号，也就是说，对系统而言，还是同一个进程，不过已经是另一个程序了。不过exec类函数中有的还允许继承环境变量之类的信息，这个通过exec系列函数中的一部分函数的参数可以得到。</p>
-<p>##对于fork（）： </p>
-<ol>
-<li>子进程复制父进程的所有进程内存到其内存地址空间中。父、子进程的<br>“数据段”，“堆栈段”和“代码段”完全相同，即子进程中的每一个字节都<br>和父进程一样。 </li>
-<li>子进程的当前工作目录、umask掩码值和父进程相同，fork（）之前父进程<br>打开的文件描述符，在子进程中同样打开，并且都指向相同的文件表项。 </li>
-<li>子进程拥有自己的进程ID。</li>
-</ol>
-<p>##对于exec（）： </p>
-<ol>
-<li>进程调用exec（）后，将在同一块进程内存里用一个新程序来代替调用<br>exec（）的那个进程，新程序代替当前进程映像，当前进程的“数据段”，<br>“堆栈段”和“代码段”被新程序改写。 </li>
-<li>新程序会保持调用exec（）进程的ID不变。 </li>
-<li>调用exec（）之前打开打开的描述字继续打开（好像有什么参数可以令打开<br>的描述字在新程序中关闭）</li>
-</ol>
+            <p>#用crontab定期执行脚本</p>
+<p>一个完整的步骤是：</p>
+<pre><code>cd /etc/cron.d  //此目录下存放的是所有定期执行的cron文件
+crontab -e //建立一个新的定时任务
+</code></pre><p>大功告成！<br>就是这么简单，但我遇到了很多坑啊！</p>
+<ul>
+<li><p>我在task.croon里是这么写的</p>
+<pre><code>*/1 * * * * /root/test/time.sh
+</code></pre><p>我翻来覆去地看，和网上写的一样啊，怎么就是不执行呢？md，对的是这么写啊！</p>
+<pre><code>*/1 * * * *  root /root/test/time.sh
+</code></pre><p>你掉了一个字段啊，root给你吃了吗！你放在/etc/cron.d下面就是要加执行者这个字段的啊！</p>
+</li>
+</ul>
+<p>看看<code>/etc/crontab</code></p>
+<pre><code># Example of job definition:
+  # .---------------- minute (0 - 59)
+  # |  .------------- hour (0 - 23)
+  # |  |  .---------- day of month (1 - 31)
+  # |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+  # |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+  # |  |  |  |  |
+  # *  *  *  *  * user-name command to be executed
+</code></pre><p>人家指明了要加user-name看到木有啊！！！</p>
+<ul>
+<li><p>我在time.sh里面又是怎么写的呢？</p>
+<pre><code>/bin/date 
+</code></pre></li>
+</ul>
+<p>然后我就在电脑前等一分钟等他在终端给我打印了。我刷了会儿知乎，一看电脑，过了2分钟了，看看黑框框，说好的打印呢！！！啥都没有啊！！！</p>
+<p>有了就见鬼了，我最近怎么就蠢成这样了呢！！！</p>
+<p>这是一个后台任务啊，哪有终端啊，能不能重定向到标准输出呢？它根本没有标准输出你知道不知道，知道不知道！！！</p>
+<p>想看结果重定向到文件里去啊！！！</p>
+<pre><code>/bin/date &gt;&gt;/tmp/log
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/用-proc收集信息/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/12/用-proc收集信息/" itemprop="url">用/proc收集信息</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T17:42:37+08:00">
+                2015-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li><p>获取cpu信息</p>
+<pre><code>cat /proc/cpuinfo
+</code></pre></li>
+<li><p>获取内存信息:</p>
+<pre><code>cat /proc/meminfo
+</code></pre></li>
+<li><p>获取分区信息:</p>
+<pre><code>cat /proc/partitions
+</code></pre></li>
+</ul>
+<p>每一个运行的进程在/proc下都有一个以该进程id命名的目录，<br>/proc/PID/下的重要文件：</p>
+<ul>
+<li>environ:包含与进程相关的环境变量；</li>
+<li>exe：到进程工作目录的符号链接；</li>
+<li>fd：进程所使用的文件描述符</li>
+</ul>
 
           
         
@@ -806,7 +596,7 @@ after myfunc() called.
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/24/TCP是一种流协议/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/孤儿进程与僵尸进程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -825,7 +615,7 @@ after myfunc() called.
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/24/TCP是一种流协议/" itemprop="url">TCP是一种流协议</a></h1>
+                <a class="post-title-link" href="/2015/03/12/孤儿进程与僵尸进程/" itemprop="url">孤儿进程与僵尸进程</a></h1>
         
 
         <div class="post-meta">
@@ -837,8 +627,8 @@ after myfunc() called.
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-24T10:58:19+08:00">
-                2015-03-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T13:13:45+08:00">
+                2015-03-12
               </time>
             
 
@@ -860,8 +650,8 @@ after myfunc() called.
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
-                    <span itemprop="name">TCP/IP</span>
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
                   </a>
                 </span>
 
@@ -899,95 +689,46 @@ after myfunc() called.
       
         
           
-            <p>之前写过一篇是<a href="http://michaelyou.github.io/2015/03/13/tcp%E6%98%AF%E6%B5%81%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83-%E6%8B%86%E5%8C%85%E5%92%8C%E7%B2%98%E5%8C%85/" target="_blank" rel="external">tcp是流的一些思考–拆包和粘包</a>，是我自己对这个问题的一些认识，毕竟见识浅薄，所言不成系统。今天看到了之前看过的一篇文章，正是对这个问题的一些深入解释，特转载于此，与大家共享。</p>
-<p>转载自《TCP/IP高效编程 改善网络程序的44个技巧》–技巧6：记住TCP是一种流协议</p>
-<hr>
-<p>TCP是一种流协议（stream protocol）。这就意味着数据是以字节流的形式传递给接收者的，没有固有的”报文”或”报文边界”的概念。从这方面来说，读取TCP数据就像从串行端口读取数据一样–无法预先得知在一次指定的读调用中会返回多少字节。</p>
-<p>为了说明这一点，我们假设在主机A和主机B的应用程序之间有一条TCP连接，主机A上的应用程序向主机B发送一条报文。进一步假设主机A有两条报文要发送，并两次调用send来发送，每条报文调用一次。很自然就会想到从主机A向主机B发送的两条报文是作为两个独立实体，在各自的分组中发送的，如图2-25所示。</p>
-<p><img src="/img/发送两条报文的错误类型.png" alt="图2-25　发送两条报文的错误模型"></p>
-<p>但不幸的是，实际的数据传输过程很可能不会遵循这个模型。主机A上的应用程序会调用send，我们假设这条写操作的数据被封装在一个分组中传送给B。实际上，send通常只是将数据复制到主机A的TCP/IP栈中，就返回了。由TCP来决定（如果有的话）需要立即发送多少数据。做这种决定的过程很复杂，取决于很多因素，比如发送窗口（当时主机B能够接收的数据量），拥塞窗口（对网络拥塞的估计），路径上的最大传输单元（沿着主机A和B之间的网络路径一次可以传输的最大数据量），以及连接的输出队列中有多少数据。更多与此有关的内容请参见技巧15。图2-26只显示了主机A的TCP封装数据时可能使用的诸多方法中的4种。在图2-26中，M11和M12表示M1的第一和第二部分，M21和M22与之类似。如图2-26所示，TCP不一定会将一条报文的全部内容都放在一个分组中传送出去。</p>
-<p><img src="/img/封装两条报文可能采用的4种方式.png" alt="图2-26　封装两条报文可能采用的4种方式"></p>
-<p>现在，我们从主机B应用程序的角度来看这种情形。总的来说，主机B应用程序任意一次调用recv时，都不会对TCP发送给它的数据量做任何假设。比如，当主机B应用程序读取第一条报文时，可能会出现下列4种结果。</p>
+            <p>##前言<br>孤儿继承和僵尸进程是APUE里面的一个重要概念，之前看书不仔细，也没有总结，所以这两个概念一直很模糊，只知道是父进程和子进程有一个退了，至于到底是父进程退还是子进程退会产生孤儿进程和僵尸进程，一直是我的一块心病啊。今天有空，来认真总结一下。</p>
+<p>##基本概念</p>
+<p>在unix/linux中，子进程是通过父进程创建的(fork)。子进程的结束和父进程的运行是一个异步过程,即父进程永远无法预测子进程到底什么时候结束。 当一个进程完成它的工作终止之后，它的父进程需要调用wait()或者waitpid()系统调用取得子进程的终止状态。</p>
+<p><strong>孤儿进程</strong>：一个父进程退出，而它的一个或多个子进程还在运行，那么那些子进程将成为孤儿进程。孤儿进程将被init进程(进程号为1)所收养，并由init进程对它们完成状态收集工作。</p>
+<p><strong>僵尸进程</strong>：一个进程使用fork创建子进程，如果子进程退出，而父进程并没有调用wait或waitpid获取子进程的状态信息，那么子进程的进程描述符仍然保存在系统中。这种进程称之为僵死进程。</p>
+<p>我们再来分析一下：</p>
+<p><code>孤儿</code>的意思是什么？被父母抛弃了，或者没有父母。所以孤儿进程就是父进程不在了，留下子进程在继续运行。但孤儿不能自己存在啊，所以总会有好心人收养他，在unix系统里，这个好心人就是init进程，init进程会收养所有的孤儿进程，代替父进程手机子进程的终止状态。</p>
+<p>同理，什么是<code>僵尸</code>？如果你死了，你就有可能成为僵尸。子进程挂了之后，有一个重要的步骤就是父进程应该调用wait或者waitpid来获取它的终止状态，让它入土为安的。但有些父母非常不负责，他没有做。所以子进程不能入土，就只能继续在系统里飘荡，成了僵尸。这不怪他们啊，都是父进程害的！</p>
+<p>##危害</p>
+<p>有的人就说了，那干嘛一定要父进程调用wait和waitpid来回收子进程啊，子进程挂了就让他挂好了，父进程不要回收，让系统自己把回收的事干了。我也是这样想的，可是你知道父母的通病在哪里吗？就是他们对自己的小孩，都有旺盛的控制欲！</p>
+<p>unix提供了一种机制可以保证只要父进程想知道子进程结束时的状态信息， 就可以得到。这种机制就是: </p>
 <blockquote>
-<p>　实际上，可能的结果不止4种，但我们忽略了出错和EOF之类的结果。我们还假设应用程序读取了所有可读的数据。</p>
+<p>在每个进程退出的时候,内核释放该进程所有的资源,包括打开的文件,占用的内存等。 但是仍然为其保留一定的信息(包括进程号the process ID,退出状态the termination status of the process,运行时间the amount of CPU time taken by the process等)。直到父进程通过wait / waitpid来取时才释放。 </p>
 </blockquote>
-<ol>
-<li><p>没有数据可读，应用程序阻塞，或者recv返回一条指示说明没有数据可读。到底会发生什么情况取决于套接字是否标识为阻塞，以及主机B的操作系统为系统调用recv指定了什么样的语义。</p>
-</li>
-<li><p>应用程序获取了报文M1中的部分而不是全部数据。比如，发送端TCP像图2-26D那样对数据进行分组就会发生这种情况。</p>
-</li>
-<li><p>应用程序获取了报文M1中所有的数据，除此之外没有任何其他内容。如果像图2-26A那样对数据分组就会发生这种情况。</p>
-</li>
-<li><p>应用程序获取了报文M1的所有数据，以及报文M2的部分或全部数据。如果像图2-26B或图2-26C那样对数据进行分组就会发生这种情况。</p>
-</li>
-</ol>
-<p>注意，这里还有一个定时问题。如果主机B的应用程序在主机A发送了第二条报文之后一段时间内都没有读取第一条报文，那么这两条报文都会成为可读的。这就和图2-26B所示情况相同了。这些描述说明，通常，在任意指定时刻，可读的数据量都是不确定的。</p>
-<p>需要再次说明的是，TCP是一个流协议（stream protocol），尽管数据是以IP分组的形式传输的，但<strong>分组中的数据量与send调用中传送给TCP多少数据并没有直接关系</strong>。而且，接收程序也没有什么可靠的方法可以判断数据是如何分组的，因为在两次recv调用之间可能会有多个分组到来。</p>
-<blockquote>
-<p>即使接收端应用程序的响应非常及时，也可能会发生这种情况。例如，一个分组丢失了（参见技巧12，在当今的因特网中，这是非常常见的情况），而且后继分组都安全到达，TCP会将后继分组中的数据保存起来，直到重传第一个分组并正确收到为止。此时，所有数据对应用程序都是可用的。</p>
-</blockquote>
-<p>TCP会记录它发送了多少字节，以及确认的字节，但它不会记录这些字节是如何分组的。实际上，有些实现在重传丢失分组的时候传送的数据可能比原来的多一些或少一些。这就足以支撑下面再次重复说明的内容了。</p>
-<blockquote>
-<p>对TCP应用程序来说，就没有”分组”这种概念。如果应用程序的设计与TCP对数据的分组方式有所关联，就应该考虑重新设计这个应用程序了。</p>
-</blockquote>
-<p>既然任意一次指定的读操作中返回的数据量都是不可预测的，就必须在应用程序中做好应对这种情况的准备。通常这不是什么问题。比如说，我们可能在用fgets这样标准的I/O库程序读取数据。在这种情况下，fgets会将字节流划分成行。图3-6显示了一个这样的例子。在其他情况下的确需要关注报文边界问题，而这些情况下边界都是由应用程序级维护的。</p>
-<p><strong>最简单的情况就是定长报文</strong>。在这种情况下，只需要读取报文中固定数量的字节就可以了。根据前面的讨论，读操作返回的字节数可能小于sizeof(msg)（图2-26D），所以只进行</p>
-<pre><code>recv(s, msg, sizeof(msg), 0); 
-</code></pre><p>这样的简单调用是不够的。图2-27显示了处理这种情况的标准方法。</p>
-<p><img src="/img/函数readn.png" alt=""></p>
-<p><img src="/img/函数readn续.png" alt="图2-27　函数readn"></p>
-<p>函数readn的用法与read非常相似，但在读到len字节，并从对等实体收到EOF，或出现错误之前，它是不会返回的。我们将其定义如下。</p>
-<pre><code>#include &quot;etcp.h&quot;  
+<p>所以就导致了问题，如果进程不调用wait / waitpid的话，那么保留的那段信息就不会释放，其进程号就会一直被占用，但是系统所能使用的进程号是有限的，如果产生大量的僵死进程，将因为没有可用的进程号而导致系统不能产生新的进程. 此即为僵尸进程的危害。</p>
+<p><code>孤儿进程</code>是没有父进程的进程，处理孤儿进程的这个重任落到了init进程身上，init进程就好像是一个民政局，专门负责处理孤儿进程的善后工作。每当出现一个孤儿进程的时候，内核就把孤 儿进程的父进程设置为init，而init进程会循环地wait()它的已经退出的子进程。这样，当一个孤儿进程凄凉地结束了其生命周期的时候，init进程就会代表党和政府出面处理它的一切善后工作。<strong>因此孤儿进程并不会有什么危害</strong>。</p>
+<p>任何一个子进程(init除外)在exit()之后，并非马上就消失掉，而是留下一个称为僵尸进程(Zombie)的数据结构，等待父进程处理。这是每个 子进程在结束时都要经过的阶段。如果子进程在exit()之后，父进程没有来得及处理，这时用ps命令就能看到子进程的状态是“Z”。如果父进程能及时 处理，可能用ps命令就来不及看到子进程的僵尸状态，但这并不等于子进程不经过僵尸状态。  如果父进程在子进程结束之前退出，则子进程将由init接管。init将会以父进程的身份对僵尸状态的子进程进行处理。</p>
+<p>##如何避免产生僵尸进程</p>
+<p>我们知道了僵尸进程产生的原因和危害，那么如何避免产生僵尸进程呢？</p>
+<p>一般，为了防止产生僵尸进程，在fork子进程之后我们都要wait它们；同时，当子进程退出的时候，内核都会给父进程一个SIGCHLD信号，所以我们可以建立一个捕获SIGCHLD信号的信号处理函数，在函数体中调用wait（或waitpid），就可以清理退出的子进程以达到防止僵尸进程的目的。如下代码所示：</p>
+<pre><code>void sig_chld( int signo ) {
+    pid_t pid;
+    int stat;
+    pid = wait(&amp;stat);    
+    printf( &quot;child %d exit\n&quot;, pid );
+    return;
+}
 
-int readn( SOCKET s, char *buf, size_t len );  
-
-                                                            返回：读取的字节数，出错时返回-1  
-</code></pre><p>readn使用的逻辑与从串行端口，或者从其他基于流的、在任意指定时间内可读取数据量都未知的源端，读取指定数量的字节所使用的逻辑一样，这不足为奇。实际上，在所有这些情况下都可以，也经常使用readn（用int代替SOCKET，用read代替recv）。</p>
-<p>如果recv调用被信号中断，第11行和第12行的if语句</p>
-<pre><code>if ( error == EINTR)        /* interrupted? */   
-    continue;               /* restart the read*/  
-</code></pre><p>会重启recv调用。有些系统会自动重启被中断的系统调用，这种系统就不需要这两行程序了。从另一个角度来看，这两行代码也不会带来什么问题，因此为了实现最大限度的可移植性，最好还是把它们放在那里。</p>
-<p>对必须支持可变长报文的应用程序来说，有两种可用的方法。第一种，可以用记录结束标记来分隔记录。如前所述，使用fgets这样标准的I/O程序将报文分成单个行时，就会发生这种情况。使用标准I/O程序时，很自然地会将新行作为记录结束标记使用。但使用这种方法通常会有一些问题。首先，除非在报文主体中从未用到记录结束标记，否则发送程序就要在报文中扫描这些标记，对其进行转义，或者编码，以免将其误认作记录结束标记。比如，如果将记录分隔字符RS作为记录结束标记使用，发送端就要搜索报文主体，找到所有RS字符，并对其进行转义，比如在前面加上一个\。这就意味着要转移数据以便为转义字符腾出位置。当然，还要对出现的所有转义字符进行转义。因此，如果用\作转义字符的话，就要将报文主体中出现的所有\都改成\。</p>
-<p>在接收端，必须再次对整条报文进行扫描，这次要移除转义字符，并搜索（未转义的）记录结束标记。使用记录结束标记要对整条报文扫描两次，所以最好只在那些有”自然”记录结束标记的情况下使用，比如用换行符分隔文本行记录的时候。</p>
-<p>另外一种处理可变记录的方法是在每条报文前面加上一个首部，这个首部（至少）包含下面的报文长度，如图2-28所示。</p>
-<p><img src="/img/可变长记录的格式.png" alt="图2-28　可变长记录的格式"></p>
-<p>接收端应用程序分两部分读取报文。首先读取定长的报文首部，从首部解析出可变部分的长度，然后读取可变长部分。图2-29显示了一种简单的情况，其中首部只包含了记录的长度。</p>
-<p><img src="/img/读取可变长记录的函数.png" alt="图2-29　读取可变长记录的函数readvrec"></p>
-<p><strong>读取记录长度</strong></p>
-<p><strong>6-8</strong>  将记录长度读入reclen中，如果readn返回的长度不等于interger类型的大小，readvrec就返回0（EOF），如果出错就返回 1。</p>
-<p><strong>9</strong>  将记录长度从网络字节序转换为主机字节序。更多相关内容请参见技巧28。</p>
-<p><strong>查看是否装得下记录</strong></p>
-<p><strong>10-27</strong> 查看调用程序的缓冲区大小，验证它能否装下整条记录。如果缓冲区中没有足够的空间，就依次将长度为len的片段读入缓冲区，并将记录丢弃。丢弃记录之后，将errno设置为EMSGSIZE，readvrec返回 1。</p>
-<p><strong>读取记录</strong></p>
-<p><strong>29-32</strong> 最后，读取记录本身。根据readn返回的是错误、不足计数还是成功返回，readvrec会向调用程序返回 1、0或者reclen。</p>
-<p>readvrec是个很有用的函数，会在其他一些技巧中用到，所以将其定义记录如下。</p>
-<pre><code>#include &quot;etcp. h&quot;  
-
-int readvrec( SOCKET s, char *buf, size_t len );  
-
-                                                        返回：读取的字节数，或者在出错时返回-1  
-</code></pre><p>图2-30显示了一个用readvrec从TCP连接中读取变长记录，并将其写入stdout的简单服务器代码。</p>
-<p><img src="/img/说明readvrec用法的服务器程序.png" alt=""></p>
-<p><img src="/img/说明readvrec用法的服务器程序.png" alt="图2-30　vrs--说明readvrec用法的服务器程序"></p>
-<p><strong>10-17</strong> 初始化服务器，并接受一个连接。</p>
-<p><strong>20-24</strong> 调用readvrec读取下一个变长记录。如果出错，打印一条诊断信息，并读取下一条记录。如果readvrec返回一个EOF，就打印一条提示消息，服务器退出。</p>
-<p><strong>26</strong> 将记录写入stdout。</p>
-<p>图2-31显示了对应的客户端程序，这个程序从其标准输入读取报文，附加上报文长度，然后将其发送给服务器。</p>
-<p><img src="/img/发送可变长报文的客户端程序.png" alt="图2-31　vrc--发送可变长报文的客户端程序"></p>
-<p><strong>定义分组结构</strong></p>
-<p><strong>6-10</strong> 定义packet结构，调用send时用它来装载报文及其长度。数据类型u_int32_t是一个无符号的32比特整数。由于Windows没有定义这种数据类型，所以在Windows版本的skel.h中有它的typedef。</p>
-<blockquote>
-<p>对这个例子来说，还应该弄清楚另一个潜在的问题。假定编译器会严格按照我们的指令没有任何填充地将数据封装在一个结构中。因为第二个元素是一个字节数组，所以在大多数系统中这种假设都是有效的，但要小心，对编译器封装数据的方式进行的假设可能会引发一些问题。技巧24对其他一些同时发送两个或多个不同数据段的方法进行了讨论，那时会再次讨论这个问题。</p>
-</blockquote>
-<p><strong>连接、读取并逐行发送</strong></p>
-<p><strong>12</strong> 客户端通过调用tcp_client连接到服务器。</p>
-<p><strong>13-21</strong> 调用fgets从stdin中读取一行数据，并将其放入报文分组的buf字段中。行的长度由对strlen的调用决定，将这个值转换成网络字节序后，放入报文分组的reclen字段中。最后，调用send向服务器发送分组。</p>
-<p>发送这些由两个或多个部分组成的报文的另一种方法请参见技巧24。</p>
-<p>在sparc上启动服务器vrs，然后在bsd上启动客户端vrc，来测试这些程序。将程序的运行并排显示出来，就可以看到客户端的输入，以及相应的服务器输出了。第4行还对错误消息进行了换行显示。</p>
-<p><img src="/img/shiyanjieguo.png" alt=""></p>
-<p>服务器缓冲区有10字节，所以发送11字节1, …, 0, <lf>时，readvrec会返回一条错误。</lf></p>
-<p>##小结</p>
-<p>初级网络程序员最常犯的错误之一就是无法理解TCP传送的是一个没有记录边界概念的字节流。这一点很重要，可以总结为TCP中没有用户可见的”分组”概念，它只是传送了一个字节流，我们无法准确地预测在一个特定的读操作中会返回多少字节。在这个技巧中，还对应用程序处理这种情况时所使用的几种策略进行了研究。</p>
+int main() {
+    signal(SIGCHLD,  &amp;sig_chld);
+}
+</code></pre><p>先在main函数中给SIGCHLD信号注册一个信号处理函数（<code>sig_chld</code>），然后在子进程退出的时候，内核递交一个SIGCHLD的时候就会被主进程捕获而进入信号处理函数<code>sig_chld</code>，然后再在<code>sig_chld</code>中调用wait，就可以清理退出的子进程。这样退出的子进程就不会成为僵尸进程。</p>
+<p>但是，这种方法并不是完美的，有时候还是会有<strong>漏网之鱼</strong>，下面是就是一个例子：</p>
+<p>我们假设有一个<code>client/server</code>的程序，对于每一个连接过来的client，server都启动一个新的进程去处理来自这个client的请求。然后我们有一个client进程，在这个进程内，发起了多个到server的请求（假设5个），则server会fork 5个子进程来读取client输入并处理（同时，当客户端关闭套接字的时候，每个子进程都退出）；当我们终止这个client进程的时候 ，内核将自动关闭所有由这个client进程打开的套接字，那么由这个client进程发起的5个连接基本在同一时刻终止。这就引发了5个FIN，每个连接一个。server端接受到这5个FIN的时候，5个子进程基本在同一时刻终止。这就又导致差不多在同一时刻递交5个SIGCHLD信号给父进程，而最终结果大家将会发现，我们没有能够回收所有的5个进程，有僵尸进程产生了。</p>
+<p>wait函数不能处理这种情况的原因是：所有5个信号都在信号处理函数执行之前产生，而信号处理函数只执行一次，因为Unix信号一般是不排队的。 更为严重的是，本问题是不确定的，依赖于客户FIN到达服务器主机的时机，信号处理函数执行的次数并不确定。</p>
+<p>这种情况的正确的解决办法是调用waitpid而不是wait，方法为：<strong>信号处理函数中，在一个循环内调用waitpid，以获取所有已终止子进程的状态。我们必须指定WNOHANG选项，他告知waitpid在有尚未终止的子进程在运行时不要阻塞。（我们不能在循环内调用wait，因为没有办法防止wait在尚有未终止的子进程在运行时阻塞，wait将会阻塞到现有的子进程中第一个终止为止）</strong>。</p>
+<p>##产生了僵尸进程怎么办</p>
+<p>如果系统中出现了僵尸进程，如何打僵尸呢？</p>
+<p><img src="/img/僵尸.png" alt=""></p>
+<p>僵尸进程用kill命令是无法杀掉的，但是我们可以<strong>结果掉僵尸进程的爸爸</strong>，僵尸daddy挂了之后，僵尸进程就成了孤儿进程，会被init程序收养，然后init程序将其回收</p>
 
           
         
@@ -1036,7 +777,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/24/理解面向连接和无连接协议之间的区别/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/10/网络编程调试/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -1055,7 +796,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/24/理解面向连接和无连接协议之间的区别/" itemprop="url">理解面向连接和无连接协议之间的区别</a></h1>
+                <a class="post-title-link" href="/2015/03/10/网络编程调试/" itemprop="url">网络编程调试</a></h1>
         
 
         <div class="post-meta">
@@ -1067,206 +808,8 @@ int readvrec( SOCKET s, char *buf, size_t len );
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-24T09:55:32+08:00">
-                2015-03-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
-                    <span itemprop="name">TCP/IP</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>转载自《TCP/IP高效编程 改善网络程序的44个技巧》–技巧1</p>
-<hr>
-<p>网络编程中最基本的概念就是面向连接（<code>connection-oriented</code>）和无连接（<code>connectionless</code>）协议。尽管本质上来说，两者之间的区别并不难理解，但对那些刚刚开始进行网络编程的人来说，却是个很容易混淆的问题。这个问题与上下文有些关联：很显然，如果两台计算机要进行通信，就必须以某种形式”连接”起来，那”无连接通信”又是什么意思呢？</p>
-<p>答案是：面向连接和无连接指的都是<code>协议</code>。也就是说，<strong>这些术语指的并不是物理介质本身，而是用来说明如何在物理介质上传输数据的</strong>。面向连接和无连接协议可以，而且通常也确实会共享同一条物理介质。</p>
-<p>如果两者的区别与承载数据的物理介质无关，又和什么有关呢？<strong>它们的本质区别在于，对无连接协议来说，每个分组的处理都独立于所有其他分组，而对面向连接的协议来说，协议实现则维护了与后继分组有关的状态信息</strong>。</p>
-<p>无连接协议中的分组被称为数据报（datagram），每个分组都是独立寻址，并由应用程序发送的（但还请参考技巧30）。从协议的角度来看，每个数据报都是一个独立的实体，与在两个相同的对等实体之间传送的任何其他数据报都没有关系。</p>
-<blockquote>
-<p>这并不是说从应用程序的角度来看，数据报也是独立的。简单的请求/应答协议，就是客户端向服务器发送一条请求，并收到一条应答，如果应用程序实现的功能比简单的请求/应答协议稍微复杂一点儿，就很可能需要维护数据报之间的状态。但问题的重点在于状态是由应用程序，而不是协议来维护的。图3-9显示了一个无连接服务器实例，在这个例子中，服务器维护了客户端发来的数据报之间的状态。</p>
-</blockquote>
-<p>通常这就意味着客户端和服务器不会进行长期的对话–客户端发起一条请求，服务器回送一个应答。如果稍后客户端发起了另一条请求，协议会认为这是与第一个事务无关的独立事务。</p>
-<p>这还意味着协议很可能是不可靠的。也就是说，网络会尽最大努力传送每一个数据报，但并不保证数据报不丢失、不延迟或者不错序传输。</p>
-<p>另一方面，面向连接的协议则维护了分组之间的状态，使用这种协议的应用程序通常都会进行长期的对话。记住这些状态，协议就可以提供可靠的传输。比如，发送端可以记住哪些数据已经发送出去了但还未被确认，以及数据是什么时候发送的。如果在某段时间间隔内没有收到确认，发送端可以重传数据。接收端可以记住已经收到了哪些数据，并将重复的数据丢弃。如果分组不是按序到达的，接收端可以将其保存下来，直到逻辑上先于它的分组到达为止。</p>
-<p>典型的面向连接协议有三个阶段。第一阶段，在对等实体间建立连接。接下来是数据传输阶段，在这个阶段中，数据在对等实体间传输。最后，当对等实体完成数据传输时，连接被拆除。</p>
-<p>一种标准的类比是：使用面向连接的协议就像打电话，而使用无连接协议就像寄信。给朋友寄信时，每封信都是一个独立寻址且自包含的实体。邮局在处理这些信件时不会考虑到两个通信者之间的任何其他信件。邮局不会维护以往通信者的历史记录–也就是说，它不会维护信件之间的状态。邮局也不保证信件不丢失、不延迟、不错序。这种方式就对应于无连接协议发送数据报的方式。</p>
-<blockquote>
-<p>[Haverlock, 2000]指出用明信片进行类比会更合适一些，因为写错地址的信件会被退回发信人，而（和典型的无连接协议数据报一样）明信片则不会。</p>
-</blockquote>
-<p>现在来看看不是给朋友寄信，而是打电话时会发生些什么事情。首先，拨朋友的号码来发起呼叫。朋友应答，会说”嗨”之类的话，然后我们回应：”嗨，萨丽。我是亨利。”我们和朋友聊一会儿，然后互说再见并挂机。这是面向连接协议中发生的典型状况。在连接建立阶段，一端与其对等实体联系，交换初始问候信息，对会话中要用到的一些参数和选项进行沟通，然后连接进入数据传输阶段。</p>
-<p>在电话交谈的过程中，两端用户都知道他们在和谁说话，因此没必要不停地说”这是亨利在跟萨丽说话”。也没必要在每次说话之前都拨一次朋友的电话号码–我们的电话已经连接起来了。同理，在面向连接协议的数据传输阶段，也没必要说明我们自己或对等实体的地址。连接为我们维护的状态中包含了这些地址。我们只要发送数据就行了，不需要考虑寻址或其他与协议相关的问题。</p>
-<p>就像用电话交谈一样，连接的任一端完成数据的传输时，都要通知其对等实体。两端都完成传输时，要依次将连接拆除。</p>
-<blockquote>
-<p>这种类比虽然很形象，但并不是非常贴切的。电话系统有实际的物理连接。而我们的”连接”则完全是想象的–它只是由两端记录的状态构成的。为了说明这一点，我们来看看当一个空闲连接一端的主机崩溃并重启时会发生什么情况。还有连接存在吗？从重启主机的角度来看，肯定是没有了。它对先前的连接一无所知。但它原来的对等实体仍然认为自己是连接着的，因为它仍然维护着与连接有关的状态，没有发生什么使那个状态失效的事件。</p>
-</blockquote>
-<p>既然无连接协议有这么多的缺点，大家可能会奇怪，为什么还要使用这种协议呢？我们会看到，在很多情况下，使用无连接协议构建应用程序都是有意义的。比如，使用无连接协议可以很方便地支持一对多和多对一通信，而面向连接协议通常都需要多个独立的连接才能做到。但更重要的是，无连接协议是构建面向连接协议的基础。为了更具体地说明这个问题，也为了把讨论转回到本书的话题中来，我们来看看TCP/IP协议族。在技巧14中我们会看到，TCP/IP基于一个４层的协议栈，如图2-1所示。</p>
-<p><img src="/img/简化的TCPIP协议栈.png" alt="图2-1　简化的TCP/IP协议栈"></p>
-<p>栈的底部是接口层，直接与硬件相连。栈的顶部是应用程序，比如Telnet、ftp和其他标准的以及用户编写的应用程序。如图所示，TCP和UDP都是构建在IP之上的。因此，IP是构建整个TCP/IP协议族的基础。但IP提供的是一种尽力而为的、不可靠的无连接服务。它接收来自其上层的分组，将它们封装在一个IP分组中，根据路由为分组选择正确的硬件接口，从这个接口将分组发送出去。一旦将分组发送出去了，IP就不再关心这个分组了。和所有无连接协议一样，它将分组发送出去之后就不再记得这个分组了。</p>
-<p>这种简单性也是IP的主要优点。因为它对底层的物理介质没有作任何假设，所以在任何能够承载分组的物理链路上都可以运行IP。例如，IP可以运行在简单的串行链路、以太网和令牌环LAN、X.25和使用ATM（<code>Asychronous Transfer Mode，异步转移模式</code>）的WAN、CDPD（<code>Cellular Digital Packet Data，无线蜂窝数字分组数据</code>）网，以及很多其他网络上。尽管这些网络技术之间有很大的差异，但IP对它们一视同仁，除了认为它们可以转发分组之外没有对其作任何假设。这种机制隐含了很深的意义。IP可以运行在任何能够承载分组的网络上，所以整个TCP/IP协议族也可以。</p>
-<p>现在我们来看看TCP是怎样利用这种简单的无连接服务来提供可靠的面向连接服务的。TCP的分组被称为段（segment），是放在IP数据报中发送的，因此，根本无法假定这些分组会抵达目的地，更不用说保证分组无损坏且以原来的顺序到达了。为了提供这种可靠性，TCP向基本的IP服务中添加了三项功能。首先，它为TCP段中的数据提供了校验和。这样有助于确保抵达目的地的数据在传输过程中不会被网络损坏。第二，<strong>它为每字节分配了一个序列号</strong>，这样，如果数据抵达目的地时真的错序了，接收端也能够按照恰当的顺序将其重装起来。</p>
-<blockquote>
-<p>当然，TCP并没有为每字节都附加一个序列号。实际上，每个TCP段的首部都包含了段中第一字节的序列号。这样，就隐含地知道了段中其他字节的序列号。</p>
-</blockquote>
-<p>第三，TCP提供了一种确认-重传机制，以确保最终每个段都会被传送出去。</p>
-<p>确认/重试机制是到目前为止我们讨论的三种附加机制中最复杂的一种，我们来研究一下它是怎样工作的。</p>
-<blockquote>
-<p>这里我们忽略了几个细节，基本没有涉及TCP协议的众多细微之处，以及如何用它们来提供健壮可靠的传输机制。RFC 793[Postel, 1981b]和RFC 1122[Braden, 1989]中有完整的细节描述。[Stevens, 1994]中的阐述则更容易为人接受。RFC 813[Clark, 1982]对 TCP窗口和确认机制进行了概略的讨论。</p>
-</blockquote>
-<p>TCP连接的每一端都维护了一个接收窗口（<code>receive window</code>），接收窗口就是可以从对等实体接收的数据序列号范围。最小值表示窗口的左边界，是所期望的下一字节的序列号。最大值表示窗口的右边界，是TCP缓冲区空间所能容纳字节的最大编号。使用接收窗口而不只是所期望的下一字节计数器，就可以通过流量控制来提高可靠性。流量控制机制可以防止TCP传输的数据使其对等实体的缓冲区空间溢出。</p>
-<p>TCP段到达时，序列号在接收窗口范围之外的所有数据都会被丢弃。其中包括先前已经收到的数据（序列号在接收窗口左边的数据），以及没有缓冲区空间存储的数据（序列号在接收窗口右边的数据）。如果段中第一个可接受字节不是所期望的下一字节，就说明这个段是错序的，大部分TCP应用程序都会将其放入队列，直到缺少的数据到达为止。如果段中第一个可接受字节是所期望的下一字节，就通知应用程序有数据可读，并在所期望的下一字节序列号上加上段中本次接受的字节数，对其进行更新。此时窗口向右滑动本次接受字节数的长度。最后，TCP向对等实体发送一条ACK，其中携带了它所期望的下一字节序列号。</p>
-<p>比如，在图2-2A中，虚线框表示的接收窗口显示，所期望的下一字节序列号为4，而TCP希望接收9字节（4～12）。图2-2B显示的是收到字节4、5、6和7之后的接收窗口。窗口向右滑动了4个序列号，TCP的ACK会说明它接下来所期望的是序列号8。</p>
-<p><img src="/img/TCP接收窗口.png" alt="图2-2 TCP接收窗口"></p>
-<p>同样是这种情况，现在从TCP发送端的角度来看。除了接收窗口之外，每个TCP还维护了一个发送窗口（<code>send window</code>）。发送窗口被划分成两部分：已发送但还未被确认的字节，以及可以发送但还未发送的字节。假设字节1～3已经被确认了，图2-3A显示的是与图2-2A中接收窗口相对应的发送窗口。字节4～7发送之后，确认之前，发送窗口如图2-3B所示。TCP还可以发送字节8～12而无须等待来自对等实体的ACK。发送了字节4～7之后，TCP会启动一个RTO（<code>Retransmission Timeout，重传超时</code>）定时器。如果在定时器超时之前这四个字节没有被确认，TCP就认为它们丢失了，并重新传送这四个字节。</p>
-<blockquote>
-<p>很多实现并不记录一个特定的段中发送了哪些字节，因此重传段中包含的字节数可能会比原来的多。例如，如果字节8和9在RTO定时器超时之前发送出去了，这些应用程序就会重传字节4～9。</p>
-</blockquote>
-<p>我们要注意这样一个事实：RTO定时器超时并不意味着原来的数据没有到达目的地。有可能是ACK丢失了，或者原来的段在网络中延迟的时间太长，以至于在其ACK到达之前RTO定时器就超时了。但这并不会造成什么问题，因为如果原来的数据确实到达了，那么重传的数据就会处于接收端TCP接收窗口范围之外，会被丢弃。</p>
-<p>字节4～7确认后，发送端TCP会将其丢弃，并将发送窗口向右移动，如图2-3C所示。</p>
-<p><img src="TCP发送窗口.png" alt="图2-3　TCP发送窗口"></p>
-<p>对于编写应用程序的程序员来说，TCP提供了一种可靠的面向连接协议。更多关于可靠的具体含义的讨论请参见技巧9。</p>
-<p>另一方面，UDP为编写应用程序的程序员提供了一种不可靠的无连接服务。事实上，UDP只向底层的IP协议中添加了两项功能。首先，它提供了一个可选的校验和来检测数据的损坏情况。尽管IP也有校验和，但它只对IP分组首部进行计算，所以，TCP和UDP也都提供了校验和来保护它们自己的首部和数据。UDP向IP添加的第二项特性就是端口的概念。</p>
-<p>IP地址（这些地址通常都是以因特网标准的点分十进制表示法给出的，请参见技巧2）用来将一个IP数据报传送给一台特定的主机。数据报到达目的主机时，还需要将其数据传送给恰当的应用程序。例如，一个UDP分组的目标可能是回声服务，而另一个的目标则可能是时间查询服务。端口提供了一种将数据多路分解到正确目的应用程序的方式。每个TCP和UDP套接字都有一个与之相关的端口。应用程序可以通过显式的bind调用来设置这个端口，也可以由操作系统为其选择。分组到达时，内核会搜索其套接字列表，查找一个与分组中的协议、地址和端口号相匹配的套接字。如果找到了匹配的套接字，就由指定的协议（在我们所讨论的情形中，就是TCP或UDP）来处理数据，并将这些数据提供给所有打开了匹配套接字的应用程序。</p>
-<blockquote>
-<p>如果有多个进程或线程打开了这个套接字，那么其中任何一个都可以读取数据，但读过一次之后，数据对其他进程或线程来说就不可用了。</p>
-</blockquote>
-<p>回到与电话/寄信的类比中来，我们可以把TCP连接中的网络地址当作一个办公室总机的电话号码，把端口号当作办公室中某台正被呼叫的特定电话的分机号。同理，可以将UDP地址当作一座公寓楼的地址，并把端口号当作公寓楼大厅中的个人邮箱。</p>
-<p>##小结</p>
-<p>在这个技巧中，我们研究了无连接和面向连接协议的区别。我们看到，不可靠的无连接数据报协议是构建可靠的面向连接协议的基础，我们还简单介绍了可靠的TCP协议是如何构建在不可靠的IP协议上的。</p>
-<p>我们还注意到，<strong>对TCP来说，连接完全是想象的。它是由端点所记忆的状态组成的，并不存在”物理”连接</strong>，而打电话的时候是有物理连接的。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/22/IO和NIO/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/22/IO和NIO/" itemprop="url">IO和NIO</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-22T20:09:54+08:00">
-                2015-03-22
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-10T17:05:52+08:00">
+                2015-03-10
               </time>
             
 
@@ -1327,17 +870,25 @@ int readvrec( SOCKET s, char *buf, size_t len );
       
         
           
-            <p>转载自<a href="http://blog.csdn.net/zhouhl_cn/article/details/6568119" target="_blank" rel="external">这里</a></p>
-<p>传统的<code>socket IO</code>中，需要为每个连接创建一个线程，当并发的连接数量非常巨大时，线程所占用的栈内存和CPU线程切换的开销将非常巨大。使用NIO，不再需要为每个线程创建单独的线程，可以用一个含有限数量线程的<strong>线程池</strong>，甚至一个线程来为任意数量的连接服务。由于线程数量小于连接数量，所以每个线程进行IO操作时就不能阻塞，如果阻塞的话，有些连接就得不到处理，NIO提供了这种<strong>非阻塞</strong>的能力。</p>
-<p>小量的线程如何同时为大量连接服务呢？答案就是<strong>就绪选择</strong>。</p>
-<p>这就好比到餐厅吃饭，每来一桌客人，都有一个服务员专门为你服务，从你到餐厅到结帐走人，这样方式的好处是服务质量好，一对一的服务，VIP啊，可是缺点也很明显，成本高，如果餐厅生意好，同时来100桌客人，就需要100个服务员，那老板发工资的时候得心痛死了，这就是传统的一个连接一个线程的方式。</p>
-<p>老板是什么人啊，精着呢。这老板就得琢磨怎么能用10个服务员同时为100桌客人服务呢，老板就发现，服务员在为客人服务的过程中并不是一直都忙着，客人点完菜，上完菜，吃着的这段时间，服务员就闲下来了，可是这个服务员还是被这桌客人占用着，不能为别的客人服务，用华为领导的话说，就是工作不饱满。那怎么把这段闲着的时间利用起来呢。这餐厅老板就想了一个办法，让一个服务员（前台）专门负责收集客人的需求，登记下来，比如有客人进来了、客人点菜了，客人要结帐了，都先记录下来按顺序排好。每个服务员到这里领一个需求，比如点菜，就拿着菜单帮客人点菜去了。点好菜以后，服务员马上回来，领取下一个需求，继续为别人客人服务去了。这种方式服务质量就不如一对一的服务了，当客人数据很多的时候可能需要等待。但好处也很明显，由于在客人正吃饭着的时候服务员不用闲着了，服务员这个时间内可以为其他客人服务了，原来10个服务员最多同时为10桌客人服务，现在可能为50桌，60客人服务了。</p>
-<p>这种服务方式跟传统的区别有两个：</p>
-<ol>
-<li>增加了一个角色，要有一个专门负责收集客人需求的人。<code>NIO</code>里对应的就是<code>Selector</code>。</li>
-<li>由阻塞服务方式改为非阻塞服务了，客人吃着的时候服务员不用一直侯在客人旁边了。传统的IO操作，比如<code>read()</code>，当没有数据可读的时候，线程一直阻塞被占用，直到数据到来。NIO中没有数据可读时，<code>read()</code>会立即返回0，线程不会阻塞。</li>
-</ol>
-<p><code>NIO</code>中，客户端创建一个连接后，先要将连接注册到<code>Selector</code>，相当于客人进入餐厅后，告诉前台你要用餐，前台会告诉你你的桌号是几号，然后你就可能到那张桌子坐下了，<code>Selection Key</code>就是桌号。当某一桌需要服务时，前台就记录哪一桌需要什么服务，比如1号桌要点菜，2号桌要结帐，服务员从前台取一条记录，根据记录提供服务，完了再来取下一条。这样服务的时间就被最有效的利用起来了。</p>
+            <p>##记录网络服务名和它们对应使用的端口号及协议</p>
+<pre><code>cat /etc/services
+</code></pre><p>##查看某个端口号的使用状态</p>
+<pre><code>lsof -i :6000 （查看哪个进程正在监听6000这个端口）
+lsof -i TCP:6000 （只显示监听此端口的TCP连接，上面不加选项的就是指TCP&amp;UDP）
+</code></pre><p>lsof命令还可以用来显示谁在使用某个文件或文件夹，例如：</p>
+<pre><code>lsof  /root/michael/unp（会显示谁当前在用/root/michael/unp文件夹）
+</code></pre><p>##netstat<br>netstat 默认情况下，绑定在INADDR_ANY的服务器的套接字是不列出来的，不过可以用 -a 选项改变默认设置（解释：不加-a选项，netstat命令不显示LISTEN状态的条目，所以如果需要显示LISTEN，就需要加上-a）。</p>
+<pre><code>netstat -apt（-p选项表示输出PID，-t选项表示监听tcp端口），这个命令可以很方便地显示套接字上程序的PID和名字
+
+netstat -apu：显示监听在udp端口的信息
+
+netstat -napt（加上-n选项表示以数字形式表示地址和端口号，而不是别名）
+
+netstat -nr：可以显示路由表
+
+netstat -i：可以获得计算机基本的网络接口信息
+</code></pre><p><strong>这些命令输出中的<code>*</code>是表示通配地址（INADDR_ANY）</strong></p>
+<p>Netstat 命令用于显示各种网络相关信息，如网络连接，路由表，接口状态 (Interface Statistics)，masquerade 连接，多播成员 (Multicast Memberships) 等等。</p>
 
           
         
@@ -1386,7 +937,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/TCP三次握手如果没有第三步会怎么样/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/09/百度的一些面试题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -1405,7 +956,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/20/TCP三次握手如果没有第三步会怎么样/" itemprop="url">TCP三次握手如果没有第三步会怎么样</a></h1>
+                <a class="post-title-link" href="/2015/03/09/百度的一些面试题/" itemprop="url">百度的一些面试题</a></h1>
         
 
         <div class="post-meta">
@@ -1417,8 +968,8 @@ int readvrec( SOCKET s, char *buf, size_t len );
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T17:00:30+08:00">
-                2015-03-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-09T22:00:33+08:00">
+                2015-03-09
               </time>
             
 
@@ -1440,8 +991,8 @@ int readvrec( SOCKET s, char *buf, size_t len );
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
-                    <span itemprop="name">TCP/IP</span>
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
                   </a>
                 </span>
 
@@ -1479,10 +1030,22 @@ int readvrec( SOCKET s, char *buf, size_t len );
       
         
           
-            <p>没有第三步，那就是服务器发送给客户端的SYN没有收到回应，其实这就是SYN洪泛攻击。</p>
-<p>SYN攻击属于DDOS攻击的一种，它利用TCP协议缺陷，通过发送大量的半连接请求，<strong>耗费CPU和内存资源</strong>。</p>
-<p>SYN攻击除了能影响主机外，还可以危害路由器、防火墙等网络系统，事实上SYN攻击并不管目标是什么系统，只要这些系统打开TCP服务就可以实施。</p>
-<p>服务器接收到连接请求（syn=j），将此信息加入未连接队列，并发送请求包给客户（syn=k,ack=j+1），此时进入SYN_RECV状态。<strong>当服务器未收到客户端的确认包时，重发请求包，一直到超时，才将此条目从未连接队列删除。</strong>配合IP欺骗，SYN攻击能达到很好的效果，通常，客户端在短时间内伪造大量不存在的IP地址，向服务器不断地发送syn包，服务器回复确认包，并等待客户的确认，由于源地址是不存在的，服务器需要不断的重发直至超时，这些伪造的SYN包将长时间占用未连接队列，正常的SYN请求被丢弃，目标系统运行缓慢，严重者引起网络堵塞甚至系统瘫痪。 </p>
+            <p>#ping是工作在哪一层的，用的什么协议<br>ping工作在IP层，用的是ICMP协议。traceroute也是基于ICMP协议</p>
+<p>#常用的即时通讯软件用的是什么协议</p>
+<ol>
+<li>QQ主要采用UDP，某些情况下采用TCP。</li>
+<li>其他IM大多数时候采用TCP，涉及到音频、视频传输会用到UDP</li>
+</ol>
+<p>#http状态码</p>
+<ul>
+<li>首位为1：这一类型的状态码，代表请求已被接受，需要继续处理。这类响应是临时响应，只包含状态行和某些可选的响应头信息，并以空行结束。由于 HTTP/1.0 协议中没有定义任何 1xx 状态码，所以除非在某些试验条件下，服务器禁止向此类客户端发送 1xx 响应。</li>
+<li>首位为2：成功</li>
+<li>首位为3：重定向</li>
+<li>首位为4：客户方错误</li>
+<li>首位为5：服务器错误</li>
+</ul>
+<p>#设有1000个元素,用二分法查找时,最大比较次数是</p>
+<p>10次 = [log2(1000)] + 1，方括号是取整等于9</p>
 
           
         
@@ -1531,7 +1094,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/为什么malloc时需要指定size，对应的free时不需要指定size/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/07/epoll为什么高效/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -1550,7 +1113,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/20/为什么malloc时需要指定size，对应的free时不需要指定size/" itemprop="url">为什么malloc时需要指定size，对应的free时不需要指定size</a></h1>
+                <a class="post-title-link" href="/2015/03/07/epoll为什么高效/" itemprop="url">epoll为什么高效</a></h1>
         
 
         <div class="post-meta">
@@ -1562,8 +1125,341 @@ int readvrec( SOCKET s, char *buf, size_t len );
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T16:59:18+08:00">
-                2015-03-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-07T22:22:39+08:00">
+                2015-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##无需遍历整个fd集合<br>首先回忆一下select 模型，当有I/O 事件到来时，select 通知应用程序有事件到了快去处理，而应用程序必须轮询所有的fd集合，测试每个fd是否有事件发生，并处理事件；代码像下面这样：</p>
+<pre><code>int res = select(maxfd+1, &amp;readfds,NULL, NULL, 120);
+if (res &gt; 0)
+{
+    for (int i = 0; i &lt;MAX_CONNECTION; i++)
+    {
+       if (FD_ISSET(allConnection[i], &amp;readfds))
+       {
+           handleEvent(allConnection[i]);
+       }
+    }
+}
+// if(res == 0) handle timeout, res &lt; 0handle error
+</code></pre><p>Epoll 不仅会告诉应用程序有I/0事件到来，还会告诉应用程序相关的信息，这些信息是应用程序填充的，因此根据这些信息应用程序就能直接定位到事件，而不必遍历整个fd集合。</p>
+<pre><code>int res = epoll_wait(epfd, events, 20,120);
+for (int i = 0; i &lt; res;i++)
+{
+    handleEvent(events[n]);
+}
+</code></pre><p>##Epoll 关键数据结构<br>Epoll 速度快和其数据结构密不可分，其关键数据结构就是：</p>
+<pre><code>struct epoll_event {
+    __uint32_tevents;      // Epoll events
+    epoll_data_tdata;      // User data variable
+};
+typedef union epoll_data {
+    void *ptr;
+    int fd;
+    __uint32_t u32;
+    __uint64_t u64;
+} epoll_data_t;
+</code></pre><p>可见epoll_data 是一个 union 结构体 , 借助于它应用程序可以保存很多类型的信息 :fd 、指针等等。有了它，应用程序就可以直接定位目标了。</p>
+<p>别小看了这些效率的提高,在一个大规模并发的服务器中,轮询IO是最耗时间的操作之一。</p>
+<p>对比最早给出的阻塞IO的处理模型, 可以看到采用了多路复用IO之后, 程序可以自由的进行自己除了IO操作之外的工作, 只有到IO状态发生变化的时候由多路复用IO进行通知, 然后再采取相应的操作, 而不用一直阻塞等待IO状态发生变化了.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/07/epoll的事件触发方式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/07/epoll的事件触发方式/" itemprop="url">epoll的事件触发方式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-07T21:34:13+08:00">
+                2015-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>参考自<a href="http://blog.chinaunix.net/uid-24517549-id-4051156.html" target="_blank" rel="external">这里</a></p>
+<p>假如有这样一个例子：</p>
+<ol>
+<li>我们已经把一个用来从管道中读取数据的文件句柄(RFD)添加到epoll描述符</li>
+<li>这个时候从管道的另一端被写入了2KB的数据</li>
+<li>调用epoll_wait()，并且它会返回RFD，说明它已经准备好读取操作</li>
+<li>然后我们读取了1KB的数据</li>
+<li>调用epoll_wait()……</li>
+</ol>
+<p>##Edge Triggered 工作模式：<br>如果我们在第1步将RFD添加到epoll描述符的时候使用了EPOLLET标志，那么在第5步调用<code>epoll_wait()</code>之后将有可能会挂起，因为剩余的数据还存在于文件的输入缓冲区内，而且数据发出端还在等待一个针对已经发出数据的反馈信息。只有在监视的文件句柄上发生了某个事件的时候 ET 工作模式才会汇报事件。因此在第5步的时候，调用者可能会放弃等待仍在存在于文件输入缓冲区内的剩余数据。在上面的例子中，会有一个事件产生在RFD句柄上，因为在第2步执行了一个写操作，然后，事件将会在第3步被销毁。</p>
+<p>因为第4步的读取操作没有读空文件输入缓冲区内的数据，因此我们在第5步调用 <code>epoll_wait()</code>完成后，是否挂起是不确定的。epoll工作在ET模式的时候，必须使用<strong>非阻塞套接口</strong>，以避免由于一个文件句柄的阻塞读/阻塞写操作把处理多个文件描述符的任务饿死。最好以下面的方式调用ET模式的epoll接口，在后面会介绍避免可能的缺陷。</p>
+<ol>
+<li>基于非阻塞文件句柄</li>
+<li>只有当read()或者write()返回EAGAIN时才需要挂起，等待。但这并不是说每次read()时都需要循环读，直到读到产生一个EAGAIN才认为此次事件处理完成，当read()返回的读到的数据长度小于请求的数据长度时，就可以确定此时缓冲中已没有数据了，也就可以认为此事读事件已处理完成。</li>
+</ol>
+<p>##Level Triggered 工作模式<br>相反的，以LT方式调用epoll接口的时候，它就相当于一个速度比较快的poll()，并且无论后面的数据是否被使用，因此他们具有同样的职能。因为即使使用ET模式的epoll，在收到多个chunk的数据的时候仍然会产生多个事件。调用者可以设定EPOLLONESHOT标志，在 <code>epoll_wait()</code>收到事件后epoll会与事件关联的文件句柄从epoll描述符中禁止掉。因此当EPOLLONESHOT设定后，使用带有 EPOLL_CTL_MOD标志的<code>epoll_ctl()</code>处理文件句柄就成为调用者必须作的事情。</p>
+<p>##总结<br>LT(level triggered水平触发或条件触发)是epoll缺省的工作方式，并且同时支持block和no-block socket.在这种做法中，内核告诉你一个文件描述符是否就绪了，然后你可以对这个就绪的fd进行IO操作。如果你不作任何操作，内核还是会继续通知你的，所以，这种模式编程出错误可能性要小一点。传统的select/poll都是这种模型的代表．</p>
+<p>ET (edge-triggered边缘触发或事件触发)是高速工作方式，只支持no-block socket，它效率要比LT更高。ET与LT的区别在于，当一个新的事件到来时，ET模式下当然可以从<code>epoll_wait</code>调用中获取到这个事件，<strong>可是如果这次没有把这个事件对应的套接字缓冲区处理完，在这个套接字中没有新的事件再次到来时，在ET模式下是无法再次从epoll_wait调用中获取这个事件的。而LT模式正好相反，只要一个事件对应的套接字缓冲区还有数据，就总能从<code>epoll_wait</code>中获取这个事件。</strong><br>因此，LT模式下开发基于epoll的应用要简单些，不太容易出错。而在ET模式下事件发生时，如果没有彻底地将缓冲区数据处理完，则会导致缓冲区中的用户请求得不到响应。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/07/执行可执行程序时内存分配的方式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/07/执行可执行程序时内存分配的方式/" itemprop="url">执行可执行程序时内存分配的方式&&BSS段</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-07T20:22:54+08:00">
+                2015-03-07
               </time>
             
 
@@ -1624,12 +1520,39 @@ int readvrec( SOCKET s, char *buf, size_t len );
       
         
           
-            <p>当调用malloc(size)时，实际分配的内存大小大于size字节，这是因为在分配的内存区域头部有类似于</p>
-<pre><code>struct control_block {
-    unsigned size;
-    int used;
-};
-</code></pre><p>这样的一个结构，如果malloc函数内部得到的内存区域的首地址为<code>void *p</code>,那么它返回给你的就是<code>p + sizeof(control_block)</code>，而调用<code>free(q)</code>的时候，该函数把p减去<code>sizeof(control_block)</code>，然后就可以根据<br><code>((control_blcok*)q)-&gt;size</code>得到要释放的内存区域的大小。这也就是为什么free只能用来释放malloc分配的内存，如果用于释放其他的内存，会发生未知的错误。</p>
+            <p>##一个由C/C++编译的程序占用的内存分为以下几个部分</p>
+<ol>
+<li>栈区（stack）— 由编译器自动分配释放，存放函数的参数值，局部变量的值等。其操作方式类似于数据结构中的栈。</li>
+<li>堆区（heap）— 一般由程序员分配释放，若程序员不释放，程序结束时可能由OS回收。注意它与数据结构中的堆是两回事，分配方式倒是类似于链表，呵呵。</li>
+<li>全局区（静态区）（static）—全局变量和静态变量的存储是放在一块的，初始化的全局变量和静态变量在一块区域，未初始化的全局变量和未初始化的静态变量在相邻的另一块区域。 - 程序结束后有系统释放</li>
+<li>文字常量区 —常量字符串就是放在这里的。程序结束后由系统释放</li>
+<li>程序代码区(text)—存放函数体的二进制代码。</li>
+</ol>
+<p><img src="/img/一个linux进程的存储器映像.png" alt=""></p>
+<p>##举例</p>
+<pre><code>int a = 0;    //全局初始化区 
+char *p1;     //全局未初始化区 
+main() 
+{ 
+    int b;                   //栈 
+    char s[] = &quot;abc&quot;;        //s[]在栈区，abc在常量区 
+    char *p2;                //栈 
+    char *p3 = &quot;123456&quot;;     //123456\0在常量区，p3在栈上。 
+    static int c = 0；       //全局（静态）初始化区 
+    p1 = (char *)malloc(10); 
+    p2 = (char *)malloc(20); //分配得来得10和20字节的区域就在堆区。 
+    strcpy(p1, &quot;123456&quot;);    //123456\0放在常量区，编译器可能会将它与p3所指向的&quot;123456&quot;优化成一块。 
+} 
+</code></pre><p>##堆和栈的区别</p>
+<ol>
+<li>stack的空间由操作系统自动分配/释放，heap上的空间需要手动分配/释放</li>
+<li>栈的空间有限，堆是很大的自由存储区。</li>
+<li>程序在编译期对变量和函数分配内存都在栈上进行，且程序运行过程中函数调用参数的传递也在栈上进行</li>
+</ol>
+<p>##BSS段</p>
+<p>可执行程序包括BSS段、数据段、代码段（也称文本段）。</p>
+<p>BSS（Block Started by Symbol）通常是指用来存放程序中未初始化的全局变量和静态变量的一块内存区域。特点是:可读写的，在程序执行之前BSS段会自动清0。所以，未初始的全局变量在程序执行之前已经成0了。</p>
+<p>注意和数据段的区别，<strong>BSS存放的是未初始化的全局变量和静态变量，数据段存放的是初始化后的全局变量和静态变量</strong>。</p>
 
           
         
@@ -1678,7 +1601,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/进程的状态及转换/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/07/连续字数组的最大和-负数的表示形式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -1697,7 +1620,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/20/进程的状态及转换/" itemprop="url">进程的状态及转换</a></h1>
+                <a class="post-title-link" href="/2015/03/07/连续字数组的最大和-负数的表示形式/" itemprop="url">连续子数组的最大和 && 负数的表示形式</a></h1>
         
 
         <div class="post-meta">
@@ -1709,8 +1632,8 @@ int readvrec( SOCKET s, char *buf, size_t len );
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T16:23:21+08:00">
-                2015-03-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-07T17:19:26+08:00">
+                2015-03-07
               </time>
             
 
@@ -1732,8 +1655,8 @@ int readvrec( SOCKET s, char *buf, size_t len );
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
                   </a>
                 </span>
 
@@ -1771,35 +1694,50 @@ int readvrec( SOCKET s, char *buf, size_t len );
       
         
           
-            <p>##进程的基本状态</p>
-<ol>
-<li>执行状态(Running)：进程占用处理机，进程的程序正在执行。单处理机系统中只能有一个进程处于执行状态，多处理机系统中可能有多个进程处于执行状态。</li>
-<li>阻塞状态(Blocked)：也叫等待或睡眠状态，是进程由于等待某种事件的发生而处于暂停执行的状态。如进程因等待I/O的完成、等待缓冲空间等。</li>
-<li>就绪状态（Ready）：进程已分配到处理机以外的所有必要资源，具备了执行的所有条件。可能会有多个进程处于就绪状态，排成就绪队列。</li>
-</ol>
-<p>##新状态和终止状态</p>
-<ol>
-<li><p>新状态：进程刚刚建立，还没有送入就绪队列的状态。</p>
-</li>
-<li><p>终止状态：一个进程已正常结束或非正常结束，OS已将它从就绪队列中移出，还未将它撤销时的状态。</p>
-</li>
-</ol>
-<p>##进程状态的转换</p>
-<p>进程在执行期间可以多次处于就绪状态和执行状态，也可多次处于阻塞状态，但处于新状态只有一次。</p>
-<ol>
-<li><p>新状态－＞就绪状态：当就绪队列允许接纳新进程时，系统便把处于新状态的进程移入就绪队列。</p>
-</li>
-<li><p>就绪态－＞执行状态：进程调度程序为处于就绪状态的进程分配处理机后，该进程进入执行状态。</p>
-</li>
-<li><p>执行态－＞阻塞状态：正在执行的进程因需要等待某事件而无法执行。</p>
-</li>
-<li><p>阻塞状态－＞就绪态：进程所等待的事件发生了，进程就从阻塞状态进入就绪状态。</p>
-</li>
-<li><p>执行态－＞就绪状态：正在执行的进程因时间片用完而被暂停执行；或者在可抢占调度方式中，一个优先权高的进程到来后，正在执行的低优先权的进程被强制撤下处理机，转换为就绪状态。</p>
-</li>
-<li><p>执行态－＞终止状态：一个进程已完成或发生某种特殊事件，进程将变为终止状态。 </p>
-</li>
-</ol>
+            <blockquote>
+<p>输入一个整形数组，数组里有正数也有负数。<br>数组中连续的一个或多个整数组成一个子数组，每个子数组都有一个和。<br>求所有子数组的和的最大值。要求时间复杂度为O(n)。</p>
+<p>例如输入的数组为1, -2, 3, 10, -4, 7, 2, -5，<br>和最大的子数组为3, 10, -4, 7, 2，<br>因此输出为该子数组的和18。</p>
+</blockquote>
+<pre><code>int find_greatest_sum_of_subarray(int *array, int length) {
+    if(array == NULL || length &lt;=0)
+        return -1; //返回错误
+
+    int sum = 0;
+    int greatest_sum = 0x80000000;
+
+    int i;
+    for(i = 0; i &lt; length; i++) {
+        if(sum &lt;= 0)
+            sum = array[i];
+        else
+            sum += array[i];
+
+        if(sum &gt; greatest_sum)
+            greatest_sum = sum;
+    }
+
+    return greatest_sum;
+}
+</code></pre><p>代码是很简单的，分析可以参考何海涛的《剑指offer》面试题31</p>
+<p>这里想说的是这一句</p>
+<pre><code>int greatest_sum = 0x80000000;
+</code></pre><p><code>greatest_sum</code>初始化为什么不是0呢？你可以初始化为0试一下，会发现，当输入数组的字数组的最大和是负数的时候，程序的输出是0，也就是<code>greatest_sum</code>的初始值。说到这里大家应该明白了，我们应该将<code>greatest_sum</code>初始化为32位有符号数的最小值(32位的最小负数)，那为什么是0x80000000，最小负数不是0xffffffff吗？</p>
+<p>这就要考虑到负数在计算机中的存储形式了</p>
+<p>正数在计算机中是用源码存储的，正数1就是0x00000001，正数2就是0x00000002(0000 0000 0000 0000 0000 0000 0000 0010)，但是负数是不一样的，负数在计算机中是用补码存储的</p>
+<blockquote>
+<p>补码 = 原码去反(符号位不变) + 1</p>
+</blockquote>
+<p>举例：-1</p>
+<p>#####原码：1000 0000 0000 0000 0000 0000 0000 0001</p>
+<p>#####反码：1111 1111 1111 1111 1111 1111 1111 1110</p>
+<p>#####补码：1111 1111 1111 1111 1111 1111 1111 1111</p>
+<p>举例：-2147483647(0xffffffff)</p>
+<p>#####原码：1111 1111 1111 1111 1111 1111 1111 1111</p>
+<p>#####反码：1000 0000 0000 0000 0000 0000 0000 0000</p>
+<p>#####补码：1000 0000 0000 0000 0000 0000 0000 0001（ox80000001）</p>
+<p>同理-2147483646在计算机内是0x80000002</p>
+<p>那么问题来了，0x80000000是什么呢？在计算机内它表示的是-2147483648，是有符号32位整数的最小值。</p>
+<p>32位有符号整数的表示范围为：<br>-2147483648 – 2147483647</p>
 
           
         
@@ -1848,7 +1786,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/进程调度算法/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/06/TCP-IP的一些基础知识/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -1867,7 +1805,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/20/进程调度算法/" itemprop="url">进程调度算法</a></h1>
+                <a class="post-title-link" href="/2015/03/06/TCP-IP的一些基础知识/" itemprop="url">TCP/IP的一些基础知识</a></h1>
         
 
         <div class="post-meta">
@@ -1879,8 +1817,8 @@ int readvrec( SOCKET s, char *buf, size_t len );
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T16:22:15+08:00">
-                2015-03-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-06T21:00:22+08:00">
+                2015-03-06
               </time>
             
 
@@ -1902,8 +1840,8 @@ int readvrec( SOCKET s, char *buf, size_t len );
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
+                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
+                    <span itemprop="name">TCP/IP</span>
                   </a>
                 </span>
 
@@ -1941,27 +1879,16 @@ int readvrec( SOCKET s, char *buf, size_t len );
       
         
           
-            <p>调度也称<code>dispatcher</code>， 内核的主要职责之一就是决定该轮到哪个任务运行了。多数实时内核是基于优先级调度算法的。每个任务根据其重要程度的不同被赋予一定的优先级。基于优先级的调度法指CPU 总是让处在就绪态的优先级最高的任务先运行，然而究竟何时让高优先级任务掌握CPU 的使用权有两种不同的情况。这要看用的是什么类型的内核，是非占先式，还是占先式的内核。一个良好的任务调度算法应该主要体现在以下几个方面</p>
-<ol>
-<li>公平保证每个进程得到合理的CPU 时间</li>
-<li>高效使CPU保持忙碌状态即总是有进程在CPU上运行</li>
-<li>响应时间使交互用户的响应时间尽可能短</li>
-<li>周转时间使批处理用户等待输出的时间尽可能短</li>
-<li>吞吐量使单位时间内处理的进程尽可能多</li>
+            <h2 id="TCP为什么要被称为数据流？"><a href="#TCP为什么要被称为数据流？" class="headerlink" title="TCP为什么要被称为数据流？"></a>TCP为什么要被称为数据流？</h2><p>建立连接，数据就在该连接上流动，可以是双向的，没有边界，所以叫数据流</p>
+<p>TCP是面向连接的、可靠的流协议。流就是指不间断的数据结构，你可以把它想象成排水道中的水流。当应用程序采用TCP发送消息时，虽然可以保证发送的顺序，但还是犹如没有任何间隔的数据流发送给接收端。TCP充分地实现了数据传输时各种控制功能，可以进行丢包时的重发控制，还可以对次序乱掉的分包进行顺序控制。而这些在UDP中都没有。此外，TCP作为一种面向有连接的协议，只有在确认通信对端存在时才会发送数据，从而可以控制通信流量的浪费。根据TCP的这些机制，在IP这种无连接的网络上也能够实现高可靠性的通信。</p>
+<h2 id="流量控制与拥塞控制的区别"><a href="#流量控制与拥塞控制的区别" class="headerlink" title="流量控制与拥塞控制的区别"></a>流量控制与拥塞控制的区别</h2><h3 id="拥塞控制："><a href="#拥塞控制：" class="headerlink" title="拥塞控制："></a>拥塞控制：</h3><p>防止过多的数据注入到网络中，这样可以使网络中的路由器或链路不致过载。拥塞控制所要做的都有一个前提：网络能够承受现有的网络负荷。拥塞控制是一个全局性的过程，涉及到所有的主机、路由器，以及与降低网络传输性能有关的所有因素。</p>
+<h3 id="流量控制："><a href="#流量控制：" class="headerlink" title="流量控制："></a>流量控制：</h3><p>指点对点通信量的控制，是端到端的问题。流量控制所要做的就是抑制发送端发送数据的速率，以便使接收端来得及接收</p>
+<h2 id="TCP和UDP有什么不同？"><a href="#TCP和UDP有什么不同？" class="headerlink" title="TCP和UDP有什么不同？"></a>TCP和UDP有什么不同？</h2><ol>
+<li>在链接状态上，TCP 是面向链接的，UDP 则是面向无链接的；</li>
+<li>在数据传输的质量上，TCP 以数据流的方式传输，保证数据的有序性，准确性，完整性，数据传输质量高；UDP 则是以数据报的形式，独立发送数据报，不能保证数据是否到达，是否完整，是否有序，数据传输质量低于TCP；</li>
+<li>在数据包的大小上，TCP 包头至少20个字节，但是 UDP 只有 8个字节；</li>
+<li>对系统资源的要求（TCP 较多，UDP 少）</li>
 </ol>
-<p>很显然在任何操作系统中这几个目标不可能同时达到，所以不同的操作系统会在这几个方面中做出相应的取舍，从而确定自己的调度算法，常用的处理机调度算法有：</p>
-<ol>
-<li>先来先服务FCFS</li>
-<li>短作业优先SJF</li>
-<li>优先级</li>
-<li>时间片轮转法</li>
-<li>多级队列法</li>
-<li>多级反馈队列法</li>
-</ol>
-<p><strong>先来先服务</strong>：FCFS 是最简单的CPU 调度算法，即按进程到来的先后次序进行调度，这样在系统中等待时间最长的进程被优先调度，而不管其所需运行时间的长短。</p>
-<p><strong>作业优先</strong>：SJF 算法是指当CPU 可供使用时，SJF 算法把CPU 分给需要运行时间最短的进程。</p>
-<p><strong>多级队列调度算法</strong>：把就绪队列划分成几个单独的队列，一般根据进程的某些特性如内存大小和进程类型，永久性地把各个进程分别链入其中某一个队列中，每个队列都有自己的调度算法，此外在各个队列之间也要进行调度。通常采用固定优先级的抢占式调度，例如某系统中有5 个队列，各个队列的优先级自上而下降低，只有当前3 个队列中都为空的时候，队列4 中的进程才可以运行，而当队列4 中的进程在运行时，如果队列1 中进入了一个就绪进程，则队列4 中的进程要立刻让出CPU 使用权。多级反馈队列法允许进程在各队列间移动，其基本思想是把具有不同CPU工作时间这一特性的进程区分开来，如果一个进程要使用很长的CPU 时间，则应把它移至较低级的队列中，这种方式把I/O 繁忙型和交互式进程放在较高优先级的队列中，同样在低优先级队列中长时间等待的进程可以移到较高优先级队列中，UNIX 系统采用的是多级反馈队列轮转法。</p>
-<p><strong>时间片轮转调度法</strong>：<code>round-robin scheduling</code><br>当两个或两个以上任务有同样优先级，内核允许一个任务运行事先确定的一段时间叫做时间额度quantum ，然后切换给另一个任务也叫做时间片调度time slicing ，内核在满足以下条件时把CPU 控制权交给下一个任务就绪态的任务， 当前任务已无事可做，当前任务在时间片还没结束时已经完成了。轮转法主要是为分时系统设计的，其中时间片是一个重要的参数不能取的过大或过小，通常为10 至100ms 数量级，就绪队列可以看成是一个环形队列，CPU 调度程序轮流地把CPU 分给就绪队列中地每个进程，时间长度为一个时间片Linux 操作系统就是采用时间片轮转的调度算法。</p>
 
           
         
@@ -2001,7 +1928,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2047,7 +1974,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">193</span>
+                <span class="site-state-item-count">163</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

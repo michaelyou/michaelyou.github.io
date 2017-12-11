@@ -286,7 +286,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/01/排序算法总结/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/26/笔试题总结2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -305,7 +305,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/01/排序算法总结/" itemprop="url">排序算法总结</a></h1>
+                <a class="post-title-link" href="/2015/01/26/笔试题总结2/" itemprop="url">笔试题总结2</a></h1>
         
 
         <div class="post-meta">
@@ -317,8 +317,541 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-01T20:11:03+08:00">
-                2015-03-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-26T22:39:49+08:00">
+                2015-01-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<blockquote>
+<p>下列关于网络编程错误的是？(D)</p>
+<p>A.UDP是不可靠服务</p>
+<p>B.主动关闭的一端会出现TIME_WAIT状态</p>
+<p>C.服务端编程会调用listen()，客户端也可以调用bind()</p>
+<p>D.TCP建立和关闭连接都只需要三次握手</p>
+<p>E.linux通过提供socket接口来进行网络编程</p>
+<p>F.长连接相对短连接可以节省建立连接的时间</p>
+</blockquote>
+<p>解释：D.TCP建立需要3次握手，关闭需要4此握手。<em>无连接的客户端可以调用bind来配置本地信息</em></p>
+<hr>
+<blockquote>
+<p>Linux系统中某个可执行文件属于root并且有setid，当一个普通用户mike运行这个程序时，产生的进程的有效用户和实际用户分别是<strong>A</strong>？</p>
+<p>A.root mike</p>
+<p>B.root rooy</p>
+<p>C.mike root</p>
+<p>D.mike mike</p>
+<p>E.deamon mike</p>
+<p>F.mike deamon</p>
+</blockquote>
+<p>解释：setuid的用途是允许普通用户完成一些任务，而完成这些任务需要特权和通常被禁止的访问权限。</p>
+<p>在实际应用中，通常用来允许普通用户以root用户的角色运行只有root帐号才能运行的程序或命令。</p>
+<p>当一个具有setid访问模式的文件被执行时，进程的有效UID将会变成文件所有者的UID，并使用该UID的访问权限来访问其他的文件和资源。</p>
+<p>由于可执行文件属于root，因此当程序设置了setid权限位时，普通用户会临时变成root权限，但实际用户任然是原来的mike。</p>
+<hr>
+<blockquote>
+<p>对于基本有序的序列，按照那种排序方式最快：(B)</p>
+<p>A.快速排序</p>
+<p>B.冒泡排序</p>
+<p>C.归并排序</p>
+<p>D.基数排序</p>
+</blockquote>
+<p>解释：而当待排序列已基本有序时，对冒泡排序来说是最好情况，对快速排序来说就是最差情况，而堆排序则最好最差都一样。因此本题答案是冒泡排序。</p>
+<hr>
+<blockquote>
+<p>若一棵二叉树具有10个度为2的结点，5个度为1的结点，则度为0的结点个数是：(B)</p>
+<p>A.10</p>
+<p>B.11</p>
+<p>C.12</p>
+<p>D.13</p>
+</blockquote>
+<p>解释：度为0的结点 = 度为2的结点 + 1</p>
+<p>在一棵树中，所有点的入度和出度的和相等，下面等式左边为出度，右边为入度（根节点入度为0， 其他节点入度为1）<br>10 <em> 2 + 5 </em> 1 = 10 + 5 + x -1</p>
+<p>x等于11</p>
+<hr>
+<blockquote>
+<p>上网时候发现网页不能访问，QQ使用正常，出现此问题可能的原因是：B</p>
+<p>A.网线问题</p>
+<p>B.DNS问题</p>
+<p>C.IP地址冲突</p>
+<p>D.网关错误</p>
+</blockquote>
+<p>解释：DNS是将域名解析成IP地址的服务。DNS发生问题时无法通过域名访问网页；但是直接通过IP地址连接的应用程序仍可以使用。</p>
+<hr>
+<blockquote>
+<p>二分查找树里查询一个关键字的最坏时间复杂度为(A)。</p>
+<p>A.O(n)</p>
+<p>B.O(nlogn)</p>
+<p>C.O(n^2)</p>
+<p>D.O(n^3)</p>
+<p>E.O(logn)</p>
+<p>F.不确定</p>
+</blockquote>
+<p>解释：二分查找最坏的情况是退化为线性查找，时间复杂度为O(n)</p>
+<hr>
+<blockquote>
+<p>设m和n都是int类型，那么以下for循环语句的执行情况是（A）</p>
+<pre><code>for (m = 0, n = -1; n = 0; m++, n++)
+     n++;
+</code></pre><p>A.循环体一次也不执行</p>
+<p>B.循环体执行一次</p>
+<p>C.有限次循环</p>
+<p>D.循环结束判断条件不合法</p>
+<p>E.运行出错</p>
+<p>F.是无限循环</p>
+</blockquote>
+<p>解释：for的条件判断为n = 0，该表达式永远返回0，即for循环不执行。</p>
+<hr>
+<blockquote>
+<p>从逻辑上可以把数据结构分为（C）两大类。</p>
+<p>A.动态结构，静态结构</p>
+<p>B.顺序结构，链式结构</p>
+<p>C.线性结构，非线性结构</p>
+<p>D.初等结构，构造型结构</p>
+</blockquote>
+<p>解释：数据结构在存储上（物理上）分为顺序结构和链式结构</p>
+<p>在逻辑上分为线性结构（如线性表中的数组，链表）和非线性结构（如：二叉树，图等）</p>
+<hr>
+<blockquote>
+<p>（B）二叉排序树可以得到一个从小到大的有序序列。</p>
+<p>A.先序遍历</p>
+<p>B.中序遍历</p>
+<p>C.后序遍</p>
+<p>D.层次遍历</p>
+</blockquote>
+<p>解释：二叉排序树的左子树节点都比该节点小，右子树节点都比该节点打<br>要得到一个从小到大的有序序列，就要按照 左 中 右的顺序遍历<br>符合该条件的遍历就是中序遍历</p>
+<hr>
+<blockquote>
+<p>Linux下的进程有哪三种状态？（B）</p>
+<p>A.精确态，模糊态和随机态</p>
+<p>B.运行态，就绪态和等待态</p>
+<p>C.准备态，执行态和退出态</p>
+<p>D.手动态，自动态和自由态</p>
+</blockquote>
+<p>解释：<br>运行状态：这个不用解释了吧，就是正在运行</p>
+<p>就绪状态：这个状态等待CPU 时间片的状态，一切准备就绪，随时可以执行，等 CPU 切换到该进程，该进程就会由就绪状态变为运行状态</p>
+<p>等待状态：其实就是未就绪状态，还有做一些准备工作或者等待资源</p>
+<hr>
+<blockquote>
+<p>以下关于传输层协议UDP的叙述中正确的（C）</p>
+<p>A.比较合适传输小的数据文件</p>
+<p>B.提高了高的可靠性</p>
+<p>C.提供了高的传输效率</p>
+<p>D.使用窗口机制来实现流量控制</p>
+</blockquote>
+<p>A.UDP协议是无连接的，传输效率高，适合传输视频流媒体等大的数据文件</p>
+<p>B.UDP无连接特性是降低了可靠性，提高了效率</p>
+<p>D.采用窗口机制的协议是TCP</p>
+<hr>
+<blockquote>
+<p>在Bash中，以下哪些说法是正确的（AD）</p>
+<p>A.$#表示参数的数量</p>
+<p>B.$$表示当前进程的名字</p>
+<p>C.$@表示当前进程的pid</p>
+<p>D.$?表示前一个命令的返回值</p>
+</blockquote>
+<p>解释：</p>
+<p>$#  参数的个数，不包括命令本身.</p>
+<p>$$  目前bash shell的进程编号</p>
+<p>$@  参数本身的列表，也不包括命令本身</p>
+<p>$?  上一个命令执行结束后传回值</p>
+<hr>
+<blockquote>
+<p>正则表达式A*B可以匹配（CD）</p>
+<p>A.A</p>
+<p>B.ACB</p>
+<p>C.AB</p>
+<p>D.AAB</p>
+</blockquote>
+<p>解释：*表示匹配前一个字符0次或无限次</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/26/笔试题总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/26/笔试题总结/" itemprop="url">笔试题总结1</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-26T17:02:27+08:00">
+                2015-01-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>应用程序PING发出的是什么报文（C）</p>
+<p>A.TCP请求报文</p>
+<p>B.TCP应答报文</p>
+<p>C.ICMP请求报文</p>
+<p>D.ICMP应答报文</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>语法分析器可以用于（C）</p>
+<p>A.识别语义错误</p>
+<p>B.识别语法和语义错误</p>
+<p>C.识别语法错误</p>
+<p>D.识别并修正语法，语义错误</p>
+</blockquote>
+<p>解释：语法分析器通常是作为编译器或解释器的组件出现的，它的作用是进行语法检查、并构建由输入的单片语组成的资料结构</p>
+<hr>
+<blockquote>
+<p>IPV6地址包含多少位（）</p>
+<p>A.16</p>
+<p>B.32</p>
+<p>C.64</p>
+<p>D.128</p>
+</blockquote>
+<p>解释：IPv6的128位地址通常写成8组，每组为四个十六进制数的形式。比如：<br>AD80:0000:0000:0000:ABAA:0000:00C2:0002 是一个合法的IPv6地址。</p>
+<hr>
+<blockquote>
+<p>如果在一个建立了TCP连接的socket上调用recv函数，返回值为0，则表示（B）</p>
+<p>A.对端发送了一段长度为0的数据</p>
+<p>B.对端关闭了连接</p>
+<p>C.还没有收到对端数据</p>
+<p>D.连接发生错误</p>
+</blockquote>
+<p>解释：recv返回0的唯一条件就是对端关闭了连接<br>在socket可读的情况下，当有异常发生的时候，read返回-1</p>
+<hr>
+<blockquote>
+<p>以下哪些不是内核对象（D）</p>
+<p>A.进程</p>
+<p>B.线程</p>
+<p>C.互斥器</p>
+<p>D.临界区</p>
+</blockquote>
+<p>解释：临界区是资源对象，只能被一个进程访问</p>
+<hr>
+<blockquote>
+<p>同一进程下的多个线程可以共享哪一种资源（B）</p>
+<p>A.stack</p>
+<p>B.data section</p>
+<p>C.register set</p>
+<p>D.thread ID</p>
+</blockquote>
+<p>解释：线程共享的环境包括：进程代码段、进程的公有数据(利用这些共享的数据，线程很容易的实现相互之间的通讯)、进程打开的文件描述符、信号的处理器、进程的当前目录和进程用户ID与进程组ID。</p>
+<hr>
+<blockquote>
+<p>对于Linux说法，下列说法正确的是（）</p>
+<p>A.线性访问内存非法时，当前线程会进入信号处理函数</p>
+<p>B.用mv命令移动文件时，文件的修改时间会发生变化</p>
+<p>C.ulimit -c设置的是函数调用栈的大小</p>
+<p>D.malloc函数是应用程序向操作系统申请内存的接口</p>
+</blockquote>
+<p>B.不会改变</p>
+<p>C.ulimit用于shell启动进程所占用的资源.-c size:设置core文件的最大值.单位:blocks</p>
+<hr>
+<blockquote>
+<p>在c++中，</p>
+<pre><code>const int i = 0; 
+int *j = (int *) &amp;i; 
+*j = 1; 
+printf(&quot;%d,%d&quot;, i, *j)
+</code></pre><p>输出是多少？(A)</p>
+<p>A.0，1</p>
+<p>B.1，1</p>
+<p>C.1，0</p>
+<p>D.0，0</p>
+</blockquote>
+<p>解释：const修饰的常量值具有不可变性,c++编译器通常会对该变量做优化处理，在编译时变量i的值为已知的，编译器直接将printf输出的变量i替换为0。尽管如此，编译器仍然会为变量i分配存储空间，通过修改内存的hack方式将变量i在内存中的值修改后并不影响printf的输出。</p>
+<p>gcc不会对此进行优化，所以如果用gcc来编译，输出就是1,1</p>
+<hr>
+<blockquote>
+<pre><code>  struct Date
+{
+    char a;
+    int b;
+    int64_t c;
+    char d;
+};
+</code></pre><p>Date data[2][10]; 在32位系统上，如果Data的地址是x，那么data[1][5].c的地址是（C）</p>
+<p>A.X+195</p>
+<p>B.X+365</p>
+<p>C.X+368</p>
+<p>D.X+215</p>
+</blockquote>
+<p>解释：</p>
+<pre><code>struct Date {      
+    char a;//起始位置0      
+    int b;//起始位置4      
+    int64_t c;//起始位置8      
+    char d;//起始位置16，
+    //考虑成员中自身对齐值最大的那个值是8. 16不是8的倍数，所以这个sturct的size是24.  
+};
+</code></pre><p>data[1][5]与data[0][0]相隔15个元素,data[1][5].c的地址是x+24*15+(4+4) = 368</p>
+<hr>
+<blockquote>
+<p>快速排序算法在序列已经有序的情况下的复杂度为（B）</p>
+<p>A.O(nlogn）</p>
+<p>B.O(n^2)</p>
+<p>C.O(n)</p>
+<p>D.O(n^2 logn)</p>
+</blockquote>
+<p>有序的情况是O(n2);无序的情况是O(nlog2n)</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/26/反转链表-带头结点/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/26/反转链表-带头结点/" itemprop="url">反转链表(带头结点)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-26T10:18:15+08:00">
+                2015-01-26
               </time>
             
 
@@ -379,302 +912,435 @@
       
         
           
-            <p>参考书籍是:《数据结构与算法分析-c语言描述，weiss著》</p>
-<p>下图是排序算法时间复杂度等特性的一个总结：</p>
-<p><img src="/img/排序算法.png" alt=""></p>
-<p>下面详细总结一下各个算法，总结的方面包括：</p>
-<ol>
-<li>每个算法的思想是什么？</li>
-<li>每个算法的稳定性怎样？时间复杂度如何？</li>
-<li>在什么情况下，算法出现最好情况 or 最坏情况？</li>
-<li>每种算法的具体实现又是怎样的？</li>
-</ol>
-<p>##各个排序算法的空间复杂度<br>大家往往只关心时间复杂度，而忽略了空间复杂度，所以这里讲空间复杂度提到前面来讲</p>
-<p><code>冒泡排序</code>，<code>简单选择排序</code>，<code>堆排序</code>，<code>直接插入排序</code>，<code>希尔排序</code>的空间复杂度为O(1),因为需要一个临时变量来交换元素位置，(另外遍历序列时自然少不了用一个变量来做索引)</p>
-<p>快速排序空间复杂度为log2n(因为递归调用了)；归并排序空间复杂是O(n)，需要一个大小为n的临时数组.</p>
-<p>这里的一个问题是，归并排序也递归了，为什么时间复杂度不是log2n?</p>
-<p>答：<br>归并排序每次递归都要用到一个辅助表，长度与待排序的表长度相同，虽然递归次数是O(log2n)，但每次递归都会释放掉所占的辅助空间，所以下次递归的栈空间和辅助空间与这部分释放的空间就不相关了，因而空间复杂度还是O（n）。</p>
-<p>快速排序空间复杂度只是在通常情况下才为O(log2n)，如果是最坏情况的话，很显然就要O(n)的空间了。当然，可以通过随机化选择pivot来将空间复杂度降低到O(log2n)。</p>
-<p>##冒泡排序</p>
-<p>###基本思想<br>通过无序区中相邻记录关键字间的比较和位置的交换,使关键字最小的记录如气泡一般逐渐往上“漂浮”直至“水面”。</p>
-<p><img src="/img/冒泡排序.png" alt=""></p>
-<p>###时间复杂度</p>
-<p><strong>最好情况下</strong>：正序有序，则只需要比较n次。故，为O(n)</p>
-<p><strong>最坏情况下</strong>：逆序有序，则需要比较(n-1)+(n-2)+……+1，故为O(n*n)</p>
-<p>###稳定性<br>排序过程中只交换相邻两个元素的位置。因此，当两个数相等时，是没必要交换两个数的位置的。所以，它们的相对位置并没有改变，<strong>冒泡排序算法是稳定的</strong>！</p>
-<p>##代码</p>
-<pre><code>#define elementtype int
-void bubble_sort(elementtype *array, int n) {
-    elementtype tmp;
-    int i = 0, j = 0;
-    for(; i &lt; n - 1; i++) {
-        for(j = n -1; j &gt; i; j--) {
-            if(array[j] &lt; array[j - 1]) {
-                swap(array[j], array[j-1]);
-            }
-        }
-    }
-}
-</code></pre><p>##选择排序</p>
-<p>###思想<br>首先在未排序序列中找到最小元素，存放到排序序列的起始位置，然后，再从剩余未排序元素中继续寻找最小元素，然后放到排序序列末尾。以此类推，直到所有元素均排序完毕。具体做法是：选择最小的元素与未排序部分的首部交换，使得序列的前面为有序。</p>
-<p>选择排序是和冒泡排序差不多的一种排序。和冒泡排序交换相连数据不一样<br>的是，选择排序只有在确定了最小的数据之后，才会发生交换</p>
-<p>###时间复杂度<br><strong>最好情况</strong>：交换0次，但是每次都要找到最小的元素，因此大约必须遍历<code>N*N</code>次，因此为O(N*N)。减少了交换次数！ </p>
-<p><strong>最坏情况</strong>：平均情况下：O(N*N)</p>
-<p>###稳定性<br>由于每次都是选取未排序序列A中的最小元素x与A中的第一个元素交换，因此跨距离了，很可能破坏了元素间的相对位置，因此<strong>选择排序是不稳定的</strong>！</p>
-<p>例如数组为5,5,3，第一次就会将第一个5和3交换</p>
-<p>###代码</p>
-<pre><code>void select_sort(elementtype *array, int n) {
-    elementtype tmp;
-    int i, j, index;
-    if(array == NULL &amp;&amp; n &lt; 0)
-        exit(-1);
-
-    for(i = 0; i &lt; n - 1; i++) {
-        index = i;
-        for(j = i + 1; j &lt; n; j ++) {
-            if(array[j] &lt; array[index])
-                index = j;
-        }
-
-        if(index != i) {
-            swap(array[i], array[index]);
-        }
-    }
-}
-</code></pre><p>##插入排序</p>
-<p>###思想<br>有一个已经有序的数据序列，要求在这个已经排好的数据序列中插入一个数，但要求插入后此数据序列仍然有序，这个时候就要用到一种新的排序方法—-插入排序法,插入排序的基本操作就是将一个数据插入到已经排好序的有序数据中，从而得到一个新的、个数加一的有序数据，算法适用于少量数据的排序，时间复杂度为O(n^2)。是稳定的排序方法。插入算法把要排序的数组分成两部分：第一部分包含了这个数组的所有元素，但将最后一个元素除外（让数组多一个空间才有插入的位置），而第二部分就只包含这一个元素（即待插入元素）。在第一部分排序完成后，再将这个最后元素插入到已排好序的第一部分中。</p>
-<p>###时间复杂度<br><strong>最好的情况</strong>：正序有序(从小到大)，这样只需要比较n次，不需要移动。因此时间复杂度为O(n)<br><strong>最坏的情况</strong>：逆序有序,这样每一个元素就需要比较n次，共有n个元素，因此实际复杂度为O(n­2)<br><strong>平均情况</strong>：O(n­2)</p>
-<p>###稳定性<br>理解性记忆比死记硬背要好。因此，我们来分析下。稳定性，就是有两个相同的元素，排序先后的相对位置是否变化，主要用在排序时有多个排序规则的情况下。在插入排序中，K1是已排序部分中的元素，当K2和K1比较时，直接插到K1的后面(没有必要插到K1的前面，这样做还需要移动！！)，因此，插入排序是稳定的。</p>
-<p>###代码</p>
-<pre><code>void insert_sort(elementtype *array, int n) {
-    elementtype tmp;
-    int p, j;
-    for(p = 1; p &lt; n; p++) {
-        tmp = array[p];
-        for(j = p; j &gt; 0 &amp;&amp; array[j - 1] &gt; tmp; j--) {
-            array[j]= array[j - 1];
-        }
-        array[j] = tmp;
-    }
-}
-</code></pre><p>##shell排序</p>
-<p>###思想<br>Shell排序是DL. Shell于1959年针对直接插入排序算法改进提出的，属于插入排序的范畴，是对直接插入排序算法的改进。直接插入排序在基本有序时效率较高，并且在序列规模不是很大时效率也很高，Shell排序就是针对这两点进行改进。核心思想是：待排序列有n个元素，先取一个小于n的整数h1作为第一个增量，把待排序列以间隔h1分成若干子序列，子序列内使用插入排序；然后取第二个增量h2(&lt; h1)，重复上述的划分和排序，<br>直至所取的增量hl = 1 (h1 &gt; h2 &gt; … &gt; hl)。</p>
-<p>这样不管序列多么庞大，在先前较大步长分组下每个子序列规模都不是很大，用直接插入效率很高；后面步长变小，子序列变大，但由于整体有序性越来越明显，排序效率依然很高，大大提高了时间效率。</p>
-<p>###时间复杂度</p>
-<p><strong>最好情况</strong>：由于希尔排序的好坏和步长d的选择有很多关系，因此，目前还没有得出最好的步长如何选择(现在有些比较好的选择了，但不确定是否是最好的)。所以，不知道最好的情况下的算法时间复杂度。  </p>
-<p><strong>最坏情况</strong>：O(N*logN)，最坏的情况下和平均情况下差不多。  </p>
-<p><strong>平均情况</strong>：O(N*logN)</p>
-<p>###稳定性<br>由于多次插入排序，我们知道一次插入排序是稳定的，不会改变相同元素的相对顺序，但在不同的插入排序过程中，相同的元素可能在各自的插入排序中移动，最后其稳定性就会被打乱，所以<strong>shell排序是不稳定的</strong>。</p>
-<blockquote>
-<p>有个猜测，方便记忆：一般来说，若存在不相邻元素间交换，则很可能是不稳定的排序。</p>
-</blockquote>
-<p>###代码</p>
-<pre><code>void shell_sort(elementtype *array, int n) {
-    elementtype tmp;
-    int increment, i, j;
-    for(increment = n/2; increment &gt; 0; increment /= 2) {
-        for(i = increment; i &lt; n; i++) {
-            tmp = array[i];
-            for(j = i; j &gt;= increment &amp;&amp; array[j - increment] &gt; tmp; j -= increment)
-                    array[j] = array[j - increment];
-
-            array[j] = tmp;
-        }
-    }
-}
-</code></pre><p>##堆排序</p>
-<p>###思想<br>利用完全二叉树中双亲节点和孩子节点之间的内在关系，在当前无序区中选择关键字最大(或者最小)的记录。也就是说，以最小堆为例，根节点为最小元素，较大的节点偏向于分布在堆底附近。</p>
-<p>###时间复杂度<br>最坏情况下，接近于最差情况下：O(N*logN)，因此它是一种效果不错的排序算法</p>
-<p>###稳定性<br>堆排序需要不断地调整堆，因此<strong>堆排序是一种不稳定的排序</strong>！</p>
-<p>###代码</p>
-<pre><code>#define LeftChild(i) (2 * (i) + 1)
-void perc_down(int *a, int i, int size)
+            <p>##QUESTION<br>定义一个函数，输入一个链表的头结点，反转该链表并输出反转后链表的头结点。</p>
+<p>##SOLUTION<br><img src="/img/反转链表.png" alt="反转链表"></p>
+<p>反转这个单链表的基本思想是，不断地将后面的结点移到head后面来，下面以反转结点1和结点2作为例子：</p>
+<ul>
+<li>头结点的next指向结点2</li>
+<li>结点1的next指向结点3</li>
+<li>结点2的next指向结点1</li>
+</ul>
+<p>这样就完成了一次交换，顺序变成了head-&gt;结点2-&gt;结点1-&gt;结点3-&gt;结点4-&gt;NULL，下面我们进行相同的操作将结点3移到head之后，然后将结点4移到head之后，就完成了反转，下面是代码：</p>
+<pre><code>typedef struct Node
 {
-    int child;
+    int data;
+    struct Node *next;
+}*node;
 
-    int tmp = a[i];
+node reverse_list(node head)
+{
+    node p, q;
+    if(head == NULL)
+        return NULL;
+    printf(&quot;the old list is:&quot;);
+    print_list(head);
 
-    for(; LeftChild(i) &lt; size ; i = child)
+    p = head-&gt;next;
+    while(p != NULL &amp;&amp; p-&gt;next != NULL)
     {
-        child = LeftChild(i);
-        if(child != size - 1 &amp;&amp; a[child] &lt; a[child + 1])
-                child ++;
-
-        /***************************
-         * 提升儿子到父结点，
-         * 儿子结点的位置上存在空穴，
-         * 需要继续比较
-         **************************/
-        if(a[child] &gt; tmp)
-                a[i] = a[child];
-        else/*不需要提升*/
-                break;
+        q = p-&gt;next;
+        p-&gt;next = q-&gt;next;
+        q-&gt;next = head-&gt;next;
+        head-&gt;next = q;
     }
-    /*保存结点的位置找到*/
-    a[i] = tmp;
+    return head； //可有可无   
 }
+</code></pre><p>题目的要求是返回新链表的头结点，在这里，新链表的头结点就是原来链表的头结点。所以最后一句是没有必要的，直接用head作为参数就可以打印链表。</p>
 
-void build_maxheap(int *a, int size)
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/25/在O-1-时间删除链表结点/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/25/在O-1-时间删除链表结点/" itemprop="url">在O(1)时间删除链表结点</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-25T21:13:55+08:00">
+                2015-01-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##QUESTION<br>给定单项链表的头指针和一个结点指针，定义一个函数在O(1)时间删除该节点。</p>
+<p>##O(n)解法<br>O(n)解法就是常规的删除链表结点的做法。从链表的头结点开始，顺序遍历查找要删除的结点，并在链表中删除该结点。这种思路由于要顺序查找，时间复杂度自然就是O(n)了。</p>
+<p>之所以要从头开始查找，是因为我们需要得到将被删除的结点的前面一个结点。在单向链表中，结点中没有指向前一个结点的指针，所以只好从链表的头结点开始顺序查找。</p>
+<p>##O(1)解法<br>那是不是一定要得到被删除结点的前一个节点呢？答案是否定的。我们可以这样来删除一个结点，例子如下，别删除的结点为i，i的下一个结点为j：</p>
+<ul>
+<li>把j结点的内容复制到i结点，覆盖i结点的内容</li>
+<li>将i结点的next指向j结点的next</li>
+<li>删除j结点</li>
+</ul>
+<p>这里我们删除的虽然是j结点，但是得到的效果却是删除了i结点。</p>
+<p>还有一个问题，当我们删除的结点是尾结点时，尾结点的next是NULL，上述解法就不再适用，我们还是要顺序遍历后删除尾结点。</p>
+<p>代码如下：</p>
+<pre><code>typedef struct Node
 {
-    int step = 0;
+    int data;
+    struct Node *next;
+}*node;
 
-    /***************************************
-     * (size-1)/2实质是找到a[size-1]的父结点，
-     * 也就是倒数第二层，堆的创建过程是一个
-     * 由低层到高层逐渐创建的过程
-     **************************************/
-    for(step = (size - 1) / 2 ; step &gt;= 0; -- step)
-        perc_down(a, step, size);
-}
-
-void heap_sort(int *a, int size)
+/*在O(1)时间删除结点*/
+void DeleteNode(node &amp;pListHead, node pToBeDeleted)
 {
-    int i = 0;
-    /*创建堆*/
-    build_maxheap(a,size);
+    if(!pListHead || !pToBeDeleted)
+        return;
 
-    for(; i &lt; size; i++)
-        printf(&quot;%d &quot;, a[i]);
-    printf(&quot;\n&quot;);
-
-    for(i = size - 1; i &gt; 0; --i)
+    // 要删除的结点不是尾结点
+    if(pToBeDeleted-&gt;next!= NULL)
     {
-        swap(a[i],a[0])；
+        node pNext = pToBeDeleted-&gt;next;
+        pToBeDeleted-&gt;data= pNext-&gt;data;
+        pToBeDeleted-&gt;next = pNext-&gt;next;
 
-        /*更新堆的结构*/
-        perc_down(a,0,i);
-
+        delete pNext;
+        pNext = NULL;
     }
-
-}
-</code></pre><p>##归并排序</p>
-<p>###思想<br>多次将两个或两个以上的有序表合并成一个新的有序表。</p>
-<p><img src="/img/归并排序.png" alt=""></p>
-<p>###时间复杂度</p>
-<p><strong>最好的情况</strong>：一趟归并需要n次，总共需要logN次，因此为O(N*logN) </p>
-<p><strong>最坏的情况</strong>： 接近于平均情况，为O(N*logN) </p>
-<p>说明：对长度为n的文件，需进行logN 趟二路归并，每趟归并的时间为O(n)，故其时间复杂度无论是在最好情况下还是在最坏情况下均是O(nlgn)。</p>
-<p>###稳定性<br><strong>归并排序最大的特色就是它是一种稳定的排序算法</strong>。归并过程中是不会改变元素的相对位置的。 </p>
-<p>缺点是，它需要O(n)的额外空间。但是很<strong>适合于多链表排序</strong>。</p>
-<p>###代码</p>
-<pre><code>/*left_start is the start of the left half, right_start is the start of the
-  right half*/
-void merge(int *array, int *tmp_array, int left_start, int right_start, int right_end)
-{
-    int left_end = right_start-1;
-    int length = right_end-left_start+1;
-
-    int tmp_pos = left_start;
-
-    while(left_start &lt;= left_end &amp;&amp; right_start &lt;= right_end) {
-        if(array[left_start] &lt;= array[right_start])
-            tmp_array[tmp_pos++] = array[left_start++];
-        else
-            tmp_array[tmp_pos++] = array[right_start++];
+    // 链表只有一个结点，删除头结点（也是尾结点）
+    else if(pListHead == pToBeDeleted)
+    {
+        delete pToBeDeleted;
+        pToBeDeleted = NULL;
+        pListHead = NULL;
     }
-
-    /*main loop*/
-    while(left_start &lt;= left_end)
-        tmp_array[tmp_pos++] = array[left_start++];
-    while(right_start &lt;= right_end)
-        tmp_array[tmp_pos++] = array[right_start++];
-
-    /*copy tmp_array back
-      注意这里必须使用right_end作为数组下标，不能用tmp_pos，因为此时的
-      tmp_pos已经越界了，上面多了一次++*/
-    int i;
-    for(i = 0; i &lt; length; i++, right_end--)  
-        array[right_end] = tmp_array[right_end];
-}
-
-void m_sort(int *array, int *tmp_array, int left, int right)
-{
-    int mid;
-
-    if(left &lt; right) {
-        mid = (left + right)/2;
-        m_sort(array, tmp_array, left, mid);
-        m_sort(array, tmp_array, mid+1, right);
-        merge(array, tmp_array, left, mid+1, right);
-    }
-}
-
-void merge_sort(int *array, int n)
-{
-    if(array == NULL || n &lt;= 0)
-        exit(-1);
-
-    int *tmp_array = (int *)malloc(n * sizeof(int));
-
-    if(tmp_array != NULL) {
-        m_sort(array, tmp_array, 0, n-1);
-        free(tmp_array);
-    }
+    // 链表中有多个结点，删除尾结点
     else
-        exit(-1);
-}
-</code></pre><blockquote>
-<p>merge例程是精妙的。如果对merge的每个递归调用均局部声明一个临时数组，那么在任一时刻就可能有logN个临时数组处在活动期，这对于小内存的机器则是致命的。另一方面，如果merge例程动态分配并释放最小量临时内存，那么由malloc占用的时间会很多。严格测试指出，由于merge位于m_sort的最后一行，因此在任一时刻只需要一个临时数组活动，而且可以使用该临时数组的任意部分；我们将使用与输入数组array相同的部分。</p>
-</blockquote>
-<p>#快速排序</p>
-<p>###思想<br>它是由冒泡排序改进而来的。在待排序的n个记录中任取一个记录(通常取第一个记录),把该记录放入适当位置后,数据序列被此记录划分成两部分。所有关键字比该记录关键字小的记录放置在前一部分,所有比它大的记录放置在后一部分,并把该记录排在这两部分的中间(称为该记录归位),这个过程称作一趟快速排序。</p>
-<p><img src="/img/http://img2.imgtn.bdimg.com/it/u=2694285242,78285384&amp;fm=21&amp;gp=0.jpg" alt=""></p>
-<p>###时间复杂度<br><strong>最好的情况</strong>：因为每次都将序列分为两个部分(一般二分都复杂度都和logN相关)，故为 O(N*logN)  </p>
-<p><strong>最坏的情况</strong>：序列基本有序，选取的枢轴元素为最大值或最小值时，退化为冒泡排序，几乎要比较<code>N*N/2</code>次，故为O(N*N)</p>
-<blockquote>
-<p>如何避免最坏情况：为改进快速排序算法，随机选取界点或最左、最右、中间三个元素中的值处于中间的作为界点，通常可以避免原始序列有序的最坏情况。</p>
-</blockquote>
-<p>###稳定性<br>由于每次都需要和中轴元素交换，因此原来的顺序就可能被打乱。如序列为 5 3 3 4 3 8 9 10 11会将3的顺序打乱。所以说，<strong>快速排序是不稳定的</strong>！</p>
-<p>###代码</p>
-<pre><code>/*数据交换*/
-void swap(int *x,int *y)
-{
-   int temp;
-   temp = *x;
-   *x = *y;
-   *y = temp;
-}
+    {
+        node pNode = pListHead;
+        while(pNode-&gt;next != pToBeDeleted)
+        {
+            pNode = pNode-&gt;next;            
+        }
 
-int choose_pivot(int i,int j )
-{
-   return((i+j) /2);
+        pNode-&gt;next = NULL;
+        delete pToBeDeleted;
+        pToBeDeleted = NULL;
+    }
 }
+</code></pre><p>我们分析一下这个思路的时间复杂度。对于n-1个非尾结点而言，我们可以在O(1)时把下一个结点的内存复制覆盖要删除的结点，并删除下一个结点；对于尾结点而言，由于仍需要顺序查找，时间复杂度为O(n).因此总的时间复杂度为<code>[(n-1)*O(1)+O(n)]/n</code>,结果仍然是O(1),符合要求。</p>
 
-/*递归和分治*/
-void quick_sort(int list[],int left,int right)
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/25/二进制中1的个数/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/25/二进制中1的个数/" itemprop="url">二进制中1的个数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-25T16:03:18+08:00">
+                2015-01-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>题目：输入一个整数，求该整数的二进制表达中有多少个1。例如输入10，由于其二进制表示为1010，有两个1，因此输出2。</p>
+<p>##可能引起死循环的解法<br>一个很基本的想法是，我们先判断整数的最右边一位是不是1。接着把整数右移一位，原来处于右边第二位的数字现在被移到第一位了，再判断是不是1。这样每次 移动一位，直到这个整数变成0为止。现在的问题变成怎样判断一个整数的最右边一位是不是1了。很简单，如果它和整数1作与运算。由于1除了最右边一位以 外，其他所有位都为0。因此如果与运算的结果为1，表示整数的最右边一位是1，否则是0。</p>
+<p>代码如下：</p>
+<pre><code>///////////////////////////////////////////////////////////////////////
+// Get how many 1s in an integer&apos;s binary expression
+///////////////////////////////////////////////////////////////////////
+int NumberOf1_Solution1(int i)
 {
-   int key,i,j,k;
-   if(left &lt; right)
-   {
-      k = (left + right) / 2;
-      swap(&amp;list[left],&amp;list[k]);
-      key = list[left];
-      i = left+1;
-      j = right;
-      while(1)
+      int count = 0;
+      while(i)
       {
-         while((i &lt; right) &amp;&amp; (list[i] &lt; key))
-                i++;
-         while((j &gt; left) &amp;&amp; (list[j] &gt; key))
-                j--;
-         if( i &lt; j) {
-                swap(&amp;list[i],&amp;list[j]);
-                //仅仅是为了防止死循环，见P183
-                if(list[i] == list[j] &amp;&amp; list[i] == key) {  
-                    i++;  //j--;
-                }
-         }
-         else
-            break;
+            if(i &amp; 1)
+                  count ++;
+            i = i &gt;&gt; 1;
       }
-     // 交换两个元素的位置
-      swap(&amp;list[left],&amp;list[j]);
-     // 递归地对较小的数据序列进行排序
-      quick_sort(list,left,j-1);
-      quick_sort(list,j+1,right);
-   }
-} 
-</code></pre><p>快排在数据少的时候是不占优势的，所以一般是在数据少的时候用插入排序，数据多的时候用快排。上面的快排程序对书上的程序作了修改，防止了死循环，但并不是一个好程序。比较好的快排实现可以看<a href="https://github.com/michaelyou/data_structure/blob/master/sort.c" target="_blank" rel="external">这里</a></p>
+      return count;
+}
+</code></pre><p>面试官会问，整数右移一位在数学上是和除以2是等价的。那可不可以把上面的代码中的右移运算符换成除以2呢？答案是否定的。因为除法的效率比移位运算要低的多，在实际编程中如果可以，应尽可能地用移位运算符代替乘除法。</p>
+<p>这个思路当输入i是正数时没有问题，但当输入的i是一个负数时，不但不能得到正确的1的个数，还将导致死循环。以负数0x80000000为例，右移一位 的时候，并不是简单地把最高位的1移到第二位变成0x40000000，而是0xC0000000。这是因为移位前是个负数，仍然要保证移位后是个负数， 因此移位后的最高位会设为1。如果一直做右移运算，最终这个数字就会变成0xFFFFFFFF而陷入死循环。</p>
+<p>##改进算法避免死循环<br>为了避免死循环，我们可以不右移输入的数字i。首先i和1做与运算，判断i的最低位是不是为1。接着把1左移一位得到2，再和i做与运算，就能判断i的次高位是不是1……这样反复左移，每次都能判断i的其中一位是不是1。基于此，我们得到如下代码：</p>
+<pre><code>///////////////////////////////////////////////////////////////////////
+// Get how many 1s in an integer&apos;s binary expression
+///////////////////////////////////////////////////////////////////////
+int NumberOf1_Solution2(int i)
+{
+      int count = 0;
+      unsigned int flag = 1;
+      while(flag)
+      {
+            if(i &amp; flag)
+                  count ++;
+            flag = flag &lt;&lt; 1;
+      }
+      return count;
+}
+</code></pre><p>##给面试官带来惊喜的解法<br>另外一种思路是如果一个整数不为0，那么这个整数至少有一位是1。如果我们把这个整数减去1，那么原来处在整数最右边的1就会变成0，原来在1后面的所有 的0都会变成1。其余的所有位将不受到影响。举个例子：一个二进制数1100，从右边数起的第三位是处于最右边的一个1。减去1后，第三位变成0，它后面 的两位0变成1，而前面的1保持不变，因此得到结果是1011。</p>
+<p>我们发现减1的结果是把从最右边一个1开始的所有位都取反了。这个时候如果我们再把原来的整数和减去1之后的结果做与运算，从原来整数最右边一个1那一位 开始所有位都会变成0。如1100&amp;1011=1000。也就是说，把一个整数减去1，再和原整数做与运算，会把该整数最右边一个1变成0。那么 一个整数的二进制有多少个1，就可以进行多少次这样的操作。</p>
+<p>这种思路对应的代码如下：</p>
+<pre><code>///////////////////////////////////////////////////////////////////////
+// Get how many 1s in an integer&apos;s binary expression
+///////////////////////////////////////////////////////////////////////
+int NumberOf1_Solution3(int i)
+{
+      int count = 0;
+      while (i)
+      {
+            ++ count;
+            i = (i - 1) &amp; i;
+      }
+      return count;
+}
+</code></pre><p>##扩展<br>扩展1：如何用一个语句判断一个整数是不是二的整数次幂？</p>
+<p>思路：一个整数如果是2的整数次方，那么它的二进制表示中有且只有一位是1，而其他所有位都是0.根据前面的分析，把这个整数减去1之后再和它自己做与运算，这个整数中唯一的1就会变成0.</p>
+<pre><code>n&amp;(n-1)==0;//二进制数只有一位位1，则该数是2的整数次幂.
+</code></pre><p>扩展2：输入两个整数m和n，计算需要改变m的二进制表示中的多少位才能得到n。比如10的二进制表示为1010,13的二进制表示为1101，需要改变1010中的3位才能得到1101.</p>
+<p>思路：我们可以分两步解决这个问题：第一步求这两个数的异或，第二步统计异或结果中1的位数。</p>
+<p>##总结<br>把一个整数减去1之后再和原来的整数做位与运算，得到的结果相当于是把整数的二进制表示中的最后一个1变成0.很多二进制的问题都可以用这个思路解决</p>
 
           
         
@@ -723,7 +1389,7 @@ void quick_sort(int list[],int left,int right)
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/27/linux磁盘空间命令-df和du/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/25/为什么求斐波拉切数列用递归不是一个好方法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -742,7 +1408,7 @@ void quick_sort(int list[],int left,int right)
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/02/27/linux磁盘空间命令-df和du/" itemprop="url">linux磁盘空间命令--df和du</a></h1>
+                <a class="post-title-link" href="/2015/01/25/为什么求斐波拉切数列用递归不是一个好方法/" itemprop="url">为什么求斐波拉切数列用递归不是一个好方法</a></h1>
         
 
         <div class="post-meta">
@@ -754,8 +1420,8 @@ void quick_sort(int list[],int left,int right)
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-27T09:16:16+08:00">
-                2015-02-27
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-25T15:14:32+08:00">
+                2015-01-25
               </time>
             
 
@@ -777,8 +1443,8 @@ void quick_sort(int list[],int left,int right)
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
                   </a>
                 </span>
 
@@ -816,1784 +1482,736 @@ void quick_sort(int list[],int left,int right)
       
         
           
-            <p>##df<br>对于磁盘存储方面，有很多命令行或基于GUI的工具，它可以告诉你关于当前磁盘空间的使用情况。这些工具用各种人们可读的格式展示磁盘利用率的详细信息，比如易于理解的总结，详细的统计信息或直观的可视化报告。如果你只想知道不同文件系统有多少空闲的磁盘空间，那么df命令可能是你所需要的。</p>
-<pre><code>[root@pc105 /]# df
-Filesystem           1K-blocks     Used Available Use% Mounted on
-/dev/mapper/VolGroup-lv_root
-                      51475068 48090628    763000  99% /
-tmpfs                  8135664       72   8135592   1% /dev/shm
-/dev/sda1               487652    93128    368924  21% /boot
-/dev/mapper/VolGroup-lv_home
-                     901109008  4270596 851058036   1% /home
-tmpfs                   102400        4    102396   1% /var/log/pearl2
-tmpfs                  8135664        4   8135660   1% /var/run/pearl2
-</code></pre><p>df命令可以展示任何“mounted”文件系统的磁盘利用率。该命令可以用不同的方式调用。</p>
-<p>###用人们可读的方式展示<br>默认情况下，df命令用1K为块来展示磁盘空间，这看起来不是很直观。“-h”参数使df用更可读的方式打印磁盘空间（例如 100K，200M，3G）。</p>
-<pre><code>[root@pc105 /]# df -h
-Filesystem            Size  Used Avail Use% Mounted on
-/dev/mapper/VolGroup-lv_root
-                       50G   46G  746M  99% /
-tmpfs                 7.8G   72K  7.8G   1% /dev/shm
-/dev/sda1             477M   91M  361M  21% /boot
-/dev/mapper/VolGroup-lv_home
-                      860G  4.1G  812G   1% /home
-tmpfs                 100M  4.0K  100M   1% /var/log/pearl2
-tmpfs                 7.8G  4.0K  7.8G   1% /var/run/pearl2
-</code></pre><p>###展示Inode使用情况<br>当你监视磁盘使用情况时，你必须注意的不仅仅是磁盘空间还有“inode”的使用情况。在Linux中，inode是用来存储特定文件的元数据的一种数据结构，在创建一个文件系统时，inode的预先定义数量将被分配。这意味着，<strong>一个文件系统可能耗尽空间不只是因为大文件用完了所有可用空间，也可能是因为很多小文件用完了所有可能的inode</strong>。用“-i”选项展示inode使用情况。</p>
-<pre><code>[root@pc105 /]# df -i
-Filesystem             Inodes  IUsed    IFree IUse% Mounted on
-/dev/mapper/VolGroup-lv_root
-                      3276800 635298  2641502   20% /
-tmpfs                 2033916      3  2033913    1% /dev/shm
-/dev/sda1              128016     53   127963    1% /boot
-/dev/mapper/VolGroup-lv_home
-                     57229312  35042 57194270    1% /home
-tmpfs                 2033916      2  2033914    1% /var/log/pearl2
-tmpfs                 2033916      2  2033914    1% /var/run/pearl2
-</code></pre><p>###展示磁盘总利用率<br>默认情况下， df命令显示磁盘的单个文件系统的利用率。如果你想知道的所有文件系统的总磁盘使用量，增加“ –total ”选项（见最下面的汇总行）。</p>
-<pre><code>[root@pc105 /]# df -h --total
-Filesystem            Size  Used Avail Use% Mounted on
-/dev/mapper/VolGroup-lv_root
-                       50G   46G  746M  99% /
-tmpfs                 7.8G   72K  7.8G   1% /dev/shm
-/dev/sda1             477M   91M  361M  21% /boot
-/dev/mapper/VolGroup-lv_home
-                      860G  4.1G  812G   1% /home
-tmpfs                 100M  4.0K  100M   1% /var/log/pearl2
-tmpfs                 7.8G  4.0K  7.8G   1% /var/run/pearl2
-total                 925G   51G  829G   6%
-</code></pre><p>##du<br>Linux du命令也是查看使用空间的，但是与df命令不同的是Linux du命令是对文件和目录磁盘使用的空间的查看，还是和df命令有一些区别的.</p>
-<p>###显示目录或者文件所占空间 </p>
-<pre><code>[root@localhost test]# du
-608     ./test6
-308     ./test4
-4       ./scf/lib
-4       ./scf/service/deploy/product
-4       ./scf/service/deploy/info
-12      ./scf/service/deploy
-16      ./scf/service
-4       ./scf/doc
-4       ./scf/bin
-32      ./scf
-8       ./test3
-1288    .
-[root@localhost test]#
-</code></pre><p>只显示当前目录下面的子目录的目录大小和当前目录的总的大小，最下面的1288为当前目录的总大小</p>
-<p>###显示指定文件所占空间</p>
-<pre><code>[root@localhost test]# du log2012.log 
-300     log2012.log
-[root@localhost test]#
-</code></pre><p>###查看指定目录的所占空间</p>
-<pre><code>[root@localhost test]# du scf
-4       scf/lib
-4       scf/service/deploy/product
-4       scf/service/deploy/info
-12      scf/service/deploy
-16      scf/service
-4       scf/doc
-4       scf/bin
-32      scf
-[root@localhost test]#
-</code></pre><p>###显示多个文件所占空间</p>
-<pre><code>[root@localhost test]# du log30.tar.gz log31.tar.gz 
-4       log30.tar.gz
-4       log31.tar.gz
-[root@localhost test]#
-</code></pre><p>###只显示总和的大小</p>
-<pre><code>[root@localhost test]# du -s
-1288    .
-[root@localhost test]# du -s scf
-32      scf
-[root@localhost test]# cd ..
-[root@localhost soft]# du -s test
-1288    test
-[root@localhost soft]#
-</code></pre><p>###方便阅读的格式显示</p>
-<pre><code>[root@localhost soft]# du -h test
-608K    test/test6
-308K    test/test4
-4.0K    test/scf/lib
-4.0K    test/scf/service/deploy/product
-4.0K    test/scf/service/deploy/info
-12K     test/scf/service/deploy
-16K     test/scf/service
-4.0K    test/scf/doc
-4.0K    test/scf/bin
-32K     test/scf
-8.0K    test/test3
-1.3M    test
-[root@localhost soft]#
-</code></pre><p>###文件和目录都显示</p>
-<pre><code>[root@localhost soft]# du -ah test
-4.0K    test/log31.tar.gz
-4.0K    test/test13.tar.gz
-300K    test/test6/linklog.log
-4.0K    test/test6/log2013.log
-300K    test/test6/log2012.log
-608K    test/test6
-4.0K    test/test4/log2013.log
-300K    test/test4/log2012.log
-308K    test/test4
-4.0K    test/scf/lib
-4.0K    test/scf/service/deploy/product
-4.0K    test/scf/service/deploy/info
-12K     test/scf/service/deploy
-16K     test/scf/service
-4.0K    test/scf/doc
-4.0K    test/scf/bin
-32K     test/scf
-4.0K    test/log2013.log
-300K    test/log2012.log
-4.0K    test/log30.tar.gz
-4.0K    test/log.tar.bz2
-4.0K    test/log.tar.gz
-4.0K    test/test3/log2013.log
-8.0K    test/test3
-4.0K    test/scf.tar.gz
-1.3M    test
-[root@localhost soft]#
-</code></pre><p>###显示几个文件或目录各自占用磁盘空间的大小，还统计它们的总和</p>
-<pre><code>[root@localhost test]# du -c log30.tar.gz log31.tar.gz 
-4       log30.tar.gz
-4       log31.tar.gz
-8       总计
-[root@localhost test]#
-</code></pre><p>###按照空间大小排序</p>
-<pre><code>[root@localhost test]# du|sort -nr|more
-1288    .
-608     ./test6
-308     ./test4
-32      ./scf
-16      ./scf/service
-12      ./scf/service/deploy
-8       ./test3
-4       ./scf/service/deploy/product
-4       ./scf/service/deploy/info
-4       ./scf/lib
-4       ./scf/doc
-4       ./scf/bin
-[root@localhost test]#
-</code></pre><p>###输出当前目录下各个子目录所使用的空间</p>
-<pre><code>[root@localhost test]# du -h  --max-depth=1
-608K    ./test6
-308K    ./test4
-32K     ./scf
-8.0K    ./test3
-1.3M    .
-[root@localhost test]#
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/25/Linux进阶：让效率翻倍的Bash技巧（一）-历史命令操作篇/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/25/Linux进阶：让效率翻倍的Bash技巧（一）-历史命令操作篇/" itemprop="url">Linux进阶：让效率翻倍的Bash技巧（一）--历史命令操作篇</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-25T10:43:16+08:00">
-                2015-02-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>#Linux进阶：让效率翻倍的Bash技巧（一）–历史命令操作篇</p>
-<p>许多使用过Linux一段时间的人通过一些基础操作已经能够把Linux各方面基本玩转，但是如果没有经过系统学习的话就容易缺乏一些实战技巧。这系列文章介绍一些关于bash的能够提高效率的技巧，主要是关于历史命令操作和一些快捷键，让你在命令行下工作效率翻倍。</p>
-<p>##历史命令</p>
-<ul>
-<li><p>最基本的查看历史命令 history</p>
-<pre><code>[root@pc105 data_stucture]# history
-
-1009  ping www.baidu.com
-1010  ssh 192.168.1.225
-1011  who
-1012  ping www.github.com
-1013  history
-1014  ls
-1015  cd data_stucture/
-1016  ls
-1017  g++ example_list.c 
-1018  ls
-1019  ./a.out
-1020  ls
-</code></pre></li>
-<li><p>!n 编号为n的历史命令</p>
-</li>
-</ul>
-<p>不用再复制粘贴，或者照着历史记录敲了。执行历史命令记录里面的某个命令，只需要 ! + <code>这条命令记录前的序号</code>，比如</p>
-<pre><code>[root@pc105 data_stucture]# 1012
-</code></pre><p>这样就可以执行1012序号对应的命令 ping www.github.com</p>
-<pre><code>[root@pc105 data_stucture]# !1012
-ping www.github.com
-PING github.com (192.30.252.129) 56(84) bytes of data.
-64 bytes from github.com (192.30.252.129): icmp_seq=1 ttl=49 time=384 ms
-64 bytes from github.com (192.30.252.129): icmp_seq=2 ttl=49 time=397 ms
-</code></pre><ul>
-<li>!-n  倒数第n个历史命令</li>
-</ul>
-<p>你也可以用 <code>!  - （倒数第几个命令）</code>来执行历史命令，比如<code>!-1</code>就是倒数第一个命令，<code>!-3</code>就是倒数第三个命令</p>
-<pre><code>[root@pc105 michael]# du -sh data_stucture
-2.9M    data_stucture
-[root@pc105 michael]# cp -r data_stucture/ data_stucture_bak
-[root@pc105 michael]# clear
-[root@pc105 michael]# !-3
-du -sh data_stucture
-2.9M    data_stucture
-[root@pc105 michael]# 
-</code></pre><ul>
-<li>!!  上一条命令</li>
-</ul>
-<p>!! 表示上一条命令，相当于 !-1 。</p>
-<p>这是一个极为方便实用的命令，比如一条很长的命令而且需要管理员权限，但是好不容易敲完但忘记加sudo，这里就可以直接用 sudo !!来完成刚刚的那条复杂的命令加sudo</p>
-<ul>
-<li>!keyword  查找包含该keyword的历史命令</li>
-</ul>
-<p>如果想查找包含某个关键字的历史命令，可以这样做</p>
-<pre><code>!keyword
-</code></pre><p>查找包含keyword的历史命令，然后回车就能执行这条历史命令</p>
-<pre><code>[root@pc105 michael]# !ping
-ping www.github.com
-PING github.com (192.30.252.128) 56(84) bytes of data.
-64 bytes from github.com (192.30.252.128): icmp_seq=1 ttl=49 time=390 ms
-</code></pre><p><strong>但是其实这个操作是很危险的，假如你看错或者记混了历史命令，在回车前你其实不知道要查找出的是哪条历史命令，而回车后这条命令就执行了，没有机会给你看一下查找出的命令具体是什么就执行了。很危险，不推荐这样做，可以使用 MagicSpace（见下文） 或者使用Ctrl + R 反向查找 （推荐）</strong></p>
-<ul>
-<li>Ctrl + R  反向查找命令</li>
-</ul>
-<p>快捷键Ctrl + R ，然后输入要查找的关键字，输入的同时，bash就会动态地增量搜索，找到想要的历史命令后可以按回车执行，或者esc把这条提取命令出来但是不执行。再按Ctrl + R 则继续往后查找符合条件的命令。</p>
-<pre><code>[root@pc105 michael]# ^C
-(reverse-i-search)`ping&apos;: ^Cng www.github.com
-</code></pre><ul>
-<li>history | grep keyword  列出所有符合条件的命令</li>
-</ul>
-<p>Ctrl + R 无疑是最方便常用的历史记录搜索方式，但是当然也可以用 history | grep keyword 来查找所有的符合条件的记录，然后再结合刚刚的! 方法完成命令。</p>
-<p>注意，以上所说的包含 ! 的技巧都是可以与别的命令拼接在一起的， 比如</p>
-<p>sudo  !-3  , time  !472， sudo  !apt</p>
-<p>##关于历史记录的参数的技巧：</p>
-<ul>
-<li>!$  上一条命令的最后一条参数</li>
-</ul>
-<p>如果说你只想用上条命令的参数，一个个打出来又太繁复，就可以这样</p>
-<pre><code>[root@pc105 michael]# ls /root/michael/data_stucture
-a.out                 example_ev.c      example_tree.c  polynomial.h     stack.h
-balance_sign.c        example_list.c    hanoi.c         proc_self_exe.c  threaded_binary_tree.c
-binaryheap.c          example_poly.c    hash.c          queue.c          tmp_tree.c
-binaryheap.h          example_queue.c   hash.h          queue.h          tree.c
-core.25191            example_search.c  list.c          search.c         tree.h
-crumble_test.c        example_sort.c    list.h          sort.c           -v
-example_binaryheap.c  example_stack.c   polynomial.c    stack.c          yanghui_triangle.c
-[root@pc105 michael]# cd !$
-cd /root/michael/data_stucture
-[root@pc105 data_stucture]#
-</code></pre><p>当然这种情形下也有更简单的方法，等讲到快捷键部分再说</p>
-<ul>
-<li>!^  上一条命令的第一个参数</li>
-</ul>
-<p>$ 表示最后一个参数，而 ^就表示的是第一个参数</p>
-<p>!^ 在这样的一个应用场景里十分方便：你刚备份了一个配置文件，然后想编辑这个配置文件</p>
-<pre><code>[root@pc105 home]# cp nginx.conf nginx.conf.bak
-[root@pc105 home]# vim !^
-vim nginx.conf
-</code></pre><ul>
-<li>:n  第n个参数</li>
-</ul>
-<p>^与$表示第一个参数和最后一个参数，而 :n 就表示第n个参数，比如 !:2就表示上一条命令的第2个参数</p>
-<pre><code>[root@pc105 home]# cp -r tmp tmp-bak
-[root@pc105 home]# cd !:2
-cd tmp
-[root@pc105 tmp]# 
-</code></pre><p>注意，参数符号不仅是可以 !$、!^、!:n 这样用，这些关于参数的符号都是可以和!表达式任意组合使用的，比如</p>
-<p>cd  !762:2 （表示762号历史命令的第2个参数）</p>
-<p>ls  !-3^ （表示倒数第3个命令的第一个参数）</p>
-<p>dpkg  -L  !apt$  (表示搜索含apt的命令的最后一个参数）</p>
-<ul>
-<li>magic-space  让历史记录表达式和参数符号立即显出原形</li>
-</ul>
-<p>虽然历史记录表达式和参数符号使用起来简易方便，但是在包含这些表达式和符号的命令回车执行之前，你是并不知道这些表达式和符号到底代表的什么。为了解决这个问题，我们可以使用Magic-Space</p>
-<pre><code>bind Space:magic-space
-</code></pre><p>使用了这个设置后，在bash中输入历史记录表达式和参数符号后，按一下空格，这些表达式和符号就立即变成它们所代表的历史命令和参数，简称magic space。</p>
-<p>可以把这句放到.bashrc中，让设置持久生效（Mac是在.bash_profile）。</p>
-<ul>
-<li>命令前加空格，使之不计入history<ol>
-<li>$ vim /etc/.bashrc # 挑個喜歡的位置加入下述  <code>export HISTCONTROL=ignorespace</code></li>
-<li>$ source .bashrc # 或 重新登入</li>
-<li>$  mysql -u root -pPASSWORD # mysql 前面有一個空白, 那此行指令就不會被紀錄進 history</li>
-</ol>
-</li>
-</ul>
-<p>臨時要用的話, 直接執行 HISTCONTROL=ignorespace, 也是可以達到同樣效果.</p>
-<p>在命令前加空格，就可以避免改该命令计入history，小伙伴们就可以在不用清空history的前提下干一些坏事了。</p>
-<ul>
-<li>HISTSIZE=0  不记录命令</li>
-</ul>
-<p>如果不想记录命令，可以设置HISTSIZE=0。如果想恢复，可以在设置HISTSIZE为一个大于零的值（默认为500或者1000）</p>
-<ul>
-<li>HISTCONTROL=ignoredups  去除重复命令</li>
-</ul>
-<p>这样设置后，多次的同样的命令连续执行就会只记录一次。</p>
-<p>历史记录篇就暂时介绍到这，下篇快捷键篇会介绍更多Bash的技巧。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/12/cookie-和session-的区别/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/12/cookie-和session-的区别/" itemprop="url">cookie 和session 的区别</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-12T14:37:50+08:00">
-                2015-02-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/http/" itemprop="url" rel="index">
-                    <span itemprop="name">http</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>转载自<a href="http://www.cnblogs.com/shiyangxt/archive/2008/10/07/1305506.html" target="_blank" rel="external">这里</a>  </p>
-<p>当你在浏览网站的时候，WEB 服务器会先送一小小资料放在你的计算机上，Cookie 会把你在网站上所打的文字或是一些选择都纪录下来。当下次你再光临同一个网站，WEB 服务器会先看看有没有它上次留下的 Cookie 资料，有的话，就会依据 Cookie<br>里的内容来判断使用者，送出特定的网页内容给你。 Cookie 的使用很普遍，许多提供个人化服务的网站，都是利用 Cookie来辨认使用者，以方便送出使用者量身定做的内容，像是 Web 接口的免费 email 网站，都要用到 Cookie。</p>
-<p>具体来说cookie机制采用的是在客户端保持状态的方案，而session机制采用的是在服务器端保持状态的方案。</p>
-<p>同时我们也看到，由于采用服务器端保持状态的方案在客户端也需要保存一个标识，所以session机制可能需要借助于cookie机制来达到保存标识的目的，但实际上它还有其他选择。</p>
-<p>cookie机制。正统的cookie分发是通过扩展HTTP协议来实现的，服务器通过在HTTP的响应头中加上一行特殊的指示以提示浏览器按照指示生成相应的cookie。然而纯粹的客户端脚本如JavaScript或者VBScript也可以生成cookie。而cookie的使用是由浏览器按照一定的原则在后台自动发送给服务器的。浏览器检查所有存储的cookie，如果某个cookie所声明的作用范围大于等于将要请求的资源所在的位置，则把该cookie附在请求资源的HTTP请求头上发送给服务器。</p>
-<p>cookie的内容主要包括：名字，值，过期时间，路径和域。路径与域一起构成cookie的作用范围。若不设置过期时间，则表示这个cookie的生命期为浏览器会话期间，关闭浏览器窗口，cookie就消失。这种生命期为浏览器会话期的cookie被称为会话cookie。</p>
-<p>会话cookie一般不存储在硬盘上而是保存在内存里，当然这种行为并不是规范规定的。若设置了过期时间，浏览器就会把cookie保存到硬盘上，关闭后再次打开浏览器，这些cookie仍然有效直到超过设定的过期时间。存储在硬盘上的cookie可以在不同的浏览器进程间共享，比如两个IE窗口。而对于保存在内存里的cookie，不同的浏览器有不同的处理方式。</p>
-<p>session机制。session机制是一种服务器端的机制，服务器使用一种类似于散列表的结构（也可能就是使用散列表）来保存信息。</p>
-<p>当程序需要为某个客户端的请求创建一个session时，服务器首先检查这个客户端的请求里是否已包含了一个session标识（称为session id），如果已包含则说明以前已经为此客户端创建过session，服务器就按照session id把这个session检索出来<br>使用（检索不到，会新建一个），如果客户端请求不包含session id，则为此客户端创建一个session并且生成一个与此session相关联的session id，session id的值应该是一个既不会重复，又不容易被找到规律以仿造的字符串，这个session id将被在本次响应中返回给客户端保存。保存这个session id的方式可以采用cookie，这样在交互过程中浏览器可以自动的按照规则把这个标识发送给服务器。一般这个cookie的名字都是类似于SEEESIONID。但cookie可以被人为的禁止，则必须有其他机制以便在cookie被禁止时仍然能够把session id传递回服务器。</p>
-<p>经常被使用的一种技术叫做URL重写，就是把session id直接附加在URL路径的后面。还有一种技术叫做表单隐藏字段。就是服务器会自动修改表单，添加一个隐藏字段，以便在表单提交时能够把session id传递回服务器。比如： </p>
-<pre><code>&lt;form name=&quot;testform&quot; action=&quot;/xxx&quot;&gt; 
-&lt;input type=&quot;hidden&quot; name=&quot;jsessionid&quot; value=&quot;ByOK3vjFD75aPnrF7C2HmdnV6QZcEbzWoWiBYEnLerjQ99zWpBng!-145788764&quot;&gt; 
-&lt;input type=&quot;text&quot;&gt; 
-&lt;/form&gt; 
-</code></pre><p>实际上这种技术可以简单的用对action应用URL重写来代替。</p>
-<p>cookie 和session 的区别：</p>
-<ol>
-<li><p>cookie数据存放在客户的浏览器上，session数据放在服务器上。</p>
-</li>
-<li><p>cookie不是很安全，别人可以分析存放在本地的COOKIE并进行COOKIE欺骗<br>考虑到安全应当使用session。</p>
-</li>
-<li><p>session会在一定时间内保存在服务器上。当访问增多，会比较占用你服务器的性能<br>考虑到减轻服务器性能方面，应当使用COOKIE。</p>
-</li>
-<li><p>单个cookie保存的数据不能超过4K，很多浏览器都限制一个站点最多保存20个cookie。</p>
-</li>
-<li><p>所以个人建议：<br>将登陆信息等重要信息存放为SESSION<br>其他信息如果需要保留，可以放在COOKIE中</p>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/11/Python编程中常用的基础知识总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/11/Python编程中常用的基础知识总结/" itemprop="url">Python编程中常用的基础知识总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-11T10:34:19+08:00">
-                2015-02-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Python编程中常用的12种基础知识总结：遍历目录方法，列表按列排序、去重，字典排序，字典、列表、字符串互转，时间对象操作，命令行参数解析(getopt)，print 格式化输出，进制转换，Python调用系统命令或者脚本，Python 读写文件。</p>
-<p>##遍历目录方法<br>在某些时候，我们需要遍历某个目录找出特定的文件列表，可以通过os.walk方法来遍历，非常方便</p>
-<pre><code>import os
-fileList = []
-rootdir = &quot;/data&quot;
-for root, subFolders, files in os.walk(rootdir):
-    if &apos;.svn&apos; in subFolders: 
-        subFolders.remove(&apos;.svn&apos;)  # 排除特定目录
-    for file in files:
-        if file.find(&quot;.t2t&quot;) != -1:# 查找特定扩展名的文件
-            file_dir_path = os.path.join(root,file)
-            fileList.append(file_dir_path)  
-
-print fileList
-</code></pre><p>##列表按列排序(list sort)<br>如果列表的每个元素都是一个元组(tuple),我们要根据元组的某列来排序的话，可参考如下方法</p>
-<p>下面例子我们是根据元组的第2列和第3列数据来排序的,而且是倒序(reverse=True)</p>
-<pre><code>&gt;&gt;&gt; a = [(&apos;2011-03-17&apos;, &apos;2.26&apos;, 6429600, &apos;0.0&apos;), (&apos;2011-03-16&apos;, &apos;2.26&apos;, 12036900, &apos;-3.0&apos;),
- (&apos;2011-03-15&apos;, &apos;2.33&apos;, 15615500,&apos;-19.1&apos;)]
-&gt;&gt;&gt; print a[0][0]
-2011-03-17
-&gt;&gt;&gt; b = sorted(a, key=lambda result: result[1],reverse=True)
-&gt;&gt;&gt; print b
-[(&apos;2011-03-15&apos;, &apos;2.33&apos;, 15615500, &apos;-19.1&apos;), (&apos;2011-03-17&apos;, &apos;2.26&apos;, 6429600, &apos;0.0&apos;),
-(&apos;2011-03-16&apos;, &apos;2.26&apos;, 12036900, &apos;-3.0&apos;)]
-&gt;&gt;&gt; c = sorted(a, key=lambda result: result[2],reverse=True)
-&gt;&gt;&gt; print c
-[(&apos;2011-03-15&apos;, &apos;2.33&apos;, 15615500, &apos;-19.1&apos;), (&apos;2011-03-16&apos;, &apos;2.26&apos;, 12036900, &apos;-3.0&apos;),
-(&apos;2011-03-17&apos;, &apos;2.26&apos;, 6429600, &apos;0.0&apos;)]
-</code></pre><p>##列表去重(list uniq)<br>有时候需要将list中重复的元素删除，就要使用如下方法</p>
-<pre><code>&gt;&gt;&gt; lst= [(1,&apos;sss&apos;),(2,&apos;fsdf&apos;),(1,&apos;sss&apos;),(3,&apos;fd&apos;)]
-&gt;&gt;&gt; set(lst)
-set([(2, &apos;fsdf&apos;), (3, &apos;fd&apos;), (1, &apos;sss&apos;)])
-&gt;&gt;&gt;
-&gt;&gt;&gt; lst = [1, 1, 3, 4, 4, 5, 6, 7, 6]
-&gt;&gt;&gt; set(lst)
-set([1, 3, 4, 5, 6, 7])
-</code></pre><p>##字典排序(dict sort)<br>一般来说，我们都是根据字典的key来进行排序，但是我们如果想根据字典的value值来排序，就使用如下方法</p>
-<pre><code>&gt;&gt;&gt; from operator import itemgetter
-&gt;&gt;&gt; aa = {&quot;a&quot;:&quot;1&quot;,&quot;sss&quot;:&quot;2&quot;,&quot;ffdf&quot;:&apos;5&apos;,&quot;ffff2&quot;:&apos;3&apos;}
-&gt;&gt;&gt; sort_aa = sorted(aa.items(),key=itemgetter(1))
-&gt;&gt;&gt; sort_aa
-[(&apos;a&apos;, &apos;1&apos;), (&apos;sss&apos;, &apos;2&apos;), (&apos;ffff2&apos;, &apos;3&apos;), (&apos;ffdf&apos;, &apos;5&apos;)]
-或者：
-&gt;&gt;&gt; sort_aa = sorted(aa.items(), key=lambda result: result[1])
-</code></pre><p>##字典,列表,字符串互转<br>以下是生成数据库连接字符串,从字典转换到字符串</p>
-<pre><code>&gt;&gt;&gt; params = {&quot;server&quot;:&quot;mpilgrim&quot;, &quot;database&quot;:&quot;master&quot;, &quot;uid&quot;:&quot;sa&quot;, &quot;pwd&quot;:&quot;secret&quot;}
-&gt;&gt;&gt; [&quot;%s=%s&quot; % (k, v) for k, v in params.items()]
-[&apos;server=mpilgrim&apos;, &apos;uid=sa&apos;, &apos;database=master&apos;, &apos;pwd=secret&apos;]
-&gt;&gt;&gt; &quot;;&quot;.join([&quot;%s=%s&quot; % (k, v) for k, v in params.items()])
-&apos;server=mpilgrim;uid=sa;database=master;pwd=secret&apos;
-</code></pre><p>下面的例子 是将字符串转化为字典</p>
-<pre><code>&gt;&gt;&gt; a = &apos;server=mpilgrim;uid=sa;database=master;pwd=secret&apos;
-&gt;&gt;&gt; aa = {}
-&gt;&gt;&gt; for i in a.split(&apos;;&apos;):aa[i.split(&apos;=&apos;,1)[0]] = i.split(&apos;=&apos;,1)[1]  #split(&apos;=&apos;,1)表示按&apos;=&apos;分割1次
-...
-&gt;&gt;&gt; aa
-{&apos;pwd&apos;: &apos;secret&apos;, &apos;database&apos;: &apos;master&apos;, &apos;uid&apos;: &apos;sa&apos;, &apos;server&apos;: &apos;mpilgrim&apos;}
-</code></pre><p>##时间对象操作<br>    将时间对象转换成字符串</p>
-<pre><code>&gt;&gt;&gt; import datetime
-&gt;&gt;&gt; datetime.datetime.now().strftime(&quot;%Y-%m-%d %H:%M&quot;)
-  &apos;2011-01-20 14:05&apos;
-
-时间大小比较
-&gt;&gt;&gt; import time
-&gt;&gt;&gt; t1 = time.strptime(&apos;2011-01-20 14:05&apos;,&quot;%Y-%m-%d %H:%M&quot;)
-&gt;&gt;&gt; t2 = time.strptime(&apos;2011-01-20 16:05&apos;,&quot;%Y-%m-%d %H:%M&quot;)
-&gt;&gt;&gt; t1 &gt; t2
-  False
-&gt;&gt;&gt; t1 &lt; t2
-  True
-
-时间差值计算,计算8小时前的时间
-&gt;&gt;&gt; datetime.datetime.now().strftime(&quot;%Y-%m-%d %H:%M&quot;)
-  &apos;2011-01-20 15:02&apos;
-&gt;&gt;&gt; (datetime.datetime.now() - datetime.timedelta(hours=8)).strftime(&quot;%Y-%m-%d %H:%M&quot;)
-  &apos;2011-01-20 07:03&apos;
-
-将字符串转换成时间对象
-&gt;&gt;&gt; endtime=datetime.datetime.strptime(&apos;20100701&apos;,&quot;%Y%m%d&quot;)
-&gt;&gt;&gt; type(endtime)
-  &lt;type &apos;datetime.datetime&apos;&gt;
-&gt;&gt;&gt; print endtime
-  2010-07-01 00:00:00
-
-将从 1970-01-01 00:00:00 UTC 到现在的秒数，格式化输出   
-
-&gt;&gt;&gt; import time
-&gt;&gt;&gt; a = 1302153828
-&gt;&gt;&gt; time.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;,time.localtime(a))
-  &apos;2011-04-07 13:23:48&apos;
-</code></pre><p>##命令行参数解析(getopt)<br>通常在编写一些日运维脚本时，需要根据不同的条件，输入不同的命令行选项来实现不同的功能 在Python中提供了getopt模块很好的实现了命令行参数的解析,下面距离说明。请看如下程序:</p>
-<pre><code>#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-import sys,os,getopt
-def usage():
-print &apos;&apos;&apos;&apos;&apos;
-Usage: analyse_stock.py [options...]
-Options:
--e : Exchange Name
--c : User-Defined Category Name
--f : Read stock info from file and save to db
--d : delete from db by stock code
--n : stock name
--s : stock code
--h : this help info
-test.py -s haha -n &quot;HA Ha&quot;
-&apos;&apos;&apos;
-
-try:
-opts, args = getopt.getopt(sys.argv[1:],&apos;he:c:f:d:n:s:&apos;)
-except getopt.GetoptError:
-usage()
-sys.exit()
-if len(opts) == 0:
-usage()
-sys.exit()  
-
-for opt, arg in opts:
-if opt in (&apos;-h&apos;, &apos;--help&apos;):
-  usage()
-  sys.exit()
-elif opt == &apos;-d&apos;:
-  print &quot;del stock %s&quot; % arg
-elif opt == &apos;-f&apos;:
-  print &quot;read file %s&quot; % arg
-elif opt == &apos;-c&apos;:
-  print &quot;user-defined %s &quot; % arg
-elif opt == &apos;-e&apos;:
-  print &quot;Exchange Name %s&quot; % arg
-elif opt == &apos;-s&apos;:
-  print &quot;Stock code %s&quot; % arg
-elif opt == &apos;-n&apos;:
-  print &quot;Stock name %s&quot; % arg  
-
-sys.exit()
-</code></pre><p>##print 格式化输出</p>
-<pre><code>截取字符串输出,下面例子将只输出字符串的前3个字母
-&gt;&gt;&gt; str=&quot;abcdefg&quot;
-&gt;&gt;&gt; print &quot;%.3s&quot; % str
-  abc
-按固定宽度输出，不足使用空格补全,下面例子输出宽度为10
-&gt;&gt;&gt; str=&quot;abcdefg&quot;
-&gt;&gt;&gt; print &quot;%10s&quot; % str
-     abcdefg
-截取字符串，按照固定宽度输出
-&gt;&gt;&gt; str=&quot;abcdefg&quot;
-&gt;&gt;&gt; print &quot;%10.3s&quot; % str
-         abc
-浮点类型数据位数保留
-&gt;&gt;&gt; import fpformat
-&gt;&gt;&gt; a= 0.0030000000005
-&gt;&gt;&gt; b=fpformat.fix(a,6)
-&gt;&gt;&gt; print b
-  0.003000
-对浮点数四舍五入,主要使用到round函数
-&gt;&gt;&gt; from decimal import *
-&gt;&gt;&gt; a =&quot;2.26&quot;
-&gt;&gt;&gt; b =&quot;2.29&quot;
-&gt;&gt;&gt; c = Decimal(a) - Decimal(b)
-&gt;&gt;&gt; print c
-  -0.03
-&gt;&gt;&gt; c / Decimal(a) * 100
-  Decimal(&apos;-1.327433628318584070796460177&apos;)
-&gt;&gt;&gt; Decimal(str(round(c / Decimal(a) * 100, 2)))
-  Decimal(&apos;-1.33&apos;)
-</code></pre><h2 id="进制转换"><a href="#进制转换" class="headerlink" title="进制转换"></a>进制转换</h2><p>有些时候需要作不同进制转换，可以参考下面的例子(%x 十六进制,%d 十进制,%o 八进制)</p>
-<pre><code>&gt;&gt;&gt; num = 10
-&gt;&gt;&gt; print &quot;Hex = %x,Dec = %d,Oct = %o&quot; %(num,num,num)
-  Hex = a,Dec = 10,Oct = 12
-</code></pre><h2 id="Python调用系统命令或者脚本"><a href="#Python调用系统命令或者脚本" class="headerlink" title="Python调用系统命令或者脚本"></a>Python调用系统命令或者脚本</h2><pre><code>使用 os.system() 调用系统命令 , 程序中无法获得到输出和返回值
-&gt;&gt;&gt; import os
-&gt;&gt;&gt; os.system(&apos;ls -l /proc/cpuinfo&apos;)
-&gt;&gt;&gt; os.system(&quot;ls -l /proc/cpuinfo&quot;)
-  -r--r--r-- 1 root root 0  3月 29 16:53 /proc/cpuinfo
-  0
-
-使用 os.popen() 调用系统命令, 程序中可以获得命令输出，但是不能得到执行的返回值
-&gt;&gt;&gt; out = os.popen(&quot;ls -l /proc/cpuinfo&quot;)
-&gt;&gt;&gt; print out.read()
-  -r--r--r-- 1 root root 0  3月 29 16:59 /proc/cpuinfo  
-
-使用 commands.getstatusoutput() 调用系统命令, 程序中可以获得命令输出和执行的返回值
-&gt;&gt;&gt; import commands
-&gt;&gt;&gt; commands.getstatusoutput(&apos;ls /bin/ls&apos;)
-  (0, &apos;/bin/ls&apos;)
-</code></pre><p>##Python 读写文件</p>
-<pre><code>一次性读入文件到列表，速度较快，适用文件比较小的情况下
-track_file = &quot;track_stock.conf&quot;
-fd = open(track_file)
-content_list = fd.readlines()
-fd.close()
-for line in content_list:
-    print line  
-
-逐行读入，速度较慢,适用没有足够内存读取整个文件(文件太大)
-fd = open(file_path)
-fd.seek(0)
-title = fd.readline()
-keyword = fd.readline()
-uuid = fd.readline()
-fd.close()  
-
-写文件 write 与 writelines 的区别   
-
-Fd.write(str) : 把str写到文件中，write()并不会在str后加上一个换行符
-Fd.writelines(content) : 把content的内容全部写到文件中,原样写入，不会在每行后面加上任何东西
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/cookie/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/10/cookie/" itemprop="url">cookie</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-10T18:33:54+08:00">
-                2015-02-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/http/" itemprop="url" rel="index">
-                    <span itemprop="name">http</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>转载自<a href="http://www.cnblogs.com/TankXiao/archive/2013/04/15/2848906.html" target="_blank" rel="external">这里</a></p>
-<p>##网站自动登录<br>我们以”博客园自动登陆“的例子，来说明cookie是如何传递的。</p>
-<p>大家知道博客园是可以自动登陆的。 如下图，这个是什么原理呢?</p>
-<p><img src="/img/cookie1.png" alt=""></p>
-<p>假如我已经在登陆页面输入了用户名，密码，选择了保存密码，登陆。</p>
-<p>（这时候，其实在你的机器上保存好了登陆的cookie, 不信你可以按照上节介绍方法去你的电脑上找下博客园的cookie）  </p>
-<p>当我下次访问博客园流程如下。</p>
-<ol>
-<li><p>用户打开IE浏览器，在地址栏上输入www.cnblogs.com.</p>
-</li>
-<li><p>IE首先会在硬盘中查找关于cnblogs.com的cookie. 然后把cookie放到HTTP Request中，再把Request发给Web服务器。</p>
-</li>
-<li><p>Web服务器返回博客园首页（你会看到你已经登陆了）。</p>
-</li>
-</ol>
-<p><img src="/img/自动登录.png" alt=""></p>
-<p>##截获Cookie，冒充别人身份<br>通过上面这个例子，可以看到cookie是很重要的，识别是否是登陆用户，就是通过cookie。  假如截获了别人的cookie是否可以冒充他人的身份登陆呢？  当然可以， 这就是一种黑客技术叫Cookie欺骗。</p>
-<p>利用Cookie 欺骗， 不需要知道用户名密码。就可以直接登录，使用别人的账户做坏事。</p>
-<p>我知道有两种方法可以截获他人的cookie，</p>
-<ol>
-<li><p>通过XSS脚步攻击， 获取他人的cookie. 具体原理可以看 <a href="http://www.cnblogs.com/TankXiao/archive/2012/03/21/2337194.html" target="_blank" rel="external">Web安全性测试之XSS</a></p>
-</li>
-<li><p>想办法获取别人电脑上保存的cookie文件（这个比较难）</p>
-</li>
-</ol>
-<p>##Cookie 泄露隐私<br>2013年央视的315晚会上， 曝光了很多不法公司利用Cookie跟踪并采集用户的个人信息，并转卖给网络广告商，形成了一条窃取用户信息的灰色产业链。从而实现广告准确投放。严重干扰了用户的正常网络应用，侵害了个人的隐私和利益。</p>
-<p>我经常就在门户网站上发现广告位上显示的是我在电商网站上流量过的商品。  这就是我的cookie被泄露了。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/在浏览器输入url回车，和直接按F5刷新有什么区别/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/10/在浏览器输入url回车，和直接按F5刷新有什么区别/" itemprop="url">在浏览器输入url回车，和直接按F5刷新有什么区别</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-10T16:12:03+08:00">
-                2015-02-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/http/" itemprop="url" rel="index">
-                    <span itemprop="name">http</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>按F5刷新浏览器和在地址栏里输入网址然后回车。 这两个行为是不一样的。</p>
-<p>按F5刷新浏览器， 浏览器会去Web服务器验证缓存。</p>
-<p>如果是在地址栏输入网址然后回车，浏览器会”直接使用有效的缓存”, 而不会发http request 去服务器验证缓存，这种情况叫做缓存命中，如下图</p>
-<p><img src="/img/缓存命中.png" alt=""></p>
-<p>实例： 比较第一次访问博客园主页和第二次博客园主页</p>
-<ol>
-<li><p>启动Fiddler, 用firefox打开博客园主页， 发现有50多个session。</p>
-</li>
-<li><p>按CTRL+X将Fiddler中的所有session删除。 关闭firefox,重新打开一个firefox，打开博客园主页。   发现只有30多个session.</p>
-</li>
-</ol>
-<p>分析；  少了的session是因为firefox直接用了缓存，而没有发http request。</p>
-<p><img src="/img/第一次访问.png" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/http判断缓存是否有效，为什么有了last-modified还需要etag/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/10/http判断缓存是否有效，为什么有了last-modified还需要etag/" itemprop="url">http判断缓存是否有效，为什么有了last-modified还需要etag</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-10T15:49:54+08:00">
-                2015-02-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/http/" itemprop="url" rel="index">
-                    <span itemprop="name">http</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>If-Modified-Since：<br>作用： 把浏览器端缓存页面的最后修改时间发送到服务器去，服务器会把这个时间与服务器上实际文件的最后修改时间进行对比。如果时间一致，那么返回304，客户端就直接使用本地缓存文件。如果时间不一致，就会返回200和新的文件内容。客户端接到之后，会丢弃旧文件，把新文件缓存起来，并显示在浏览器中.</p>
-<p>ETag：<br>是实体标签（Entity Tag）的缩写， 根据实体内容生成的一段hash字符串（类似于MD5或者SHA1之后的结果），可以标识资源的状态。 当资源发送改变时，ETag也随之发生变化。</p>
-<p>ETag是Web服务端产生的，然后发给浏览器客户端。浏览器客户端是不用关心Etag是如何产生的。</p>
-<p>问题是，我们知道last-modified可以用来判断浏览器的本地缓存是否有效，那为什么还要使用ETag呢？ 主要是为了解决Last-Modified 无法解决的一些问题。</p>
-<ol>
-<li><p>某些服务器不能精确得到文件的最后修改时间， 这样就无法通过最后修改时间来判断文件是否更新了。</p>
-</li>
-<li><p>某些文件的修改非常频繁，在秒以下的时间内进行修改. Last-Modified只能精确到秒。</p>
-</li>
-<li><p>一些文件的最后修改时间改变了，但是内容并未改变。 我们不希望客户端认为这个文件修改了。</p>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/为什么http协议是无连接的/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/10/为什么http协议是无连接的/" itemprop="url">为什么http协议是无连接的</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-10T14:13:31+08:00">
-                2015-02-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/http/" itemprop="url" rel="index">
-                    <span itemprop="name">http</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>HTTP 协议本身是无连接的，虽然它使用了面向连接的 TCP 向上提供的服务。</p>
-<p> TCP的面向连接是传输层的，而HTTP的无连接则是应用层的 。HTTP协议产生于互联网，因此服务器需要处理同时面向全世界数十万、上百万客户端的网页访问，但每个客户端（即浏览器）与服务器之间交换数据的间歇性较大（即传输具有突发性、瞬时性），并且网页浏览的联想性、发散性导致两次传送的数据关联性很低，如果按照上面的方式，则需要在服务器端开的进程和句柄数目都是不可接受的，大部分通道实际上会很空闲、无端占用资源。因此HTTP的设计者有意利用这种特点将协议设计为请求时建连接、请求完释放连接，以尽快将资源释放出来服务其他客户端。HTTP1.1现在设计为长连接，就是在一个连接内可以发生多个请求，避免了多次建立断开连接造成的消耗。</p>
-<p>UDP尽管不象TCP那样占用资源，但它不保证数据的完整性、有序性，想像如果服务器返回的HTML错序了或者丢失一部分你将看到什么效果；并且UDP没有流量控制，而互联网的传输质量又不是很好，服务器随便仍出一大堆UDP包可能导致网络风暴，这是相当危险的。</p>
-<p>归根结底，TCP的面向连接是传输层的，而HTTP的无连接则是应用层的。</p>
-<hr>
-<p><strong>无状态</strong>是指协议对于事务处理没有记忆能力，服务器不知道客户端是什么状态。从另一方面讲，打开一个服务器上的网页和你之前打开这个服务器上的网页之间没有任何联系</p>
-<p>HTTP是一个无状态的面向连接的协议，无状态不代表HTTP不能保持TCP连接，更不能代表HTTP使用的是UDP协议（无连接）</p>
-<p>从HTTP/1.1起，默认都开启了Keep-Alive，保持连接特性，简单地说，当一个网页打开完成后，客户端和服务器之间用于传输HTTP数据的TCP连接不会关闭，如果客户端再次访问这个服务器上的网页，会继续使用这一条已经建立的连接</p>
-<p> Keep-Alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/05/TCP和UDP的工作过程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/05/TCP和UDP的工作过程/" itemprop="url">TCP和UDP的工作过程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-05T16:41:11+08:00">
-                2015-02-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
-                    <span itemprop="name">TCP/IP</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##TCP和UDP的工作过程<br>UDP的工作过程是简单的，仅仅将用户数据封装到一个IP数据报中发送到目的地而已，而不关注其他方面。</p>
-<p>TCP却是一个极其复杂的协议，以下只是冰山一角</p>
-<p>###建立连接的三次握手</p>
-<ul>
-<li>主动方发送（SYN J），进入SYN_SENT状态</li>
-<li>被动方收到（SYN J），并往回发送（SYN K, ACK J+1），进入SYN_RCVD状态</li>
-<li>主动方收到（SYN K, ACK J+1），并往回发送（ACK K+1），进入ESTABLISHED状态</li>
-<li>被动方收到（ACK K+1），也进入ESTABLISHED状态<br>以上过程如下图所示：</li>
-</ul>
-<p><img src="/img/establish.png" alt="establish"></p>
-<p>注意到在TCP三次握手的过程中，服务器有这么一条：</p>
+            <p>##递归解法<br>教课书上一般都是用斐波拉切数列来说明递归，但是用递归的方法来求解斐波拉切数列并不是一个好的方法，这主要是效率的问题。</p>
+<pre><code>long fibonacci(unsigned int n)
+{
+    if(n &lt;= 0)
+        return 0;
+
+    if(n == 1)
+        return 1;
+
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+</code></pre><p>这个方法的低效体现在哪里呢？我们不妨来分析一下fibnacci(8)的求解过程：</p>
+<p><img src="/img/fibonacci.png" alt="fibonacci"></p>
+<p>我们不难发现在这棵树中很多结点是重复的，而且重复的结点数会随着n的增大而急剧增加，这意味着计算量会随着n的睁大而急剧增大。事实上，用递归计算的时间复杂度是以n的指数的方式递增的。</p>
+<p>##循环解法<br>在这里，递归的缺陷在于重复计算了很多项，为了避免重复计算，我们可以使用循环：</p>
+<pre><code>long fibonacci_iterator(unsigned int n)
+{
+    int result[2] = {0, 1};
+    if(n &lt; 2)
+        return result[n];
+
+    long fib_one = 0;
+    long fib_two = 1;
+
+    long fib_num = 0;
+    int i;
+    for(i = 2; i &lt;= n; i++) {
+        fib_num = fib_one + fib_two;
+        fib_one = fib_two;
+        fib_two = fib_num;
+    }
+
+    return fib_num;
+}
+</code></pre><p>##测试程序</p>
+<pre><code>#define n 50
+int main(int argc, char **argv)
+{
+    clock_t start, end;
+    double times = 0;
+
+    start = clock();
+    printf(&quot;fibonacci(%d) = %d\n&quot;, n, fibonacci(n));
+    end = clock();
+    times = (double)(end - start) / CLOCKS_PER_SEC;
+    printf(&quot;The fibonacci took %fs\n&quot;, times);
+    start = clock();
+    printf(&quot;fibonacci(%d) = %d\n&quot;, n, fibonacci_iterator(n));
+    end = clock();
+    times = (double)(end - start) / CLOCKS_PER_SEC;
+    printf(&quot;The fibonacci_iterator took %fs\n&quot;, times);
+}
+</code></pre><p>输出为:</p>
 <blockquote>
-<p>被动方收到（SYN J），并往回发送（SYN K, ACK J+1），进入SYN_RCVD状态</p>
+<p>fibonacci(50) = 12586269025</p>
+<p>The fibonacci took 203.040000s</p>
+<p>fibonacci(50) = 12586269025</p>
+<p>The fibonacci_iterator took 0.000000s</p>
 </blockquote>
-<p>服务器进入<code>SYN_RCVD</code>状态（此时连接称为半开连接）后，应当期待再收到一个ACK。 如果超时未收到客户端的<code>ACK</code>，服务器将重发<code>（SYN K, ACK J+1）</code>。 于是，就有一种叫做<code>SYN Flooding</code>的攻击方式。 攻击者向服务器高速发送<code>（SYN J）</code>（而且可以将SYN分节中的IP地址设为随机数）， 并且在随后收到服务器回复的<code>（SYN K, ACK J+1）</code>之后不再继续回复， 这使得服务器上存在很多的半开连接，这些半开连接一般情况下会持续63秒 （在Linux下，默认重试次数为5次，重试的间隔时间从1s开始每次都翻倍，5次的重试时间间隔为1s, 2s, 4s, 8s, 16s，第5次发出后还要等32s才知道第5次也超时了，所以，总共需要 1s + 2s + 4s+ 8s+ 16s + 32s = 63s，TCP才会把断开这个连接）。 它的危害有两方面，一方面自然是占用了服务器的资源；另一方面是填充了半开连接的队列，使得合法的SYN分节无法排队。</p>
-<p>根据SYN Flooding的攻击原理，它的防范主要有以下措施：</p>
-<ol>
-<li>过滤掉最大嫌疑攻击的IP或IP段</li>
-<li>将tcp_synack_retries设为0，表示回应第二个握手包（SYN K, ACK J+1）给客户端后，如果收不到ACK，不进行重试，加快回收“半开连接”。</li>
-<li>将tcp_max_syn_backlog参数根据内存情况适当调大，该参数一般指的是维护的半开连接的队列的长度（不同OS不一样）。</li>
-<li>设置tcp_abort_on_overflow选项，处理不过来就直接拒绝掉。</li>
-</ol>
-<p>###断开连接的四次握手</p>
-<ol>
-<li>主动方发送<code>（FIN M）</code>，进入<code>FIN_WAIT_1</code>状态</li>
-<li>被动方收到<code>（FIN M）</code>，并往回发送<code>（ACK M+1）</code>，进入<code>CLOSE_WAIT</code>状态</li>
-<li>主动方收到<code>（ACK M+1）</code>，进入<code>FIN_WAIT_2</code>状态</li>
-<li>被动方发送<code>（FIN N）</code>，进入<code>LAST_ACK</code>状态</li>
-<li>主动方收到<code>（FIN N）</code>，并往回发送<code>（ACK N+1）</code>，进入<code>TIME_WAIT</code>状态</li>
-<li>被动方收到<code>（ACK N+1）</code>，进入<code>CLOSED</code>状态</li>
-<li>主动方在<code>TIME_WAIT</code>状态中超时后，进入<code>CLOSED</code>状态</li>
-</ol>
-<p>以上过程如下图所示：</p>
-<p><img src="/img/close.png" alt="close"></p>
-<p>其实就是2次，只不过TCP是全双工的，所以，发送方和接收方都需要FIN和ACK。 只不过，有一方是被动的，所以看上去就成了所谓的4次挥握手。</p>
-<p>注意到最后有这么一条涉及到TIME_WAIT的状态</p>
+<p>所以说，在这里用递归的话真是脑子被门夹了</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/24/重建二叉树/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/24/重建二叉树/" itemprop="url">重建二叉树</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-24T21:31:11+08:00">
+                2015-01-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##题目</p>
 <blockquote>
-<p>主动方在TIME_WAIT状态中超时后，进入CLOSED状态</p>
+<p>输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字，例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，应该重构出如下二叉树：</p>
+<p><img src="/img/tree.png" alt="tree"></p>
 </blockquote>
-<p>需要经过一个<code>TIME_WAIT</code>超时的状态而不是直接进入<code>CLOSED</code>的原因有两个，一是确保有足够的时间让对端收到<code>ACK</code>，二是允许老的分节在网络中慢慢的消逝。</p>
-<p>然而，如果系统中存在着大量的短链接，那么大量的<code>TIME_WAIT</code>状态就会成为系统的累赘。网上一些资料提到的<code>tcp_tw_reuse</code>和<code>tcp_tw_recycle</code>选项来解决这个问题，但是最好还是别乱用，好像<code>coolshell</code>中有提到过，可能会出很多诡异的问题。还可以调整<code>tcp_max_tw_buckets</code>，当并发的<code>TIME_WAIT</code>过多时，会直接把多的给destory掉，然后在日志里打一个警告。引用一句“其实，<code>TIME_WAIT</code>表示的是你主动断连接，所以，这就是所谓的<code>&quot;no zuo， no die&quot;</code>。</p>
-<p>##TCP连接在“非正常”情况下的工作状况</p>
-<p>###服务器进程终止</p>
-<p>首先，服务器进程终止（收到<code>SIGKILL</code>信号）。作为进程中止处理的工作之一，该进程所有打开着的描述符将被关闭，这会导致向对端（客户端）发送（<code>FIN N</code>），而客户端则回复（<code>ACK N+1</code>），这就是TCP断开连接的前半部分。</p>
-<p>然后，此时客户端收到（<code>FIN N</code>）并不意味着连接断开（虽然在这个例子中，确实断开了），只是意味着服务器不再向客户端发送数据了，客户端还可以继续向服务器发送数据。如果此时客户端还继续向服务器发送数据，服务器TCP将发现之前的打开该套接字的进程已终止，于是回应一个<code>RST</code>。客户端在收到这个<code>RST</code>之前的read操作将会返回EOF，在收到这个<code>RST</code>后的read操作会返回<code>ECONNRESET</code>错误，在收到这个<code>RST</code>后的write操作会使当前进程收到<code>SIGPIPE</code>信号。</p>
-<p>以上过程如下图所示：</p>
-<p><img src="/img/server_kill.png" alt="server_kill"></p>
-<p>###服务器主机崩溃</p>
-<p>服务器主机崩溃的意思是，没有任何预兆，来不及在网络上发送任何消息，主机就无法工作了。这种情况等价于直接切断网络，或者通俗的说，可以直接拔掉网线来模拟这一情况。</p>
-<p>这时，如果客户端向服务器发送数据，后调用read操作，TCP会一直等待服务器的ACK确认消息，并且不断的超时重传（按照Berkeley的实现，重传12次，共需9分钟），直到到达重传次数，返回<code>ETIMEOUT</code>错误。如果是由中间的路由器判定服务器主机不可达，响应“destination unreasonable”的ICMP消息，将返回<code>EHOSTUNREACH</code>和<code>ENETUNREACH</code>错误。</p>
-<p>###服务器主机崩溃后重启</p>
-<p>重启之后的服务器已经丢失了之前的TCP信息，所以即使收到了客户端发来的TCP数据，也会回复<code>RST</code>，往后的情况和“服务器主机崩溃”中提到的类似。</p>
-<p>###服务器主机关机</p>
-<p>Unix系统关机时，init进程通常会给其他进程发送<code>SIGTERM</code>信号，然后等待10s左右给仍在运行的进程发送<code>SIGKILL</code>信号。所以如果进程不捕获<code>SIGTERM</code>信号，则将由<code>SIGKILL</code>信号终止，和“服务器进程终止”中提到的类似。</p>
-<p>##参考链接<br><a href="http://coolshell.cn/articles/11564.html" target="_blank" rel="external">TCP 的那些事儿（上）</a></p>
-<p><a href="http://coolshell.cn/articles/11609.html" target="_blank" rel="external">TCP 的那些事儿（下）</a></p>
+<p>##答案</p>
+<ul>
+<li>前序遍历的第一个节点是树的根结点，所以<code>1</code>是树的根结点</li>
+<li>中序遍历的规则是：1.遍历左子树；2.根结点；3.遍历右子树。既然1是根结点，那么从中序遍历的输出可知：<code>4,7,2</code>在左子树中，<code>5,3,8,6</code>在右子树中</li>
+<li>前序遍历输出的第二个值是根结点的左子树的根结点，即<code>2</code>是左子树序列<code>4,7,2</code>的根结点，而在<code>2</code>左侧的<code>4,7</code>就是根结点<code>2</code>的左子树中的值了。同理<code>3</code>是根结点的右子树的根结点，<code>5</code>是以<code>3</code>为根结点的树的左子树中的值，<code>8,6</code>是右子树中的值</li>
+<li>下面只需要判断左子树中<code>4,7</code>和右子树中<code>8,6</code>的位置就可以了，易知，<code>4</code>是<code>2</code>的左儿子，<code>7</code>是<code>4</code>的右儿子。<code>6</code>是<code>3</code>的右儿子，<code>8</code>是<code>6</code>的左儿子。</li>
+<li>这是一个递归的过程，没分析一段，就将这一段当做一个完整的树来分析就很容易了</li>
+</ul>
+<p>实现的代码在<a href="https://github.com/michaelyou/data_structure/blob/master/tree.c" target="_blank" rel="external">这里Construct</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/23/剑指offer-QUESTIONS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/23/剑指offer-QUESTIONS/" itemprop="url">剑指offer-问题集锦</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-23T17:14:18+08:00">
+                2015-01-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="sizeof"><a href="#sizeof" class="headerlink" title="sizeof"></a>sizeof</h2><p>问：C++里定义一个空的类型，里面没有任何成员变量和成员函数。对该类型求sizeof，得到的结果是多少？</p>
+<p>答：1</p>
+<p>问：为什么不是0？</p>
+<p>答：空类型的实例中不包含任何信息，本来求sizeof应该是0，但是当我们声明该类型的实例的时候，它必须在内存中占有一定的空间，否则无法使用这些实例。至于占用多少内存，由编译器决定。Visual Studio中每个空类型的实例占用1字节的空间。</p>
+<p>问：如果在该类型中添加一个构造函数和析构函数，再对该类型求sizeof，得到的结果又是多少？</p>
+<p>答：和前面一样，还是1。调用构造函数和析构函数只需要知道函数的地址即可，而这些函数的地址只与类型相关，而与类型的实例无关，编译器也不会因为这两个函数而在实例内添加任何额外的信息。</p>
+<p>问：那如果把析构函数标记为虚函数呢？ </p>
+<p>答：C++编译器一旦发现一个类型中有虚函数，就会为该类型生成虚函数表，并在该类型的每一个实例中添加一个虚函数表的指针。在32位的机器上，一个指针占4字节的空间，因此求sizeof得到4；如果是64位的机器，一个指针占8字节的空间，因此求sizeof则得到8。</p>
+<h2 id="数组与指针"><a href="#数组与指针" class="headerlink" title="数组与指针"></a>数组与指针</h2><p>运行下面的代码，结果是什么？</p>
+<pre><code>int _tmain(int argc, _TCHAR* argv[])
+{
+    char str1[] = &quot;hello world&quot;;
+    char str2[] = &quot;hello world&quot;;
+
+    char* str3 = &quot;hello world&quot;;
+    char* str4 = &quot;hello world&quot;;
+
+    if(str1 == str2)
+        printf(&quot;str1 and str2 are same.\n&quot;);
+    else
+        printf(&quot;str1 and str2 are not same.\n&quot;);
+
+    if(str3 == str4)
+        printf(&quot;str3 and str4 are same.\n&quot;);
+    else
+        printf(&quot;str3 and str4 are not same.\n&quot;);
+
+    return 0;
+}
+</code></pre><p>str1和str2是两个字符串数组，我们会为它们分配两个长度为12个字节的空间，并把”hello world”的内容<strong><em>分别复制到数组</em></strong>中去。这是两个初始地址不同的数组，因此str1和str2的值也不相同，所以输出的第一行是”str1 and str2 are not same”。</p>
+<p>str3和str4是两个指针，我们无须为它们分配内存以存储字符串的内容，而只需要把它们指向”hello world”在内存中的地址就可以了。由于<strong><em>“hello world”是常量字符串，它在内存中只有一个拷贝，因此str3和str4指向的是同一个地址</em></strong>。所以比较str3和str4的值得到的结果是相同的，输出的第二行是”str3 and str4 are same”。</p>
+<h2 id="关于-amp-a-1-和-a-1"><a href="#关于-amp-a-1-和-a-1" class="headerlink" title="关于(&amp;a + 1)和*(a + 1)"></a>关于(&amp;a + 1)和*(a + 1)</h2><pre><code class="c">main()
+{
+<span class="keyword">int</span> a[<span class="number">5</span>]={<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>};
+<span class="keyword">int</span> *ptr=(<span class="keyword">int</span> *)(&amp;a+<span class="number">1</span>);
+<span class="built_in">printf</span>(<span class="string">"%d,%d"</span>,*(a+<span class="number">1</span>),*(ptr<span class="number">-1</span>));
+}
+</code></pre>
+<p>程序输出为：2,5</p>
+<p>解释：</p>
+<p><code>*(a+1)</code>其实很简单就是指<code>a[1]</code>,输出为2.</p>
+<p>问题关键就在于第二个点，<code>*(ptr-1)</code>输出为多少？</p>
+<p>解释如下，<code>&amp;a+1</code>不是首地址+1，系统会认为加了一个整个a数组，偏移了整个数组a的大小（也就是5个int的大小）。所以<code>int *ptr=(int *)(&amp;a+1)</code>;其实ptr实际是<code>&amp;(a[5])</code>,也就是<code>a+5</code>.</p>
+<p>原因为何呢？</p>
+<p><code>&amp;a</code>是数组指针，其类型为<code>int(*)[5]</code>;<br>而指针加1要根据指针类型加上一定的值，不同类型的指针+1之后增加的大小不同，a是长度为5的int数组指针，所以要加<code>5*sizeof(int)</code>，所以ptr实际是a[5],但是ptr与<code>（&amp;a+1）</code>类型是不一样的，这点非常重要，所以ptr-1只会减去<code>sizeof(int*)</code>,a，&amp;a的地址是一样的，但意思就不一样了，a是数组首地址，也就是<code>a[0]</code>的地址，&amp;a是对象（数组）首地址，<code>a+1</code>是数组下一元素的地址，即<code>a[1]</code>,<code>&amp;a+1</code>是下一个对象的地址，即<code>a[5]</code>。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/23/c语言中整数的溢出/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/23/c语言中整数的溢出/" itemprop="url">c语言中整数的溢出</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-23T10:49:40+08:00">
+                2015-01-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##概念<br>c语言中存在两类整数算术运算，<code>有符号运算</code>和<code>无符号运算</code>。在<code>无符号运算</code>里，没有了<code>符号位</code>，所以是没有<code>溢出</code>的概念的。</p>
+<p>所有的无符号运算都是以2的n次方为模。如果算术运算符的一个操作数是有符号数，另一个是无符号数，那么有符号数会被转换为无符号数(表示范围小的总是被转换为表示范围大的)，那么溢出也不会发生。但是，当两个操作数都是有符号数时，溢出就有可能发生。而且溢出的结果是未定义的。当一个运算的结果发生溢出时，任何假设都是不安全的。</p>
+<p>##如何检测溢出<br>例如，假定a和b是两个非负的整型变量(有符号)，我们需要检查a+b是否溢出，一种想当然的方式是:</p>
+<pre><code>if (a + b &lt; 0)
+溢出
+</code></pre><p>实际上，在现实世界里，这并不能正常运行。当a+b确实发生溢出时，所有关于结果如何的假设均不可靠。比如，在某些机器的cpu，加法运算将设置一个内部寄存器为四种状态:正，负，零和溢出。在这种机器上，c编译器完全有理由实现以上的例子，使得a+b返回的不是负，而是这个内存寄存器的溢出状态。显然，if的判断会失败。</p>
+<p>一种正确的方式是将a和b都强制转换为无符号整数：</p>
+<pre><code>if ( (unsigned)a + (unsigned)b  &gt; INT_MAX)
+溢出
+</code></pre><p>这里的<code>INT_MAX</code>值为有符号整型的最大值。在一般的编译器里是一个预定义的常量。ANSI C在<code>limits</code>里定义了<code>INT_MAX</code>，值为</p>
+<blockquote>
+<p>2的31次方 - 1. </p>
+</blockquote>
+<p>不需要用到无符号算数运算的另一种可行方法是：</p>
+<pre><code>if (a &gt; INT_MAX - b)
+溢出
+</code></pre><p>PS : 有符号数的最高位(31位)为符号位，最高位为0的时候，表示正，为1的时候表示负。运算时，符号位不参加运算，但是如果两个数相加，30位需要进1时，那么即表示溢出。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/22/free函数解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/22/free函数解析/" itemprop="url">free函数解析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-22T21:29:18+08:00">
+                2015-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##代码</p>
+<pre><code>#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+#include&lt;string.h&gt;
+void GetMemory(char **p,int num)
+{
+    *p = malloc(num);
+}
+int main()
+{
+    char *str = NULL;   
+    GetMemory(&amp;str, 100);   
+
+    strcpy(str, &quot;hello&quot;);   
+    free(str);
+
+    if (str != NULL)
+    {
+        strcpy(str, &quot;world&quot;);
+    }   
+    printf(&quot;\n str is %s&quot;, str);
+    getchar();
+}
+</code></pre><p>打印出来的结果是：str is world</p>
+<p>##解释<br>本题主要考察了对free的理解，总结一下就是3点</p>
+<ul>
+<li>free只是释放了malloc所申请的内存，并不改变指针的值</li>
+<li>由于指针所指向的内存已经被释放，所以其它代码有机会改写其中的内容，相当于该指针从此指向了自己无法控制的地方，也称为野指针</li>
+<li>为了避免失误，最好在free之后，将指针指向NULL</li>
+</ul>
 
           
         
@@ -2633,7 +2251,7 @@ Fd.writelines(content) : 把content的内容全部写到文件中,原样写入�
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/14/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/16/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/14/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/16/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2679,7 +2297,7 @@ Fd.writelines(content) : 把content的内容全部写到文件中,原样写入�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">193</span>
+                <span class="site-state-item-count">163</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

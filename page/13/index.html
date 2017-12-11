@@ -286,7 +286,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/06/如果-select-返回可读，结果只读到-0-字节，这是什么情况？/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/11/Python编程中常用的基础知识总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -305,7 +305,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/06/如果-select-返回可读，结果只读到-0-字节，这是什么情况？/" itemprop="url">如果 select 返回可读，结果只读到 0 字节，这是什么情况？</a></h1>
+                <a class="post-title-link" href="/2015/02/11/Python编程中常用的基础知识总结/" itemprop="url">Python编程中常用的基础知识总结</a></h1>
         
 
         <div class="post-meta">
@@ -317,8 +317,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-06T14:07:23+08:00">
-                2015-03-06
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-11T10:34:19+08:00">
+                2015-02-11
               </time>
             
 
@@ -340,8 +340,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
-                    <span itemprop="name">unix网络编程</span>
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
                   </a>
                 </span>
 
@@ -379,13 +379,203 @@
       
         
           
-            <p>对端关闭，可读，read 返回 0，表示已经读到文件末尾。</p>
+            <p>Python编程中常用的12种基础知识总结：遍历目录方法，列表按列排序、去重，字典排序，字典、列表、字符串互转，时间对象操作，命令行参数解析(getopt)，print 格式化输出，进制转换，Python调用系统命令或者脚本，Python 读写文件。</p>
+<h2 id="遍历目录方法"><a href="#遍历目录方法" class="headerlink" title="遍历目录方法"></a>遍历目录方法</h2><p>在某些时候，我们需要遍历某个目录找出特定的文件列表，可以通过os.walk方法来遍历，非常方便</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> os</div><div class="line">fileList = []</div><div class="line">rootdir = <span class="string">"/data"</span></div><div class="line"><span class="keyword">for</span> root, subFolders, files <span class="keyword">in</span> os.walk(rootdir):</div><div class="line">    <span class="keyword">if</span> <span class="string">'.svn'</span> <span class="keyword">in</span> subFolders: </div><div class="line">        subFolders.remove(<span class="string">'.svn'</span>)  <span class="comment"># 排除特定目录</span></div><div class="line">    <span class="keyword">for</span> file <span class="keyword">in</span> files:</div><div class="line">        <span class="keyword">if</span> file.find(<span class="string">".t2t"</span>) != <span class="number">-1</span>:<span class="comment"># 查找特定扩展名的文件</span></div><div class="line">            file_dir_path = os.path.join(root,file)</div><div class="line">            fileList.append(file_dir_path)  </div><div class="line">    </div><div class="line"><span class="keyword">print</span> fileList</div></pre></td></tr></table></figure>
+<h2 id="列表按列排序-list-sort"><a href="#列表按列排序-list-sort" class="headerlink" title="列表按列排序(list sort)"></a>列表按列排序(list sort)</h2><p>如果列表的每个元素都是一个元组(tuple),我们要根据元组的某列来排序的话，可参考如下方法</p>
+<p>下面例子我们是根据元组的第2列和第3列数据来排序的,而且是倒序(reverse=True)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>a = [(<span class="string">'2011-03-17'</span>, <span class="string">'2.26'</span>, <span class="number">6429600</span>, <span class="string">'0.0'</span>), (<span class="string">'2011-03-16'</span>, <span class="string">'2.26'</span>, <span class="number">12036900</span>, <span class="string">'-3.0'</span>),</div><div class="line"> (<span class="string">'2011-03-15'</span>, <span class="string">'2.33'</span>, <span class="number">15615500</span>,<span class="string">'-19.1'</span>)]</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> a[<span class="number">0</span>][<span class="number">0</span>]</div><div class="line"><span class="number">2011</span><span class="number">-03</span><span class="number">-17</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>b = sorted(a, key=<span class="keyword">lambda</span> result: result[<span class="number">1</span>],reverse=<span class="keyword">True</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> b</div><div class="line">[(<span class="string">'2011-03-15'</span>, <span class="string">'2.33'</span>, <span class="number">15615500</span>, <span class="string">'-19.1'</span>), (<span class="string">'2011-03-17'</span>, <span class="string">'2.26'</span>, <span class="number">6429600</span>, <span class="string">'0.0'</span>),</div><div class="line">(<span class="string">'2011-03-16'</span>, <span class="string">'2.26'</span>, <span class="number">12036900</span>, <span class="string">'-3.0'</span>)]</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>c = sorted(a, key=<span class="keyword">lambda</span> result: result[<span class="number">2</span>],reverse=<span class="keyword">True</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> c</div><div class="line">[(<span class="string">'2011-03-15'</span>, <span class="string">'2.33'</span>, <span class="number">15615500</span>, <span class="string">'-19.1'</span>), (<span class="string">'2011-03-16'</span>, <span class="string">'2.26'</span>, <span class="number">12036900</span>, <span class="string">'-3.0'</span>),</div><div class="line">(<span class="string">'2011-03-17'</span>, <span class="string">'2.26'</span>, <span class="number">6429600</span>, <span class="string">'0.0'</span>)]</div></pre></td></tr></table></figure>
+<h2 id="列表去重-list-uniq"><a href="#列表去重-list-uniq" class="headerlink" title="列表去重(list uniq)"></a>列表去重(list uniq)</h2><p>有时候需要将list中重复的元素删除，就要使用如下方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>lst= [(<span class="number">1</span>,<span class="string">'sss'</span>),(<span class="number">2</span>,<span class="string">'fsdf'</span>),(<span class="number">1</span>,<span class="string">'sss'</span>),(<span class="number">3</span>,<span class="string">'fd'</span>)]</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>set(lst)</div><div class="line">set([(<span class="number">2</span>, <span class="string">'fsdf'</span>), (<span class="number">3</span>, <span class="string">'fd'</span>), (<span class="number">1</span>, <span class="string">'sss'</span>)])</div><div class="line">&gt;&gt;&gt;</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>lst = [<span class="number">1</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">6</span>]</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>set(lst)</div><div class="line">set([<span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>])</div></pre></td></tr></table></figure>
+<h2 id="字典排序-dict-sort"><a href="#字典排序-dict-sort" class="headerlink" title="字典排序(dict sort)"></a>字典排序(dict sort)</h2><p>一般来说，我们都是根据字典的key来进行排序，但是我们如果想根据字典的value值来排序，就使用如下方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> operator <span class="keyword">import</span> itemgetter</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>aa = &#123;<span class="string">"a"</span>:<span class="string">"1"</span>,<span class="string">"sss"</span>:<span class="string">"2"</span>,<span class="string">"ffdf"</span>:<span class="string">'5'</span>,<span class="string">"ffff2"</span>:<span class="string">'3'</span>&#125;</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>sort_aa = sorted(aa.items(),key=itemgetter(<span class="number">1</span>))</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>sort_aa</div><div class="line">[(<span class="string">'a'</span>, <span class="string">'1'</span>), (<span class="string">'sss'</span>, <span class="string">'2'</span>), (<span class="string">'ffff2'</span>, <span class="string">'3'</span>), (<span class="string">'ffdf'</span>, <span class="string">'5'</span>)]</div><div class="line">或者：</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>sort_aa = sorted(aa.items(), key=<span class="keyword">lambda</span> result: result[<span class="number">1</span>])</div></pre></td></tr></table></figure>
+<h2 id="字典-列表-字符串互转"><a href="#字典-列表-字符串互转" class="headerlink" title="字典,列表,字符串互转"></a>字典,列表,字符串互转</h2><p>以下是生成数据库连接字符串,从字典转换到字符串</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>params = &#123;<span class="string">"server"</span>:<span class="string">"mpilgrim"</span>, <span class="string">"database"</span>:<span class="string">"master"</span>, <span class="string">"uid"</span>:<span class="string">"sa"</span>, <span class="string">"pwd"</span>:<span class="string">"secret"</span>&#125;</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>[<span class="string">"%s=%s"</span> % (k, v) <span class="keyword">for</span> k, v <span class="keyword">in</span> params.items()]</div><div class="line">[<span class="string">'server=mpilgrim'</span>, <span class="string">'uid=sa'</span>, <span class="string">'database=master'</span>, <span class="string">'pwd=secret'</span>]</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">";"</span>.join([<span class="string">"%s=%s"</span> % (k, v) <span class="keyword">for</span> k, v <span class="keyword">in</span> params.items()])</div><div class="line"><span class="string">'server=mpilgrim;uid=sa;database=master;pwd=secret'</span></div></pre></td></tr></table></figure>
+<p>下面的例子 是将字符串转化为字典</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">'server=mpilgrim;uid=sa;database=master;pwd=secret'</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>aa = &#123;&#125;</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> i <span class="keyword">in</span> a.split(<span class="string">';'</span>):aa[i.split(<span class="string">'='</span>,<span class="number">1</span>)[<span class="number">0</span>]] = i.split(<span class="string">'='</span>,<span class="number">1</span>)[<span class="number">1</span>]  <span class="comment">#split('=',1)表示按'='分割1次</span></div><div class="line">...</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>aa</div><div class="line">&#123;<span class="string">'pwd'</span>: <span class="string">'secret'</span>, <span class="string">'database'</span>: <span class="string">'master'</span>, <span class="string">'uid'</span>: <span class="string">'sa'</span>, <span class="string">'server'</span>: <span class="string">'mpilgrim'</span>&#125;</div></pre></td></tr></table></figure>
+<h2 id="时间对象操作"><a href="#时间对象操作" class="headerlink" title="时间对象操作"></a>时间对象操作</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">将时间对象转换成字符串</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> datetime</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>datetime.datetime.now().strftime(<span class="string">"%Y-%m-%d %H:%M"</span>)</div><div class="line">  <span class="string">'2011-01-20 14:05'</span></div><div class="line"> </div><div class="line">时间大小比较</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> time</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>t1 = time.strptime(<span class="string">'2011-01-20 14:05'</span>,<span class="string">"%Y-%m-%d %H:%M"</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>t2 = time.strptime(<span class="string">'2011-01-20 16:05'</span>,<span class="string">"%Y-%m-%d %H:%M"</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>t1 &gt; t2</div><div class="line">  <span class="keyword">False</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>t1 &lt; t2</div><div class="line">  <span class="keyword">True</span></div><div class="line"> </div><div class="line">时间差值计算,计算<span class="number">8</span>小时前的时间</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>datetime.datetime.now().strftime(<span class="string">"%Y-%m-%d %H:%M"</span>)</div><div class="line">  <span class="string">'2011-01-20 15:02'</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>(datetime.datetime.now() - datetime.timedelta(hours=<span class="number">8</span>)).strftime(<span class="string">"%Y-%m-%d %H:%M"</span>)</div><div class="line">  <span class="string">'2011-01-20 07:03'</span></div><div class="line"> </div><div class="line">将字符串转换成时间对象</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>endtime=datetime.datetime.strptime(<span class="string">'20100701'</span>,<span class="string">"%Y%m%d"</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>type(endtime)</div><div class="line">  &lt;type <span class="string">'datetime.datetime'</span>&gt;</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> endtime</div><div class="line">  <span class="number">2010</span><span class="number">-07</span><span class="number">-01</span> <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span></div><div class="line"> </div><div class="line">将从 <span class="number">1970</span><span class="number">-01</span><span class="number">-01</span> <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> UTC 到现在的秒数，格式化输出   </div><div class="line"> </div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> time</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">1302153828</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>time.strftime(<span class="string">"%Y-%m-%d %H:%M:%S"</span>,time.localtime(a))</div><div class="line">  <span class="string">'2011-04-07 13:23:48'</span></div></pre></td></tr></table></figure>
+<h2 id="命令行参数解析-getopt"><a href="#命令行参数解析-getopt" class="headerlink" title="命令行参数解析(getopt)"></a>命令行参数解析(getopt)</h2><p>通常在编写一些日运维脚本时，需要根据不同的条件，输入不同的命令行选项来实现不同的功能 在Python中提供了getopt模块很好的实现了命令行参数的解析,下面距离说明。请看如下程序:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"><span class="keyword">import</span> sys,os,getopt</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">usage</span><span class="params">()</span>:</span></div><div class="line"><span class="keyword">print</span> <span class="string">'''''</span></div><div class="line"><span class="string">Usage: analyse_stock.py [options...]</span></div><div class="line"><span class="string">Options:</span></div><div class="line"><span class="string">-e : Exchange Name</span></div><div class="line"><span class="string">-c : User-Defined Category Name</span></div><div class="line"><span class="string">-f : Read stock info from file and save to db</span></div><div class="line"><span class="string">-d : delete from db by stock code</span></div><div class="line"><span class="string">-n : stock name</span></div><div class="line"><span class="string">-s : stock code</span></div><div class="line"><span class="string">-h : this help info</span></div><div class="line"><span class="string">test.py -s haha -n "HA Ha"</span></div><div class="line"><span class="string">'''</span></div><div class="line"> </div><div class="line"><span class="keyword">try</span>:</div><div class="line">opts, args = getopt.getopt(sys.argv[<span class="number">1</span>:],<span class="string">'he:c:f:d:n:s:'</span>)</div><div class="line"><span class="keyword">except</span> getopt.GetoptError:</div><div class="line">usage()</div><div class="line">sys.exit()</div><div class="line"><span class="keyword">if</span> len(opts) == <span class="number">0</span>:</div><div class="line">usage()</div><div class="line">sys.exit()  </div><div class="line"> </div><div class="line"><span class="keyword">for</span> opt, arg <span class="keyword">in</span> opts:</div><div class="line"><span class="keyword">if</span> opt <span class="keyword">in</span> (<span class="string">'-h'</span>, <span class="string">'--help'</span>):</div><div class="line">  usage()</div><div class="line">  sys.exit()</div><div class="line"><span class="keyword">elif</span> opt == <span class="string">'-d'</span>:</div><div class="line">  <span class="keyword">print</span> <span class="string">"del stock %s"</span> % arg</div><div class="line"><span class="keyword">elif</span> opt == <span class="string">'-f'</span>:</div><div class="line">  <span class="keyword">print</span> <span class="string">"read file %s"</span> % arg</div><div class="line"><span class="keyword">elif</span> opt == <span class="string">'-c'</span>:</div><div class="line">  <span class="keyword">print</span> <span class="string">"user-defined %s "</span> % arg</div><div class="line"><span class="keyword">elif</span> opt == <span class="string">'-e'</span>:</div><div class="line">  <span class="keyword">print</span> <span class="string">"Exchange Name %s"</span> % arg</div><div class="line"><span class="keyword">elif</span> opt == <span class="string">'-s'</span>:</div><div class="line">  <span class="keyword">print</span> <span class="string">"Stock code %s"</span> % arg</div><div class="line"><span class="keyword">elif</span> opt == <span class="string">'-n'</span>:</div><div class="line">  <span class="keyword">print</span> <span class="string">"Stock name %s"</span> % arg  </div><div class="line"> </div><div class="line">sys.exit()</div></pre></td></tr></table></figure>
+<h2 id="print-格式化输出"><a href="#print-格式化输出" class="headerlink" title="print 格式化输出"></a>print 格式化输出</h2><pre><code>截取字符串输出,下面例子将只输出字符串的前3个字母
+</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>str=<span class="string">"abcdefg"</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> <span class="string">"%.3s"</span> % str</div><div class="line">  abc</div><div class="line">按固定宽度输出，不足使用空格补全,下面例子输出宽度为<span class="number">10</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>str=<span class="string">"abcdefg"</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> <span class="string">"%10s"</span> % str</div><div class="line">     abcdefg</div><div class="line">截取字符串，按照固定宽度输出</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>str=<span class="string">"abcdefg"</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> <span class="string">"%10.3s"</span> % str</div><div class="line">         abc</div><div class="line">浮点类型数据位数保留</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> fpformat</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>a= <span class="number">0.0030000000005</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>b=fpformat.fix(a,<span class="number">6</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> b</div><div class="line">  <span class="number">0.003000</span></div><div class="line">对浮点数四舍五入,主要使用到round函数</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> decimal <span class="keyword">import</span> *</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>a =<span class="string">"2.26"</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>b =<span class="string">"2.29"</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>c = Decimal(a) - Decimal(b)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> c</div><div class="line">  <span class="number">-0.03</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>c / Decimal(a) * <span class="number">100</span></div><div class="line">  Decimal(<span class="string">'-1.327433628318584070796460177'</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>Decimal(str(round(c / Decimal(a) * <span class="number">100</span>, <span class="number">2</span>)))</div><div class="line">  Decimal(<span class="string">'-1.33'</span>)</div></pre></td></tr></table></figure>
+<h2 id="进制转换"><a href="#进制转换" class="headerlink" title="进制转换"></a>进制转换</h2><p>有些时候需要作不同进制转换，可以参考下面的例子(%x 十六进制,%d 十进制,%o 八进制)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>num = <span class="number">10</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> <span class="string">"Hex = %x,Dec = %d,Oct = %o"</span> %(num,num,num)</div><div class="line">  Hex = a,Dec = <span class="number">10</span>,Oct = <span class="number">12</span></div></pre></td></tr></table></figure>
+<h2 id="Python调用系统命令或者脚本"><a href="#Python调用系统命令或者脚本" class="headerlink" title="Python调用系统命令或者脚本"></a>Python调用系统命令或者脚本</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">使用 os.system() 调用系统命令 , 程序中无法获得到输出和返回值</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> os</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>os.system(<span class="string">'ls -l /proc/cpuinfo'</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>os.system(<span class="string">"ls -l /proc/cpuinfo"</span>)</div><div class="line">  -r--r--r-- <span class="number">1</span> root root <span class="number">0</span>  <span class="number">3</span>月 <span class="number">29</span> <span class="number">16</span>:<span class="number">53</span> /proc/cpuinfo</div><div class="line">  <span class="number">0</span></div><div class="line"> </div><div class="line">使用 os.popen() 调用系统命令, 程序中可以获得命令输出，但是不能得到执行的返回值</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>out = os.popen(<span class="string">"ls -l /proc/cpuinfo"</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> out.read()</div><div class="line">  -r--r--r-- <span class="number">1</span> root root <span class="number">0</span>  <span class="number">3</span>月 <span class="number">29</span> <span class="number">16</span>:<span class="number">59</span> /proc/cpuinfo  </div><div class="line"> </div><div class="line">使用 commands.getstatusoutput() 调用系统命令, 程序中可以获得命令输出和执行的返回值</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> commands</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>commands.getstatusoutput(<span class="string">'ls /bin/ls'</span>)</div><div class="line">  (<span class="number">0</span>, <span class="string">'/bin/ls'</span>)</div></pre></td></tr></table></figure>
+<h2 id="Python-读写文件"><a href="#Python-读写文件" class="headerlink" title="Python 读写文件"></a>Python 读写文件</h2><pre><code class="python">一次性读入文件到列表，速度较快，适用文件比较小的情况下
+track_file = <span class="string">"track_stock.conf"</span>
+fd = open(track_file)
+content_list = fd.readlines()
+fd.close()
+<span class="keyword">for</span> line <span class="keyword">in</span> content_list:
+    <span class="keyword">print</span> line  
+
+逐行读入，速度较慢,适用没有足够内存读取整个文件(文件太大)
+fd = open(file_path)
+fd.seek(<span class="number">0</span>)
+title = fd.readline()
+keyword = fd.readline()
+uuid = fd.readline()
+fd.close()  
+
+写文件 write 与 writelines 的区别   
+
+Fd.write(str) : 把str写到文件中，write()并不会在str后加上一个换行符
+Fd.writelines(content) : 把content的内容全部写到文件中,原样写入，不会在每行后面加上任何东西
+</code></pre>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/在浏览器输入url回车，和直接按F5刷新有什么区别/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/10/在浏览器输入url回车，和直接按F5刷新有什么区别/" itemprop="url">在浏览器输入url回车，和直接按F5刷新有什么区别</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-10T16:12:03+08:00">
+                2015-02-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/http/" itemprop="url" rel="index">
+                    <span itemprop="name">http</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>按F5刷新浏览器和在地址栏里输入网址然后回车。 这两个行为是不一样的。</p>
+<p>按F5刷新浏览器， 浏览器会去Web服务器验证缓存。</p>
+<p>如果是在地址栏输入网址然后回车，浏览器会”直接使用有效的缓存”, 而不会发http request 去服务器验证缓存，这种情况叫做缓存命中，如下图</p>
+<p><img src="/img/缓存命中.png" alt=""></p>
+<p>实例： 比较第一次访问博客园主页和第二次博客园主页</p>
 <ol>
-<li>read返回0的唯一条件是对方gracefully close了socket</li>
-<li>select ＞ 0，表示套接字里有东西，</li>
-<li>read ＝ 0，表示里面的东西是“对方关闭连接”。</li>
+<li><p>启动Fiddler, 用firefox打开博客园主页， 发现有50多个session。</p>
+</li>
+<li><p>按CTRL+X将Fiddler中的所有session删除。 关闭firefox,重新打开一个firefox，打开博客园主页。   发现只有30多个session.</p>
+</li>
 </ol>
-<p>当select出错时，会将接口置为可读又可写。这时就要通过判断select的返回值为-1来区分。</p>
+<p>分析；  少了的session是因为firefox直接用了缓存，而没有发http request。</p>
+<p><img src="/img/第一次访问.png" alt=""></p>
 
           
         
@@ -434,7 +624,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/05/tcp并发服务器-区分监听套接字与已连接套接字/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/http判断缓存是否有效，为什么有了last-modified还需要etag/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -453,7 +643,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/05/tcp并发服务器-区分监听套接字与已连接套接字/" itemprop="url">tcp并发服务器--区分监听套接字与已连接套接字</a></h1>
+                <a class="post-title-link" href="/2015/02/10/http判断缓存是否有效，为什么有了last-modified还需要etag/" itemprop="url">http判断缓存是否有效，为什么有了last-modified还需要etag</a></h1>
         
 
         <div class="post-meta">
@@ -465,8 +655,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-05T16:43:08+08:00">
-                2015-03-05
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-10T15:49:54+08:00">
+                2015-02-10
               </time>
             
 
@@ -488,8 +678,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
-                    <span itemprop="name">unix网络编程</span>
+                  <a href="/categories/http/" itemprop="url" rel="index">
+                    <span itemprop="name">http</span>
                   </a>
                 </span>
 
@@ -527,21 +717,18 @@
       
         
           
-            <p>并发服务器中主服务器循环通过派生一个子进程来处理每个新的连接。如果一个子进程继续使用服务器众所周知的端口来服务一个长时间的请求，那将发生什么？让我们来看一个典型的序列。首先，在主机freebsd上启动服务器，该主机是多宿的，其IP地址为12.106.32.254和192.168.42.1。服务器在它的众所周知的端口（本例为21）上执行被动打开，从而开始等待客户的请求，如图1所示。</p>
-<p><img src="/img/TCP服务器在端口21上执行被动打开.png" alt="图1-TCP服务器在端口21上执行被动打开"></p>
-<p>我们使用记号<code>{*:21, *:*}</code>指出服务器的套接字对。服务器在任意本地接口（第一个星号）的端口21上等待连接请求。外地IP地址和外地端口都没有指定，我们用<code>&quot;*.*&quot;</code>来表示。我们称它为监听套接字（listening socket）。</p>
-<blockquote>
-<p>我们用冒号来分割IP地址和端口号，因为这是HTTP的用法，其他地方也常见。netstat程序使用点号来分割IP地址和端口号，不过如此表示有时候会让人混淆，因为点号既用于域名（如freebsd.unpbook.com.21），也用于IPv4的点分十进制数记法（如12.106.32. 254.21）。</p>
-</blockquote>
-<p>这里指定本地IP地址的星号称为通配（wildcard）符。如果运行服务器的主机是多宿的（如本例），服务器可以指定它只接受到达某个特定本地接口的外来连接。这里要么选一个接口要么选任意接口。服务器不能指定一个包含多个地址的清单。通配的本地地址表示”任意”这个选择。通配地址通过在调用bind之前把套接字地址结构中的IP地址字段设置成INADDR_ANY来指定。</p>
-<p>稍后在IP地址为206.168.112.219的主机上启动第一个客户，它对服务器的IP地址之一12.106.32.254执行主动打开。我们假设本例中客户主机的TCP为此选择的临时端口为1500，如图2-12所示。图中在该客户的下方标出了它的套接字对。</p>
-<p><img src="/img/客户对服务器的连接请求.png" alt="图2-客户对服务器的连接请求"></p>
-<p>当服务器接收并接受这个客户的连接时，它fork一个自身的副本，让子进程来处理该客户的请求，如图3所示。  </p>
-<p>至此，我们必须在服务器主机上区分监听套接字和已连接套接字（connected socket）。注意已连接套接字使用与监听套接字相同的本地端口（21）。还要注意在多宿服务器主机上，连接一旦建立，已连接套接字的本地地址（12.106.32.254）随即填入。</p>
-<p><img src="/img/并发服务器让子进程处理客户.png" alt="图3-并发服务器让子进程处理客户"></p>
-<p>下一步我们假设在客户主机上另有一个客户请求连接到同一个服务器。客户主机的TCP为这个新客户的套接字分配一个未使用的临时端口，譬如说1501，如图4所示。服务器上这两个连接是有区别的：第一个连接的套接字对和第二个连接的套接字对不一样，因为客户的TCP给第二个连接选择了一个未使用的端口（1501）。</p>
-<p><img src="/img/第二个客户与同一个服务器的连接.png" alt="图4-第二个客户与同一个服务器的连接"></p>
-<p>通过本例应注意，TCP无法仅仅通过查看目的端口号来分离外来的分节到不同的端点。它必须查看套接字对的所有4个元素才能确定由哪个端点接收某个到达的分节。图4中对于同一个本地端口（21）存在3个套接字。如果一个分节来自206.168.112.219端口1500，目的地为12.106.32.254端口21，它就被递送给第一个子进程。如果一个分节来自206.168.112.219端口1501，目的地为12.106.32.254端口21，它就被递送给第二个子进程。所有目的端口为21的其他TCP分节都被递送给拥有监听套接字的最初那个服务器（父进程）。</p>
+            <p>If-Modified-Since：<br>作用： 把浏览器端缓存页面的最后修改时间发送到服务器去，服务器会把这个时间与服务器上实际文件的最后修改时间进行对比。如果时间一致，那么返回304，客户端就直接使用本地缓存文件。如果时间不一致，就会返回200和新的文件内容。客户端接到之后，会丢弃旧文件，把新文件缓存起来，并显示在浏览器中.</p>
+<p>ETag：<br>是实体标签（Entity Tag）的缩写， 根据实体内容生成的一段hash字符串（类似于MD5或者SHA1之后的结果），可以标识资源的状态。 当资源发送改变时，ETag也随之发生变化。</p>
+<p>ETag是Web服务端产生的，然后发给浏览器客户端。浏览器客户端是不用关心Etag是如何产生的。</p>
+<p>问题是，我们知道last-modified可以用来判断浏览器的本地缓存是否有效，那为什么还要使用ETag呢？ 主要是为了解决Last-Modified 无法解决的一些问题。</p>
+<ol>
+<li><p>某些服务器不能精确得到文件的最后修改时间， 这样就无法通过最后修改时间来判断文件是否更新了。</p>
+</li>
+<li><p>某些文件的修改非常频繁，在秒以下的时间内进行修改. Last-Modified只能精确到秒。</p>
+</li>
+<li><p>一些文件的最后修改时间改变了，但是内容并未改变。 我们不希望客户端认为这个文件修改了。</p>
+</li>
+</ol>
 
           
         
@@ -590,7 +777,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/05/建立tcp连接就好像打电话/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/为什么http协议是无连接的/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -609,7 +796,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/05/建立tcp连接就好像打电话/" itemprop="url">建立tcp连接就好像打电话</a></h1>
+                <a class="post-title-link" href="/2015/02/10/为什么http协议是无连接的/" itemprop="url">为什么http协议是无连接的</a></h1>
         
 
         <div class="post-meta">
@@ -621,8 +808,158 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-05T15:31:01+08:00">
-                2015-03-05
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-10T14:13:31+08:00">
+                2015-02-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/http/" itemprop="url" rel="index">
+                    <span itemprop="name">http</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>HTTP 协议本身是无连接的，虽然它使用了面向连接的 TCP 向上提供的服务。</p>
+<p> TCP的面向连接是传输层的，而HTTP的无连接则是应用层的 。HTTP协议产生于互联网，因此服务器需要处理同时面向全世界数十万、上百万客户端的网页访问，但每个客户端（即浏览器）与服务器之间交换数据的间歇性较大（即传输具有突发性、瞬时性），并且网页浏览的联想性、发散性导致两次传送的数据关联性很低，如果按照上面的方式，则需要在服务器端开的进程和句柄数目都是不可接受的，大部分通道实际上会很空闲、无端占用资源。因此HTTP的设计者有意利用这种特点将协议设计为请求时建连接、请求完释放连接，以尽快将资源释放出来服务其他客户端。HTTP1.1现在设计为长连接，就是在一个连接内可以发生多个请求，避免了多次建立断开连接造成的消耗。</p>
+<p>UDP尽管不象TCP那样占用资源，但它不保证数据的完整性、有序性，想像如果服务器返回的HTML错序了或者丢失一部分你将看到什么效果；并且UDP没有流量控制，而互联网的传输质量又不是很好，服务器随便仍出一大堆UDP包可能导致网络风暴，这是相当危险的。</p>
+<p>归根结底，TCP的面向连接是传输层的，而HTTP的无连接则是应用层的。</p>
+<hr>
+<p><strong>无状态</strong>是指协议对于事务处理没有记忆能力，服务器不知道客户端是什么状态。从另一方面讲，打开一个服务器上的网页和你之前打开这个服务器上的网页之间没有任何联系</p>
+<p>HTTP是一个无状态的面向连接的协议，无状态不代表HTTP不能保持TCP连接，更不能代表HTTP使用的是UDP协议（无连接）</p>
+<p>从HTTP/1.1起，默认都开启了Keep-Alive，保持连接特性，简单地说，当一个网页打开完成后，客户端和服务器之间用于传输HTTP数据的TCP连接不会关闭，如果客户端再次访问这个服务器上的网页，会继续使用这一条已经建立的连接</p>
+<p> Keep-Alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/05/TCP和UDP的工作过程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/05/TCP和UDP的工作过程/" itemprop="url">TCP和UDP的工作过程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-05T16:41:11+08:00">
+                2015-02-05
               </time>
             
 
@@ -683,16 +1020,62 @@
       
         
           
-            <p>建立TCP连接就好比一个电话系统［Nemeth 1997］。</p>
+            <p>##TCP和UDP的工作过程<br>UDP的工作过程是简单的，仅仅将用户数据封装到一个IP数据报中发送到目的地而已，而不关注其他方面。</p>
+<p>TCP却是一个极其复杂的协议，以下只是冰山一角</p>
+<p>###建立连接的三次握手</p>
 <ul>
-<li>socket函数等同于有电话可用。</li>
-<li>bind函数是在告诉别人你的电话号码，这样他们可以呼叫你。</li>
-<li>listen函数是打开电话振铃，这样当有一个外来呼叫到达时，你就可以听到。</li>
-<li>connect函数要求我们知道对方的电话号码并拨打它。</li>
-<li>accept函数发生在被呼叫的人应答电话之时。</li>
+<li>主动方发送（SYN J），进入SYN_SENT状态</li>
+<li>被动方收到（SYN J），并往回发送（SYN K, ACK J+1），进入SYN_RCVD状态</li>
+<li>主动方收到（SYN K, ACK J+1），并往回发送（ACK K+1），进入ESTABLISHED状态</li>
+<li>被动方收到（ACK K+1），也进入ESTABLISHED状态<br>以上过程如下图所示：</li>
 </ul>
-<p>由accept返回客户的标识（即客户的IP地址和端口号）类似于让电话机的呼叫者ID功能部件显示呼叫者的电话号码。然而两者的不同之处在于accept只在连接建立之后返回客户的标识，而呼叫者ID功能部件却在我们选择应答或不应答电话之前显示呼叫者的电话号码。如果使用域名系统DNS（见第11章），它就提供了一种类似于电话簿的服务。getaddrinfo类似于在电话簿中查找某个人的电话号码，getnameinfo则类似于有一本按照电话号码而不是按照用户名排序的电话簿。</p>
-<p>《unix网络编程》-p32</p>
+<p><img src="/img/establish.png" alt="establish"></p>
+<p>注意到在TCP三次握手的过程中，服务器有这么一条：</p>
+<blockquote>
+<p>被动方收到（SYN J），并往回发送（SYN K, ACK J+1），进入SYN_RCVD状态</p>
+</blockquote>
+<p>服务器进入<code>SYN_RCVD</code>状态（此时连接称为半开连接）后，应当期待再收到一个ACK。 如果超时未收到客户端的<code>ACK</code>，服务器将重发<code>（SYN K, ACK J+1）</code>。 于是，就有一种叫做<code>SYN Flooding</code>的攻击方式。 攻击者向服务器高速发送<code>（SYN J）</code>（而且可以将SYN分节中的IP地址设为随机数）， 并且在随后收到服务器回复的<code>（SYN K, ACK J+1）</code>之后不再继续回复， 这使得服务器上存在很多的半开连接，这些半开连接一般情况下会持续63秒 （在Linux下，默认重试次数为5次，重试的间隔时间从1s开始每次都翻倍，5次的重试时间间隔为1s, 2s, 4s, 8s, 16s，第5次发出后还要等32s才知道第5次也超时了，所以，总共需要 1s + 2s + 4s+ 8s+ 16s + 32s = 63s，TCP才会把断开这个连接）。 它的危害有两方面，一方面自然是占用了服务器的资源；另一方面是填充了半开连接的队列，使得合法的SYN分节无法排队。</p>
+<p>根据SYN Flooding的攻击原理，它的防范主要有以下措施：</p>
+<ol>
+<li>过滤掉最大嫌疑攻击的IP或IP段</li>
+<li>将tcp_synack_retries设为0，表示回应第二个握手包（SYN K, ACK J+1）给客户端后，如果收不到ACK，不进行重试，加快回收“半开连接”。</li>
+<li>将tcp_max_syn_backlog参数根据内存情况适当调大，该参数一般指的是维护的半开连接的队列的长度（不同OS不一样）。</li>
+<li>设置tcp_abort_on_overflow选项，处理不过来就直接拒绝掉。</li>
+</ol>
+<p>###断开连接的四次握手</p>
+<ol>
+<li>主动方发送<code>（FIN M）</code>，进入<code>FIN_WAIT_1</code>状态</li>
+<li>被动方收到<code>（FIN M）</code>，并往回发送<code>（ACK M+1）</code>，进入<code>CLOSE_WAIT</code>状态</li>
+<li>主动方收到<code>（ACK M+1）</code>，进入<code>FIN_WAIT_2</code>状态</li>
+<li>被动方发送<code>（FIN N）</code>，进入<code>LAST_ACK</code>状态</li>
+<li>主动方收到<code>（FIN N）</code>，并往回发送<code>（ACK N+1）</code>，进入<code>TIME_WAIT</code>状态</li>
+<li>被动方收到<code>（ACK N+1）</code>，进入<code>CLOSED</code>状态</li>
+<li>主动方在<code>TIME_WAIT</code>状态中超时后，进入<code>CLOSED</code>状态</li>
+</ol>
+<p>以上过程如下图所示：</p>
+<p><img src="/img/close.png" alt="close"></p>
+<p>其实就是2次，只不过TCP是全双工的，所以，发送方和接收方都需要FIN和ACK。 只不过，有一方是被动的，所以看上去就成了所谓的4次挥握手。</p>
+<p>注意到最后有这么一条涉及到TIME_WAIT的状态</p>
+<blockquote>
+<p>主动方在TIME_WAIT状态中超时后，进入CLOSED状态</p>
+</blockquote>
+<p>需要经过一个<code>TIME_WAIT</code>超时的状态而不是直接进入<code>CLOSED</code>的原因有两个，一是确保有足够的时间让对端收到<code>ACK</code>，二是允许老的分节在网络中慢慢的消逝。</p>
+<p>然而，如果系统中存在着大量的短链接，那么大量的<code>TIME_WAIT</code>状态就会成为系统的累赘。网上一些资料提到的<code>tcp_tw_reuse</code>和<code>tcp_tw_recycle</code>选项来解决这个问题，但是最好还是别乱用，好像<code>coolshell</code>中有提到过，可能会出很多诡异的问题。还可以调整<code>tcp_max_tw_buckets</code>，当并发的<code>TIME_WAIT</code>过多时，会直接把多的给destory掉，然后在日志里打一个警告。引用一句“其实，<code>TIME_WAIT</code>表示的是你主动断连接，所以，这就是所谓的<code>&quot;no zuo， no die&quot;</code>。</p>
+<p>##TCP连接在“非正常”情况下的工作状况</p>
+<p>###服务器进程终止</p>
+<p>首先，服务器进程终止（收到<code>SIGKILL</code>信号）。作为进程中止处理的工作之一，该进程所有打开着的描述符将被关闭，这会导致向对端（客户端）发送（<code>FIN N</code>），而客户端则回复（<code>ACK N+1</code>），这就是TCP断开连接的前半部分。</p>
+<p>然后，此时客户端收到（<code>FIN N</code>）并不意味着连接断开（虽然在这个例子中，确实断开了），只是意味着服务器不再向客户端发送数据了，客户端还可以继续向服务器发送数据。如果此时客户端还继续向服务器发送数据，服务器TCP将发现之前的打开该套接字的进程已终止，于是回应一个<code>RST</code>。客户端在收到这个<code>RST</code>之前的read操作将会返回EOF，在收到这个<code>RST</code>后的read操作会返回<code>ECONNRESET</code>错误，在收到这个<code>RST</code>后的write操作会使当前进程收到<code>SIGPIPE</code>信号。</p>
+<p>以上过程如下图所示：</p>
+<p><img src="/img/server_kill.png" alt="server_kill"></p>
+<p>###服务器主机崩溃</p>
+<p>服务器主机崩溃的意思是，没有任何预兆，来不及在网络上发送任何消息，主机就无法工作了。这种情况等价于直接切断网络，或者通俗的说，可以直接拔掉网线来模拟这一情况。</p>
+<p>这时，如果客户端向服务器发送数据，后调用read操作，TCP会一直等待服务器的ACK确认消息，并且不断的超时重传（按照Berkeley的实现，重传12次，共需9分钟），直到到达重传次数，返回<code>ETIMEOUT</code>错误。如果是由中间的路由器判定服务器主机不可达，响应“destination unreasonable”的ICMP消息，将返回<code>EHOSTUNREACH</code>和<code>ENETUNREACH</code>错误。</p>
+<p>###服务器主机崩溃后重启</p>
+<p>重启之后的服务器已经丢失了之前的TCP信息，所以即使收到了客户端发来的TCP数据，也会回复<code>RST</code>，往后的情况和“服务器主机崩溃”中提到的类似。</p>
+<p>###服务器主机关机</p>
+<p>Unix系统关机时，init进程通常会给其他进程发送<code>SIGTERM</code>信号，然后等待10s左右给仍在运行的进程发送<code>SIGKILL</code>信号。所以如果进程不捕获<code>SIGTERM</code>信号，则将由<code>SIGKILL</code>信号终止，和“服务器进程终止”中提到的类似。</p>
+<p>##参考链接<br><a href="http://coolshell.cn/articles/11564.html" target="_blank" rel="external">TCP 的那些事儿（上）</a></p>
+<p><a href="http://coolshell.cn/articles/11609.html" target="_blank" rel="external">TCP 的那些事儿（下）</a></p>
 
           
         
@@ -741,7 +1124,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/05/unix的errno值/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/05/十个我希望早点知道的python方法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -760,7 +1143,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/05/unix的errno值/" itemprop="url">unix的errno值</a></h1>
+                <a class="post-title-link" href="/2015/02/05/十个我希望早点知道的python方法/" itemprop="url">十个我希望早点知道的python方法</a></h1>
         
 
         <div class="post-meta">
@@ -772,8 +1155,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-05T15:26:46+08:00">
-                2015-03-05
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-05T14:38:37+08:00">
+                2015-02-05
               </time>
             
 
@@ -795,8 +1178,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
-                    <span itemprop="name">unix网络编程</span>
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
                   </a>
                 </span>
 
@@ -834,15 +1217,198 @@
       
         
           
-            <ol>
-<li><p>只要一个Unix函数中有错误发生，全局变量errno就被置为一个指明该错误类型的正值，函数本身则通常返回-1。</p>
-</li>
-<li><p>errno的值只在函数发生错误时设置。如果函数不返回错误，errno的值就没有定义。errno的所有正数错误值都是常值，具有以“E”开头的全大写字母名字，并通常在<sys errno.h="">头文件中定义。值0不表示任何错误。</sys></p>
-</li>
-<li><p>在全局变量中存放errno值对于共享所有全局变量的多个线程并不适合。线程函数遇到错误时并不设置标准Unix的errno变量，而是把errno的值作为函数返回值返回给调用者。这意味着每次调用以<code>pthread_</code>开头的某个函数时，我们必须分配一个变量来存放函数返回值，以便在调用err_sys前把errno变量设置成该值。</p>
-</li>
-</ol>
+            <p>原文在<a href="http://nbviewer.ipython.org/github/Prooffreader/Misc_ipynb/blob/master/top_10_python_idioms.ipynb" target="_blank" rel="external">这里</a></p>
+<p>##在Python 2中使用Python 3式的输出<br>Python 2与Python 3不兼容，这让我不知道该选择哪个版本的Python。最终我选择了Python 2，因为当时许多我需要用的库都与Python 3不兼容。</p>
+<p>但实际上，日常使用中最大的版本差异是输出（print）和除法行为。现在我在Python 2的代码中都用import from future来导入Python 3的输出和除法。现在我用到的几乎所有库都支持Python 3，因此会很快迁移到Python 3中。</p>
+<pre><code>mynumber = 5
 
+print &quot;Python 2:&quot;
+print &quot;The number is %d&quot; % (mynumber)
+print mynumber / 2,
+print mynumber // 2
+
+from __future__ import print_function
+from __future__ import division
+
+print(&apos;nPython 3:&apos;)
+print(&quot;The number is {}&quot;.format(mynumber))
+print(mynumber / 2, end=&apos; &apos;)
+print(mynumber // 2)
+
+输出：
+Python 2:
+The number is 5
+2 2
+
+Python 3:
+The number is 5
+2.5 2
+</code></pre><p>##enumerate(list)<br>很明显，迭代列表时，应该同时迭代其中的元素及其索引，但在很长一段时间内，我都尴尬的使用计数变量或切片。</p>
+<pre><code>mylist = [&quot;It&apos;s&quot;, &apos;only&apos;, &apos;a&apos;, &apos;model&apos;]
+
+for index, item in enumerate(mylist):
+    print(index, item)
+
+输出：
+0 It&apos;s
+1 only
+2 a
+3 model
+</code></pre><p>##链式比较操作符<br>由于我以前使用的是静态语言（在这些语言中该用法有二义性），从来没有将两个比较操作符放在一个表达式中。在许多语言中，4 &gt; 3 &gt; 2会返回False，因为4 &gt; 3的结果是布尔值，而True &gt; 2将得出False。</p>
+<pre><code>mynumber = 3
+
+if 4 &gt; mynumber &gt; 2:
+    print(&quot;Chained comparison operators work! n&quot; * 3)
+
+输出：
+Chained comparison operators work!
+Chained comparison operators work!
+Chained comparison operators work!
+</code></pre><p>##collections.Counter<br>Python的集合库看上去是最好的。在计算需要集合中元素的个数时，StackOverflow找到的答案是创建有序字典，但我坚持使用一个代码片段来创建字典，计算结果中元素出现的频率。直到有一天，我发现可以用collections.deque。</p>
+<pre><code>from collections import Counter
+from random import randrange
+import pprint
+
+mycounter = Counter()
+
+for i in range(100):
+    random_number = randrange(10)
+    mycounter[random_number] += 1
+
+for i in range(10):
+    print(i, mycounter[i])
+
+输出：
+0 10
+1 10
+2 13
+3 6
+4 6
+5 11
+6 10
+7 14
+8 12
+9 8
+</code></pre><p>##字典推导</p>
+<p>Python开发者的一个重要标志就是理解列表推导，但最终我发现字典推导也很有用，特别是在交换字典的键和值的时候。</p>
+<pre><code>my_phrase = [&quot;No&quot;, &quot;one&quot;, &quot;expects&quot;, &quot;the&quot;, &quot;Spanish&quot;, &quot;Inquisition&quot;]
+my_dict = {key: value for value, key in enumerate(my_phrase)}
+print(my_dict)
+reversed_dict = {value: key for key, value in my_dict.items()}
+print(reversed_dict)
+
+输出：
+{&apos;Inquisition&apos;: 5, &apos;No&apos;: 0, &apos;expects&apos;: 2, &apos;one&apos;: 1, &apos;Spanish&apos;: 4, &apos;the&apos;: 3}
+{0: &apos;No&apos;, 1: &apos;one&apos;, 2: &apos;expects&apos;, 3: &apos;the&apos;, 4: &apos;Spanish&apos;, 5: &apos;Inquisition&apos;}
+</code></pre><p>##用subprocess执行shell命令</p>
+<pre><code>import subprocess
+output = subprocess.check_output(&apos;dir&apos;, shell=True)
+print(output)
+</code></pre><p>注意，用os库完成这个特定命令比用subprocess更好。我只想有一个大家都熟悉的命令。同时，一般来说，在subprocess中使用shell=True参数是非常糟糕的主意，在这里使用这个参数仅仅是为了能在一个IPython notebook单元中放置命令的输出。不要自己使用这个参数！下面是用os模块执行shell命令</p>
+<pre><code>import os
+os.system(&apos;dir&apos;)
+</code></pre><p>注意，这里的<code>dir</code>命令会立刻在shell中输出，不能够保存到文件(变量)中，如果想要保存到变量中，可以使用popen：</p>
+<pre><code>import os
+output = os.popen(&apos;dir&apos;)
+print output.read()
+</code></pre><p>##字典的.get()和.iteritems()方法<br>字典的get()方法可以设置默认值，当用get()查找的键不存在时，返回方法中的默认值参数是很有用的。与列表中的enumerate()相同，可以用键值元组迭代字典中的元素。<br>    my_dict = {‘name’: ‘Lancelot’, ‘quest’: ‘Holy Grail’, ‘favourite_color’: ‘blue’}</p>
+<pre><code>print(my_dict.get(&apos;airspeed velocity of an unladen swallow&apos;, &apos;African or European?n&apos;))
+
+for key, value in my_dict.iteritems():
+    print(key, value, sep=&quot;: &quot;)
+
+输出：
+African or European?
+
+quest: Holy Grail
+name: Lancelot
+favourite_color: blue
+</code></pre><p>如果要用for迭代输出字典，就要用到字典的<code>iteritems()</code>方法，这个方法在python3.x中已经废除了，取代的是<code>items()</code>方法，<code>items()</code>方法在python2.x中也存在</p>
+<p>##用于交换元素的元组解包<br>在VB中，每当需要交换两个变量时，都要用要一个愚蠢的临时变量：c = a; a = b; b = c</p>
+<pre><code>a = &apos;Spam&apos;
+b = &apos;Eggs&apos;
+
+print(a, b)
+
+a, b = b, a
+print(a, b)
+
+输出：
+Spam Eggs
+Eggs Spam
+</code></pre><p>##内省工具Introspection tools<br>我知道dir()方法，我本以为help()方法和IPython中的?魔法命令是一样的，但help()的功能更强大。</p>
+<pre><code>my_dict = {&apos;That&apos;: &apos;an ex-parrot!&apos;}
+
+help(my_dict)
+
+输出：
+Help on dict object:
+
+class dict(object)
+ | dict() -&gt; new empty dictionary
+ | dict(mapping) -&gt; new dictionary initialized from a mapping object&apos;s
+ | (key, value) pairs
+ | dict(iterable) -&gt; new dictionary initialized as if via:
+ | d = {}
+ | for k, v in iterable:
+ | d[k] = v
+ | dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
+ | in the keyword argument list. For example: dict(one=1, two=2)
+ |
+ | Methods defined here:
+ |
+ | __cmp__(...)
+ | x.__cmp__(y) &lt;==&gt; cmp(x,y)
+ |
+ | __contains__(...)
+ | D.__contains__(k) -&gt; True if D has a key k, else False
+ |
+ | __delitem__(...)
+ | x.__delitem__(y) &lt;==&gt; del x[y]
+ |
+ | __eq__(...)
+ | x.__eq__(y) &lt;==&gt; x==y
+ |
+
+[TRUNCATED FOR SPACE]
+
+ | 
+ | update(...)
+ | D.update([E, ]**F) -&gt; None. Update D from dict/iterable E and F.
+ | If E present and has a .keys() method, does: for k in E: D[k] = E[k]
+ | If E present and lacks .keys() method, does: for (k, v) in E: D[k] = v
+ | In either case, this is followed by: for k in F: D[k] = F[k]
+ |
+ | values(...)
+ | D.values() -&gt; list of D&apos;s values
+ |
+ | viewitems(...)
+ | D.viewitems() -&gt; a set-like object providing a view on D&apos;s items
+ |
+ | viewkeys(...)
+ | D.viewkeys() -&gt; a set-like object providing a view on D&apos;s keys
+ |
+ | viewvalues(...)
+ | D.viewvalues() -&gt; an object providing a view on D&apos;s values
+ |
+ | ----------------------------------------------------------------------
+ | Data and other attributes defined here:
+ |
+ | __hash__ = None
+ |
+ | __new__ =
+ | T.__new__(S, ...) -&gt; a new object with type S, a subtype of T
+</code></pre><p>##PEP-8兼容的字符串连接<br>PEP8是Python编码样式指南。撇开其他的不看，PEP8要求每行不能超过80个字符，超过的部分要换行并缩进。</p>
+<p>可以通过反斜杠、带逗号“,”的圆括号“()”、或者额外的加号“+”来完成换行。但对于多行字符串，这些解决方案都不够优雅。Python有个多行字符串记号，即三个引号，但这样无法换行后保持缩进。</p>
+<p>还有一个方法，那就是不带逗号的圆括号。我不知道为什么这种方式能工作，但能用就行。</p>
+<pre><code>my_long_text = (&quot;We are no longer the knights who say Ni! &quot;
+                &quot;We are now the knights who say ekki-ekki-&quot;
+                &quot;ekki-p&apos;tang-zoom-boing-z&apos;nourrwringmm!&quot;)
+print(my_long_text)
+
+输出：
+We are no longer the knights who say Ni! We are now the knights who say ekki-ekki-ekki-p&apos;tang-zoom-boing-z&apos;nourrwringmm!
+</code></pre>
           
         
       
@@ -890,7 +1456,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/Questions-from-tencent/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/04/scrapy的一些知识点/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -909,7 +1475,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/04/Questions-from-tencent/" itemprop="url">Questions from tencent</a></h1>
+                <a class="post-title-link" href="/2015/02/04/scrapy的一些知识点/" itemprop="url">scrapy的一些知识点</a></h1>
         
 
         <div class="post-meta">
@@ -921,8 +1487,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-04T21:28:52+08:00">
-                2015-03-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-04T11:23:27+08:00">
+                2015-02-04
               </time>
             
 
@@ -944,235 +1510,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/面试/" itemprop="url" rel="index">
-                    <span itemprop="name">面试</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##指针和引用的区别</p>
-<p>###相同点：</p>
-<ul>
-<li>都是地址的概念；<ul>
-<li>指针指向一块内存，它的内容是所指内存的地址；</li>
-<li>引用是某块内存的别名。<br>###区别：</li>
-</ul>
-</li>
-</ul>
-<ol>
-<li>指针是一个实体，而引用仅是个别名；</li>
-<li>引用使用时无需解引用(*)，指针需要解引用；</li>
-<li>引用只能在定义时被初始化一次，之后不可变；指针可变；</li>
-<li>引用没有 const，指针有 const；</li>
-<li>引用不能为空，指针可以为空；</li>
-<li>“sizeof 引用”得到的是所指向的变量(对象)的大小，而“sizeof 指针”得<br>到的是指针本身(所指向的变量或对象的地址)的大小；</li>
-<li>指针和引用的自增(++)运算意义不一样；</li>
-<li>从内存分配上看：程序为指针变量分配内存区域，而引用不需要分配内存区域。</li>
-</ol>
-<p>##static关键字的作用</p>
-<ol>
-<li><p>在函数体，局部的static变量。生存期为程序的整个生命周期；作用域却在函数体内（它在什么地方能被访问（空间））。 一个被声明为静态的变量在这一函数被调用过程中维持其值不变。因为它分配在静态存储区，函数调用结束后并不释放单元，但是在其它的作用域无法访问。当再次调用这个函数时，这个局部的静态变量还存在，而且作用在它的访问空间，因此访问到的是上次调用后的值。</p>
-</li>
-<li><p>在文件模块内（但在函数体外），一个被声明为静态的全局变量可以被模块内所有函数访问，但不能被模块外其它函数访问。它是一个本地的全局变量。限制静态全局变量的作用域。</p>
-</li>
-<li><p>在文件模块内，一个被声明为静态的函数只可被这一模块内的其它函数调用。那就是，这个函数被限制在声明它的模块的本地范围内使用。函数默认情况下是全局函数，可以被任意其它文件模块调用。</p>
-</li>
-</ol>
-<p>##const实现机制，比如：const int i,是怎么做到i只可读的？</p>
-<p><strong>实现机制</strong>：这些在编译期间完成，对于内置类型，如int， 编译器可能使用常数直接替换掉对此变量的引用。而对于结构体不一定。</p>
-<p><strong>看下面的例子：</strong></p>
-<pre><code>const int j=100;    
-int *p=const_cast&lt;int*&gt;(&amp;j);    
-*p=200;    
-cout&lt;&lt;j&lt;&lt;endl;    输出为什么是100呢？
-cout&lt;&lt;*p&lt;&lt;endl; //输出是改过的200
-</code></pre><p>编译器在优化代码时把cout&lt;&lt;j直接优化成cout&lt;&lt;100了，所以虽然p和&amp;j的值一样，但cout&lt;&lt;j不再通过访问j的地址输出。（反汇编时也有看到直接把数字压栈push 100 ）</p>
-<p>这是因为，const型在压栈时，是使用的直接的数，就有点像C的#define a 100</p>
-<p>##volatile的含义<br>变量可能在编译器的控制或监控之外改变，告诉编译器不要优化该变量，如被系统时钟更新的变量。</p>
-<p>volatile 的本意是“易变的”, 因为访问寄存器要比访问内存单元快的多,所以编译器一般都会作减少存取内存的优化，但有可能会读脏数据。当要求使用 volatile声明变量值的时候，系统总是重新从它所在的内存读取数据，即使它前面的指令刚刚从该处读取过数据。精确地说就是，遇到这个关键字声明的变量，编译器对访问该变量的代码就不再进行优化，从而可以提供对特殊地址的稳定访问；如果不使用 volatile，则编译器将对所声明的语句进行优化。（简洁的说就是：volatile关键词影响编译器编译的结果，用 volatile 声明的变量表示该变量随时可能发生变化，与该变量有关的运算，不要进行编译优化，以免出错）</p>
-<p><strong>volatile 的本质：</strong></p>
-<ul>
-<li><p>编译器的优化：在本次线程内, 当读取一个变量时，为提高存取速度，编译器优化时有时会先把变量读取到一个寄存器中；以后，再取变量值时，就直接从寄存器中取值；当变量值在本线程里改变时，会同时把变量的新值 copy 到该寄存器中，以便保持一致。当变量在因别的线程等而改变了值，该寄存器的值不会相应改变，从而造成应用程序读取的值和实际的变量值不一致。当该寄存器在因别的线程等而改变了值，原变量的值不会改变，从而造成应用程序读取的值和实际的变量值不一致。</p>
-</li>
-<li><p>volatile 应该解释为“直接存取原始内存地址”比较合适，“易变的”这种解释简直有点误导人。</p>
-</li>
-</ul>
-<p>##动态链接和静态链接的区别</p>
-<p>动态链接是指在生成可执行文件时不将所有程序用到的函数链接到一个文件，<br>因为有许多函数在操作系统带的dll文件中，当程序运行时直接从操作系统中找。<br>而静态链接就是把所有用到的函数全部链接到exe文件中。</p>
-<p>动态链接是只建立一个引用的接口，而真正的代码和数据存放在另外的可执行模块中，在运行时再装入；而静态链接是把所有的代码和数据都复制到本模块中，运行时就不再需要库了。</p>
-<p>##在C++程序中调用被C编译器编译过的函数，为什么要加extern“C”</p>
-<p>C++语言支持函数重载，c语言不支持函数重载。函数被C++编译后在库中的名称与C语言不同。假设某个函数的原型是<code>void foo(int x, int y)</code>.该函数被c编译器编译后在库中的名字为<code>_foo</code>，而C++编译器则会产生像<code>_foo_int_int</code>之类的名字</p>
-<p>C++提供了C连接交换指定符号<code>extern&quot;C&quot;</code>解决名字匹配问题</p>
-<p>##判断一个数是否是2的n次方</p>
-<pre><code>设数为x
-!(x &amp; (x - 1))
-</code></pre><p>##linux下统计一个文件中有多少个给定字符串<br>    grep -o ‘while’ list.c | wc -l</p>
-<p>##常问的几个linux命令</p>
-<p>###查看cpu信息</p>
-<pre><code>cat /proc/cpuinfo
-cat /proc/meminfo
-</code></pre><p>###查看硬盘信息<br>    df -lh</p>
-<p>###查看网卡信息<br>    dmesg | grep eth</p>
-<p>###更常用的命令(显示系统核心版本号、名称、机器类型等)<br>    uname -a</p>
-<p>##ipcs命令<br>ipcs：检查系统上共享内存的分配</p>
-<p>###用途<br>报告进程间通信设施状态。</p>
-<p>ipcs 命令往标准输出写入一些关于活动进程间通信设施的信息。如果没有指定任何标志，ipcs 命令用简短格式写入一些关于当前活动消息队列、共享内存段、信号量、远程队列和本地队列标题。</p>
-<p>Linux下ipcs指令的用法详解。ipcs是Linux下显示进程间通信设施状态的工具。可以显示消息队列、共享内存和信号量的信息。对于程序员可能更有用些，普通的系统管理员一般用不到此指令。</p>
-<p><strong>ipcrm</strong>：手动解除系统上共享内存的分配</p>
-<p>用途: 删除消息队列、信号集、或者共享内存标识。</p>
-<p>##文件描述符fd<br>fd只是一个整数，在open时产生。起到一个索引的作用，进程通过PCB中的文件描述符表找到该fd所指向的文件指针filp。</p>
-<p>文件描述符的操作(如: open)返回的是一个文件描述符,内核会在每个进程空间中维护一个文件描述符表, 所有打开的文件都将通过此表中的文件描述符来引用; </p>
-<p>而流(如: fopen)返回的是一个FILE结构指针, FILE结构是包含有文件描述符的，FILE结构函数可以看作是对fd直接操作的系统调用的封装, 它的优点是带有I/O缓存<br>每个进程在PCB（Process Control Block）即进程控制块中都保存着一份文件描述符表，文件描述符就是这个表的索引，文件描述表中每个表项都有一个指向已打开文件的指针，现在我们明确一下：已打开的文件在内核中用file结构体表示，文件描述符表中的指针指向file结构体。</p>
-<p>##内存分配</p>
-<p>内存分配方式有三种：</p>
-<ol>
-<li>从静态存储区域分配。内存在程序编译的时候就已经分配好，这块内存在程序的整个运行期间都存在。例如全局变量，static变量。</li>
-<li>在栈上创建。在执行函数时，函数内局部变量的存储单元都可以在栈上创建，函数执行结束时这些存储单元自动被释放。栈内存分配运算内置于处理器的指令集中，效率很高，但是分配的内存容量有限。</li>
-<li>从堆上分配，亦称动态内存分配。程序在运行的时候用malloc或new申请任意多少的内存，程序员自己负责在何时用free或delete释放内存。动态内存的生存期由我们决定，使用非常灵活，但问题也最多。</li>
-</ol>
-<p>##如何定位内存泄露</p>
-<p>内存泄漏是指堆内存的泄漏。堆内存是指程序从堆中分配的、大小任意的（内存块的大小可以在程序运行期决定）、使用完后必须显示释放的内存。应用程序一般使用malloc、realloc、new等函数从堆中分配到一块内存，使用完后，程序必须负责相应的调用free或delete释放该内存块。否则，这块内存就不能被再次使用，我们就说这块内存泄漏了。</p>
-<p>C++程序缺乏相应的手段来检测内存信息，只能使用top指令观察进程的动态内存总额。而且程序退出时，我们无法获知任何内存泄漏信息</p>
-<p>使用Linux命令回收内存，可以使用ps、kill两个命令检测内存使用情况和进行回收。在使用超级用户权限时使用命令“ps”，它会列出所有正在运行的程序名称和对应的进程号（PID）。kill命令的工作原理是向Linux操作系统的内核送出一个系统操作信号和程序的进程号（PID）</p>
-<p>##linux 的内存管理机制是什么？</p>
-<p>Linux 虚拟内存的实现需要 6 种机制的支持：地址映射机制、内存分配回收机制、缓存和刷新机制、请求页机制、交换机制和内存共享机制内存管理程序通过映射机制把用户程序的逻辑地址映射到物理地址。当用户程序运行时，如果发现程序中要用的虚地址没有对应的物理内存，就发出了请求页要求。如果有空闲的内存可供分配，就请求分配内存(于是用到了内存的分配和回收)，并把正在使用的物理页记录在缓存中(使用了缓存机制)。如果没有足够的内存可供分配，那么就调用交换机制；腾出一部分内存。另外，在地址映射中要通过 TLB(翻译后援存储器)来寻找物理页；交换机制中也要用到交换缓存，并且把物理页内容交换到交换文件中，也要修改页表来映射文件地址。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/如何实现守护进程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/04/如何实现守护进程/" itemprop="url">如何实现守护进程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-04T16:10:42+08:00">
-                2015-03-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
                   </a>
                 </span>
 
@@ -1211,68 +1550,94 @@ cat /proc/meminfo
         
           
             <ul>
-<li><p>创建子进程，父进程退出。 （脱离控制终端），很自然地，子进程成了孤儿进程，被init进程收养。</p>
-</li>
-<li><p>子进程中创建新会话。</p>
-</li>
-</ul>
-<blockquote>
-<p>我们先介绍下进程组的概念：</p>
-<p>进程组是一个或者多个进程的集合，由进程组id来唯一标识，除了进程号PID之外，进程组ID也是一个进程的必备属性。<br>每个进程组都有一个组长进程，其组长进程的进程号PID等于进程组ID，且该进程ID不会因为组长进程的退出而受到影响。</p>
-<p><strong>会话期</strong></p>
-<p>会话组是一个或者多个进程组的集合，通常，一个会话开始于用户登录，终止于用户退出，在此期间用户运行的所有进程 都属于这个会话期。</p>
-<p>Setid函数就是用于创建一个新的会话，并担任该会话组的组长，有三个作用，让进程摆脱原会话和进程组，终端的控制，使进程完全独立出来。</p>
-</blockquote>
-<ul>
-<li>由于fork（）继承了父进程的工作目录，对以后的使用造成不便，所以我们要改变当前目录为根目录。</li>
-</ul>
-<ul>
-<li><p>关闭文件描述符。 （fork（）继承过来的）</p>
-</li>
-<li><p>重设文件权限掩码。因为由继承得来的文件模式屏蔽字可能会被设置为拒绝某些权限</p>
-<pre><code>void daemonize()
-{
-  pid_t pid;
-
-  pid = fork();
-
-  /* In case of fork is error. */
-  if (pid &lt; 0)
-    {
-      fprintf(stderr,&quot;fork error.\n&quot;);
-      exit(0);
-    }
-  /* In case of this is parent process. */
-  if (pid != 0)
-    exit (0);// 父进程退出
-  /* Become session leader and get pid. */
-  pid = setsid();
-  if (pid == -1)
-    {
-      fprintf(stderr, &quot;setsid failed..&quot;);
-      exit(0);
-    }
-  /* Change directory to root. */
-
-    chdir (&quot;/&quot;);
-
-  /* File descriptor close. */
-  int fd;
-  fd = open (&quot;/dev/null&quot;, O_RDWR, 0);
-  if(fd != -1)
-    {
-      dup2(fd, STDIN_FILENO);
-      dup2(fd, STDOUT_FILENO);
-      dup2(fd, STDERR_FILENO);//all the output to stdin&amp;stdout&amp;stderr will go into /dev/null now
-      if(fd &gt; 2)
-        close(fd);
-    }
-
-  umask (0);
-}
+<li><p>###运行spider，将爬取到的信息用JSON形式存到scraped_data.json文件中</p>
+<pre><code>scrapy crawl my_spider -o scraped_data.json
 </code></pre></li>
+<li><p>###在scrapy shell里面打印返回的html</p>
+<pre><code>response.body
+</code></pre></li>
+<li><p>###创建一个Spider，我们必须继承<code>scrapy.Spider</code>类(或者别的爬虫类)，并且定义以下3个属性</p>
+<ul>
+<li>name：用于区别Spider。 该名字必须是唯一的，您不可以为不同的Spider设定相同的名字。</li>
+<li>start_urls：包含了Spider在启动时进行爬取的url列表。 因此，第一个被获取到的页面将是其中之一(每个url都会被爬取)。 <code>后续的URL则从初始的URL获取到的数据中提取</code>。</li>
+<li>parse() 是spider的一个方法。 被调用时，<code>每个初始URL完成下载后生成的 Response 对象将会作为唯一的参数传递给该函数</code>。 该方法负责解析返回的数据(response data)，提取数据(生成item)以及生成需要进一步处理的URL的 Request 对象。parse只是初始url的回调函数，可以定义别的回调函数来处理后序的链接。</li>
 </ul>
+</li>
+<li><p>###scrapy shell</p>
+<pre><code>scrapy shell &quot;http://www.dmoz.org/Computers/Programming/Languages/Python/Books/&quot;
+</code></pre><blockquote>
+<p>当您在终端运行Scrapy时，请一定记得给url地址加上<code>引号</code>，否则包含参数的url(例如 &amp; 字符)会导致Scrapy运行失败。</p>
+</blockquote>
+</li>
+<li><p>###Item 对象是自定义的python字典。 您可以使用标准的字典语法来获取到其每个字段的值。(字段即是我们之前用Field赋值的属性):</p>
+<pre><code>&gt;&gt;&gt; item = DmozItem()
+&gt;&gt;&gt; item[&apos;title&apos;] = &apos;Example title&apos;
+&gt;&gt;&gt; item[&apos;title&apos;]
+&apos;Example title&apos;
+</code></pre></li>
+<li><p>###<code>scrapy.cfg</code> 存放的目录被认为是 项目的根目录 。该文件中包含python模块名的字段定义了项目的设置</p>
+</li>
+<li><h3 id="Link-Extractors-是用于从网页-scrapy-http-Response-中抽取会被follow的链接的对象。"><a href="#Link-Extractors-是用于从网页-scrapy-http-Response-中抽取会被follow的链接的对象。" class="headerlink" title="Link Extractors 是用于从网页(scrapy.http.Response )中抽取会被follow的链接的对象。"></a>Link Extractors 是用于从网页(scrapy.http.Response )中抽取会被follow的链接的对象。</h3><pre><code>scrapy.contrib.linkextractors import LinkExtractor
+</code></pre></li>
+<li><p>###log服务<br>Scrapy提供了log功能。您可以通过 scrapy.log 模块使用。当前底层实现使用了 Twisted logging ，不过可能在之后会有所变化。</p>
+</li>
+<li><p>###使用FormRequest.from_response()方法模拟用户登录<br>通常网站通过 <input type="hidden"> 实现对某些表单字段（如数据或是登录界面中的认证令牌等）的预填充。 使用Scrapy抓取网页时，如果想要预填充或重写像用户名、用户密码这些表单字段， 可以使用 FormRequest.from_response() 方法实现。下面是使用这种方法的爬虫例子:</p>
+<pre><code>import scrapy
 
+class LoginSpider(scrapy.Spider):
+    name = &apos;example.com&apos;
+    start_urls = [&apos;http://www.example.com/users/login.php&apos;]
+
+    def start_requests(self):
+        return scrapy.FormRequest.from_response(
+            &quot;url&quot;,
+            formdata={&apos;username&apos;: &apos;john&apos;, &apos;password&apos;: &apos;secret&apos;},
+            callback=self.after_login
+        )
+
+    def after_login(self, response):
+        # check login succeed before going on
+        if &quot;authentication failed&quot; in response.body:
+            self.log(&quot;Login failed&quot;, level=log.ERROR)
+            return
+
+        # continue scraping with authenticated session...
+</code></pre></li>
+<li><p>###Scrapy是以广度优先还是深度优先进行爬取的呢<br>默认情况下，Scrapy使用 LIFO 队列来存储等待的请求。简单的说，就是 深度优先顺序 。深度优先对大多数情况下是更方便的。如果您想以 广度优先顺序 进行爬取，你可以设置以下的设定:</p>
+<pre><code>DEPTH_PRIORITY = 1
+SCHEDULER_DISK_QUEUE = &apos;scrapy.squeue.PickleFifoDiskQueue&apos;
+SCHEDULER_MEMORY_QUEUE = &apos;scrapy.squeue.FifoMemoryQueue&apos;
+</code></pre></li>
+<li><p>###避免被禁止(ban)<br>有些网站实现了特定的机制，以一定规则来避免被爬虫爬取。 与这些规则打交道并不容易，需要技巧，有时候也需要些特别的基础。 如果有疑问请考虑联系 商业支持 。</p>
+<p>  下面是些处理这些站点的建议(tips):</p>
+<ul>
+<li>使用user agent池，轮流选择之一来作为user agent。池中包含常见的浏览器的user agent(google一下一大堆)</li>
+<li>禁止cookies(参考 COOKIES_ENABLED)，有些站点会使用cookies来发现爬虫的轨迹。</li>
+<li>设置下载延迟(2或更高)。参考 DOWNLOAD_DELAY 设置。</li>
+<li>如果可行，使用 <a href="http://www.googleguide.com/cached_pages.html" target="_blank" rel="external">Google cache</a> 来爬取数据，而不是直接访问站点。</li>
+<li>使用IP池。例如免费的 <a href="https://www.torproject.org/" target="_blank" rel="external">Tor</a>项目 或付费服务(<a href="http://proxymesh.com/" target="_blank" rel="external">ProxyMesh</a>)。</li>
+<li>使用高度分布式的下载器(downloader)来绕过禁止(ban)，您就只需要专注分析处理页面。这样的例子有: <a href="http://crawlera.com/" target="_blank" rel="external">Crawlera</a></li>
+</ul>
+</li>
+<li><p>###禁止重试<br>对失败的HTTP请求进行重试会减慢爬取的效率，尤其是当站点响应很慢(甚至失败)时， 访问这样的站点会造成超时并重试多次。这是不必要的，同时也占用了爬虫爬取其他站点的能力。</p>
+<p>  禁止重试:</p>
+<pre><code>RETRY_ENABLED = False
+</code></pre></li>
+<li>###使用相对Xpaths</li>
+</ul>
+<p>如果你使用嵌套的选择器，并使用起始为 <code>/</code> 的XPath，那么该XPath将对文档使用绝对路径，而且对于你调用的 Selector 不是相对路径。</p>
+<p>比如，假设你想提取在 <code>&lt;div&gt;</code>元素中的所有 <code>&lt;p&gt;</code>元素。首先，你将先得到所有的 <code>&lt;div&gt;</code> 元素:</p>
+<pre><code>&gt;&gt;&gt; divs = response.xpath(&apos;//div&apos;)
+</code></pre><p>开始时，你可能会尝试使用下面的错误的方法，<strong>因为它其实是从整篇文档中，而不仅仅是从那些 <code>&lt;div&gt;</code> 元素内部提取所有的 <code>&lt;p&gt;</code>元素</strong>:</p>
+<pre><code>&gt;&gt;&gt; for p in divs.xpath(&apos;//p&apos;):  # this is wrong - gets all &lt;p&gt; from the whole document
+...     print p.extract()
+</code></pre><p>下面是比较合适的处理方法(注意 .//p XPath的点前缀):</p>
+<pre><code>&gt;&gt;&gt; for p in divs.xpath(&apos;.//p&apos;):  # extracts all &lt;p&gt; inside
+...     print p.extract()
+</code></pre><p>另一种常见的情况将是提取所有直系 <code>&lt;p&gt;</code>的结果:</p>
+<pre><code>&gt;&gt;&gt; for p in divs.xpath(&apos;p&apos;):
+...     print p.extract()
+</code></pre>
           
         
       
@@ -1320,7 +1685,7 @@ cat /proc/meminfo
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/编译原理基础/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/03/每天一个python小程序-7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -1339,7 +1704,7 @@ cat /proc/meminfo
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/04/编译原理基础/" itemprop="url">编译原理基础</a></h1>
+                <a class="post-title-link" href="/2015/02/03/每天一个python小程序-7/" itemprop="url">每天一个python小程序(7)--敏感词</a></h1>
         
 
         <div class="post-meta">
@@ -1351,8 +1716,8 @@ cat /proc/meminfo
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-04T15:28:31+08:00">
-                2015-03-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-03T14:34:54+08:00">
+                2015-02-03
               </time>
             
 
@@ -1374,8 +1739,8 @@ cat /proc/meminfo
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编译原理/" itemprop="url" rel="index">
-                    <span itemprop="name">编译原理</span>
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
                   </a>
                 </span>
 
@@ -1414,42 +1779,44 @@ cat /proc/meminfo
         
           
             <blockquote>
-<p>编译器</p>
+<p>敏感词文本文件 filtered_words.txt，里面的内容为以下内容，当用户输入敏感词语时，则打印出 Freedom，否则打印出 Human Rights。</p>
+<p>love</p>
+<p>sex</p>
+<p>jiangge</p>
+<p>bitch</p>
 </blockquote>
-<p>答：一个编译器就是一个程序，它可以阅读以某一种语言编写的程序，并把该程序翻译成为一个等价的、用另一种语言编写的程序。编译器的重要任务之一就是报告它在翻译中发现的源程序中的错误</p>
-<blockquote>
-<p>把一种高级语言翻译成为另一种高级语言的编译器称为（source-to-source）的翻译器，翻译器使用C语言作为目标语言有什么好处？</p>
-</blockquote>
-<p>答：就好比为什么编译器要产生汇编语言而是不是机器语言一样，C语言更简单更常用更加容易理解，同样方便调试和输出。</p>
-<blockquote>
-<p>编译器和解释器之间的区别是什么</p>
-</blockquote>
-<p>答：编译器是把源程序的每一条语句都编译成机器语言,并保存成二进制文件,这样运行时计算机可以直接以机器语言来运行此程序,速度很快;</p>
-<p>  而解释器则是只在执行程序时,才一条一条的解释成机器语言给计算机来执行,所以运行速度是不如编译后的程序运行的快的.</p>
-<blockquote>
-<p>编译器相对与解释器的优点是什么？解释器相对与编译器的优点是什么？</p>
-</blockquote>
-<p>答：</p>
-<ul>
-<li>一个编译器产生的机器语言目标程序通常比一个解释器快很多；</li>
-<li>解释器的错误诊断效果通常比编译器更好。</li>
-</ul>
-<blockquote>
-<p>在一个语言处理系统中，编译器产生汇编语言而不是机器语言的好处是什么</p>
-</blockquote>
-<p>答：就如书中写到的“汇编语言比较容易调试和输出”，这样就减轻了编译器设计的工作量，将部分工作转到汇编器上，使得设计更专注于编译器本身，尽量减少超出其本身所容纳的内容的范围。</p>
-<blockquote>
-<p>描述一下汇编器所要完成的一些任务。</p>
-</blockquote>
-<p>答：汇编器就类似于编译器，只是它的源语言不是高级语言而是汇编语言。同样，它需要一个预处理器进行预处理，如聚合文件，展开宏等。写成的机器语言也要类似与连接器和加载器的程序，完成类似的工作。</p>
-<blockquote>
-<p>创建一个可执行的目标程序</p>
-</blockquote>
-<p>答：除了编译器之外，创建一个可执行的目标程序还需要一些其他程序。一个源程序可能被分割成为多个模块，并存放于独立的文件中。把源程序聚合在一起的任务有时 会由一个被称为预处理器（preprocessor）的程序独立完成。预处理器还负责把那些称为宏的缩写形式转换为源语言的语句。</p>
-<p>然后，将经过预处理的源程序作为输入传递给一个编译器。编译器可能产生一个汇编语言程序作为其输出，因为汇编语言容易输出和调试。接着，这个汇编语言程序由称为汇编器（assemble）的程序进行处理，并生成可重定位的机器代码。</p>
-<p>大型程序经常被分成多个部分进行编译，因此，可重定位的机器代码有必要和其他可重定位的目标文件以及库文件连接在一起，形成真正在机器上运行的代码。一个 文件中的代码可能指向另一个文件的位置，而链接器（Linker）能够解决外部内存地址的问题。最后，加载器（Loader）把所有的可执行目标文件放到 内存中执行。</p>
-<p><img src="/img/一个混合编译器.png" alt=""></p>
-<p><img src="/img/一个语言处理程序.png" alt=""></p>
+<p>代码中有两种从txt文件中获取敏感词的方法，有一种被注释掉了，因为用这种方法获得的list最后会有一个空的字符串，导致下面find的时候一直会匹配成功，感兴趣的同学可以去掉注释试一下（同时需要注释掉注释下面的4行）</p>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
+
+def get_sensitive_word(filepath):
+    f = open(filepath, &apos;r&apos;)
+    #data = f.read()
+    #filt = data.split(&apos;\n&apos;) 这个方法得到的序列中最后有一个空的字符串，导致匹配一直成功
+    words = []
+    for word in f:
+        #strip删除字符序列，这里是删除word中的&apos;\n&apos;
+        words.append(word.strip(&apos;\n&apos;))
+    f.close()
+    return words
+
+def filter_word(words):
+    flag = False
+    text = raw_input(&apos;please input: &apos;)
+    for word in words:
+        if text.find(word) != -1:
+            flag = True
+
+    if flag:
+        print &apos;freedom&apos;
+    else:
+        print &apos;human rights&apos;
+
+if __name__ == &apos;__main__&apos;:
+    filepath = &apos;filtered_words.txt&apos;
+    words = get_sensitive_word(filepath)
+    filter_word(words)
+</code></pre><p>完整项目见<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.11" target="_blank" rel="external">这里</a></p>
 
           
         
@@ -1498,7 +1865,7 @@ cat /proc/meminfo
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/linux系统同步机制，什么是死锁，如何避免/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -1517,7 +1884,7 @@ cat /proc/meminfo
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/04/linux系统同步机制，什么是死锁，如何避免/" itemprop="url">linux系统同步机制，什么是死锁，如何避免</a></h1>
+                <a class="post-title-link" href="/2015/02/02/每天一个python小程序-6/" itemprop="url">每天一个python小程序(6)--统计代码行数</a></h1>
         
 
         <div class="post-meta">
@@ -1529,8 +1896,8 @@ cat /proc/meminfo
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-04T15:24:45+08:00">
-                2015-03-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-02T23:16:22+08:00">
+                2015-02-02
               </time>
             
 
@@ -1552,8 +1919,8 @@ cat /proc/meminfo
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
                   </a>
                 </span>
 
@@ -1591,29 +1958,54 @@ cat /proc/meminfo
       
         
           
-            <p>##linux系统的同步机制</p>
-<ul>
-<li>信号量</li>
-<li>锁</li>
-</ul>
-<p>##死锁<br>线程A需要资源X，而线程B需要资源Y，而双方都掌握有对方所要的资源，这种情况称为死锁（deadlock），或死亡拥抱（the deadly embrace）。</p>
-<p>在并发程序设计中，死锁 (deadlock) 是一种十分常见的逻辑错误。通过采用正确的编程方式，死锁的发生不难避免。</p>
-<p>###死锁的四个必要条件<br>死锁的四个必要条件，这四个条件缺一不可，或者说只要破坏了其中任何一个条件，死锁就不可能发生。</p>
-<ol>
-<li>互斥（Mutual exclusion）：存在这样一种资源，它在某个时刻只能被分配给一个执行绪（也称为线程）使用；</li>
-<li>持有（Hold and wait）：当请求的资源已被占用从而导致执行程序阻塞时，资源占用者不但无需释放该资源，而且还可以继续请求更多资源；</li>
-<li>不可剥夺（No preemption）：执行程序获得到的互斥资源不可被强行剥夺，换句话说，只有资源占用者自己才能释放资源；</li>
-<li>环形等待（Circular wait）：若干执行程序以不同的次序获取互斥资源，从而形成环形等待的局面，想象在由多个执行程序组成的环形链中，每个执行绪都在等待下一个执行绪释放它持有的资源。</li>
-</ol>
-<p>###解除死锁的必要条件<br>不难看出，在死锁的四个必要条件中，第二、三和四项条件比较容易消除。通过引入事务机制，往往可以消除第二、三两项条件，方法是将所有上锁操作均作为事务对待，一旦开始上锁，即确保全部操作均可回退，同时通过锁管理器检测死锁，并剥夺资源（回退事务）。这种做法有时会造成较大开销，而且也需要对上锁模式进行较多改动。</p>
-<p>消除第四项条件是比较容易且代价较低的办法。具体来说这种方法约定：上锁的顺序必须一致。具体来说，我们人为地给锁指定一种类似“水位”的方向性属性。无论已持有任何锁，该执行者所有的上锁操作，必须按照一致的先后顺序从低到高（或从高到低）进行，且在一个系统中，只允许使用一种先后次序。</p>
-<p>请注意，放锁的顺序并不会导致死锁。也就是说，尽管按照 锁A, 锁B, 放A, 放B 这样的顺序来进行锁操作看上去有些怪异，但是只要大家都按先A后B的顺序上锁，便不会导致死锁。</p>
-<p>##解决方法：</p>
-<ol>
-<li>使用事务时，尽量缩短事务的逻辑处理过程，及早提交或回滚事务； (细化处理逻辑，执行一段逻辑后便回滚或者提交，然后再执行其它逻辑，直到事物执行完毕提交)</li>
-<li>设置死锁超时参数为合理范围，如：3分钟-10分种；超过时间，自动放弃本次操作，避免进程悬挂； </li>
-</ol>
+            <blockquote>
+<p>有个目录，里面是你自己写过的程序，统计一下你写过多少行代码。包括空行和注释，但是要分别列出来。</p>
+</blockquote>
+<pre><code>#!/usr/bin/python
+#encoding=utf-8
 
+import re
+import os
+
+total = 0
+blank = 0
+comment = 0
+
+#要想使用全局变量，必须要用global来申明
+def count_code_lines(filename):
+    global total
+    global blank
+    global comment
+    f = open(filename)
+    lines = f.readlines()
+    total += len(lines)
+
+    pattern_blank = re.compile(r&apos;^\s*$&apos;)
+    pattern_comment = re.compile(r&apos;^\s*\#+&apos;)
+
+    for line in lines:
+        if pattern_blank.match(line):
+            blank += 1
+        elif pattern_comment.match(line):
+            comment += 1
+
+
+def walk_dir(file_path):
+    global total
+    global blank
+    global comment
+    #os.walk返回值为3元tupple，第一个是起始路径，第二个是起始下的文件夹，第三个是起始路径下的文件
+    for root, dirs, files in os.walk(file_path):
+        for file in files:
+            if file.lower().endswith(&apos;.py&apos;):
+                full_path = os.path.join(root, file)
+                count_code_lines(full_path)
+
+#在main函数里不要用global来申明全局变量
+if __name__ == &apos;__main__&apos;:
+    walk_dir(&apos;../&apos;)
+    print &apos;total line is %d, blank is %d, comment is %d&apos; % (total, blank, comment)
+</code></pre>
           
         
       
@@ -1661,7 +2053,7 @@ cat /proc/meminfo
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/共享内存/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -1680,7 +2072,7 @@ cat /proc/meminfo
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/03/04/共享内存/" itemprop="url">共享内存</a></h1>
+                <a class="post-title-link" href="/2015/02/02/每天一个python小程序-5/" itemprop="url">每天一个python小程序(5)--找出最重要的单词</a></h1>
         
 
         <div class="post-meta">
@@ -1692,8 +2084,8 @@ cat /proc/meminfo
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-04T15:15:55+08:00">
-                2015-03-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-02T23:12:36+08:00">
+                2015-02-02
               </time>
             
 
@@ -1715,8 +2107,8 @@ cat /proc/meminfo
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
                   </a>
                 </span>
 
@@ -1754,165 +2146,49 @@ cat /proc/meminfo
       
         
           
-            <p>共享内存定义：共享内存是最快的可用IPC（进程间通信）形式。它允许多个不相关的进程去访问同一部分逻辑内存。共享内存是由IPC为一个进程创建的一个特殊的·地址范围，它将出现在进程的地址空间中。其他进程可以把同一段共享内存段“连接到”它们自己的地址空间里去。所有进程都可以访问共享内存中的地址。如果一个进程向这段共享内存写了数据，所做的改动会立刻被有访问同一段共享内存的其他进程看到。因此共享内存对于数据的传输是非常高效的。</p>
-<p><strong>共享内存段被映射进进程空间之后，存在于进程空间的什么位置？共享内存段最大限制是多少？</strong></p>
-<pre><code>$sysctl kern.ipc.shmmax  //可以查看共享内存的大小
-kern.ipc.shmmax: 33554432
-</code></pre><p>共享内存存在于进程数据段，最大限制为0x2000000Byte</p>
-<p><img src="/img/一个linux进程的存储器映像.png" alt="一个linux进程的存储器映像"></p>
-<p>程序内总是从虚拟地址0x08048000处开始。用户栈总是从虚拟地址0xbfffffff处开始，共享对象总是加载在从虚拟地址0x40000000处开始的区域内。</p>
+            <blockquote>
+<p>你有一个目录，放了你一个月的日记，都是 txt，为了避免分词的问题，假设内容都是英文，请统计出你认为每篇日记最重要的词。</p>
+</blockquote>
+<pre><code>#!/usr/bin/env python
+#encoding=utf-8
 
-          
-        
-      
-    </div>
-    
-    
-    
+import collections
+import re
+import os
 
-    
+#这些单词在所有文章中都会频繁出现，不能看做最重要的词
+useless_words = (&apos;the&apos;, &apos;a&apos;, &apos;an&apos;, &apos;and&apos;, &apos;by&apos;, &apos;of&apos;, &apos;in&apos;, &apos;on&apos;, &apos;is&apos;, &apos;to&apos;)
 
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
+&apos;&apos;&apos;
 
 
-    
-      
+def get_important_word(file):
+    f = open(file)
+    word_counter = collections.Counter()
 
-  
+    for line in f:
+        words = re.findall(&apos;\w+&apos;, line.lower())
+        word_counter.update(words)
 
-  
-  
-  
+    f.close()
+    #按次序取出出现次序最多的词，和useless_words中的单词比较，如果在use_less表中，就取次一个高频的单词
+    most_important_word = word_counter.most_common(1)[0][0]
+    count = 2
+    while (most_important_word in useless_words):
+        most_important_word = word_counter.most_common(count)[count-1][0]
+        count += 1
+    num = word_counter.most_common(count)[count-1][1]
+    print &apos;the most important word in %s is %s, it appears %d times&apos; % (file, most_important_word, num)
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/04/float与“零值”比较的-if-语句/">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/04/float与“零值”比较的-if-语句/" itemprop="url">float与“零值”比较的 if 语句</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-04T11:11:55+08:00">
-                2015-03-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##代码<br>    const float EPSINON = 0.00001;<br>    if ((x &gt;= - EPSINON) &amp;&amp; (x &lt;= EPSINON)）</p>
-<p>##解释<br>浮点数在内存中的存贮机制和整型数不同，有舍入误差，在计算机中用以近似表示任意某个实数。具体的说，这个实数由一个整数或定点数（即尾数）乘以某个基数（计算机中通常是2）的整数次幂得到，这种表示方法类似于基数为10的科学记数法。</p>
-<p>所以浮点数在运算过程中通常伴随着因为无法精确表示而进行的近似或舍入。但是这种设计的好处是可以在固定的长度上存储更大范围的数。</p>
-<p>例如，一个指数范围为±4的4位十进制浮点数可以用来表示43210，4.321或0.0004321，但是没有足够的精度来表示432.123和43212.3（必须近似为432.1和43210）。当然，实际使用的位数通常远大于4。</p>
-<p>所以浮点数不能够判断相等，像 if(x==0)的这样的编码是不总是正确的，我们在判断浮点数相等时，推荐用范围来确定，若x在某一范围内，我们就认为相等，至于范围怎么定义，要看实际情况而已了，float,和double 各有不同</p>
-<p>所以</p>
-<pre><code>const float EPSINON = 0.00001;  
-if ((x &gt;= - EPSINON) &amp;&amp; (x &lt;= EPSINON) 
-</code></pre><p>这样判断是可取的</p>
-<p><strong>至于为什么取0.00001，可以自己按实际情况定义</strong></p>
-
+if __name__ == &apos;__main__&apos;:
+    filepath = &apos;diary&apos;
+    for dirpath, dirname, dirfiles in os.walk(filepath):
+        for file in dirfiles:
+            abspath = os.path.join(dirpath, file)
+            if os.path.isfile(abspath):
+                get_important_word(abspath)
+</code></pre>
           
         
       
@@ -1951,7 +2227,7 @@ if ((x &gt;= - EPSINON) &amp;&amp; (x &lt;= EPSINON)
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/12/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/14/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/12/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/14/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1997,7 +2273,7 @@ if ((x &gt;= - EPSINON) &amp;&amp; (x &lt;= EPSINON)
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">193</span>
+                <span class="site-state-item-count">163</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
