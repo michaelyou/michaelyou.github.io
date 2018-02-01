@@ -1401,8 +1401,7 @@ False
 &gt;&gt;&gt; s1 is s2
 True
 </code></pre><p>你应该已经体会到了用法，但是，在<code>python</code>内部它是怎么工作的呢？</p>
-<h2 id="String-Intern（字符串驻留）"><a href="#String-Intern（字符串驻留）" class="headerlink" title="String Intern（字符串驻留）"></a>String Intern（字符串驻留）</h2><p>###<code>PyStringObject</code>结构体</p>
-<p>我们需要深入<code>CPython</code>的源码，表示<code>Python</code>字符串的<code>C</code>结构体<code>PyStringObject</code>在<code>stringobject.h</code>文件中：</p>
+<h2 id="String-Intern（字符串驻留）"><a href="#String-Intern（字符串驻留）" class="headerlink" title="String Intern（字符串驻留）"></a>String Intern（字符串驻留）</h2><h3 id="PyStringObject结构体"><a href="#PyStringObject结构体" class="headerlink" title="PyStringObject结构体"></a><code>PyStringObject</code>结构体</h3><p>我们需要深入<code>CPython</code>的源码，表示<code>Python</code>字符串的<code>C</code>结构体<code>PyStringObject</code>在<code>stringobject.h</code>文件中：</p>
 <pre><code>typedef struct {
     PyObject_VAR_HEAD
     long ob_shash;
@@ -1420,8 +1419,7 @@ True
 } PyStringObject;
 </code></pre><p>根据注释，如果字符串被<code>interned</code>，变量<code>ob_sstate</code>的值将不再等于<code>0</code>。一般来说，我们不会直接接触这个变量，而是通过下面定义的宏<code>PyString_CHECK_INTERNED</code>来读取它：</p>
 <pre><code>#define PyString_CHECK_INTERNED(op) (((PyStringObject *)(op))-&gt;ob_sstate)
-</code></pre><p>###interned字典</p>
-<p>然后，让我们来看<code>stringobject.c</code>。<code>24行</code>定义了一个对象的引用，<code>interned</code>字符串将会存放在这个对象里。</p>
+</code></pre><h3 id="interned字典"><a href="#interned字典" class="headerlink" title="interned字典"></a>interned字典</h3><p>然后，让我们来看<code>stringobject.c</code>。<code>24行</code>定义了一个对象的引用，<code>interned</code>字符串将会存放在这个对象里。</p>
 <pre><code>static PyObject *interned;
 </code></pre><p>实际上，这个对象就是一个正常的<code>Python</code>字典，在第<code>4744行</code>被初始化</p>
 <pre><code>interned = PyDict_New();
@@ -1484,9 +1482,7 @@ def intern(string):
     string.is_interned = True
     return string
 </code></pre><p>简单吧！</p>
-<p>###字符串intern的好处</p>
-<p>####共享对象</p>
-<p>为什么你要使用字符串<code>intern</code>？首先，共享字符串对象可以减少内存占用。让我们回到第一个例子，一开始，变量<code>s1</code>和<code>s2</code>指向两个不同的对象。</p>
+<h3 id="字符串intern的好处"><a href="#字符串intern的好处" class="headerlink" title="字符串intern的好处"></a>字符串intern的好处</h3><h4 id="共享对象"><a href="#共享对象" class="headerlink" title="共享对象"></a>共享对象</h4><p>为什么你要使用字符串<code>intern</code>？首先，共享字符串对象可以减少内存占用。让我们回到第一个例子，一开始，变量<code>s1</code>和<code>s2</code>指向两个不同的对象。</p>
 <p><img src="http://guilload.com/assets/media/python-string-interning/foo.png" alt="The two variables reference two different objects"></p>
 <p>在<code>intern</code>之后，他们都指向了同一个对象。第二个对象占用的内存被节省下来了。</p>
 <p><img src="http://guilload.com/assets/media/python-string-interning/bar.png" alt="Now, the two variables reference the same object"></p>
@@ -1518,18 +1514,15 @@ Partition of a set of 4555 objects. Total size = 547840 bytes.
      1   4529  99   215776  39    544000  99 str
 ...
 </code></pre><p>如你所见，我们极大地减少了字符串对象的数量（从<code>31187</code>减少到<code>4555</code>），并且内存占用减少了<code>6.5</code>倍</p>
-<p>####指针比较</p>
-<p>第二，我们可以用<code>O(1)</code>的指针比较来代替<code>O(n)</code>的字节比较</p>
+<h4 id="指针比较"><a href="#指针比较" class="headerlink" title="指针比较"></a>指针比较</h4><p>第二，我们可以用<code>O(1)</code>的指针比较来代替<code>O(n)</code>的字节比较</p>
 <p>为了验证这个，我测量了在比较两个字符串是否相等的时，<code>intern</code>与否分别的时间。下面的图应该能说服你：</p>
 <p><img src="http://guilload.com/assets/media/python-string-interning/qux.png" alt="Pointer comparison vs. byte-per-byte comparison"></p>
-<p>###Native interning</p>
-<p>在一些条件下，字符串会被原生<code>interning</code>。还是第一个例子，如果我用<code>foo</code>而不是<code>foo！</code>，字符串<code>s1</code>和<code>s2</code>就会被自动地<code>intern</code>。</p>
+<h3 id="Native-interning"><a href="#Native-interning" class="headerlink" title="Native interning"></a>Native interning</h3><p>在一些条件下，字符串会被原生<code>interning</code>。还是第一个例子，如果我用<code>foo</code>而不是<code>foo！</code>，字符串<code>s1</code>和<code>s2</code>就会被自动地<code>intern</code>。</p>
 <pre><code>&gt;&gt;&gt; s1 = &apos;foo&apos;
 &gt;&gt;&gt; s2 = &apos;foo&apos;
 &gt;&gt;&gt; s1 is s2
 True
-</code></pre><p>###Interned or not interned?</p>
-<p>写这篇文章之前，我一直在想，在后台，字符串会根据一个参考字符串长度和构成它们的字符的规则来执行<code>intern</code>。我的想法离正确答案很近，但是，当我操作几组创建方法不同的字符串时，我无法推测出这条规则到底是什么！</p>
+</code></pre><h3 id="Interned-or-not-interned"><a href="#Interned-or-not-interned" class="headerlink" title="Interned or not interned?"></a>Interned or not interned?</h3><p>写这篇文章之前，我一直在想，在后台，字符串会根据一个参考字符串长度和构成它们的字符的规则来执行<code>intern</code>。我的想法离正确答案很近，但是，当我操作几组创建方法不同的字符串时，我无法推测出这条规则到底是什么！</p>
 <pre><code>&gt;&gt;&gt; &apos;foo&apos; is &apos;foo&apos;
 True
 &gt;&gt;&gt; &apos;foo!&apos; is &apos;foo!&apos;
@@ -1547,8 +1540,7 @@ False
 &gt;&gt;&gt; &apos;foooooooooooooooooooooooooooooo&apos; is &apos;foooooooooooooooooooooooooooooo&apos;
 True
 </code></pre><p>在看完这些例子后，你要承认，确实非常难以确定系统是根据什么来执行原生的<code>intern</code>。我们还需要阅读更多的<code>CPython</code>代码来找出答案。</p>
-<p>####Fact 1: all length 0 and length 1 strings are interned</p>
-<p>还是在<code>stringobject.c</code>，我们这些要看<code>PyString_FromStringAndSize</code>和 <code>PyString_FromString</code>函数中都有的一些代码：</p>
+<h4 id="Fact-1-all-length-0-and-length-1-strings-are-interned"><a href="#Fact-1-all-length-0-and-length-1-strings-are-interned" class="headerlink" title="Fact 1: all length 0 and length 1 strings are interned"></a>Fact 1: all length 0 and length 1 strings are interned</h4><p>还是在<code>stringobject.c</code>，我们这些要看<code>PyString_FromStringAndSize</code>和 <code>PyString_FromString</code>函数中都有的一些代码：</p>
 <pre><code>/* share short strings */
 if (size == 0) {
     PyObject *t = (PyObject *)op;
@@ -1560,8 +1552,7 @@ if (size == 0) {
     PyObject *t = (PyObject *)op;
     PyString_InternInPlace(&amp;t);
 </code></pre><p>非常清晰：所有长度为<code>0</code>和<code>1</code>的字符串都会被<code>intern</code>。</p>
-<p>####Fact 2: 在编译期间字符串会被<code>interned</code></p>
-<p>你写的<code>Python</code>代码并不是直接被解释器执行，代码会通过一个经典的编译链来生成一种中间语言：<code>bytecode</code>（字节码）。<code>python</code>字节码是被<code>Python</code>解释器这个虚拟机执行的一系类指令。你可以在<a href="https://docs.python.org/2/library/dis.html#bytecodes" target="_blank" rel="external">这里</a>看到所有的指令。通过使用<code>dis</code>模块，你可以看到一个函数或模块执行了哪些指令：</p>
+<h4 id="Fact-2-在编译期间字符串会被interned"><a href="#Fact-2-在编译期间字符串会被interned" class="headerlink" title="Fact 2: 在编译期间字符串会被interned"></a>Fact 2: 在编译期间字符串会被<code>interned</code></h4><p>你写的<code>Python</code>代码并不是直接被解释器执行，代码会通过一个经典的编译链来生成一种中间语言：<code>bytecode</code>（字节码）。<code>python</code>字节码是被<code>Python</code>解释器这个虚拟机执行的一系类指令。你可以在<a href="https://docs.python.org/2/library/dis.html#bytecodes" target="_blank" rel="external">这里</a>看到所有的指令。通过使用<code>dis</code>模块，你可以看到一个函数或模块执行了哪些指令：</p>
 <pre><code>&gt;&gt;&gt; import dis
 &gt;&gt;&gt; def foo():
 ...     print &apos;foo!&apos;
@@ -1619,16 +1610,14 @@ all_name_chars(unsigned char *s)
     return 1;
 }
 </code></pre><p>理解了这些，我们就知道了为什么<code>&#39;foo!&#39; is &#39;foo!&#39;</code>等于<code>False</code>，而<code>&#39;foo&#39; is &#39;foo&#39;</code>等于<code>True</code>，胜利了吗？还没有！</p>
-<p>####字节码优化产生了更多字符串常量</p>
-<p>这听起来和直觉不符，但是在下面的例子中，字符串连接的输出不是在运行时，而是在编译时：</p>
+<h4 id="字节码优化产生了更多字符串常量"><a href="#字节码优化产生了更多字符串常量" class="headerlink" title="字节码优化产生了更多字符串常量"></a>字节码优化产生了更多字符串常量</h4><p>这听起来和直觉不符，但是在下面的例子中，字符串连接的输出不是在运行时，而是在编译时：</p>
 <pre><code>&gt;&gt;&gt; &apos;foo&apos; + &apos;bar&apos; is &apos;foobar&apos;
 True
 </code></pre><p>这就是为什么<code>&#39;foo&#39; + &#39;bar&#39;</code>也被<code>intern</code>了，表达式等于<code>True</code>。</p>
 <p>怎么做到的？倒数第二的源码编译器生成了第一个版本的字节码。这个原始的字节码最终会进入最后一个编译器，被称作<code>“窥孔优化”</code>(<code>peephole optimization</code>)</p>
 <p><img src="http://guilload.com/assets/media/python-string-interning/baz.png" alt="Compilation chain"></p>
 <p>这一步的目标是通过替换更快的指令来产生更加高效的字节码。</p>
-<p>##常量合并<code>Constant folding</code></p>
-<p>在<code>窥孔优化</code>期间，应用到的一项技术就是常量合并，使用更加简单的常量。想象你是一个编译器，你看到了下面这行：</p>
+<h2 id="常量合并Constant-folding"><a href="#常量合并Constant-folding" class="headerlink" title="常量合并Constant folding"></a>常量合并<code>Constant folding</code></h2><p>在<code>窥孔优化</code>期间，应用到的一项技术就是常量合并，使用更加简单的常量。想象你是一个编译器，你看到了下面这行：</p>
 <pre><code>SECONDS = 24 * 60 * 60
 </code></pre><p>你能做什么来简化这个表达式以在运行时节约几个时钟周期。你可以用计算好的值<code>86400</code>来替换这个表达式。这就是<code>foo&#39; + &#39;bar&#39;</code>发生的事。让我们定义一个<code>foobar</code>函数，分解相关的字节码：</p>
 <pre><code>&gt;&gt;&gt; import dis
@@ -1645,10 +1634,8 @@ True
               7 RETURN_VALUE
 </code></pre><p>我们解决为什么下面的表达式正确的问题：</p>
 <pre><code>&gt;&gt;&gt; &apos;a&apos; * 20 is &apos;aaaaaaaaaaaaaaaaaaaa&apos;
-</code></pre><p>####避免大的 .pyc 文件</p>
-<p>那么为什么<code>&#39;a&#39; * 21 is &#39;aaaaaaaaaaaaaaaaaaaaa&#39;</code>不等于<code>True</code>呢？你还记得在你的包里面会看到的<code>.pyc</code>文件吗。如果一个人写了诸如<code>[&#39;foo!&#39;] * 10**9</code>的代码会怎么样呢？这样会导致<code>.pyc</code>文件非常巨大！为了避免这个现象，<code>窥孔优化</code>中产生的序列长度如果大于<code>20</code>，将会被丢弃。</p>
-<p>##补充</p>
-<p>###窥孔优化<br>顾名思义，是一种很局部的优化方式，编译器仅仅在一个基本块或者多个基本块中，针对已经生成的代码，结合CPU自己指令的特点，通过一些认为可能带来性能提升的转换规则，或者通过整体的分析，通过指令转换，提升代码性能。别看这些代码转换很局部，很小，但可能会带来很大的性能提升。</p>
+</code></pre><h4 id="避免大的-pyc-文件"><a href="#避免大的-pyc-文件" class="headerlink" title="避免大的 .pyc 文件"></a>避免大的 .pyc 文件</h4><p>那么为什么<code>&#39;a&#39; * 21 is &#39;aaaaaaaaaaaaaaaaaaaaa&#39;</code>不等于<code>True</code>呢？你还记得在你的包里面会看到的<code>.pyc</code>文件吗。如果一个人写了诸如<code>[&#39;foo!&#39;] * 10**9</code>的代码会怎么样呢？这样会导致<code>.pyc</code>文件非常巨大！为了避免这个现象，<code>窥孔优化</code>中产生的序列长度如果大于<code>20</code>，将会被丢弃。</p>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><h3 id="窥孔优化"><a href="#窥孔优化" class="headerlink" title="窥孔优化"></a>窥孔优化</h3><p>顾名思义，是一种很局部的优化方式，编译器仅仅在一个基本块或者多个基本块中，针对已经生成的代码，结合CPU自己指令的特点，通过一些认为可能带来性能提升的转换规则，或者通过整体的分析，通过指令转换，提升代码性能。别看这些代码转换很局部，很小，但可能会带来很大的性能提升。</p>
 <p>这个窥孔，你可以认为是一个滑动窗口，编译器在实施窥孔优化时，就仅仅分析这个窗口内的指令。每次转换之后，可能还会暴露相邻窗口之间的某些优化机会，所以可以多次调用窥孔优化，尽可能提升性能。</p>
 <p>窥孔优化可以在四个方面寻找优化机会：冗余指令删除，包括冗余的load和store指令以及死代码(不会执行的代码);控制流优化；强度削弱；利用特有指令。</p>
 
@@ -3048,7 +3035,7 @@ java hello
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
