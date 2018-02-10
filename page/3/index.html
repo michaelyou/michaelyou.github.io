@@ -286,6 +286,200 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/01/23/pyc文件和python程序的执行过程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/01/23/pyc文件和python程序的执行过程/" itemprop="url">pyc文件和python程序的执行过程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-01-23T18:44:56+08:00">
+                2016-01-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Python是一门解释型语言？"><a href="#Python是一门解释型语言？" class="headerlink" title="Python是一门解释型语言？"></a>Python是一门解释型语言？</h2><p>初学Python时，听到的关于Python的第一句话就是，Python是一门解释性语言，我就这样一直相信下去，直到发现了<code>*.pyc</code>文件的存在。如果是解释型语言，那么生成的<code>*.pyc</code>文件是什么呢？<code>c</code>应该是<code>compiled</code>的缩写才对啊！</p>
+<p>为了防止其他学习Python的人也被这句话误解，那么我们就在文中来澄清下这个问题，并且把一些基础概念给理清。</p>
+<h2 id="解释型语言和编译型语言"><a href="#解释型语言和编译型语言" class="headerlink" title="解释型语言和编译型语言"></a>解释型语言和编译型语言</h2><p>计算机是不能够识别高级语言的，所以当我们运行一个高级语言程序的时候，就需要一个“翻译机”来从事把高级语言转变成计算机能读懂的机器语言的过程。这个过程分成两类，第一种是<strong>编译</strong>，第二种是<strong>解释</strong>。</p>
+<p>编译型语言在程序执行之前，先会通过编译器对程序执行一个编译的过程，把程序转变成机器语言。运行时就不需要翻译，而直接执行就可以了。最典型的例子就是C语言。</p>
+<p>解释型语言就没有这个编译的过程，而是在程序运行的时候，通过解释器对程序逐行作出解释，然后直接运行，最典型的例子是Ruby。</p>
+<p>通过以上的例子，我们可以来总结一下解释型语言和编译型语言的优缺点：因为编译型语言在程序运行之前就已经对程序做出了“翻译”，所以在运行时就少掉了“翻译”的过程，所以效率比较高。但是我们也不能一概而论，一些解释型语言也可以通过解释器的优化来在对程序做出翻译时对整个程序做出优化，从而在效率上超过编译型语言。</p>
+<p>此外，随着Java等基于虚拟机的语言的兴起，我们又不能把语言纯粹地分成解释型和编译型这两种。</p>
+<p>用Java来举例，Java首先是通过编译器编译成字节码文件，然后在运行时通过解释器给解释成机器文件。所以我们说Java是一种先编译后解释的语言。</p>
+<p>再换成C#，C#首先是通过编译器将C#文件编译成<code>IL</code>文件，然后在通过<code>CLR</code>将<code>IL</code>文件编译成机器文件。所以我们说C#是一门纯编译语言，但是C#是一门需要二次编译的语言。同理也可等效运用到基于<code>.NET</code>平台上的其他语言。</p>
+<h2 id="Python到底是什么"><a href="#Python到底是什么" class="headerlink" title="Python到底是什么"></a>Python到底是什么</h2><p>其实Python和<code>Java/C#</code>一样，也是一门基于虚拟机的语言，我们先来从表面上简单地了解一下Python程序的运行过程吧。</p>
+<p>当我们在命令行中输入<code>python hello.py</code>时，其实是激活了Python的“解释器”，告诉“解释器”：你要开始工作了。可是在“解释”之前，其实执行的第一项工作和Java一样，是编译。</p>
+<p>熟悉Java的同学可以想一下我们在命令行中如何执行一个Java的程序：</p>
+<pre><code>javac hello.java
+java hello
+</code></pre><p>只是我们在用Eclipse之类的IDE时，将这两部给融合成了一部而已。其实Python也一样，当我们执行<code>python hello.py</code>时，他也一样执行了这么一个过程，所以我们应该这样来描述Python，Python是一门先编译后解释的语言。</p>
+<h2 id="简述Python的运行过程"><a href="#简述Python的运行过程" class="headerlink" title="简述Python的运行过程"></a>简述Python的运行过程</h2><p>在说这个问题之前，我们先来说两个概念，<code>PyCodeObject</code>和<code>pyc</code>文件。</p>
+<p>我们在硬盘上看到的<code>pyc</code>自然不必多说，而其实<code>PyCodeObject</code>则是Python编译器真正编译成的结果。我们先简单知道就可以了，继续向下看。</p>
+<p>当python程序运行时，编译的结果则是保存在位于内存中的<code>PyCodeObject</code>中，当Python程序运行结束时，Python解释器则将<code>PyCodeObject</code>写回到<code>pyc</code>文件中。</p>
+<p>当python程序第二次运行时，首先程序会在硬盘中寻找<code>pyc</code>文件，如果找到，则直接载入，否则就重复上面的过程。</p>
+<p>所以我们应该这样来定位<code>PyCodeObject</code>和<code>pyc</code>文件，我们说<code>pyc</code>文件其实是<code>PyCodeObject</code>的一种持久化保存方式。</p>
+<h2 id="运行一段Python程序"><a href="#运行一段Python程序" class="headerlink" title="运行一段Python程序"></a>运行一段Python程序</h2><p>我们来写一段程序实际运行一下：</p>
+<p><img src="/img/pyc1.jpg" alt=""></p>
+<p>程序本身毫无意义。我们继续看：</p>
+<p><img src="/img/pyc2.jpg" alt=""></p>
+<p>然而我们在程序中并没有看到<code>pyc</code>文件，仍然是<code>test.py</code>孤零零地呆在那！</p>
+<p>那么我们换一种写法，我们把<code>print_str</code>方法换到另外的一个python模块中：</p>
+<p><img src="/img/pyc3.jpg" alt=""></p>
+<p><img src="/img/pyc4.jpg" alt=""></p>
+<p>然后运行程序：</p>
+<p><img src="/img/pyc5.jpg" alt=""></p>
+<p>这个时候<code>pyc</code>文件出现了，其实认真思考一下不难得到原因（下面会讲），我们考虑一下实际的业务情况。</p>
+<h2 id="pyc的目的是重用"><a href="#pyc的目的是重用" class="headerlink" title="pyc的目的是重用"></a>pyc的目的是重用</h2><p>回想本文的第二段在解释编<strong>译型语言和解释型语言的优缺点</strong>时，我说编译型语言的优点在于，我们可以在程序运行时不用解释，而直接利用已经“翻译”过的文件。也就是说，我们之所以要把py文件编译成<code>pyc</code>文件，最大的优点在于我们在运行程序时，不需要重新对该模块进行重新的解释。<br>所以，我们需要编译成<code>pyc</code>文件的应该是那些可以重用的模块，这于我们在设计软件类时是一样的目的。所以Python的解释器认为：只有<code>import</code>进来的模块，才是需要被重用的模块。</p>
+<p>这个时候也许有人会说，不对啊！你的这个问题没有被解释通啊，我的<code>test.py</code>不是也需要运行么，虽然不是一个模块，但是以后我每次运行也可以节省时间啊！</p>
+<p>OK，我们从实际情况出发，思考下我们在什么时候才可能运行<code>python xxx.py</code>文件：</p>
+<ol>
+<li>执行测试时。</li>
+<li>开启一个Web进程时。</li>
+<li>执行一个程序脚本。</li>
+</ol>
+<p>我们逐个来说，第一种情况我们就不用多说了，这个时候哪怕所有的文件都没有<code>pyc</code>文件都是无所谓的。</p>
+<p>第二种情况，我们试想一个webpy的程序把，我们通常这样执行：</p>
+<p><img src="/img/pyc6.jpg" alt=""></p>
+<p>抑或者：</p>
+<p><img src="/img/pyc7.jpg" alt=""></p>
+<p>然后这个程序就类似于一个守护进程一样一直监视着<code>8181/9002</code>端口，而一旦中断，只可能是程序被杀死，或者其他的意外情况，那么你需要恢复要做的是把整个的Web服务重启。那么既然一直监视着，把<code>PyCodeObject</code>一直放在内存中就足够了，完全没必要持久化到硬盘上。<br>最后一个情况，执行一个程序脚本，一个程序的主入口其实很类似于Web程序中的Controller，也就是说，他负责的应该是Model之间的调度，而不包含任何的主逻辑在内，如<a href="http://www.cnblogs.com/kym/archive/2010/07/19/1780407.html" target="_blank" rel="external">这篇文章</a>中所提到，<code>Controller</code>应该就是一个<code>Facade</code>，无任何的细节逻辑，只是把参数转来转去而已，那么如果做算法的同学可以知道，在一段算法脚本中，最容易改变的就是算法的各个参数，那么这个时候给持久化成<code>pyc</code>文件就未免有些画蛇添足了。</p>
+<p>所以我们可以这样理解Python解释器的意图，Python解释器只把我们可能重用到的模块持久化成<code>pyc</code>文件。</p>
+<h2 id="pyc的过期时间"><a href="#pyc的过期时间" class="headerlink" title="pyc的过期时间"></a>pyc的过期时间</h2><p>说完了pyc文件，可能有人会想到，每次Python的解释器都把模块给持久化成了pyc文件，那么当我的模块发生了改变的时候，是不是都要手动地把以前的pyc文件remove掉呢？</p>
+<p>当然Python的设计者是不会犯这么白痴的错误的。而这个过程其实就取决于<code>PyCodeObject</code>是如何写入<code>pyc</code>文件中的。<br>我们来看一下<code>import</code>过程的源码吧：</p>
+<p><img src="/img/pyc8.jpg" alt=""></p>
+<p>这段代码比较长，我们只来看我标注了的代码，其实他在写入<code>pyc</code>文件的时候，写了一个<code>Long</code>型变量，变量的内容则是文件的最近修改日期，同理，我们再看下载入<code>pyc</code>的代码：</p>
+<p><img src="/img/pyc9.jpg" alt=""></p>
+<p><img src="/img/pyc10.jpg" alt=""></p>
+<p>不用仔细看代码，我们可以很清楚地看到原理，其实每次在载入之前都会先检查一下py文件和pyc文件保存的最后修改日期，如果不一致则重新生成一份<code>pyc</code>文件。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/08/Django-优化数据库查询/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2056,188 +2250,6 @@ WHERE id = 52;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/06/05/丢失私有密钥时连接到虚拟机-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/06/05/丢失私有密钥时连接到虚拟机-2/" itemprop="url">丢失私有密钥时连接到虚拟机(2)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-06-05T13:34:45+08:00">
-                2015-06-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/openstack/" itemprop="url" rel="index">
-                    <span itemprop="name">openstack</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原理和<a href="http://michaelyou.github.io/2015/06/02/%E4%B8%A2%E5%A4%B1%E7%A7%81%E6%9C%89%E5%AF%86%E9%92%A5%E6%97%B6%E8%BF%9E%E6%8E%A5%E5%88%B0%E8%99%9A%E6%8B%9F%E6%9C%BA/" target="_blank" rel="external">丢失私有密钥时连接到虚拟机(1)</a>是一样的，从镜像创建的虚拟机我们也可以将其挂载到别的机器上，只是需要的命令不同。</p>
-<p>##具体步骤</p>
-<ul>
-<li>关闭你的虚拟机</li>
-<li>找到你的虚拟机的<code>id</code>，类似<code>282d0355-a4db-4467-a70b-4783ac2c7ed6</code>这样一串数字</li>
-<li>找到你的虚拟机的宿主机，登录到宿主机上</li>
-<li><p>进入到存放虚拟机文件的目录</p>
-<pre><code>cd /var/lib/nova/instances/{id}
-</code></pre><p>这里的<code>id</code>就是你上面虚拟机的<code>id</code><br>这个目录下的内容是这样的</p>
-<pre><code>.
-├── console.log
-├── disk
-├── disk.info
-├── libvirt.xml
-</code></pre><p>这里的disk文件就是我们要操作的对象</p>
-</li>
-<li><p>在当前目录下创建sysroot目录</p>
-<pre><code>mkdir sysroot
-</code></pre></li>
-<li><p>挂载disk文件到本机</p>
-<pre><code>guestmount -a disk --rw -m /dev/sda1  sysroot
-</code></pre><p><strong>Note</strong>：如果你是ubuntu的系统，guestmount会报错如下：</p>
-<pre><code>libguestfs: error: /usr/bin/supermin-helper exited with error status 1.
-To see full error messages you may need to enable debugging.
-See http://libguestfs.org/guestfs-faq.1.html#debugging-libguestfs
-</code></pre><p>这个时候你可以执行：</p>
-<pre><code>update-guestfs-appliance
-</code></pre></li>
-<li><p>进入sysroot并把它当作当前进程的根文件系统</p>
-<pre><code>cd sysroot; chroot .
-</code></pre></li>
-<li><p>现在就可以修改虚拟机的文件啦！        </p>
-</li>
-<li><p>修改完成后，exit退出chroot的环境</p>
-<pre><code>exit
-cd ..  #回到上一级目录
-umount sysroot
-</code></pre></li>
-<li><p>启动虚拟机即可</p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2288,7 +2300,7 @@ umount sysroot
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">163</span>
+                <span class="site-state-item-count">164</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2299,7 +2311,7 @@ umount sysroot
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2310,7 +2322,7 @@ umount sysroot
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

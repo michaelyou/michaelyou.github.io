@@ -286,6 +286,209 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/03/connect函数会阻塞，怎么解决？/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/03/connect函数会阻塞，怎么解决？/" itemprop="url">connect函数会阻塞，怎么解决？</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-03T19:57:01+08:00">
+                2015-03-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>建立socket后默认connect()函数为阻塞连接状态，在大多数实现中，connect的超时时间在75s至几分钟之间，想要缩短超时时间，可解决问题的两种方法：</p>
+<ul>
+<li>方法一、将socket句柄设置为非阻塞状态。</li>
+<li>方法二、采用信号处理函数设置阻塞超时控制。</li>
+</ul>
+<p>##设置套接字为非阻塞<br>可以将套接字设置为非阻塞，下面是具体步骤</p>
+<ol>
+<li>建立socket</li>
+<li>将该socket设置为非阻塞模式</li>
+<li>调用connect()，如果返回0，则连接建立；如果返回-1，检查errno ，如果值为 EINPROGRESS，则连接正在建立。</li>
+<li>使用select()检查该socket描述符是否可写（注意，是可写）</li>
+<li>根据select()返回的结果判断connect()结果，如果规定时间内成功建立，则描述符变为可写；否则，采用getsockopt函数捕获错误信息</li>
+<li>将socket设置为阻塞模式（<strong>如果你的程序不需要用阻塞模式的，这步就省了，不过一般情况下都是用阻塞模式的，这样也容易管理</strong>）</li>
+</ol>
+<p>下面是设置套接字为非阻塞的例程  </p>
+<pre><code>{
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if(sockfd &lt; 0) exit(1);
+    struct sockaddr_in serv_addr;
+    ………//以服务器地址填充结构serv_addr
+    int error=-1, len;
+    len = sizeof(int);
+    timeval tm;
+    fd_set set;
+    unsigned long ul = 1;
+
+    ioctl(sockfd, FIONBIO, &amp;ul); //设置为非阻塞模式
+    bool ret = false;
+
+    if( connect(sockfd, (struct sockaddr *)&amp;serv_addr, sizeof(serv_addr)) == -1)
+    {
+            tm.tv_set = TIME_OUT_TIME;
+            tm.tv_uset = 0;
+            FD_ZERO(&amp;set);
+            FD_SET(sockfd, &amp;set);
+            if( select(sockfd+1, NULL, &amp;set, NULL, &amp;tm) &gt; 0)
+            {
+                    getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &amp;error, (socklen_t *)&amp;len);
+                    if(error == 0) ret = true;
+                        else ret = false;
+            } 
+            else 
+                ret = false;
+    }
+    else 
+        ret = true;
+    ul = 0;
+    ioctl(sockfd, FIONBIO, &amp;ul); //设置为阻塞模式
+    //下面还可以进行发包收包操作
+    ……………
+}
+</code></pre><p>##采用信号处理函数设置阻塞超时控制</p>
+<pre><code>sigset(SIGALRM, u_alarm_handler);
+alarm(2);
+code = connect(socket_fd, (struct sockaddr*)&amp;socket_st, sizeof(struct sockaddr_in));
+alarm(0);
+sigrelse(SIGALRM);
+</code></pre><p>首先定义一个中断信号处理函数u_alarm_handler，用于超时后的报警处理，然后定义一个2秒的定时器，执行connect，当系统connect成功，则系统正常执行下去；如果connect不成功阻塞在这里，则超过定义的2秒后，系统会产生一个信号，触发执行u_alarm_handler函数， 当执行完u_alarm_handler后，程序将继续从connect的下面一行执行下去。</p>
+<p>其中，处理函数可以如下定义，也可以加入更多的错误处理。</p>
+<pre><code>void u_alarm_handler()
+{
+}
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/03/UNP上的一些问题与回答/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2289,175 +2492,6 @@ total                 925G   51G  829G   6%
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/12/cookie-和session-的区别/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/12/cookie-和session-的区别/" itemprop="url">cookie 和session 的区别</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-12T14:37:50+08:00">
-                2015-02-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/http/" itemprop="url" rel="index">
-                    <span itemprop="name">http</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>转载自<a href="http://www.cnblogs.com/shiyangxt/archive/2008/10/07/1305506.html" target="_blank" rel="external">这里</a>  </p>
-<p>当你在浏览网站的时候，WEB 服务器会先送一小小资料放在你的计算机上，Cookie 会把你在网站上所打的文字或是一些选择都纪录下来。当下次你再光临同一个网站，WEB 服务器会先看看有没有它上次留下的 Cookie 资料，有的话，就会依据 Cookie<br>里的内容来判断使用者，送出特定的网页内容给你。 Cookie 的使用很普遍，许多提供个人化服务的网站，都是利用 Cookie来辨认使用者，以方便送出使用者量身定做的内容，像是 Web 接口的免费 email 网站，都要用到 Cookie。</p>
-<p>具体来说cookie机制采用的是在客户端保持状态的方案，而session机制采用的是在服务器端保持状态的方案。</p>
-<p>同时我们也看到，由于采用服务器端保持状态的方案在客户端也需要保存一个标识，所以session机制可能需要借助于cookie机制来达到保存标识的目的，但实际上它还有其他选择。</p>
-<p>cookie机制。正统的cookie分发是通过扩展HTTP协议来实现的，服务器通过在HTTP的响应头中加上一行特殊的指示以提示浏览器按照指示生成相应的cookie。然而纯粹的客户端脚本如JavaScript或者VBScript也可以生成cookie。而cookie的使用是由浏览器按照一定的原则在后台自动发送给服务器的。浏览器检查所有存储的cookie，如果某个cookie所声明的作用范围大于等于将要请求的资源所在的位置，则把该cookie附在请求资源的HTTP请求头上发送给服务器。</p>
-<p>cookie的内容主要包括：名字，值，过期时间，路径和域。路径与域一起构成cookie的作用范围。若不设置过期时间，则表示这个cookie的生命期为浏览器会话期间，关闭浏览器窗口，cookie就消失。这种生命期为浏览器会话期的cookie被称为会话cookie。</p>
-<p>会话cookie一般不存储在硬盘上而是保存在内存里，当然这种行为并不是规范规定的。若设置了过期时间，浏览器就会把cookie保存到硬盘上，关闭后再次打开浏览器，这些cookie仍然有效直到超过设定的过期时间。存储在硬盘上的cookie可以在不同的浏览器进程间共享，比如两个IE窗口。而对于保存在内存里的cookie，不同的浏览器有不同的处理方式。</p>
-<p>session机制。session机制是一种服务器端的机制，服务器使用一种类似于散列表的结构（也可能就是使用散列表）来保存信息。</p>
-<p>当程序需要为某个客户端的请求创建一个session时，服务器首先检查这个客户端的请求里是否已包含了一个session标识（称为session id），如果已包含则说明以前已经为此客户端创建过session，服务器就按照session id把这个session检索出来<br>使用（检索不到，会新建一个），如果客户端请求不包含session id，则为此客户端创建一个session并且生成一个与此session相关联的session id，session id的值应该是一个既不会重复，又不容易被找到规律以仿造的字符串，这个session id将被在本次响应中返回给客户端保存。保存这个session id的方式可以采用cookie，这样在交互过程中浏览器可以自动的按照规则把这个标识发送给服务器。一般这个cookie的名字都是类似于SEEESIONID。但cookie可以被人为的禁止，则必须有其他机制以便在cookie被禁止时仍然能够把session id传递回服务器。</p>
-<p>经常被使用的一种技术叫做URL重写，就是把session id直接附加在URL路径的后面。还有一种技术叫做表单隐藏字段。就是服务器会自动修改表单，添加一个隐藏字段，以便在表单提交时能够把session id传递回服务器。比如： </p>
-<pre><code>&lt;form name=&quot;testform&quot; action=&quot;/xxx&quot;&gt; 
-&lt;input type=&quot;hidden&quot; name=&quot;jsessionid&quot; value=&quot;ByOK3vjFD75aPnrF7C2HmdnV6QZcEbzWoWiBYEnLerjQ99zWpBng!-145788764&quot;&gt; 
-&lt;input type=&quot;text&quot;&gt; 
-&lt;/form&gt; 
-</code></pre><p>实际上这种技术可以简单的用对action应用URL重写来代替。</p>
-<p>cookie 和session 的区别：</p>
-<ol>
-<li><p>cookie数据存放在客户的浏览器上，session数据放在服务器上。</p>
-</li>
-<li><p>cookie不是很安全，别人可以分析存放在本地的COOKIE并进行COOKIE欺骗<br>考虑到安全应当使用session。</p>
-</li>
-<li><p>session会在一定时间内保存在服务器上。当访问增多，会比较占用你服务器的性能<br>考虑到减轻服务器性能方面，应当使用COOKIE。</p>
-</li>
-<li><p>单个cookie保存的数据不能超过4K，很多浏览器都限制一个站点最多保存20个cookie。</p>
-</li>
-<li><p>所以个人建议：<br>将登陆信息等重要信息存放为SESSION<br>其他信息如果需要保留，可以放在COOKIE中</p>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2508,7 +2542,7 @@ total                 925G   51G  829G   6%
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">163</span>
+                <span class="site-state-item-count">164</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2519,7 +2553,7 @@ total                 925G   51G  829G   6%
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2530,7 +2564,7 @@ total                 925G   51G  829G   6%
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

@@ -286,6 +286,188 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/06/05/丢失私有密钥时连接到虚拟机-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/06/05/丢失私有密钥时连接到虚拟机-2/" itemprop="url">丢失私有密钥时连接到虚拟机(2)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-06-05T13:34:45+08:00">
+                2015-06-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/openstack/" itemprop="url" rel="index">
+                    <span itemprop="name">openstack</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>原理和<a href="http://michaelyou.github.io/2015/06/02/%E4%B8%A2%E5%A4%B1%E7%A7%81%E6%9C%89%E5%AF%86%E9%92%A5%E6%97%B6%E8%BF%9E%E6%8E%A5%E5%88%B0%E8%99%9A%E6%8B%9F%E6%9C%BA/" target="_blank" rel="external">丢失私有密钥时连接到虚拟机(1)</a>是一样的，从镜像创建的虚拟机我们也可以将其挂载到别的机器上，只是需要的命令不同。</p>
+<p>##具体步骤</p>
+<ul>
+<li>关闭你的虚拟机</li>
+<li>找到你的虚拟机的<code>id</code>，类似<code>282d0355-a4db-4467-a70b-4783ac2c7ed6</code>这样一串数字</li>
+<li>找到你的虚拟机的宿主机，登录到宿主机上</li>
+<li><p>进入到存放虚拟机文件的目录</p>
+<pre><code>cd /var/lib/nova/instances/{id}
+</code></pre><p>这里的<code>id</code>就是你上面虚拟机的<code>id</code><br>这个目录下的内容是这样的</p>
+<pre><code>.
+├── console.log
+├── disk
+├── disk.info
+├── libvirt.xml
+</code></pre><p>这里的disk文件就是我们要操作的对象</p>
+</li>
+<li><p>在当前目录下创建sysroot目录</p>
+<pre><code>mkdir sysroot
+</code></pre></li>
+<li><p>挂载disk文件到本机</p>
+<pre><code>guestmount -a disk --rw -m /dev/sda1  sysroot
+</code></pre><p><strong>Note</strong>：如果你是ubuntu的系统，guestmount会报错如下：</p>
+<pre><code>libguestfs: error: /usr/bin/supermin-helper exited with error status 1.
+To see full error messages you may need to enable debugging.
+See http://libguestfs.org/guestfs-faq.1.html#debugging-libguestfs
+</code></pre><p>这个时候你可以执行：</p>
+<pre><code>update-guestfs-appliance
+</code></pre></li>
+<li><p>进入sysroot并把它当作当前进程的根文件系统</p>
+<pre><code>cd sysroot; chroot .
+</code></pre></li>
+<li><p>现在就可以修改虚拟机的文件啦！        </p>
+</li>
+<li><p>修改完成后，exit退出chroot的环境</p>
+<pre><code>exit
+cd ..  #回到上一级目录
+umount sysroot
+</code></pre></li>
+<li><p>启动虚拟机即可</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/06/02/丢失私有密钥时连接到虚拟机/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2202,156 +2384,6 @@ AVAILABLE_REGIONS = [
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/19/让mac的终端实现克隆会话功能/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/19/让mac的终端实现克隆会话功能/" itemprop="url">让mac的终端实现克隆会话功能</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-19T10:34:12+08:00">
-                2015-05-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mac/" itemprop="url" rel="index">
-                    <span itemprop="name">mac</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>win上的securecrt和xshell都支持克隆回话，这样ssh到别的主机就不需要每次都输入密码。mac版的securecrt非常难用，网上找到方法可以让mac自带的终端实现克隆会话的功能，如下。</p>
-<pre><code>cd ~/.ssh
-touch config
-</code></pre><p>在config文件中写入下面的内容：</p>
-<pre><code>Host *
-    ControlMaster auto
-    ControlPath ~/.ssh/%h-%p-%r
-    ControlPersist yes
-</code></pre><p>第一次登陆输入密码后，第二次登陆就不需要密码了。每次登陆，会在~/.ssh中建立一个soket文件，下次用相同用户名，端口，主机名进行连接就会自动复用</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2402,7 +2434,7 @@ touch config
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">163</span>
+                <span class="site-state-item-count">164</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2413,7 +2445,7 @@ touch config
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2424,7 +2456,7 @@ touch config
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

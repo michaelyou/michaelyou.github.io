@@ -286,6 +286,157 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/05/建立tcp连接就好像打电话/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/05/建立tcp连接就好像打电话/" itemprop="url">建立tcp连接就好像打电话</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-05T15:31:01+08:00">
+                2015-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
+                    <span itemprop="name">TCP/IP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>建立TCP连接就好比一个电话系统［Nemeth 1997］。</p>
+<ul>
+<li>socket函数等同于有电话可用。</li>
+<li>bind函数是在告诉别人你的电话号码，这样他们可以呼叫你。</li>
+<li>listen函数是打开电话振铃，这样当有一个外来呼叫到达时，你就可以听到。</li>
+<li>connect函数要求我们知道对方的电话号码并拨打它。</li>
+<li>accept函数发生在被呼叫的人应答电话之时。</li>
+</ul>
+<p>由accept返回客户的标识（即客户的IP地址和端口号）类似于让电话机的呼叫者ID功能部件显示呼叫者的电话号码。然而两者的不同之处在于accept只在连接建立之后返回客户的标识，而呼叫者ID功能部件却在我们选择应答或不应答电话之前显示呼叫者的电话号码。如果使用域名系统DNS（见第11章），它就提供了一种类似于电话簿的服务。getaddrinfo类似于在电话簿中查找某个人的电话号码，getnameinfo则类似于有一本按照电话号码而不是按照用户名排序的电话簿。</p>
+<p>《unix网络编程》-p32</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/05/unix的errno值/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1885,209 +2036,6 @@ if ((x &gt;= - EPSINON) &amp;&amp; (x &lt;= EPSINON)
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/03/connect函数会阻塞，怎么解决？/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/03/connect函数会阻塞，怎么解决？/" itemprop="url">connect函数会阻塞，怎么解决？</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-03T19:57:01+08:00">
-                2015-03-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
-                    <span itemprop="name">unix网络编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>建立socket后默认connect()函数为阻塞连接状态，在大多数实现中，connect的超时时间在75s至几分钟之间，想要缩短超时时间，可解决问题的两种方法：</p>
-<ul>
-<li>方法一、将socket句柄设置为非阻塞状态。</li>
-<li>方法二、采用信号处理函数设置阻塞超时控制。</li>
-</ul>
-<p>##设置套接字为非阻塞<br>可以将套接字设置为非阻塞，下面是具体步骤</p>
-<ol>
-<li>建立socket</li>
-<li>将该socket设置为非阻塞模式</li>
-<li>调用connect()，如果返回0，则连接建立；如果返回-1，检查errno ，如果值为 EINPROGRESS，则连接正在建立。</li>
-<li>使用select()检查该socket描述符是否可写（注意，是可写）</li>
-<li>根据select()返回的结果判断connect()结果，如果规定时间内成功建立，则描述符变为可写；否则，采用getsockopt函数捕获错误信息</li>
-<li>将socket设置为阻塞模式（<strong>如果你的程序不需要用阻塞模式的，这步就省了，不过一般情况下都是用阻塞模式的，这样也容易管理</strong>）</li>
-</ol>
-<p>下面是设置套接字为非阻塞的例程  </p>
-<pre><code>{
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if(sockfd &lt; 0) exit(1);
-    struct sockaddr_in serv_addr;
-    ………//以服务器地址填充结构serv_addr
-    int error=-1, len;
-    len = sizeof(int);
-    timeval tm;
-    fd_set set;
-    unsigned long ul = 1;
-
-    ioctl(sockfd, FIONBIO, &amp;ul); //设置为非阻塞模式
-    bool ret = false;
-
-    if( connect(sockfd, (struct sockaddr *)&amp;serv_addr, sizeof(serv_addr)) == -1)
-    {
-            tm.tv_set = TIME_OUT_TIME;
-            tm.tv_uset = 0;
-            FD_ZERO(&amp;set);
-            FD_SET(sockfd, &amp;set);
-            if( select(sockfd+1, NULL, &amp;set, NULL, &amp;tm) &gt; 0)
-            {
-                    getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &amp;error, (socklen_t *)&amp;len);
-                    if(error == 0) ret = true;
-                        else ret = false;
-            } 
-            else 
-                ret = false;
-    }
-    else 
-        ret = true;
-    ul = 0;
-    ioctl(sockfd, FIONBIO, &amp;ul); //设置为阻塞模式
-    //下面还可以进行发包收包操作
-    ……………
-}
-</code></pre><p>##采用信号处理函数设置阻塞超时控制</p>
-<pre><code>sigset(SIGALRM, u_alarm_handler);
-alarm(2);
-code = connect(socket_fd, (struct sockaddr*)&amp;socket_st, sizeof(struct sockaddr_in));
-alarm(0);
-sigrelse(SIGALRM);
-</code></pre><p>首先定义一个中断信号处理函数u_alarm_handler，用于超时后的报警处理，然后定义一个2秒的定时器，执行connect，当系统connect成功，则系统正常执行下去；如果connect不成功阻塞在这里，则超过定义的2秒后，系统会产生一个信号，触发执行u_alarm_handler函数， 当执行完u_alarm_handler后，程序将继续从connect的下面一行执行下去。</p>
-<p>其中，处理函数可以如下定义，也可以加入更多的错误处理。</p>
-<pre><code>void u_alarm_handler()
-{
-}
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2138,7 +2086,7 @@ sigrelse(SIGALRM);
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">163</span>
+                <span class="site-state-item-count">164</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2149,7 +2097,7 @@ sigrelse(SIGALRM);
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2160,7 +2108,7 @@ sigrelse(SIGALRM);
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

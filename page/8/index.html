@@ -286,6 +286,176 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/进程的状态及转换/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/20/进程的状态及转换/" itemprop="url">进程的状态及转换</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T16:23:21+08:00">
+                2015-03-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##进程的基本状态</p>
+<ol>
+<li>执行状态(Running)：进程占用处理机，进程的程序正在执行。单处理机系统中只能有一个进程处于执行状态，多处理机系统中可能有多个进程处于执行状态。</li>
+<li>阻塞状态(Blocked)：也叫等待或睡眠状态，是进程由于等待某种事件的发生而处于暂停执行的状态。如进程因等待I/O的完成、等待缓冲空间等。</li>
+<li>就绪状态（Ready）：进程已分配到处理机以外的所有必要资源，具备了执行的所有条件。可能会有多个进程处于就绪状态，排成就绪队列。</li>
+</ol>
+<p>##新状态和终止状态</p>
+<ol>
+<li><p>新状态：进程刚刚建立，还没有送入就绪队列的状态。</p>
+</li>
+<li><p>终止状态：一个进程已正常结束或非正常结束，OS已将它从就绪队列中移出，还未将它撤销时的状态。</p>
+</li>
+</ol>
+<p>##进程状态的转换</p>
+<p>进程在执行期间可以多次处于就绪状态和执行状态，也可多次处于阻塞状态，但处于新状态只有一次。</p>
+<ol>
+<li><p>新状态－＞就绪状态：当就绪队列允许接纳新进程时，系统便把处于新状态的进程移入就绪队列。</p>
+</li>
+<li><p>就绪态－＞执行状态：进程调度程序为处于就绪状态的进程分配处理机后，该进程进入执行状态。</p>
+</li>
+<li><p>执行态－＞阻塞状态：正在执行的进程因需要等待某事件而无法执行。</p>
+</li>
+<li><p>阻塞状态－＞就绪态：进程所等待的事件发生了，进程就从阻塞状态进入就绪状态。</p>
+</li>
+<li><p>执行态－＞就绪状态：正在执行的进程因时间片用完而被暂停执行；或者在可抢占调度方式中，一个优先权高的进程到来后，正在执行的低优先权的进程被强制撤下处理机，转换为就绪状态。</p>
+</li>
+<li><p>执行态－＞终止状态：一个进程已完成或发生某种特殊事件，进程将变为终止状态。 </p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/进程调度算法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1826,168 +1996,6 @@ done
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/print0-xargs/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/12/print0-xargs/" itemprop="url">print0 && xargs</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T20:12:59+08:00">
-                2015-03-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>awk和sed之前看过，好久不用又忘记了，也没有总结，所以要学习还得再上网找资料，索性自己来总结一下。-print0和xargs之前一直在用，但是模模糊糊，一知半解，今天一并解决。</p>
-<p>##-print</p>
-<ol>
-<li>-print是find命令的一个参数，别的命令是没有的（我没见过，说错了请大家指正）</li>
-<li>-print0是-print的一个形态，也可以不加最后的0</li>
-</ol>
-<p>-print指明打印出匹配文件的文件名。当使用-print时，’\n’作为用于输出的文件名进行分隔。</p>
-<p>-print0指明使用’\0’作为匹配的文件名之间的定界符。</p>
-<p>##xargs</p>
-<p>我们可以用管道将一个命令的stdout重定向到另一个命令的stdin。例如：</p>
-<pre><code>command | grep &quot;text&quot;
-</code></pre><p>但是有些命令只能以命令行参数的形式接受数据，而无法通过stdin接受数据流。在这种情况下，我们无法用管道来提供哪些只有通过命令行参数才能提供的数据。</p>
-<p>只是就只能另辟蹊径了。该xargs命令上场了，他擅长将标准输入数据转换成命令行参数。xargs能够处理stdin并将其转换成特定命令的命令行参数。xargs也可以将单行或多行文本输入转换成其他格式，例如单行变多行或多行变单行。</p>
-<p>xargs应该紧跟在管道操作符之后，以标注输入作为主要的原数据流</p>
-<pre><code>command | xargs 
-</code></pre><p>例如：删除path路径下的所有文件</p>
-<pre><code>rm `find /path -type f`
-</code></pre><p>如果path目录下文件过多就会因为“参数列表过长”而报错无法执行。但改用xargs以后，问题即获解决。</p>
-<pre><code>find /path -type f -print0 | xargs -0 rm
-</code></pre><p>xargs将find产生的长串文件列表拆散成多个子串，然后对每个子串调用rm。</p>
-<p><strong>awk和sed的东西比较多，为了避免文章太长，另外写吧</strong></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2038,7 +2046,7 @@ done
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">163</span>
+                <span class="site-state-item-count">164</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2049,7 +2057,7 @@ done
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2060,7 +2068,7 @@ done
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

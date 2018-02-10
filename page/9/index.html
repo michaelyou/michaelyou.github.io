@@ -286,6 +286,168 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/print0-xargs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/12/print0-xargs/" itemprop="url">print0 && xargs</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T20:12:59+08:00">
+                2015-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>awk和sed之前看过，好久不用又忘记了，也没有总结，所以要学习还得再上网找资料，索性自己来总结一下。-print0和xargs之前一直在用，但是模模糊糊，一知半解，今天一并解决。</p>
+<p>##-print</p>
+<ol>
+<li>-print是find命令的一个参数，别的命令是没有的（我没见过，说错了请大家指正）</li>
+<li>-print0是-print的一个形态，也可以不加最后的0</li>
+</ol>
+<p>-print指明打印出匹配文件的文件名。当使用-print时，’\n’作为用于输出的文件名进行分隔。</p>
+<p>-print0指明使用’\0’作为匹配的文件名之间的定界符。</p>
+<p>##xargs</p>
+<p>我们可以用管道将一个命令的stdout重定向到另一个命令的stdin。例如：</p>
+<pre><code>command | grep &quot;text&quot;
+</code></pre><p>但是有些命令只能以命令行参数的形式接受数据，而无法通过stdin接受数据流。在这种情况下，我们无法用管道来提供哪些只有通过命令行参数才能提供的数据。</p>
+<p>只是就只能另辟蹊径了。该xargs命令上场了，他擅长将标准输入数据转换成命令行参数。xargs能够处理stdin并将其转换成特定命令的命令行参数。xargs也可以将单行或多行文本输入转换成其他格式，例如单行变多行或多行变单行。</p>
+<p>xargs应该紧跟在管道操作符之后，以标注输入作为主要的原数据流</p>
+<pre><code>command | xargs 
+</code></pre><p>例如：删除path路径下的所有文件</p>
+<pre><code>rm `find /path -type f`
+</code></pre><p>如果path目录下文件过多就会因为“参数列表过长”而报错无法执行。但改用xargs以后，问题即获解决。</p>
+<pre><code>find /path -type f -print0 | xargs -0 rm
+</code></pre><p>xargs将find产生的长串文件列表拆散成多个子串，然后对每个子串调用rm。</p>
+<p><strong>awk和sed的东西比较多，为了避免文章太长，另外写吧</strong></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/用crontab定期执行脚本/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1773,157 +1935,6 @@ main()
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/06/TCP-IP的一些基础知识/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/06/TCP-IP的一些基础知识/" itemprop="url">TCP/IP的一些基础知识</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-06T21:00:22+08:00">
-                2015-03-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
-                    <span itemprop="name">TCP/IP</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="TCP为什么要被称为数据流？"><a href="#TCP为什么要被称为数据流？" class="headerlink" title="TCP为什么要被称为数据流？"></a>TCP为什么要被称为数据流？</h2><p>建立连接，数据就在该连接上流动，可以是双向的，没有边界，所以叫数据流</p>
-<p>TCP是面向连接的、可靠的流协议。流就是指不间断的数据结构，你可以把它想象成排水道中的水流。当应用程序采用TCP发送消息时，虽然可以保证发送的顺序，但还是犹如没有任何间隔的数据流发送给接收端。TCP充分地实现了数据传输时各种控制功能，可以进行丢包时的重发控制，还可以对次序乱掉的分包进行顺序控制。而这些在UDP中都没有。此外，TCP作为一种面向有连接的协议，只有在确认通信对端存在时才会发送数据，从而可以控制通信流量的浪费。根据TCP的这些机制，在IP这种无连接的网络上也能够实现高可靠性的通信。</p>
-<h2 id="流量控制与拥塞控制的区别"><a href="#流量控制与拥塞控制的区别" class="headerlink" title="流量控制与拥塞控制的区别"></a>流量控制与拥塞控制的区别</h2><h3 id="拥塞控制："><a href="#拥塞控制：" class="headerlink" title="拥塞控制："></a>拥塞控制：</h3><p>防止过多的数据注入到网络中，这样可以使网络中的路由器或链路不致过载。拥塞控制所要做的都有一个前提：网络能够承受现有的网络负荷。拥塞控制是一个全局性的过程，涉及到所有的主机、路由器，以及与降低网络传输性能有关的所有因素。</p>
-<h3 id="流量控制："><a href="#流量控制：" class="headerlink" title="流量控制："></a>流量控制：</h3><p>指点对点通信量的控制，是端到端的问题。流量控制所要做的就是抑制发送端发送数据的速率，以便使接收端来得及接收</p>
-<h2 id="TCP和UDP有什么不同？"><a href="#TCP和UDP有什么不同？" class="headerlink" title="TCP和UDP有什么不同？"></a>TCP和UDP有什么不同？</h2><ol>
-<li>在链接状态上，TCP 是面向链接的，UDP 则是面向无链接的；</li>
-<li>在数据传输的质量上，TCP 以数据流的方式传输，保证数据的有序性，准确性，完整性，数据传输质量高；UDP 则是以数据报的形式，独立发送数据报，不能保证数据是否到达，是否完整，是否有序，数据传输质量低于TCP；</li>
-<li>在数据包的大小上，TCP 包头至少20个字节，但是 UDP 只有 8个字节；</li>
-<li>对系统资源的要求（TCP 较多，UDP 少）</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1974,7 +1985,7 @@ main()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">163</span>
+                <span class="site-state-item-count">164</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1985,7 +1996,7 @@ main()
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1996,7 +2007,7 @@ main()
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
