@@ -286,6 +286,190 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/一些阿里面试题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/12/一些阿里面试题/" itemprop="url">一些阿里面试题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-12T20:17:38+08:00">
+                2015-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##内存泄露最终的结果在操作系统中的表现是什么？<br>内存泄漏形象的比喻是“操作系统可提供给所有进程的存储空间正在被某个进程榨干”，最终结果是<strong>程序运行时间越长，占用存储空间越来越多，最终用尽全部存储空间，整个系统崩溃。</strong>所以“内存泄漏”是从操作系统的角度来看的。这里的存储空间并不是指物理内存，而是指虚拟内存大小，这个虚拟内存大小取决于磁盘交换区设定的大小。由程序申请的一块内存，如果没有任何一个指针指向它，那么这块内存就泄漏了。</p>
+<p>从用户使用程序的角度来看，内存泄漏本身不会产生什么危害，作为一般的用户，根本感觉不到内存泄漏的存在。<strong>真正有危害的是内存泄漏的堆积，这会最终消耗尽系统所有的内存。</strong>从这个角度来说，一次性内存泄漏并没有什么危害，因为它不会堆积，而隐式内存泄漏危害性则非常大，因为较之于常发性和偶发性内存泄漏它更难被检测到。</p>
+<p>##malloc-free和new-delete的区别</p>
+<p>malloc-free是c/c++中的函数，new-delete是c++中的运算符</p>
+<p>##怎么知道http首部结束了？</p>
+<p>http首部由一个空行结束，也就是<code>\r\n\r\n</code>，表明了首部的结束和实体主体的开始。</p>
+<p>实体的主体部分包含一个由任意数据组成的数据块。并不是所有的报文都包含实体的主体部分。如<code>GET请求就不包含实体</code>。</p>
+<p>##tcpdump抓包是在哪一层？</p>
+<p>Linux下抓取报文的位置，是在链路层处理报文之后，交给网络层之前的位置。</p>
+<p>##同一端口可否同时被两个应用监听？<br>不可以，但是fork的子进程用netstat看确实和父进程监听在同一端口，但是这和两个独立的进程应该是有所区别的</p>
+<p>同一机器上的应用如果监听在同一端口，那socket的四元组就是一样的了，这是不可能的</p>
+<p>##查看命令的帮助文档的命令</p>
+<ul>
+<li>man是查看本地      </li>
+<li>info是查看在线</li>
+</ul>
+<p>##谁在决定是使用Big-endian，还是Little-endian？</p>
+<p>在计算存储中是CPU，也就是CPU的体系结构，还是有点抽象啊。比如x86的是小端，power-pc的是大端。</p>
+<p>##线性表的顺序结构和链表结构各有什么优缺点</p>
+<ul>
+<li><p>顺序结构：</p>
+<ul>
+<li>优点：易于查询，索引快 list[n]这样的操作，O(1)复杂度</li>
+<li>缺点：扩展性弱，不易删除、添加。</li>
+</ul>
+</li>
+<li><p>链表结构：</p>
+<ul>
+<li>优点：扩展性强，易于删除、添加</li>
+<li>缺点：不易于查询，索引慢，list[n]这样的操作，复杂度为O(n)</li>
+</ul>
+</li>
+</ul>
+<p>##shell的if和for语句</p>
+<p>if语句</p>
+<pre><code>if condition;
+then
+    commands
+fi
+</code></pre><p>for语句</p>
+<pre><code>for i in ***; do
+commands
+done
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/print0-xargs/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1750,191 +1934,6 @@ main()
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/07/连续字数组的最大和-负数的表示形式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/07/连续字数组的最大和-负数的表示形式/" itemprop="url">连续子数组的最大和 && 负数的表示形式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-07T17:19:26+08:00">
-                2015-03-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>输入一个整形数组，数组里有正数也有负数。<br>数组中连续的一个或多个整数组成一个子数组，每个子数组都有一个和。<br>求所有子数组的和的最大值。要求时间复杂度为O(n)。</p>
-<p>例如输入的数组为1, -2, 3, 10, -4, 7, 2, -5，<br>和最大的子数组为3, 10, -4, 7, 2，<br>因此输出为该子数组的和18。</p>
-</blockquote>
-<pre><code>int find_greatest_sum_of_subarray(int *array, int length) {
-    if(array == NULL || length &lt;=0)
-        return -1; //返回错误
-
-    int sum = 0;
-    int greatest_sum = 0x80000000;
-
-    int i;
-    for(i = 0; i &lt; length; i++) {
-        if(sum &lt;= 0)
-            sum = array[i];
-        else
-            sum += array[i];
-
-        if(sum &gt; greatest_sum)
-            greatest_sum = sum;
-    }
-
-    return greatest_sum;
-}
-</code></pre><p>代码是很简单的，分析可以参考何海涛的《剑指offer》面试题31</p>
-<p>这里想说的是这一句</p>
-<pre><code>int greatest_sum = 0x80000000;
-</code></pre><p><code>greatest_sum</code>初始化为什么不是0呢？你可以初始化为0试一下，会发现，当输入数组的字数组的最大和是负数的时候，程序的输出是0，也就是<code>greatest_sum</code>的初始值。说到这里大家应该明白了，我们应该将<code>greatest_sum</code>初始化为32位有符号数的最小值(32位的最小负数)，那为什么是0x80000000，最小负数不是0xffffffff吗？</p>
-<p>这就要考虑到负数在计算机中的存储形式了</p>
-<p>正数在计算机中是用源码存储的，正数1就是0x00000001，正数2就是0x00000002(0000 0000 0000 0000 0000 0000 0000 0010)，但是负数是不一样的，负数在计算机中是用补码存储的</p>
-<blockquote>
-<p>补码 = 原码去反(符号位不变) + 1</p>
-</blockquote>
-<p>举例：-1</p>
-<p>#####原码：1000 0000 0000 0000 0000 0000 0000 0001</p>
-<p>#####反码：1111 1111 1111 1111 1111 1111 1111 1110</p>
-<p>#####补码：1111 1111 1111 1111 1111 1111 1111 1111</p>
-<p>举例：-2147483647(0xffffffff)</p>
-<p>#####原码：1111 1111 1111 1111 1111 1111 1111 1111</p>
-<p>#####反码：1000 0000 0000 0000 0000 0000 0000 0000</p>
-<p>#####补码：1000 0000 0000 0000 0000 0000 0000 0001（ox80000001）</p>
-<p>同理-2147483646在计算机内是0x80000002</p>
-<p>那么问题来了，0x80000000是什么呢？在计算机内它表示的是-2147483648，是有符号32位整数的最小值。</p>
-<p>32位有符号整数的表示范围为：<br>-2147483648 – 2147483647</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1985,7 +1984,7 @@ main()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">164</span>
+                <span class="site-state-item-count">165</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

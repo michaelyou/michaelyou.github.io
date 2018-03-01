@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="go," />
 
 
 
@@ -94,17 +94,18 @@
 
 
 
-<meta name="description" content="算是一些基本的高级用法吧，在Django文档的Query-related classes这一章中。主要讲了三个类，F(),Q()和prefetch()。我们下面讲一讲F()。  class F()F()是代表模型字段的值，也就是说对于一些特殊的字段的操作，我们不需要用python把数据先取到内存中，然后操作，在存储到db中了。  ##常见的使用场景 ###字段加1(加减乘除运算) 例如我们有个统计">
+<meta name="description" content="挑orm的过程中不知不觉被搞晕了，怎么那么多相关的package，下面我们来理一理这些package的关系  database/sql https://github.com/go-sql-driver/mysql/ https://github.com/jmoiron/sqlx  database/sqldatabase/sql是go的一个标准库，提供了一些sql数据库的通用接口。它需要和数据库驱">
+<meta name="keywords" content="go">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Django的F()表达式">
-<meta property="og:url" content="http://yoursite.com/2015/08/10/Django的F-表达式/index.html">
+<meta property="og:title" content="golang数据库相关的几个package的关系">
+<meta property="og:url" content="http://yoursite.com/2017/11/15/golang数据库相关的几个package的关系/index.html">
 <meta property="og:site_name" content="Youmai の Blog">
-<meta property="og:description" content="算是一些基本的高级用法吧，在Django文档的Query-related classes这一章中。主要讲了三个类，F(),Q()和prefetch()。我们下面讲一讲F()。  class F()F()是代表模型字段的值，也就是说对于一些特殊的字段的操作，我们不需要用python把数据先取到内存中，然后操作，在存储到db中了。  ##常见的使用场景 ###字段加1(加减乘除运算) 例如我们有个统计">
+<meta property="og:description" content="挑orm的过程中不知不觉被搞晕了，怎么那么多相关的package，下面我们来理一理这些package的关系  database/sql https://github.com/go-sql-driver/mysql/ https://github.com/jmoiron/sqlx  database/sqldatabase/sql是go的一个标准库，提供了一些sql数据库的通用接口。它需要和数据库驱">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta property="og:updated_time" content="2018-03-01T11:46:54.451Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Django的F()表达式">
-<meta name="twitter:description" content="算是一些基本的高级用法吧，在Django文档的Query-related classes这一章中。主要讲了三个类，F(),Q()和prefetch()。我们下面讲一讲F()。  class F()F()是代表模型字段的值，也就是说对于一些特殊的字段的操作，我们不需要用python把数据先取到内存中，然后操作，在存储到db中了。  ##常见的使用场景 ###字段加1(加减乘除运算) 例如我们有个统计">
+<meta name="twitter:title" content="golang数据库相关的几个package的关系">
+<meta name="twitter:description" content="挑orm的过程中不知不觉被搞晕了，怎么那么多相关的package，下面我们来理一理这些package的关系  database/sql https://github.com/go-sql-driver/mysql/ https://github.com/jmoiron/sqlx  database/sqldatabase/sql是go的一个标准库，提供了一些sql数据库的通用接口。它需要和数据库驱">
 
 
 
@@ -133,13 +134,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2015/08/10/Django的F-表达式/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/11/15/golang数据库相关的几个package的关系/"/>
 
 
 
 
 
-  <title>Django的F()表达式 | Youmai の Blog</title>
+  <title>golang数据库相关的几个package的关系 | Youmai の Blog</title>
   
 
 
@@ -285,7 +286,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/10/Django的F-表达式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/15/golang数据库相关的几个package的关系/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="You Wangqiu">
@@ -302,7 +303,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Django的F()表达式</h1>
+          <h1 class="post-title" itemprop="name headline">golang数据库相关的几个package的关系</h1>
         
 
         <div class="post-meta">
@@ -314,8 +315,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-10T23:00:20+08:00">
-                2015-08-10
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-15T19:45:04+08:00">
+                2017-11-15
               </time>
             
 
@@ -337,8 +338,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
+                  <a href="/categories/go/" itemprop="url" rel="index">
+                    <span itemprop="name">go</span>
                   </a>
                 </span>
 
@@ -374,32 +375,28 @@
       
 
       
-        <p>算是一些基本的高级用法吧，在Django文档的<a href="https://docs.djangoproject.com/en/1.7/ref/models/queries/" target="_blank" rel="external">Query-related classes</a>这一章中。主要讲了三个类，<code>F()</code>,<code>Q()</code>和<code>prefetch()</code>。我们下面讲一讲<code>F()</code>。</p>
-<blockquote>
-<p>class F()<br>F()是代表模型字段的值，也就是说对于一些特殊的字段的操作，我们不需要用python把数据先取到内存中，然后操作，在存储到db中了。</p>
-</blockquote>
-<p>##常见的使用场景</p>
-<p>###字段加1(加减乘除运算)</p>
-<p>例如我们有个统计点击量的字段，每次更新的操作其实就是把字段的值加1.</p>
-<p>一般我们的做法是把这条记录取出来，把相应字段加+1，然后在save，类似下面的代码</p>
-<pre><code># Tintin filed a news story!
-reporter = Reporters.objects.get(name=&apos;Tintin&apos;)
-reporter.stories_filed += 1
-reporter.save()
-</code></pre><p>当我们使用了<code>F()</code>之后呢？ 只需要一行代码</p>
-<pre><code>Reporters.objects.filter(name=&apos;Tintin&apos;).update(stories_filed=F(&apos;stories_filed&apos;) + 1)
-</code></pre><p>不仅代码量少了，而且这是直接在数据中操作，效率也变高了，特别是并发的情况，减少了多线程同时操作带来的隐患。 但是<strong>不支持字符串相加的操作</strong></p>
-<p>###字段比较<br>例如一个合同有两个日期，一个叫做终止日期，一个叫做结束日期，现在要筛选出终止日期小于结束日期的合同。</p>
-<pre><code>from django.db.models import F
-from contracts.models import Contracts
-contracts = Contracts.objects.filter(contract_stop_time__lt=F(&apos;end_time&apos;))
-</code></pre><p>如果没有F对象，就没法直接使用rom来查询。</p>
-<p>###补充–通过F()避免竞态条件</p>
-<blockquote>
-<p>Another useful benefit of <code>F()</code> is that having the database - rather than Python - update a field’s value avoids a race condition.</p>
-<p>If two Python threads execute the code in the first example above, one thread could retrieve, increment, and save a field’s value after the other has retrieved it from the database. The value that the second thread saves will be based on the original value; the work of the first thread will simply be lost.</p>
-<p>If the database is responsible for updating the field, the process is more robust: it will only ever update the field based on the value of the field in the database when the <code>save()</code> or <code>update()</code> is executed, rather than based on its value when the instance was retrieved.</p>
-</blockquote>
+        <p>挑orm的过程中不知不觉被搞晕了，怎么那么多相关的package，下面我们来理一理这些package的关系</p>
+<ul>
+<li>database/sql</li>
+<li><a href="https://github.com/go-sql-driver/mysql/" target="_blank" rel="external">https://github.com/go-sql-driver/mysql/</a></li>
+<li><a href="https://github.com/jmoiron/sqlx" target="_blank" rel="external">https://github.com/jmoiron/sqlx</a></li>
+</ul>
+<h3 id="database-sql"><a href="#database-sql" class="headerlink" title="database/sql"></a>database/sql</h3><p><code>database/sql</code>是go的一个标准库，提供了一些sql数据库的通用接口。它需要和数据库驱动一起使用，<a href="https://github.com/golang/go/wiki/SQLDrivers" target="_blank" rel="external">这里</a>是一个数据库驱动的列表。</p>
+<p>对于mysql而言，我们最常用的是<a href="https://github.com/go-sql-driver/mysql/" target="_blank" rel="external">https://github.com/go-sql-driver/mysql/</a></p>
+<h3 id="driver数据库驱动"><a href="#driver数据库驱动" class="headerlink" title="driver数据库驱动"></a>driver数据库驱动</h3><p>数据库驱动具体是什么呢？</p>
+<p>每一个数据库都有一套客户端-服务端的通信协议。作为客户端，如果要从数据库中查询/插入数据，就要遵循这套协议，按照协议格式发送请求。显然，让每个用户实现协议非常浪费而不切实际。所以数据库作者提供了一个软件（或者说package），这个软件实现了协议，并且暴露出了一些API接口供客户端与数据库交互，这个软件就是数据库驱动。</p>
+<p>驱动有标准，比如ODBC和JDBC，符合标准的驱动会实现一套相同的API接口，这样即使更换了数据库，客户端也不需要变更。</p>
+<p>另外显而易见的是，驱动是语言相关的，不同的编程语言操作数据库需要对应语言实现的数据库驱动。所以驱动主要就是实现了与数据库交互的协议，当我们使用时，一般会这么写：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">        <span class="string">"database/sql"</span></div><div class="line"></div><div class="line">        _ <span class="string">"github.com/go-sql-driver/mysql"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="comment">// mysql是驱动的名字</span></div><div class="line">        db, err := sql.Open(<span class="string">"mysql"</span>, <span class="string">"username:passwd@/test?charset=utf8"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面的</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> (</div><div class="line">		  _ <span class="string">"github.com/go-sql-driver/mysql"</span></div><div class="line">)</div></pre></td></tr></table></figure>
+<p>会执行init函数，将mysql驱动注册到<code>database/sql</code>中的<code>drivers</code>中去，drivers是一个map：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">drivers = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]driver.Driver)</div></pre></td></tr></table></figure>
+<p>显然，我们可以注册多个驱动，如果我们后端使用了不同的数据库的话，比如同时使用了<code>mysql</code>和<code>postgresql</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">        <span class="string">"database/sql"</span></div><div class="line"></div><div class="line">        _ <span class="string">"github.com/go-sql-driver/mysql"</span></div><div class="line">        _ <span class="string">"github.com/lib/pq"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="comment">// mysql和postgres是驱动的名字</span></div><div class="line">        my_db, err := sql.Open(<span class="string">"mysql"</span>, <span class="string">"username:passwd@/test?charset=utf8"</span>)</div><div class="line">        postgre_db, err := sql.Open(<span class="string">"postgres"</span>, <span class="string">"username:passwd@/test?charset=utf8"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="sqlx"><a href="#sqlx" class="headerlink" title="sqlx"></a>sqlx</h3><p>sql是标准库<code>database/sql</code>的一个扩展，提供了一些更友好的接口，但是并没有过度封装，很多人放弃使用各种orm转而使用了<code>sqlx</code>。</p>
+<p>虽然sqlx扩展了<code>database/sql</code>，但是使用时仍然要<code>import database/sql</code>，因为<strong>驱动init</strong>的时候是需要<code>database/sql</code>中的<code>drivers</code>变量的，二者的顺序需要注意</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">package main</div><div class="line"></div><div class="line">import (</div><div class="line">    &quot;database/sql&quot;</div><div class="line">    &quot;fmt&quot;</div><div class="line">    &quot;log&quot;</div><div class="line">    </div><div class="line">    _ &quot;github.com/lib/pq&quot;</div><div class="line">    &quot;github.com/jmoiron/sqlx&quot;</div><div class="line">)</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -415,6 +412,12 @@ contracts = Contracts.objects.filter(contract_stop_time__lt=F(&apos;end_time&apo
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/go/" rel="tag"># go</a>
+          
+        </div>
+      
 
       
       
@@ -424,8 +427,8 @@ contracts = Contracts.objects.filter(contract_stop_time__lt=F(&apos;end_time&apo
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/08/03/python-double-star-and-star/" rel="next" title="python (double star) and (star)">
-                <i class="fa fa-chevron-left"></i> python (double star) and (star)
+              <a href="/2017/11/03/go-scope/" rel="next" title="go语言作用域踩坑">
+                <i class="fa fa-chevron-left"></i> go语言作用域踩坑
               </a>
             
           </div>
@@ -434,8 +437,8 @@ contracts = Contracts.objects.filter(contract_stop_time__lt=F(&apos;end_time&apo
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/08/23/Django-Interview/" rel="prev" title="Django Interview">
-                Django Interview <i class="fa fa-chevron-right"></i>
+              <a href="/2017/11/27/hystrix-go简介/" rel="prev" title="hystrix-go简介">
+                hystrix-go简介 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -488,8 +491,17 @@ contracts = Contracts.objects.filter(contract_stop_time__lt=F(&apos;end_time&apo
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/img/lufei.jpeg"
@@ -586,6 +598,22 @@ contracts = Contracts.objects.filter(contract_stop_time__lt=F(&apos;end_time&apo
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#database-sql"><span class="nav-number">1.</span> <span class="nav-text">database/sql</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#driver数据库驱动"><span class="nav-number">2.</span> <span class="nav-text">driver数据库驱动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sqlx"><span class="nav-number">3.</span> <span class="nav-text">sqlx</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

@@ -286,6 +286,164 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/23/c语言中整数的溢出/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/23/c语言中整数的溢出/" itemprop="url">c语言中整数的溢出</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-23T10:49:40+08:00">
+                2015-01-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##概念<br>c语言中存在两类整数算术运算，<code>有符号运算</code>和<code>无符号运算</code>。在<code>无符号运算</code>里，没有了<code>符号位</code>，所以是没有<code>溢出</code>的概念的。</p>
+<p>所有的无符号运算都是以2的n次方为模。如果算术运算符的一个操作数是有符号数，另一个是无符号数，那么有符号数会被转换为无符号数(表示范围小的总是被转换为表示范围大的)，那么溢出也不会发生。但是，当两个操作数都是有符号数时，溢出就有可能发生。而且溢出的结果是未定义的。当一个运算的结果发生溢出时，任何假设都是不安全的。</p>
+<p>##如何检测溢出<br>例如，假定a和b是两个非负的整型变量(有符号)，我们需要检查a+b是否溢出，一种想当然的方式是:</p>
+<pre><code>if (a + b &lt; 0)
+溢出
+</code></pre><p>实际上，在现实世界里，这并不能正常运行。当a+b确实发生溢出时，所有关于结果如何的假设均不可靠。比如，在某些机器的cpu，加法运算将设置一个内部寄存器为四种状态:正，负，零和溢出。在这种机器上，c编译器完全有理由实现以上的例子，使得a+b返回的不是负，而是这个内存寄存器的溢出状态。显然，if的判断会失败。</p>
+<p>一种正确的方式是将a和b都强制转换为无符号整数：</p>
+<pre><code>if ( (unsigned)a + (unsigned)b  &gt; INT_MAX)
+溢出
+</code></pre><p>这里的<code>INT_MAX</code>值为有符号整型的最大值。在一般的编译器里是一个预定义的常量。ANSI C在<code>limits</code>里定义了<code>INT_MAX</code>，值为</p>
+<blockquote>
+<p>2的31次方 - 1. </p>
+</blockquote>
+<p>不需要用到无符号算数运算的另一种可行方法是：</p>
+<pre><code>if (a &gt; INT_MAX - b)
+溢出
+</code></pre><p>PS : 有符号数的最高位(31位)为符号位，最高位为0的时候，表示正，为1的时候表示负。运算时，符号位不参加运算，但是如果两个数相加，30位需要进1时，那么即表示溢出。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/22/free函数解析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1753,152 +1911,6 @@ printf(&quot;a new address is %d&quot;, a++); //编译出错：错误：令只�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/15/Missing-scheme-in-request-url/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/15/Missing-scheme-in-request-url/" itemprop="url">exceptions.ValueError Missing scheme in request url h</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-15T21:24:17+08:00">
-                2015-01-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/scrapy/" itemprop="url" rel="index">
-                    <span itemprop="name">scrapy</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>用scrapy写的爬虫把抓到的图片下载下来时，报了这个错，从字面上看使我们的url除了问题，那究竟是什么错误呢？下面是错误的代码：</p>
-<pre><code>item[&apos;image_urls&apos;] = sel.xpath(&apos;.//*[@class=&quot;postmessage defaultpost&quot;]//img/@src&apos;).extract()[0]
-</code></pre><p>我们可以在shell里面试一下，这句代码是能够提取出正确的url的。但是提取出来的url却不是item需要的格式。<a href="http://stackoverflow.com/questions/8773732/downloading-pictures-with-scrapy" target="_blank" rel="external">stackoverflow上有关于这个问题的回答</a>，正确的写法应该是这个样子的：</p>
-<pre><code>item[&apos;image_urls&apos;] = [sel.xpath(&apos;.//*[@class=&quot;postmessage defaultpost&quot;]//img/@src&apos;).extract()[0]]
-</code></pre><p>解释一下,item的image_urls是一个字典，错误的代码中，它把图片的链接<code>http://*****.jpg</code>当作了一个字典，第一个元素自然是<code>h</code>,而它真实想要的是http一样的协议名，所以报错如上。只要在url外面加[]，整个url就会被当成整体，就能正常运行了</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1949,7 +1961,7 @@ printf(&quot;a new address is %d&quot;, a++); //编译出错：错误：令只�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">164</span>
+                <span class="site-state-item-count">165</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

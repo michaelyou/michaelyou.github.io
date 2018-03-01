@@ -286,6 +286,185 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/19/部署multi-region-openstack环境/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/19/部署multi-region-openstack环境/" itemprop="url">部署multi-region openstack环境</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-19T17:17:06+08:00">
+                2015-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/openstack/" itemprop="url" rel="index">
+                    <span itemprop="name">openstack</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><code>Icehouse</code>默认的<code>region</code>是<code>RegionOne</code>。因为默认<code>region</code>的存在，无论是在命令行，还是在web上，我们都不需要指定<code>region</code>。在命令行中你还可以用<code>os-region-name</code>来指定region，在web中你就根本找不到与region相关的东西。</p>
+<p>因为这样，很多人都不了解region的概念，如果你已经使用过openstack，并且不知道在哪看到了可以设置多region这样一件事，所以想自己部署一个看看，那么你可以把这篇文章读完。</p>
+<p>因为只是一个实验，我们怎么简单怎么来。网上有很多快速部署openstack环境的教程，首先你需要按照教程部署两套完整的openstack环境。有了这两套环境，我们稍微改一下配置即可。</p>
+<p>##增加endpoint</p>
+<p>选择一台机器作为RegionOne，另一台则为RegionTwo。我们需要在RegionOne上增加Regiontwo上的service的endpoint。</p>
+<p><img src="http://7xj6cl.com1.z0.glb.clouddn.com/Multi-Site_shared_keystone_horizon_swift1.png" alt=""></p>
+<p>如图，可以看到Horizon，Keystone和Swift是公用的，我们只需要增加这些服务之外的服务的endpoint</p>
+<p><img src="http://7xj6cl.com1.z0.glb.clouddn.com/service-list.png" alt=""></p>
+<p>如图我们需要增加cinder,ec2,glance,neutron,nova的endpoint。添加endpoint的命令是：</p>
+<pre><code>keystone endpoint-create --region RegionTwo 
+                         --service &lt;service&gt; 
+                          --publicurl &lt;public-url&gt;
+                         --adminurl &lt;admin-url&gt;
+                         --internalurl &lt;internal-url&gt;
+</code></pre><p>这样添加好了之后，工作就完成一半了。</p>
+<p>如果就这样打开RegionOne的web，会发现在页面上出现了一个之前没有的选择框，可以选择RegionOne或者RegionTwo，但是选了Regiontwo之后，按概况或者云主机之类的按钮，会出现各种<strong>无权限</strong>的错误，好蛋疼。其实这时候我们的web还没有配置好。</p>
+<p>##配置horizon</p>
+<p>打开文件</p>
+<pre><code>vim /etc/openstack-dashboard/local_settings.py
+</code></pre><p>找到</p>
+<pre><code># For multiple regions uncomment this configuration, and add (endpoint, title).
+# AVAILABLE_REGIONS = [
+#     (&apos;http://cluster1.example.com:5000/v2.0&apos;, &apos;cluster1&apos;),
+#     (&apos;http://cluster2.example.com:5000/v2.0&apos;, &apos;cluster2&apos;),
+# ]
+</code></pre><p>去掉注释，改成这样：</p>
+<pre><code># For multiple regions uncomment this configuration, and add (endpoint, title).
+AVAILABLE_REGIONS = [ 
+     (&apos;http://10.10.7.208:5000/v2.0&apos;, &apos;RegionOne&apos;),
+     (&apos;http://10.10.7.200:5000/v2.0&apos;, &apos;RegionTwo&apos;),
+]
+</code></pre><p>我的两台环境是<code>10.10.7.208</code>和<code>10.10.7.200</code>，你需要改成你的环境的ip。后面的5000端口不需要改，5000是keystone监听的端口，剩下的都不需要改。</p>
+<p>改完之后，保存，重启web</p>
+<pre><code>service apache2 restart
+#这里也是，如果你不是用的apache，请改成你重启web的方式
+</code></pre><p>这时候再登录就一切OK啦！</p>
+<p><img src="http://7xj6cl.com1.z0.glb.clouddn.com/region.png" alt=""></p>
+<p>右上角的region控制你登录的是哪个region，中间的那个是用户自由切换的用的。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/19/让mac的终端实现克隆会话功能/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2748,243 +2927,6 @@ filter(is_not_empty, [&apos;test&apos;, None, &apos;&apos;, &apos;str&apos;, &ap
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/05/Python-中的下划线命名规则/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/05/Python-中的下划线命名规则/" itemprop="url">Python 中的下划线命名规则</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-05T15:35:45+08:00">
-                2015-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>python中用下划线命名变量和函数是在是令人困惑，单下划线，双下划线，双下划线还分前后……,今天来总结一下，以备日后参考</p>
-<p>##单下划线（_）</p>
-<p>通常情况下，单下划线（_）会在以下3种场景中使用：</p>
-<p>###在解释器中：</p>
-<p>在这种情况下，“_”代表交互式解释器会话中上一条执行的语句的结果。这种用法首先被标准CPython解释器采用，然后其他类型的解释器也先后采用。</p>
-<pre><code>&gt;&gt;&gt; _ Traceback (most recent call last): 
-File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt; 
-NameError: name &apos;_&apos; is not defined 
-&gt;&gt;&gt; 42
-&gt;&gt;&gt; _ 
-42
-&gt;&gt;&gt; &apos;alright!&apos; if _ else &apos;:(&apos;
-&apos;alright!&apos;
-&gt;&gt;&gt; _ 
-&apos;alright!&apos;
-</code></pre><p>###作为一个名称：</p>
-<p>这与上面一点稍微有些联系，此时<code>“_”</code>作为临时性的名称使用。这样，当其他人阅读你的代码时将会知道，你分配了一个特定的名称，但是并不会在后面再次用到该名称。例如，下面的例子中，你可能对循环计数中的实际值并不感兴趣，此时就可以使用“_”。</p>
-<pre><code>n = 42
-for _ in range(n): 
-    do_something()
-</code></pre><p>###国际化：</p>
-<p>也许你也曾看到”_“会被作为一个函数来使用。这种情况下，它通常用于实现国际化和本地化字符串之间翻译查找的函数名称，这似乎源自并遵循相应的C约定。例如，在 Django文档“转换”章节 中，你将能看到如下代码：</p>
-<pre><code>from django.utils.translation import ugettext as _ 
-from django.http import HttpResponse 
-def my_view(request): 
-    output = _(&quot;Welcome to my site.&quot;) 
-    return HttpResponse(output)
-</code></pre><p>可以发现，场景二和场景三中的使用方法可能会相互冲突，所以我们需要避免在使用<code>“_”</code>作为国际化查找转换功能的代码块中同时使用“_”作为临时名称。</p>
-<p>##名称前的单下划线（如：_shahriar）</p>
-<p>程序员使用名称前的单下划线，用于指定该名称属性为“私有”。这有点类似于惯例，为了使其他人（或你自己）使用这些代码时将会知道以“_”开头的名称只供内部使用。正如Python文档中所述：</p>
-<p>以下划线<code>“_”</code>为前缀的名称（如_spam）应该被视为API中非公开的部分（不管是函数、方法还是数据成员）。此时，应该将它们看作是一种实现细节，在修改它们时无需对外部通知。</p>
-<p>正如上面所说，这确实类似一种惯例，因为它对解释器来说确实有一定的意义，如果你写了代码“from &lt;模块/包名&gt; import <em>”，那么以<code>“_”</code>开头的名称都不会被导入， 除非模块或包中的<code>“__all__”</code>列表显式地包含了它们 。了解更多请查看“ Importing </em> in Python ”。</p>
-<p>不过值得注意的是，如果使用 <code>import a_module</code> 这样导入模块，仍然可以用 <code>a_module._some_var</code> 这样的形式访问到这样的对象。</p>
-<p>另外单下划线开头还有一种一般不会用到的情况在于，使用一个 C 编写的扩展库有时会用下划线开头命名，然后使用一个去掉下划线的 Python 模块进行包装。如 struct 这个模块实际上是 C 模块 _struct 的一个 Python 包装。</p>
-<p>##名称前的双下划线（如：__shahriar）</p>
-<p>名称（具体为一个方法名）前双下划线<code>（__）</code>的用法并不是一种惯例，对解释器来说它有特定的意义。Python中的这种用法是为了避免与子类定义的名称冲突。Python文档指出，<code>“__spam”</code>这种形式（ 至少两个前导下划线，最多一个后续下划线 ）的任何标识符将会被<code>“_classname__spam”</code>这种形式原文取代，在这里“classname”是去掉前导下划线的当前类名。例如下面的例子：</p>
-<pre><code>&gt;&gt;&gt; class A(object): 
-...     def _internal_use(self): 
-...         pass
-...     def __method_name(self): 
-...         pass
-... 
-&gt;&gt;&gt; dir(A()) 
-[&apos;_A__method_name&apos;, ..., &apos;_internal_use&apos;]
-</code></pre><p>正如所预料的，<code>“_internal_use”</code>并未改变，而<code>“__method_name”</code>却被变成了<code>“_ClassName__method_name”</code>：<code>__</code>开头 的 私有变量会在代码生成之前被转换为长格式（变为公有）。转换机制是这样的：在变量前端插入类名，再在前端加入一个下划线字符。这就是所谓的私有变量 名字改编 （Private name mangling） 。<br>此时，如果你创建A的一个子类B，那么你将不能轻易地覆写A中的方法<code>“__method_name”</code>，</p>
-<pre><code>&gt;&gt;&gt; class B(A): 
-...     def __method_name(self): 
-...         pass
-... 
-&gt;&gt;&gt; dir(B()) 
-[&apos;_A__method_name&apos;, &apos;_B__method_name&apos;, ..., &apos;_internal_use&apos;]
-</code></pre><p>然而如果你知道了这个规律，最终你还是可以访问这个“私有”变量的。</p>
-<p>私有变量名字改编意在给出一个在类中定义”私有”实例变量和方法的简单途径，避免派生类的实例变量定义产生问题，或者与外界代码中的变量搞混。</p>
-<p>要注意的是混淆规则（私有变量名字改编）主要目的在于避免意外错误，被认作为私有的变量仍然有可能被访问或修改(使用<code>_classname__membername</code>)，在特定的场合它也是有用的，比如调试的时候。</p>
-<p>上述的功能几乎和Java中的final方法和C++类中标准方法（非虚方法）一样。</p>
-<p><strong>再讲两点题外话</strong>：</p>
-<p>一是因为轧压（改编）会使标识符变长，当超过255的时候，Python会切断，要注意因此引起的命名冲突。</p>
-<p>二是当类名全部以下划线命名的时候，Python就不再执行轧压（改编）。</p>
-<p>无论是单下划线还是双下划线开头的成员，都是希望外部程序开发者不要直接使用这些成员变量和这些成员函数，只是双下划线从语法上能够更直接的避免错误的使用，但是如果按照 <code>_类名__成员名</code> 则依然可以访问到。单下划线的在动态调试时可能会方便一些，只要项目组的人都遵守下划线开头的成员不直接使用，那使用单下划线或许会更好。</p>
-<p>##名称前后的双下划线（如：<strong>init</strong>）</p>
-<p>这种用法表示Python中特殊的方法名。其实，这只是一种惯例，对Python系统来说，这将确保不会与用户自定义的名称冲突。通常，你将会覆写这些方法，并在里面实现你所需要的功能，以便Python调用它们。例如，当定义一个类时，你经常会覆写<code>“__init__”</code>方法。</p>
-<p>双下划线开头双下划线结尾的是一些 Python 的“魔术”对象，如类成员的 <code>__init__</code>、<code>__del__</code>、<code>__add__</code>、<code>__getitem__</code> 等，以及全局的 <code>__file__</code>、<code>__name__</code> 等。 Python 官方推荐永远不要将这样的命名方式应用于自己的变量或函数，而是按照文档说明来使用。 虽然你也可以编写自己的特殊方法名，但不要这样做。</p>
-<pre><code>&gt;&gt;&gt; class C(object): 
-...     def __mine__(self): 
-...         pass
-... 
-&gt;&gt;&gt; dir(C) 
-... [..., &apos;__mine__&apos;, ...]
-</code></pre><p>其实，很容易摆脱这种类型的命名，而只让Python内部定义的特殊名称遵循这种约定 :)</p>
-<p>##题外话 if <strong>name</strong> == “<strong>main</strong>“:</p>
-<p>所有的 Python 模块都是对象并且有几个有用的属性，你可以使用这些属性方便地测试你所书写的模块。</p>
-<p>模块是对象, 并且所有的模块都有一个内置属性<code>__name__</code>。一个模块的<code>__name__</code> 的值要看您如何应用模块。如果 import 模块, 那么 <code>__name__</code>的值通常为模块的文件名, 不带路径或者文件扩展名。但是您也可以像一个标准的程序一样直接运行模块, 在这种情况下<code>__name__</code>的值将是一个特别的缺省值：<code>__main__</code>。</p>
-<pre><code>&gt;&gt;&gt; import odbchelper
-&gt;&gt;&gt; odbchelper.__name__
-&apos;odbchelper&apos;
-</code></pre><p>一旦了解到这一点, 您可以在模块内部为您的模块设计一个测试套件, 在其中加入这个 if 语句。当您直接运行模块, <code>__name__</code> 的值是 <code>__main__</code>, 所以测试套件执行。当您导入模块,<code>__name__</code>的值就是别的东西了, 所以测试套件被忽略。这样使得在将新的模块集成到一个大程序之前开发和调试容易多了。</p>
-<p>在 MacPython 上, 需要一个额外的步聚来使得<code>if __name__</code>技巧有效。 点击窗口右上角的黑色三角, 弹出模块的属性菜单, 确认<code>Run as __main__</code>被选中。</p>
-<p>##总结：</p>
-<p>Python 用下划线作为变量前缀和后缀指定特殊变量。</p>
-<p><code>_xxx</code>       不能用’from module import *’导入</p>
-<p><code>__xxx__</code>  系统定义名字</p>
-<p><code>__xxx</code>    类中的私有变量名</p>
-<p><strong>核心风格：避免用下划线作为变量名的开头。</strong></p>
-<p>因为下划线对解释器有特殊的意义，而且是内建标识符所使用的符号，我们建议程序员避免用下划线作为变量名的开头。一般来讲，变量名_xxx被看作是“私有的”，在模块或类外不可以使用。当变量是私有的时候，用_xxx 来表示变量是很好的习惯。 因为变量名<code>__xxx__</code>对Python 来说有特殊含义，对于普通的变量应当避免这种命名风格。</p>
-<p>“单下划线” 开始的成员变量叫做保护变量，意思是只有类对象和子类对象自己能访问到这些变量；</p>
-<p>“双下划线” 开始的是私有成员，意思是只有类对象自己能访问，连子类对象也不能访问到这个数据。</p>
-<p>以单下划线开头（如_foo）的代表不能直接访问的类属性，需通过类提供的接口进行访问，不能用<code>“from xxx import *”</code>而导入；以双下划线开头的（如<code>__foo</code>）代表类的私有成员；以双下划线开头和结尾的（<code>__foo__</code>）代表python里特殊方法专用的标识，如<code>__init__()</code> 代表类的构造函数。</p>
-<p>附 PEP 规范：</p>
-<pre><code>PEP-0008:
-In addition, the following special forms using leading or trailing underscores are recognized (these can generally be combined with any case convention):
-  - _single_leading_underscore: weak &quot;internal use&quot; indicator. E.g. &quot;from M import *&quot; does not import objects whose name starts with an underscore.
-  - single_trailing_underscore_: used by convention to avoid conflicts with Python keyword, e.g.
-    Tkinter.Toplevel(master, class_=&apos;ClassName&apos;)
-  - __double_leading_underscore: when naming a class attribute, invokes name mangling (inside class FooBar, __boo becomes _FooBar__boo; see below).
-  - __double_leading_and_trailing_underscore__: &quot;magic&quot; objects or attributes that live in user-controlled namespaces. E.g. __init__,
-    __import__ or __file__. Never invent such names; only use them as documented.
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3035,7 +2977,7 @@ In addition, the following special forms using leading or trailing underscores a
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">164</span>
+                <span class="site-state-item-count">165</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

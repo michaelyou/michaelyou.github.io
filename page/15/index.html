@@ -286,6 +286,236 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/28/笔试题总结4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/28/笔试题总结4/" itemprop="url">笔试题总结4</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-28T19:36:16+08:00">
+                2015-01-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>nux的crontab定时执行任务：<br>基本格式为：</p>
+<p>*　　*　　*　　*　　*　　command </p>
+<p>分　时　日　 月 周　 命令 </p>
+<p>第1列表示分钟1～59 每分钟用<code>*</code>或者<code>*/1</code>表示 </p>
+<p>第2列表示小时1～23（0表示0点） </p>
+<p>第3列表示日期1～31 </p>
+<p>第4列表示月份1～12</p>
+<p>第5列标识号星期0～6（0表示星期天） </p>
+<p>第6列要运行的命令</p>
+<hr>
+<pre><code>Class A;
+Class B;
+void F() {
+        A a;
+        B b;
+}
+</code></pre><blockquote>
+<p>在函数F中，本地变量a和b的构造函数(constructor)和析构函数(destructor)的调用顺序是:D</p>
+<p>A.b构造 a构造 a析构 b析构</p>
+<p>B.a构造 a析构 b构造 b析构</p>
+<p>C.b构造 a构造 b析构 a析构</p>
+<p>D.a构造 b构造 b析构 a析构</p>
+</blockquote>
+<p>解释：按变量声明顺序构造对象，然后入栈<br>按相反顺序出栈，析构对象。</p>
+<hr>
+<blockquote>
+<p>一棵有124个叶节点的完全二叉树，最多有（B）个节点。</p>
+<p>A.247</p>
+<p>B.248</p>
+<p>C.249</p>
+<p>D.250</p>
+</blockquote>
+<p>解释：n0 = n2 + 1，于是度为2的结点个数123个<br>完全二叉树中度为1结点个数最多1个</p>
+<p>因此该完全二叉树中结点最多有123+1+124=248个</p>
+<p>最少的话就是度为1的节点是0个，共有节点247个</p>
+<hr>
+<blockquote>
+<p>在排序方法中，元素比较次数与元素的初始排列无关的是（D）</p>
+<p>A.Shell 排序</p>
+<p>B.归并排序</p>
+<p>C.直接插入排序</p>
+<p>D.选择排序</p>
+</blockquote>
+<p>解释：选择排序无视队列原来是否有序，他自己都会再排一遍，所以它的时间复杂度一直是最差的O（n2），最好情况和最差情况一样.每一趟从待排序的数据元素中选出最小（或最大）的一个元素，顺序放在已排好序的数列的最后，直到全部待排序的数据元素排完。 选择排序是不稳定的排序方法</p>
+<hr>
+<blockquote>
+<p>给定如下代码： int x[4]={0}; int y[4]={1}; 数组x和y的值为（B）</p>
+<p>A.{0，0，0，0}，{1，1，1，1}</p>
+<p>B.{0，0，0，0}，{1，0，0，0}</p>
+<p>C.{0，不确定}，{1，不确定}</p>
+<p>D.与编译器相关</p>
+<hr>
+<p>如何判断一个单项链表中是否有环：</p>
+</blockquote>
+<p>解答：<br> 用两个指针，pSlow，pFast，就是一个慢一个快</p>
+<p>   慢的一次跳一步</p>
+<p>   快的一次跳两步</p>
+<p>   往链表末端移动。如果pFast==NULL，则说明链表没有环，如果pSlow==pFast，则说明链表存在环。</p>
+<hr>
+<blockquote>
+<p>-7的二进制补码为：11111001</p>
+</blockquote>
+<p>解释：正数的补码是自身，负数的补码是原码的高位不变，数值位取反加1</p>
+<hr>
+<blockquote>
+<p>中断响应时间是指（ C ）。</p>
+<p>A.从中断处理开始到中断处理结束所用的时间</p>
+<p>B.从发出中断请求到中断处理结束所用的时间</p>
+<p>C.从发出中断请求到进进中断处理所用的时间</p>
+<p>D.从中断处理结束到再次中断请求的时间</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>在下列排序方法中，不稳定的方法有 C</p>
+<p>A.归并排序与基数排序</p>
+<p>B.插进排序与希尔排序</p>
+<p>C.堆排序与快速排序</p>
+<p>D.选择排序与冒泡排序</p>
+</blockquote>
+<p><img src="/img/排序算法总结.png" alt="排序算法总结"></p>
+<hr>
+<blockquote>
+<p>下面的排序算法中，初始数据集的排列顺序对算法的性能无影响的是 B</p>
+<p>A.插入排序</p>
+<p>B.堆排序</p>
+<p>C.冒泡排序</p>
+<p>D.快速排序</p>
+</blockquote>
+<p>解释：有影响就是这个排序算法最好情况和最差情况的时间复杂度不同。对于无影响，我们只要找最好情况和最差情况时间复杂度一样的算法就可以了，所以是堆排序</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/27/面试题总结3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2132,164 +2362,6 @@ int main(int argc, char **argv)
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/23/c语言中整数的溢出/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/23/c语言中整数的溢出/" itemprop="url">c语言中整数的溢出</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-23T10:49:40+08:00">
-                2015-01-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##概念<br>c语言中存在两类整数算术运算，<code>有符号运算</code>和<code>无符号运算</code>。在<code>无符号运算</code>里，没有了<code>符号位</code>，所以是没有<code>溢出</code>的概念的。</p>
-<p>所有的无符号运算都是以2的n次方为模。如果算术运算符的一个操作数是有符号数，另一个是无符号数，那么有符号数会被转换为无符号数(表示范围小的总是被转换为表示范围大的)，那么溢出也不会发生。但是，当两个操作数都是有符号数时，溢出就有可能发生。而且溢出的结果是未定义的。当一个运算的结果发生溢出时，任何假设都是不安全的。</p>
-<p>##如何检测溢出<br>例如，假定a和b是两个非负的整型变量(有符号)，我们需要检查a+b是否溢出，一种想当然的方式是:</p>
-<pre><code>if (a + b &lt; 0)
-溢出
-</code></pre><p>实际上，在现实世界里，这并不能正常运行。当a+b确实发生溢出时，所有关于结果如何的假设均不可靠。比如，在某些机器的cpu，加法运算将设置一个内部寄存器为四种状态:正，负，零和溢出。在这种机器上，c编译器完全有理由实现以上的例子，使得a+b返回的不是负，而是这个内存寄存器的溢出状态。显然，if的判断会失败。</p>
-<p>一种正确的方式是将a和b都强制转换为无符号整数：</p>
-<pre><code>if ( (unsigned)a + (unsigned)b  &gt; INT_MAX)
-溢出
-</code></pre><p>这里的<code>INT_MAX</code>值为有符号整型的最大值。在一般的编译器里是一个预定义的常量。ANSI C在<code>limits</code>里定义了<code>INT_MAX</code>，值为</p>
-<blockquote>
-<p>2的31次方 - 1. </p>
-</blockquote>
-<p>不需要用到无符号算数运算的另一种可行方法是：</p>
-<pre><code>if (a &gt; INT_MAX - b)
-溢出
-</code></pre><p>PS : 有符号数的最高位(31位)为符号位，最高位为0的时候，表示正，为1的时候表示负。运算时，符号位不参加运算，但是如果两个数相加，30位需要进1时，那么即表示溢出。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2340,7 +2412,7 @@ int main(int argc, char **argv)
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">164</span>
+                <span class="site-state-item-count">165</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

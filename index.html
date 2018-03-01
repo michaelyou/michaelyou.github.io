@@ -982,6 +982,169 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/15/golang数据库相关的几个package的关系/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/11/15/golang数据库相关的几个package的关系/" itemprop="url">golang数据库相关的几个package的关系</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-15T19:45:04+08:00">
+                2017-11-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/go/" itemprop="url" rel="index">
+                    <span itemprop="name">go</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>挑orm的过程中不知不觉被搞晕了，怎么那么多相关的package，下面我们来理一理这些package的关系</p>
+<ul>
+<li>database/sql</li>
+<li><a href="https://github.com/go-sql-driver/mysql/" target="_blank" rel="external">https://github.com/go-sql-driver/mysql/</a></li>
+<li><a href="https://github.com/jmoiron/sqlx" target="_blank" rel="external">https://github.com/jmoiron/sqlx</a></li>
+</ul>
+<h3 id="database-sql"><a href="#database-sql" class="headerlink" title="database/sql"></a>database/sql</h3><p><code>database/sql</code>是go的一个标准库，提供了一些sql数据库的通用接口。它需要和数据库驱动一起使用，<a href="https://github.com/golang/go/wiki/SQLDrivers" target="_blank" rel="external">这里</a>是一个数据库驱动的列表。</p>
+<p>对于mysql而言，我们最常用的是<a href="https://github.com/go-sql-driver/mysql/" target="_blank" rel="external">https://github.com/go-sql-driver/mysql/</a></p>
+<h3 id="driver数据库驱动"><a href="#driver数据库驱动" class="headerlink" title="driver数据库驱动"></a>driver数据库驱动</h3><p>数据库驱动具体是什么呢？</p>
+<p>每一个数据库都有一套客户端-服务端的通信协议。作为客户端，如果要从数据库中查询/插入数据，就要遵循这套协议，按照协议格式发送请求。显然，让每个用户实现协议非常浪费而不切实际。所以数据库作者提供了一个软件（或者说package），这个软件实现了协议，并且暴露出了一些API接口供客户端与数据库交互，这个软件就是数据库驱动。</p>
+<p>驱动有标准，比如ODBC和JDBC，符合标准的驱动会实现一套相同的API接口，这样即使更换了数据库，客户端也不需要变更。</p>
+<p>另外显而易见的是，驱动是语言相关的，不同的编程语言操作数据库需要对应语言实现的数据库驱动。所以驱动主要就是实现了与数据库交互的协议，当我们使用时，一般会这么写：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">        <span class="string">"database/sql"</span></div><div class="line"></div><div class="line">        _ <span class="string">"github.com/go-sql-driver/mysql"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="comment">// mysql是驱动的名字</span></div><div class="line">        db, err := sql.Open(<span class="string">"mysql"</span>, <span class="string">"username:passwd@/test?charset=utf8"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面的</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> (</div><div class="line">		  _ <span class="string">"github.com/go-sql-driver/mysql"</span></div><div class="line">)</div></pre></td></tr></table></figure>
+<p>会执行init函数，将mysql驱动注册到<code>database/sql</code>中的<code>drivers</code>中去，drivers是一个map：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">drivers = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]driver.Driver)</div></pre></td></tr></table></figure>
+<p>显然，我们可以注册多个驱动，如果我们后端使用了不同的数据库的话，比如同时使用了<code>mysql</code>和<code>postgresql</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">        <span class="string">"database/sql"</span></div><div class="line"></div><div class="line">        _ <span class="string">"github.com/go-sql-driver/mysql"</span></div><div class="line">        _ <span class="string">"github.com/lib/pq"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="comment">// mysql和postgres是驱动的名字</span></div><div class="line">        my_db, err := sql.Open(<span class="string">"mysql"</span>, <span class="string">"username:passwd@/test?charset=utf8"</span>)</div><div class="line">        postgre_db, err := sql.Open(<span class="string">"postgres"</span>, <span class="string">"username:passwd@/test?charset=utf8"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="sqlx"><a href="#sqlx" class="headerlink" title="sqlx"></a>sqlx</h3><p>sql是标准库<code>database/sql</code>的一个扩展，提供了一些更友好的接口，但是并没有过度封装，很多人放弃使用各种orm转而使用了<code>sqlx</code>。</p>
+<p>虽然sqlx扩展了<code>database/sql</code>，但是使用时仍然要<code>import database/sql</code>，因为<strong>驱动init</strong>的时候是需要<code>database/sql</code>中的<code>drivers</code>变量的，二者的顺序需要注意</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">package main</div><div class="line"></div><div class="line">import (</div><div class="line">    &quot;database/sql&quot;</div><div class="line">    &quot;fmt&quot;</div><div class="line">    &quot;log&quot;</div><div class="line">    </div><div class="line">    _ &quot;github.com/lib/pq&quot;</div><div class="line">    &quot;github.com/jmoiron/sqlx&quot;</div><div class="line">)</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/03/go-scope/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1832,173 +1995,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/07/浙江大学SEL实验室docker系列文章目录/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/07/浙江大学SEL实验室docker系列文章目录/" itemprop="url">浙江大学SEL实验室Docker系列文章目录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-07T17:24:33+08:00">
-                2017-09-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a href="http://www.sel.zju.edu.cn/?p=112" target="_blank" rel="external">DOCKER源码分析（一）：DOCKER架构</a>-2014.12.02</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=147" target="_blank" rel="external">DOCKER源码分析（二）：DOCKER CLIENT创建与命令执行</a>-2014.12.02</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=158" target="_blank" rel="external">DOCKER源码分析（三）：DOCKER DAEMON启动</a>-2014.12.02</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=165" target="_blank" rel="external">DOCKER源码分析（四）：DOCKER DAEMON之NEWDAEMON实现</a>-2014.12.02</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=259" target="_blank" rel="external">DOCKER源码分析（五）：DOCKER SERVER的创建</a>-2014.12.09</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=399" target="_blank" rel="external">DOCKER源码分析（六）：DOCKER DAEMON网络</a>-2015.01.05</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=508" target="_blank" rel="external">DOCKER源码分析（七）：DOCKER CONTAINER网络 （上）</a>-2015.01.26</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=537" target="_blank" rel="external">DOCKER源码分析（八）：DOCKER CONTAINER网络（下）</a>-2015.03.12</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=549" target="_blank" rel="external">DOCKER源码分析（九）：DOCKER镜像</a>-2015.03.12</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=444" target="_blank" rel="external">DOCKER网络详解及PIPEWORK源码解读与实践</a>-2015.01.16</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=556" target="_blank" rel="external">DOCKER背后的内核知识——NAMESPACE资源隔离</a>-2015.03.13</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=573" target="_blank" rel="external">DOCKER背后的内核知识——CGROUPS资源限制</a>-2015.04.22</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=577" target="_blank" rel="external">DOCKER背后的容器管理——LIBCONTAINER深度解析</a>-2015.06.03</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=296" target="_blank" rel="external">玩转DOCKER镜像</a>-2014.12.16</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=467" target="_blank" rel="external">深入理解ETCD技术分享PPT</a>-2015.01.20</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=523" target="_blank" rel="external">ETCD：从应用场景到实现原理的全方位解读</a>-2015.02.01</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=283" target="_blank" rel="external">GOOGLE KUBERNETES设计文档之安全篇</a>-2014.12.11</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=331" target="_blank" rel="external">GOOGLE KUBERNETES设计文档之POD篇</a>-2014.12.19</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=360" target="_blank" rel="external">GOOGLE KUBERNETES设计文档之服务篇</a>-2014.12.23</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=353" target="_blank" rel="external">GOOGLE KUBERNETES设计文档之网络篇</a>-2014.12.29</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=394" target="_blank" rel="external">GOOGLE KUBERNETES设计文档之VOLUMES</a>-2015.01.02</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=417" target="_blank" rel="external">KUBERNETES MINION NODE 组件 之 KUBELET</a>-2015.01.13</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=484" target="_blank" rel="external">KUBERNETES代码走读之MINION NODE 组件 KUBE-PROXY</a>-2015.01.22</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=588" target="_blank" rel="external">4S: SERVICES ACCOUNT, SECRET, SECURITY CONTEXT AND SECURITY IN KUBERNETES</a>-2015.07.30</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=595" target="_blank" rel="external">KUBERNETES NODE COMPONENTS – KUBELET</a>-2015.08.07</p>
-<p><a href="http://www.sel.zju.edu.cn/?p=609" target="_blank" rel="external">KUBERNETES APISERVER源码分析——API请求的认证过程</a>-2015.08.09</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2049,7 +2045,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">164</span>
+                <span class="site-state-item-count">165</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

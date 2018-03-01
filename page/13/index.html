@@ -286,6 +286,312 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/27/linux磁盘空间命令-df和du/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/27/linux磁盘空间命令-df和du/" itemprop="url">linux磁盘空间命令--df和du</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-27T09:16:16+08:00">
+                2015-02-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##df<br>对于磁盘存储方面，有很多命令行或基于GUI的工具，它可以告诉你关于当前磁盘空间的使用情况。这些工具用各种人们可读的格式展示磁盘利用率的详细信息，比如易于理解的总结，详细的统计信息或直观的可视化报告。如果你只想知道不同文件系统有多少空闲的磁盘空间，那么df命令可能是你所需要的。</p>
+<pre><code>[root@pc105 /]# df
+Filesystem           1K-blocks     Used Available Use% Mounted on
+/dev/mapper/VolGroup-lv_root
+                      51475068 48090628    763000  99% /
+tmpfs                  8135664       72   8135592   1% /dev/shm
+/dev/sda1               487652    93128    368924  21% /boot
+/dev/mapper/VolGroup-lv_home
+                     901109008  4270596 851058036   1% /home
+tmpfs                   102400        4    102396   1% /var/log/pearl2
+tmpfs                  8135664        4   8135660   1% /var/run/pearl2
+</code></pre><p>df命令可以展示任何“mounted”文件系统的磁盘利用率。该命令可以用不同的方式调用。</p>
+<p>###用人们可读的方式展示<br>默认情况下，df命令用1K为块来展示磁盘空间，这看起来不是很直观。“-h”参数使df用更可读的方式打印磁盘空间（例如 100K，200M，3G）。</p>
+<pre><code>[root@pc105 /]# df -h
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/mapper/VolGroup-lv_root
+                       50G   46G  746M  99% /
+tmpfs                 7.8G   72K  7.8G   1% /dev/shm
+/dev/sda1             477M   91M  361M  21% /boot
+/dev/mapper/VolGroup-lv_home
+                      860G  4.1G  812G   1% /home
+tmpfs                 100M  4.0K  100M   1% /var/log/pearl2
+tmpfs                 7.8G  4.0K  7.8G   1% /var/run/pearl2
+</code></pre><p>###展示Inode使用情况<br>当你监视磁盘使用情况时，你必须注意的不仅仅是磁盘空间还有“inode”的使用情况。在Linux中，inode是用来存储特定文件的元数据的一种数据结构，在创建一个文件系统时，inode的预先定义数量将被分配。这意味着，<strong>一个文件系统可能耗尽空间不只是因为大文件用完了所有可用空间，也可能是因为很多小文件用完了所有可能的inode</strong>。用“-i”选项展示inode使用情况。</p>
+<pre><code>[root@pc105 /]# df -i
+Filesystem             Inodes  IUsed    IFree IUse% Mounted on
+/dev/mapper/VolGroup-lv_root
+                      3276800 635298  2641502   20% /
+tmpfs                 2033916      3  2033913    1% /dev/shm
+/dev/sda1              128016     53   127963    1% /boot
+/dev/mapper/VolGroup-lv_home
+                     57229312  35042 57194270    1% /home
+tmpfs                 2033916      2  2033914    1% /var/log/pearl2
+tmpfs                 2033916      2  2033914    1% /var/run/pearl2
+</code></pre><p>###展示磁盘总利用率<br>默认情况下， df命令显示磁盘的单个文件系统的利用率。如果你想知道的所有文件系统的总磁盘使用量，增加“ –total ”选项（见最下面的汇总行）。</p>
+<pre><code>[root@pc105 /]# df -h --total
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/mapper/VolGroup-lv_root
+                       50G   46G  746M  99% /
+tmpfs                 7.8G   72K  7.8G   1% /dev/shm
+/dev/sda1             477M   91M  361M  21% /boot
+/dev/mapper/VolGroup-lv_home
+                      860G  4.1G  812G   1% /home
+tmpfs                 100M  4.0K  100M   1% /var/log/pearl2
+tmpfs                 7.8G  4.0K  7.8G   1% /var/run/pearl2
+total                 925G   51G  829G   6%
+</code></pre><p>##du<br>Linux du命令也是查看使用空间的，但是与df命令不同的是Linux du命令是对文件和目录磁盘使用的空间的查看，还是和df命令有一些区别的.</p>
+<p>###显示目录或者文件所占空间 </p>
+<pre><code>[root@localhost test]# du
+608     ./test6
+308     ./test4
+4       ./scf/lib
+4       ./scf/service/deploy/product
+4       ./scf/service/deploy/info
+12      ./scf/service/deploy
+16      ./scf/service
+4       ./scf/doc
+4       ./scf/bin
+32      ./scf
+8       ./test3
+1288    .
+[root@localhost test]#
+</code></pre><p>只显示当前目录下面的子目录的目录大小和当前目录的总的大小，最下面的1288为当前目录的总大小</p>
+<p>###显示指定文件所占空间</p>
+<pre><code>[root@localhost test]# du log2012.log 
+300     log2012.log
+[root@localhost test]#
+</code></pre><p>###查看指定目录的所占空间</p>
+<pre><code>[root@localhost test]# du scf
+4       scf/lib
+4       scf/service/deploy/product
+4       scf/service/deploy/info
+12      scf/service/deploy
+16      scf/service
+4       scf/doc
+4       scf/bin
+32      scf
+[root@localhost test]#
+</code></pre><p>###显示多个文件所占空间</p>
+<pre><code>[root@localhost test]# du log30.tar.gz log31.tar.gz 
+4       log30.tar.gz
+4       log31.tar.gz
+[root@localhost test]#
+</code></pre><p>###只显示总和的大小</p>
+<pre><code>[root@localhost test]# du -s
+1288    .
+[root@localhost test]# du -s scf
+32      scf
+[root@localhost test]# cd ..
+[root@localhost soft]# du -s test
+1288    test
+[root@localhost soft]#
+</code></pre><p>###方便阅读的格式显示</p>
+<pre><code>[root@localhost soft]# du -h test
+608K    test/test6
+308K    test/test4
+4.0K    test/scf/lib
+4.0K    test/scf/service/deploy/product
+4.0K    test/scf/service/deploy/info
+12K     test/scf/service/deploy
+16K     test/scf/service
+4.0K    test/scf/doc
+4.0K    test/scf/bin
+32K     test/scf
+8.0K    test/test3
+1.3M    test
+[root@localhost soft]#
+</code></pre><p>###文件和目录都显示</p>
+<pre><code>[root@localhost soft]# du -ah test
+4.0K    test/log31.tar.gz
+4.0K    test/test13.tar.gz
+300K    test/test6/linklog.log
+4.0K    test/test6/log2013.log
+300K    test/test6/log2012.log
+608K    test/test6
+4.0K    test/test4/log2013.log
+300K    test/test4/log2012.log
+308K    test/test4
+4.0K    test/scf/lib
+4.0K    test/scf/service/deploy/product
+4.0K    test/scf/service/deploy/info
+12K     test/scf/service/deploy
+16K     test/scf/service
+4.0K    test/scf/doc
+4.0K    test/scf/bin
+32K     test/scf
+4.0K    test/log2013.log
+300K    test/log2012.log
+4.0K    test/log30.tar.gz
+4.0K    test/log.tar.bz2
+4.0K    test/log.tar.gz
+4.0K    test/test3/log2013.log
+8.0K    test/test3
+4.0K    test/scf.tar.gz
+1.3M    test
+[root@localhost soft]#
+</code></pre><p>###显示几个文件或目录各自占用磁盘空间的大小，还统计它们的总和</p>
+<pre><code>[root@localhost test]# du -c log30.tar.gz log31.tar.gz 
+4       log30.tar.gz
+4       log31.tar.gz
+8       总计
+[root@localhost test]#
+</code></pre><p>###按照空间大小排序</p>
+<pre><code>[root@localhost test]# du|sort -nr|more
+1288    .
+608     ./test6
+308     ./test4
+32      ./scf
+16      ./scf/service
+12      ./scf/service/deploy
+8       ./test3
+4       ./scf/service/deploy/product
+4       ./scf/service/deploy/info
+4       ./scf/lib
+4       ./scf/doc
+4       ./scf/bin
+[root@localhost test]#
+</code></pre><p>###输出当前目录下各个子目录所使用的空间</p>
+<pre><code>[root@localhost test]# du -h  --max-depth=1
+608K    ./test6
+308K    ./test4
+32K     ./scf
+8.0K    ./test3
+1.3M    .
+[root@localhost test]#
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/12/cookie-和session-的区别/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2021,194 +2327,6 @@ if __name__ == &apos;__main__&apos;:
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/02/每天一个python小程序-6/" itemprop="url">每天一个python小程序(6)--统计代码行数</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-02T23:16:22+08:00">
-                2015-02-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>有个目录，里面是你自己写过的程序，统计一下你写过多少行代码。包括空行和注释，但是要分别列出来。</p>
-</blockquote>
-<pre><code>#!/usr/bin/python
-#encoding=utf-8
-
-import re
-import os
-
-total = 0
-blank = 0
-comment = 0
-
-#要想使用全局变量，必须要用global来申明
-def count_code_lines(filename):
-    global total
-    global blank
-    global comment
-    f = open(filename)
-    lines = f.readlines()
-    total += len(lines)
-
-    pattern_blank = re.compile(r&apos;^\s*$&apos;)
-    pattern_comment = re.compile(r&apos;^\s*\#+&apos;)
-
-    for line in lines:
-        if pattern_blank.match(line):
-            blank += 1
-        elif pattern_comment.match(line):
-            comment += 1
-
-
-def walk_dir(file_path):
-    global total
-    global blank
-    global comment
-    #os.walk返回值为3元tupple，第一个是起始路径，第二个是起始下的文件夹，第三个是起始路径下的文件
-    for root, dirs, files in os.walk(file_path):
-        for file in files:
-            if file.lower().endswith(&apos;.py&apos;):
-                full_path = os.path.join(root, file)
-                count_code_lines(full_path)
-
-#在main函数里不要用global来申明全局变量
-if __name__ == &apos;__main__&apos;:
-    walk_dir(&apos;../&apos;)
-    print &apos;total line is %d, blank is %d, comment is %d&apos; % (total, blank, comment)
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2259,7 +2377,7 @@ if __name__ == &apos;__main__&apos;:
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">164</span>
+                <span class="site-state-item-count">165</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
