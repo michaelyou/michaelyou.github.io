@@ -286,6 +286,198 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django载入模板的顺序/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/django载入模板的顺序/" itemprop="url">Django载入模板的顺序</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T19:43:01+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Django默认会在配置文件<code>setting.py</code>的<code>TEMPLATE_LOADERS</code>中开启<code>django.template.loaders.filesystem.Loader</code>，开启该选项后可以按照<code>TEMPLATE_DIRS</code>中列出的路径的先后顺序从中查找并载入模板。</p>
+<p>比如有如下配置：</p>
+<pre><code>TEMPLATE_LOADERS = (
+    &apos;django.template.loaders.filesystem.Loader&apos;,
+)
+TEMPLATE_DIRS = (
+    &apos;/var/www/site/mycitsm/mycitsm/templates&apos;,
+    &apos;/var/www/site/mycitsm/sqlreview/templates&apos;,
+)
+</code></pre><p>现在<code>TEMPLATE_DIRS</code>中指定的两个目录中均存在<code>base.html</code>，渲染模板的语句为 <code>return render(request, &#39;base.html&#39;,context)</code>，<strong>那么Django会优先使用第一个目录中的<code>base.html</code>模板。当第一个目录中不存在<code>base.html</code>时，Django才会使用第二个目录中的base.html模板</strong>。当然，当两个目录都不存在<code>base.html</code>时，会提示找不到模板。因此为了避免混淆，在使用<code>&#39;django.template.loaders.filesystem.Loader&#39;</code>时尽量不要在<code>TEMPLATE_DIRS</code>指定的不同的位置放置同名模板。</p>
+<p>如果确实想在不同的位置放置同名模板呢？比如，为了达到程序复用的目的，我们往往会创建一些某个Django APP特定的static文件和template文件，保存在该APP特定的目录中。而我们不能保证这些文件与其他位置的文件不发生重名。因此这里引入了另外一种模板载入模式<code>&#39;django.template.loaders.app_directories.Loader&#39;</code>，<strong>开启该选项后可以从INSTALLED_APPS中已安装app对应的templates/目录中查找要渲染的模板文件</strong>（对于静态文件对应的是app的static/目录）。</p>
+<p>比如有如下配置：</p>
+<pre><code>TEMPLATE_LOADERS = (
+   &apos;django.template.loaders.app_directories.Loader&apos;，
+)
+TEMPLATE_DIRS = ()
+</code></pre><p>这里我们没有在<code>TEMPLATE_DIRS</code> 中指定包含模板文件的路径信息，但由于我们使用的是 <code>&#39;django.template.loaders.app_directories.Loader&#39;</code>载入方式，<strong>他会自动从APP对应的templates目录中查找相应的模板文件</strong>。比如渲染语句为<code>return render(request, &#39;base.html&#39;,context)</code>，APP对应的模板目录为<code>/var/www/site/mycitsm/sqlreview/templates/</code>，只要该目录中存在<code>base.html</code>，Django就会渲染该模板，不存在则提示找不到，除此之外不会从其他地方找该模板文件了。</p>
+<p>细心的你可能已经想到了：<strong>要是同时使用了两种载入模板的方式呢？比如同时使用了’django.template.loaders.filesystem.Loader’和’django.template.loaders.app_directories.Loader’会如何查找并载入模板？</strong></p>
+<p>比如有如下配置：</p>
+<pre><code>TEMPLATE_LOADERS = (
+    &apos;django.template.loaders.filesystem.Loader&apos;,
+    &apos;django.template.loaders.app_directories.Loader&apos;，
+)
+TEMPLATE_DIRS = (
+    &apos;/var/www/site/mycitsm/mycitsm/templates&apos;,
+    &apos;/var/www/site/mycitsm/sqlreview/templates&apos;,
+)
+</code></pre><p><code>TEMPLATE_DIRS</code>中指定的两个目录内均存在<code>base.html</code>模板，渲染模板的语句为 <code>return render(request, &#39;base.html&#39;,context)</code>，<strong>则Django会先依据<code>TEMPLATE_LOADERS</code>中最先列出的模板载入方式来查找并载入模板，方式同上，若找不到模板文件则使用列出的第二种方式查找，依次类推，直至找到或找不到。这样的话，Django要么找不到模板，要么会载入最先找到的模板，若在多个不同路径下存在同名的模板文件，最终载入的模板与列出的载入方式的顺序和列出的包含模板的目录的顺序嘻嘻相关。这往往是不明确的，极易造成混淆。</strong></p>
+<p>因此，通常在APP各自的templates目录中保存APP特定的模板，并不直接在APP对应templates目录中直接存放模板文件本身，而是在该目录中在创建一层以APP名称命名的目录，比如APP名称为sqlreview则存放该APP模板的目录为…/sqlreview/templates/sqlreview/，在指定要渲染的模板时可以通过模板文件的上一层目录来限定模板文件，以避免混淆，这实际上是提供了一个命名空间。比如return render(request, ‘sqlreview/base.html’,context),可以在/var/www/site/mycitsm/sqlreview/templates目录中找到该模板。这样便不用担心Django载入的模板究竟是不是对的、需要的那个模板。</p>
+<p>#django 1.8中的改变<br>在django 1.8中，setting里取消了<code>TEMPLATE_LOADERS</code>和<code>TEMPLATE_DIRS</code>设置，用一个<code>TEMPLATES</code>设置来代替</p>
+<pre><code>TEMPLATES = [
+    {
+        &apos;BACKEND&apos;: &apos;django.template.backends.django.DjangoTemplates&apos;,
+        &apos;DIRS&apos;: [os.path.join(BASE_DIR, &apos;blog/templates&apos;),],
+        &apos;APP_DIRS&apos;: True,
+        &apos;OPTIONS&apos;: {
+            &apos;context_processors&apos;: [
+                &apos;django.template.context_processors.debug&apos;,
+                &apos;django.template.context_processors.request&apos;,
+                &apos;django.contrib.auth.context_processors.auth&apos;,
+                &apos;django.contrib.messages.context_processors.messages&apos;,
+            ],
+        },
+    },
+]
+</code></pre><p>其中’DIRS’字段的值是一个列表，用来代替<code>TEMPLATE_DIRS</code>，设置模板的路径</p>
+<p><code>TEMPLATES</code>自带的loader是<code>&#39;django.template.loaders.filesystem.Loader&#39;</code>，如果我们想设置loader为<code>&#39;django.template.loaders.app_directories.Loader&#39;</code>，就将<code>APP_DIRS</code>的值设置为TRUE</p>
+<p>##补充</p>
+<p><code>&#39;django.template.loaders.filesystem.Loader&#39;</code>依赖于’DIRS’的设置，如果’DIRS’是一个空列表的话，他将找不到任何模板</p>
+<p><code>&#39;django.template.loaders.app_directories.Loader&#39;</code>会自动去app下面的template目录下寻找模板，所以采用这种方法就无需给’DIRS’赋值</p>
+<p>第一部分转载自<a href="http://blog.csdn.net/zyz511919766/article/details/18355827" target="_blank" rel="external">这里</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django的时区/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1777,151 +1969,6 @@ int readvrec( SOCKET s, char *buf, size_t len );
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/20/TCP三次握手如果没有第三步会怎么样/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/20/TCP三次握手如果没有第三步会怎么样/" itemprop="url">TCP三次握手如果没有第三步会怎么样</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-20T17:00:30+08:00">
-                2015-03-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
-                    <span itemprop="name">TCP/IP</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>没有第三步，那就是服务器发送给客户端的SYN没有收到回应，其实这就是SYN洪泛攻击。</p>
-<p>SYN攻击属于DDOS攻击的一种，它利用TCP协议缺陷，通过发送大量的半连接请求，<strong>耗费CPU和内存资源</strong>。</p>
-<p>SYN攻击除了能影响主机外，还可以危害路由器、防火墙等网络系统，事实上SYN攻击并不管目标是什么系统，只要这些系统打开TCP服务就可以实施。</p>
-<p>服务器接收到连接请求（syn=j），将此信息加入未连接队列，并发送请求包给客户（syn=k,ack=j+1），此时进入SYN_RECV状态。<strong>当服务器未收到客户端的确认包时，重发请求包，一直到超时，才将此条目从未连接队列删除。</strong>配合IP欺骗，SYN攻击能达到很好的效果，通常，客户端在短时间内伪造大量不存在的IP地址，向服务器不断地发送syn包，服务器回复确认包，并等待客户的确认，由于源地址是不存在的，服务器需要不断的重发直至超时，这些伪造的SYN包将长时间占用未连接队列，正常的SYN请求被丢弃，目标系统运行缓慢，严重者引起网络堵塞甚至系统瘫痪。 </p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1972,7 +2019,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">165</span>
+                <span class="site-state-item-count">166</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

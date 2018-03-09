@@ -286,6 +286,171 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/13/tcp是流的一些思考-拆包和粘包/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/13/tcp是流的一些思考-拆包和粘包/" itemprop="url">tcp是流的一些思考--拆包和粘包</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-13T16:19:01+08:00">
+                2015-03-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
+                    <span itemprop="name">TCP/IP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>假设应用层协议是http</p>
+<p>我从浏览器中访问了一个网站，网站服务器给我发了200k的数据。建立连接的时候，通告的MSS是50k，所以为了防止ip层分片，tcp每次只会发送50k的数据，一共发了4个tcp数据包。如果我又访问了另一个网站，这个网站给我发了100k的数据，这次tcp会发出2个包，问题是，客户端收到6个包，怎么知道前4个包是一个页面，后两个是一个页面。既然是tcp将这些包分开了，那tcp会将这些包重组吗，它送给应用层的是什么？</p>
+<p>这是我自己想的一个场景，正式一点讲的话，这个现象叫<strong>拆包</strong>。</p>
+<p>我们再考虑一个问题。</p>
+<p>tcp中有一个negal算法，用途是这样的：通信两端有很多小的数据包要发送，虽然传送的数据很少，但是流程一点没少，也需要tcp的各种确认，校验。这样小的数据包如果很多，会造成网络资源很大的浪费，negal算法做了这样一件事，当来了一个很小的数据包，我不急于发送这个包，而是等来了更多的包，将这些小包组合成大包之后一并发送，不就提高了网络传输的效率的嘛。这个想法收到了很好的效果，但是我们想一下，如果是分属于两个不同页面的包，被合并在了一起，那客户那边如何区分它们呢？</p>
+<p>这就是<strong>粘包</strong>问题。</p>
+<p>从粘包问题我们更可以看出为什么tcp被称为流协议，因为它就跟水流一样，是没有边界的，没有消息的边界保护机制，所以tcp只有流的概念，没有包的概念。</p>
+<p>我们还需要有两个概念</p>
+<ul>
+<li><strong>长连接</strong>： Client方与Server方先建立通讯连接，连接建立后不断开， 然后再进行报文发送和接收。</li>
+<li><strong>短连接</strong>：Client方与Server每进行一次报文收发交易时才进行通讯连接，交易完毕后立即断开连接。此种方式常用于一点对多点  通讯，比如多个Client连接一个Server.</li>
+</ul>
+<p>下面我们揭晓答案：</p>
+<ol>
+<li>我想象的关于粘包的场景是不对的，http连接是短连接，请求之后，收到回答，立马断开连接，不会出现粘包。</li>
+<li>拆包现象是有可能存在的</li>
+</ol>
+<p>##处理拆包<br>既然拆包现象可能存在，如果遇到了，那么该如何处理呢？这里提供两种方法</p>
+<ol>
+<li>通过包头+包长+包体的协议形式，当服务器端获取到指定的包长时才说明获取完整。 </li>
+<li>指定包的结束标识，这样当我们获取到指定的标识时，说明包获取完整。 </li>
+</ol>
+<p>##处理粘包<br>我们从上面的分析看到，虽然像http这样的短连接协议不会出现粘包的现象，但是一旦建立了长连接，粘包还是有可能会发生的。</p>
+<p>网上的处理方法有很多，这里不列举了，但大家看这些处理方法，都会发现，这些方法并不好，都会做一些牺牲。比如禁用negal算法，就是以网络性能作为牺牲。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/12/一些阿里面试题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1760,180 +1925,6 @@ typedef union epoll_data {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/07/执行可执行程序时内存分配的方式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/07/执行可执行程序时内存分配的方式/" itemprop="url">执行可执行程序时内存分配的方式&&BSS段</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-07T20:22:54+08:00">
-                2015-03-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##一个由C/C++编译的程序占用的内存分为以下几个部分</p>
-<ol>
-<li>栈区（stack）— 由编译器自动分配释放，存放函数的参数值，局部变量的值等。其操作方式类似于数据结构中的栈。</li>
-<li>堆区（heap）— 一般由程序员分配释放，若程序员不释放，程序结束时可能由OS回收。注意它与数据结构中的堆是两回事，分配方式倒是类似于链表，呵呵。</li>
-<li>全局区（静态区）（static）—全局变量和静态变量的存储是放在一块的，初始化的全局变量和静态变量在一块区域，未初始化的全局变量和未初始化的静态变量在相邻的另一块区域。 - 程序结束后有系统释放</li>
-<li>文字常量区 —常量字符串就是放在这里的。程序结束后由系统释放</li>
-<li>程序代码区(text)—存放函数体的二进制代码。</li>
-</ol>
-<p><img src="/img/一个linux进程的存储器映像.png" alt=""></p>
-<p>##举例</p>
-<pre><code>int a = 0;    //全局初始化区 
-char *p1;     //全局未初始化区 
-main() 
-{ 
-    int b;                   //栈 
-    char s[] = &quot;abc&quot;;        //s[]在栈区，abc在常量区 
-    char *p2;                //栈 
-    char *p3 = &quot;123456&quot;;     //123456\0在常量区，p3在栈上。 
-    static int c = 0；       //全局（静态）初始化区 
-    p1 = (char *)malloc(10); 
-    p2 = (char *)malloc(20); //分配得来得10和20字节的区域就在堆区。 
-    strcpy(p1, &quot;123456&quot;);    //123456\0放在常量区，编译器可能会将它与p3所指向的&quot;123456&quot;优化成一块。 
-} 
-</code></pre><p>##堆和栈的区别</p>
-<ol>
-<li>stack的空间由操作系统自动分配/释放，heap上的空间需要手动分配/释放</li>
-<li>栈的空间有限，堆是很大的自由存储区。</li>
-<li>程序在编译期对变量和函数分配内存都在栈上进行，且程序运行过程中函数调用参数的传递也在栈上进行</li>
-</ol>
-<p>##BSS段</p>
-<p>可执行程序包括BSS段、数据段、代码段（也称文本段）。</p>
-<p>BSS（Block Started by Symbol）通常是指用来存放程序中未初始化的全局变量和静态变量的一块内存区域。特点是:可读写的，在程序执行之前BSS段会自动清0。所以，未初始的全局变量在程序执行之前已经成0了。</p>
-<p>注意和数据段的区别，<strong>BSS存放的是未初始化的全局变量和静态变量，数据段存放的是初始化后的全局变量和静态变量</strong>。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1984,7 +1975,7 @@ main()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">165</span>
+                <span class="site-state-item-count">166</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

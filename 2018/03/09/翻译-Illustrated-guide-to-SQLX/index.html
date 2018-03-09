@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/img/lufei.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="这篇文章虽说标题是SQLX指南，但也可以看做是标准库database/sql文档的补充  sqlx包对Go内置的database/sql包提供了一系列扩展 本文的重点在于检测Go对于数据库的一些习惯用法，所以不要认为这里展示的SQL是使用数据的推荐方法。本文不涉及设置Go开发环境，基本的Go语法，以及SQL本身。 另外，err变量被用来接受返回的错误，但是为了简洁本文一般会忽略它。在实际的开发中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[翻译] Illustrated guide to SQLX">
+<meta property="og:url" content="http://yoursite.com/2018/03/09/翻译-Illustrated-guide-to-SQLX/index.html">
+<meta property="og:site_name" content="Youmai の Blog">
+<meta property="og:description" content="这篇文章虽说标题是SQLX指南，但也可以看做是标准库database/sql文档的补充  sqlx包对Go内置的database/sql包提供了一系列扩展 本文的重点在于检测Go对于数据库的一些习惯用法，所以不要认为这里展示的SQL是使用数据的推荐方法。本文不涉及设置Go开发环境，基本的Go语法，以及SQL本身。 另外，err变量被用来接受返回的错误，但是为了简洁本文一般会忽略它。在实际的开发中">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-09T13:56:52.092Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[翻译] Illustrated guide to SQLX">
+<meta name="twitter:description" content="这篇文章虽说标题是SQLX指南，但也可以看做是标准库database/sql文档的补充  sqlx包对Go内置的database/sql包提供了一系列扩展 本文的重点在于检测Go对于数据库的一些习惯用法，所以不要认为这里展示的SQL是使用数据的推荐方法。本文不涉及设置Go开发环境，基本的Go语法，以及SQL本身。 另外，err变量被用来接受返回的错误，但是为了简洁本文一般会忽略它。在实际的开发中">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/09/翻译-Illustrated-guide-to-SQLX/"/>
+
+
+
+
+
+  <title>[翻译] Illustrated guide to SQLX | Youmai の Blog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-63551049-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youmai の Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/09/翻译-Illustrated-guide-to-SQLX/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[翻译] Illustrated guide to SQLX</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-09T21:56:18+08:00">
+                2018-03-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/go/" itemprop="url" rel="index">
+                    <span itemprop="name">go</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>这篇文章虽说标题是SQLX指南，但也可以看做是标准库database/sql<a href="https://golang.org/pkg/database/sql/" target="_blank" rel="external">文档</a>的补充</p>
+</blockquote>
+<p><strong>sqlx</strong>包对Go内置的<strong>database/sql</strong>包提供了一系列扩展</p>
+<p>本文的重点在于检测Go对于数据库的一些习惯用法，所以不要认为这里展示的SQL是使用数据的推荐方法。本文不涉及设置Go开发环境，基本的Go语法，以及SQL本身。</p>
+<p>另外，err变量被用来接受返回的错误，但是为了简洁本文一般会忽略它。在实际的开发中，你需要检查所有返回的错误。</p>
+<h3 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h3><p>这里是一些学习在Go中使用SQL的非常好的资源：</p>
+<ul>
+<li><a href="http://golang.org/pkg/database/sql/" target="_blank" rel="external">database/sql documentation</a></li>
+<li><a href="http://go-database-sql.org/" target="_blank" rel="external">go-database-sql tutorial</a></li>
+</ul>
+<p>如果你需要开始学习Go本身，下面的资源应该用得上：</p>
+<ul>
+<li><a href="http://tour.golang.org/" target="_blank" rel="external">The Go tour</a></li>
+<li><a href="http://golang.org/doc/code.html" target="_blank" rel="external">How to write Go code</a></li>
+<li><a href="http://golang.org/doc/effective_go.html" target="_blank" rel="external">Effective Go</a></li>
+</ul>
+<p>因为<code>database/sql</code>的接口是sqlx的一个子集，所以本文中关于<code>database/sql</code>用法的建议同样适用于<code>sqlx</code></p>
+<h3 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h3><p>你需要安装<strong>sqlx</strong>和数据库驱动。因为package不依赖具体数据库，推荐使用sqlite3进行学习：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ <span class="keyword">go</span> get github.com/jmoiron/sqlx</div><div class="line">$ <span class="keyword">go</span> get github.com/mattn/<span class="keyword">go</span>-sqlite3</div></pre></td></tr></table></figure>
+<h3 id="Handle-Types"><a href="#Handle-Types" class="headerlink" title="Handle Types"></a>Handle Types</h3><p><code>sqlx</code>被设计成和<code>database/sql</code>用法相同。主要有4个<strong>handle types</strong>：</p>
+<ul>
+<li>sqlx.DB - 类似于sql.DB, 表示一个database</li>
+<li>sqlx.Tx - 类似于sql.Tx, 表示一个transaction</li>
+<li>sqlx.Stmt - 类似于sql.Stmt, 表示一个prepared statement</li>
+<li>sqlx.NamedStmt - 表示一个支持<a href="#s-1">命名参数</a>的prepared statement</li>
+</ul>
+<p>Handle types均<a href="https://golang.org/doc/effective_go.html#embedding" target="_blank" rel="external">嵌入（embed）</a>了在<code>database/sql</code>中的对应类型，这意味着当你调用<code>sqlx.DB.Query</code>时，你是在调用和<code>sql.DB.Query</code>相同的代码。这使得它可以很容易被加入到现有的数据库项目中</p>
+<p>另外，还有两个<strong>cursor types</strong>：</p>
+<ul>
+<li>sqlx.Rows - 类似于sql.Rows, Queryx返回的一个cursor</li>
+<li>sqlx.Row - 类似于sql.Row, QueryRowx返回的结果</li>
+</ul>
+<p>sqlx.Rows包含了sql.Rows。但是因为底层实现无法调用，sqlx.Row重新部分实现了sql.Row的标准接口。</p>
+<h3 id="连接到数据库"><a href="#连接到数据库" class="headerlink" title="连接到数据库"></a>连接到数据库</h3><p>一个<code>DB</code>实例并不是一个连接，而是数据库的一种抽象表示。这就是为什么创建一个DB实例不会返回error，也不会panic。它内部维护了一个<a href="#s-2">连接池</a>，当需要连接的时候才会第一次去尝试连接数据库。可以通过open方法来创建一个<code>sqlx.DB</code>，或者通过<code>NewDb</code>从已存在的<code>sql.DB</code>上创建：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> db *sqlx.DB</div><div class="line"> </div><div class="line"><span class="comment">// exactly the same as the built-in</span></div><div class="line">db = sqlx.Open(<span class="string">"sqlite3"</span>, <span class="string">":memory:"</span>)</div><div class="line"> </div><div class="line"><span class="comment">// from a pre-existing sql.DB; note the required driverName</span></div><div class="line">db = sqlx.NewDb(sql.Open(<span class="string">"sqlite3"</span>, <span class="string">":memory:"</span>), <span class="string">"sqlite3"</span>)</div><div class="line"> </div><div class="line"><span class="comment">// force a connection and test that it worked</span></div><div class="line">err = db.Ping()</div></pre></td></tr></table></figure>
+<p>在某些情况下，你可能会想同时打开和连接一个DB；比如说需要在初始化阶段捕捉配置问题。这个问题可以通过<code>Connect</code>来解决，它打开了一个DB并尝试调用<code>Ping</code>方法。<code>MustConnect</code>方法在遇到错误时会<code>panic</code>，适合用于正式项目。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> err error</div><div class="line"><span class="comment">// open and connect at the same time:</span></div><div class="line">db, err = sqlx.Connect(<span class="string">"sqlite3"</span>, <span class="string">":memory:"</span>)</div><div class="line"> </div><div class="line"><span class="comment">// open and connect at the same time, panicing on error</span></div><div class="line">db = sqlx.MustConnect(<span class="string">"sqlite3"</span>, <span class="string">":memory:"</span>)</div></pre></td></tr></table></figure>
+<h3 id="Querying-101"><a href="#Querying-101" class="headerlink" title="Querying 101"></a>Querying 101</h3><p>sqlx中的handle types实现了与database/sql相同的基本数据库查询操作：</p>
+<ul>
+<li>Exec(…) (sql.Result, error) - unchanged from database/sql</li>
+<li>Query(…) (*sql.Rows, error) - unchanged from database/sql</li>
+<li>QueryRow(…) *sql.Row - unchanged from database/sql</li>
+</ul>
+<p>下面是对内置操作的扩展：</p>
+<ul>
+<li>MustExec() sql.Result – Exec, but panic on error</li>
+<li>Queryx(…) (*sqlx.Rows, error) - Query, but return an sqlx.Rows</li>
+<li>QueryRowx(…) *sqlx.Row – QueryRow, but return an sqlx.Row</li>
+</ul>
+<p>还有的是新的接口：</p>
+<ul>
+<li>Get(dest interface{}, …) error</li>
+<li>Select(dest interface{}, …) error</li>
+</ul>
+<p>我们从未改变的接口开始，一一解释一下它们的用法</p>
+<h4 id="Exec"><a href="#Exec" class="headerlink" title="Exec"></a>Exec</h4><p>Exec和MustExec从连接池中获取一个连接，然后在server上执行相应的查询。对于不支持ad-hoc 查询的驱动，一个prepared statement会在背后被创建来执行。在结果返回之前连接就会被归还给连接池。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">schema := <span class="string">`CREATE TABLE place (</span></div><div class="line"><span class="string">    country text,</span></div><div class="line"><span class="string">    city text NULL,</span></div><div class="line"><span class="string">    telcode integer);`</span></div><div class="line"> </div><div class="line"><span class="comment">// execute a query on the server</span></div><div class="line">result, err := db.Exec(schema)</div><div class="line"> </div><div class="line"><span class="comment">// or, you can use MustExec, which panics on error</span></div><div class="line">cityState := <span class="string">`INSERT INTO place (country, telcode) VALUES (?, ?)`</span></div><div class="line">countryCity := <span class="string">`INSERT INTO place (country, city, telcode) VALUES (?, ?, ?)`</span></div><div class="line">db.MustExec(cityState, <span class="string">"Hong Kong"</span>, <span class="number">852</span>)</div><div class="line">db.MustExec(cityState, <span class="string">"Singapore"</span>, <span class="number">65</span>)</div><div class="line">db.MustExec(countryCity, <span class="string">"South Africa"</span>, <span class="string">"Johannesburg"</span>, <span class="number">27</span>)</div></pre></td></tr></table></figure>
+<p><a href="http://golang.org/pkg/database/sql/#Result" target="_blank" rel="external">结果</a>可能有两种：<br><code>LastInsertId()</code> 或者 <code>RowsAffected()</code>, 具体的返回有驱动决定。举个例子，在Mysql中，对有自增key的表进行插入操作会返回<code>LastInsertId()</code>。但是在PostgreSQL中，<code>LastInsertId()</code>只有在使用RETURNING语句的row cursor中才会返回。</p>
+<h4 id="bindvars"><a href="#bindvars" class="headerlink" title="bindvars"></a>bindvars</h4><p>查询占位符<code>?</code>，内部称为绑定变量，非常重要！你应该使用这种方式来向数据库发送数据，因为它们可以防止<a href="https://en.wikipedia.org/wiki/SQL_injection" target="_blank" rel="external">SQL注入</a>攻击。<code>database/sql</code>不对查询文本做任何验证，查询语句会原封不动地和编码过的参数一起发送给server。查询语句将会首先在server上准备（被解析），除非驱动实现了一个特殊的接口。因此Bindvars是数据库各异的：</p>
+<ul>
+<li>MySQL uses the <strong>?</strong> variant shown above</li>
+<li>PostgreSQL uses an enumerated <strong>$1</strong>, <strong>$2</strong>, etc bindvar syntax</li>
+<li>SQLite accepts both <strong>?</strong> and <strong>$1</strong> syntax</li>
+<li>Oracle uses a <strong>:name</strong> syntax</li>
+</ul>
+<p>其他数据库可能不同。你可以使用<strong>sqlx.DB.Rebind(string) string</strong>方法来获取适用于你的数据库的查询语句，入参为使用<code>?</code>作为变量绑定的查询语句。</p>
+<p>一个常见的对变量绑定的误解是它是用来做插值的。其实他们只是用来做参数化，并不能用来<a href="http://use-the-index-luke.com/sql/where-clause/bind-parameters" target="_blank" rel="external">改变SQL语句的结构</a>。比如，用bindvars来参数化 字段名 或者 表名 是行不通的：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// doesn't work</span></div><div class="line">db.Query(<span class="string">"SELECT * FROM ?"</span>, <span class="string">"mytable"</span>)</div><div class="line"> </div><div class="line"><span class="comment">// also doesn't work</span></div><div class="line">db.Query(<span class="string">"SELECT ?, ? FROM people"</span>, <span class="string">"name"</span>, <span class="string">"location"</span>)</div></pre></td></tr></table></figure>
+<p>###Query<br>Query是<code>database/sql</code>中执行查询主要使用的方法。该方法返回一个<code>sql.Rows</code>对象和一个<code>error</code>：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// fetch all places from the db</span></div><div class="line">rows, err := db.Query(<span class="string">"SELECT country, city, telcode FROM place"</span>)</div><div class="line"> </div><div class="line"><span class="comment">// iterate over each row</span></div><div class="line"><span class="keyword">for</span> rows.Next() &#123;</div><div class="line">    <span class="keyword">var</span> country <span class="keyword">string</span></div><div class="line">    <span class="comment">// note that city can be NULL, so we use the NullString type</span></div><div class="line">    <span class="keyword">var</span> city    sql.NullString</div><div class="line">    <span class="keyword">var</span> telcode <span class="keyword">int</span></div><div class="line">    err = rows.Scan(&amp;country, &amp;city, &amp;telcode)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>你应该将<code>Rows</code>对象看做一个数据库cursor而不是一个结果列表。尽管数据库驱动缓存的方法不一样，通过<code>Next()</code>迭代每次获取一列结果，对于查询结果非常巨大的情况下，可以有效的限制内存的使用，因为你一次只处理一行数据。<code>Scan()</code>利用<a href="http://golang.org/pkg/reflect" target="_blank" rel="external">reflect</a>把sql每一列结果映射到go语言的数据类型如<code>string</code>，<code>[]byte</code>上。如果你没有遍历完全部的rows结果，一定要记得在把connection返回到连接池之前调用<code>rows.Close()</code>。</p>
+<p>Query返回的error有可能是在server准备查询的时候发生的，也有可能是在执行查询语句的时候发生的。例如可能从连接池中获取一个坏的连接（尽管数据库会<a href="http://golang.org/src/pkg/database/sql/sql.go?s=23888:23957#L885" target="_blank" rel="external">尝试10次</a>去发现或创建一个工作连接）。一般来说，错误主要是错误的sql语句，错误的类似匹配，错误的字段名或表名。</p>
+<p>在大部分情况下，<code>Rows.Scan()</code>会把从驱动获取的数据进行拷贝，无论驱动如何使用缓存。特殊类型<code>sql.RawBytes</code>可以用来从驱动返回的数据中获取一个<em>zero-copy</em>的byte slice。当下一次调用Next的时候，这个值就不再有效了，因为它指向的内存已经被驱动重写了别的数据。</p>
+<p>Query使用的connection在所有的rows通过<code>Next()</code>遍历完后或者调用<code>rows.Close()</code>后释放。更多细节可以参考<a href="#s-2">连接池</a> </p>
+<p>sqlx扩展的<code>Queryx</code>和<code>Query</code>行为很相似，不过返回一个<code>sqlx.Rows</code>对象，支持扩展了的scan行为。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> Place <span class="keyword">struct</span> &#123;</div><div class="line">    Country       <span class="keyword">string</span></div><div class="line">    City          sql.NullString</div><div class="line">    TelephoneCode <span class="keyword">int</span> <span class="string">`db:"telcode"`</span></div><div class="line">&#125;</div><div class="line"> </div><div class="line">rows, err := db.Queryx(<span class="string">"SELECT * FROM place"</span>)</div><div class="line"><span class="keyword">for</span> rows.Next() &#123;</div><div class="line">    <span class="keyword">var</span> p Place</div><div class="line">    err = rows.StructScan(&amp;p)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>sqlx.Rowx的主要扩展就是<code>StructScan</code>，可以自动把查询结果scan到对应结构体的字段上。注意结构体中的字段必须是<a href="http://golang.org/doc/effective_go.html#names" target="_blank" rel="external">可导出的</a>（首字母大写），这样sqlx才能够写入值。正如在上面代码中所示，可以利用db结构体标签来指定结构体字段对应的数据库字段名，或者用<a href="http://jmoiron.github.io/sqlx/#mapping" target="_blank" rel="external">db.MapperFunc()</a>来指定默认的映射。默认是对结构体的字段名执行<code>strings.Lower</code>后，和数据库的列名进行匹配。关于<code>StructScan</code>,<code>SliceScan</code>,<code>MapScan</code>更详细的内容请参见后面章节<a href="#s-3">advanced scanning</a>。</p>
+<h3 id="QueryRow"><a href="#QueryRow" class="headerlink" title="QueryRow"></a>QueryRow</h3><p>QueryRow从数据库中获取一列数据。它从连接池中获取一个连接，然后执行Query，返回一个<code>Row</code>对象，这个对象有一个自己的内部的Rows对象。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">row := db.QueryRow(<span class="string">"SELECT * FROM place WHERE telcode=?"</span>, <span class="number">852</span>)</div><div class="line"><span class="keyword">var</span> telcode <span class="keyword">int</span></div><div class="line">err = row.Scan(&amp;telcode)</div></pre></td></tr></table></figure>
+<p>不像Query，QueryRow只返回一个Row类型，并不返回error，如果在执行查询过程中出错，则错误通过Scan返回，如果查询结果为空，则返回<code>sql.ErrNoRows</code>。如果Scan本身出错（比如类型不匹配），error同样由scan返回。</p>
+<p>结果Row中关联的Rows对象在Scan时被关闭，这意味着QueryRow使用的连接会一直保持到结果被scan。也就意味着使用QueryRow的时候不能够使用sql.RawByes，因为引用的内存属于驱动，而当控制权交给调用者（应用程序）的时候这块内存可能已经无效了。</p>
+<p>QueryRowx返回一个sqlx.Row而不是sql.Row，它实现了跟Rows相同的scan方法如上，同时还有高级的scan方法如下：（更高级的scan方法<a href="#s-3">advanced scanning</a>）</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> p Place</div><div class="line">err := db.QueryRowx(<span class="string">"SELECT city, telcode FROM place LIMIT 1"</span>).StructScan(&amp;p)</div></pre></td></tr></table></figure>
+<h3 id="Get-and-Select"><a href="#Get-and-Select" class="headerlink" title="Get and Select"></a>Get and Select</h3><p><code>Get</code>和<code>Select</code>是一个非常省时的扩展。它们把query和非常灵活的scan语法结合起来。为了更加清晰的介绍它们，我们先讨论下什么是scannalbe：</p>
+<ul>
+<li>a value is scannable if it is not a struct, eg <strong>string</strong>, <strong>int</strong></li>
+<li>a value is scannable if it implements <strong>sql.Scanner</strong></li>
+<li>a value is scannable if it is a struct with no exported fields (eg. <strong>time.Time</strong>)</li>
+</ul>
+<p><code>Get</code>和<code>Select</code>对scannable的类型使用<code>rows.scan</code>，对non-scannable的类型使用<code>rows.StructScan</code>。他们大体上与<code>QueryRow</code>和<code>Query</code>相同，Get用来获取单个结果然后Scan，Select用来获取一系列结果（a slice of results）:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">p := Place&#123;&#125;</div><div class="line">pp := []Place&#123;&#125;</div><div class="line"> </div><div class="line"><span class="comment">// this will pull the first place directly into p</span></div><div class="line">err = db.Get(&amp;p, <span class="string">"SELECT * FROM place LIMIT 1"</span>)</div><div class="line"> </div><div class="line"><span class="comment">// this will pull places with telcode &gt; 50 into the slice pp</span></div><div class="line">err = db.Select(&amp;pp, <span class="string">"SELECT * FROM place WHERE telcode &gt; ?"</span>, <span class="number">50</span>)</div><div class="line"> </div><div class="line"><span class="comment">// they work with regular types as well</span></div><div class="line"><span class="keyword">var</span> id <span class="keyword">int</span></div><div class="line">err = db.Get(&amp;id, <span class="string">"SELECT count(*) FROM place"</span>)</div><div class="line"> </div><div class="line"><span class="comment">// fetch at most 10 place names</span></div><div class="line"><span class="keyword">var</span> names []<span class="keyword">string</span></div><div class="line">err = db.Select(&amp;names, <span class="string">"SELECT name FROM place LIMIT 10"</span>)</div></pre></td></tr></table></figure>
+<p>Get和Select在执行完查询后就会关闭Rows，并且在执行阶段遇到任何问题都会返回错误。由于它们内部使用的StructScan，所以 下文中<a href="#5">advanced scanning section</a>讲的特征也适用与Get和Select。</p>
+<p>Select可以提高编码效率，但是要注意<code>Select</code>和<code>Queryx</code>是有很大不同的，因为Select会把整个结果一次放入内存。如果查询时没有控制结果的大小，那么最好使用<code>Query/StructScan</code>迭代方法。</p>
+<h3 id="Transactions"><a href="#Transactions" class="headerlink" title="Transactions"></a>Transactions</h3><p>为了使用transactions，必须使用<code>DB.Begin()</code>来创建，下面的代码是错误的：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// this will not work if connection pool &gt; 1</span></div><div class="line">db.MustExec(<span class="string">"BEGIN;"</span>)</div><div class="line">db.MustExec(...)</div><div class="line">db.MustExec(<span class="string">"COMMIT;"</span>)</div></pre></td></tr></table></figure>
+<p>Exec和其他查询语句会向DB请求一个connection，执行完后就返回到连接池中，并不能保证每次获取的connection就是BEGIN执行时使用的那个，所以正确的做法是使用<code>DB.Begin</code>:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tx, err := db.Begin()</div><div class="line">err = tx.Exec(...)</div><div class="line">err = tx.Commit()</div></pre></td></tr></table></figure>
+<p>DB还可以使用扩展<code>Beginx()</code>和<code>MustBegin()</code>，返回<code>sqlx.Tx</code>：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tx := db.MustBegin()</div><div class="line">tx.MustExec(...)</div><div class="line">err = tx.Commit()</div></pre></td></tr></table></figure>
+<p>sqlx.Tx拥有sqlx.DB拥有的所有的handle extensions。</p>
+<p>由于transaction是一个connection状态，Tx对象必须绑定和控制单个connection。一个Tx会在整个生命周期中保存一个connection，然后在调用<code>Commit()</code>或<code>Rollback()</code>的时候释放掉。你至少要调用其中一个方法，否则connection会一直被占用直到被垃圾回收。 </p>
+<p>由于在一个transaction中只能有一个connection，所以每次只能执行一条语句。在执行另外的query操作之前，cursor类型对象<code>Row</code>和<code>Rows</code>必须被Scanned或Closed。如果在数据库给你返回数据的时候你尝试向数据库发送数据，这个操作可能会中断connection。</p>
+<p>最后，Tx对象仅仅执行了一个BEGIN语句和绑定了一个connection，它其实并没有在server上执行任何操作。而transaction真实的行为，比如locking和<a href="http://en.wikipedia.org/wiki/Isolation_(database_systems" target="_blank" rel="external">isolation</a>)，在不同数据库上的实现是不同的。</p>
+<h3 id="Prepared-Statements"><a href="#Prepared-Statements" class="headerlink" title="Prepared Statements"></a>Prepared Statements</h3><p>对于大部分的数据库来说，当一个query执行的时候，在数据库内部statements其实已经准备好了。然而你还是可以通过<code>sqlx.DB.Prepare()</code>准备statements，便于后面在别的地方重用：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">stmt, err := db.Prepare(<span class="string">`SELECT * FROM place WHERE telcode=?`</span>)</div><div class="line">row = stmt.QueryRow(<span class="number">65</span>)</div><div class="line"> </div><div class="line">tx, err := db.Begin()</div><div class="line">txStmt, err := tx.Prepare(<span class="string">`SELECT * FROM place WHERE telcode=?`</span>)</div><div class="line">row = txStmt.QueryRow(<span class="number">852</span>)</div></pre></td></tr></table></figure>
+<p>Prepare会在数据库上执行preparation操作，所以它需要一个connection和它的connection state。 database/sql把这部分进行了抽象，自动在新的connection上创建statement，这样开发者就能通过<strong>stmt对象</strong>在多个connection上并发执行操作。<br><code>Preparex()</code>返回一个<code>sqlx.Stmt</code>对象，包含sqlx.DB和sqlx.Tx所有的handle 扩展（方法）。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">stmt, err := db.Preparex(<span class="string">`SELECT * FROM place WHERE telcode=?`</span>)</div><div class="line"><span class="keyword">var</span> p Place</div><div class="line">err = stmt.Get(&amp;p, <span class="number">852</span>)</div></pre></td></tr></table></figure>
+<p>sql.Tx对象有一个Stmt()方法，从已存在的transaction中返回一个特定于该transaction的statement。 sqlx.Tx同样含有一个<code>Stmtx()</code>方法，从已有的<code>sql.Stmt</code>或<code>sqlx.Stmt</code>中创建一个特定于transaction的<code>sqlx.Stmt</code>。</p>
+<h3 id="Query-Helpers"><a href="#Query-Helpers" class="headerlink" title="Query Helpers"></a>Query Helpers</h3><p>The database/sql package does not do anything with your actual query text. This makes it trivial to use backend-specific features in your code; you can write queries just as you would write them in your database prompt. While this is very flexible, it makes writing certain kinds of queries difficult.</p>
+<h4 id="“In”-Queries"><a href="#“In”-Queries" class="headerlink" title="“In” Queries"></a>“In” Queries</h4><p>由于database/sql并不会分析你的查询语句并且会直接把参数传递给driver，这样对于<code>IN</code>的查询操作就非常麻烦了。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">users</span> <span class="keyword">WHERE</span> <span class="keyword">level</span> <span class="keyword">IN</span> (?);</div></pre></td></tr></table></figure>
+<p>当这条语句在后台prepare为一个statement时，bindvar<code>?</code>对应一个参数，但是这样的查询语句往往对应的是多个参数，eg:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> levels = []<span class="keyword">int</span>&#123;<span class="number">4</span>, <span class="number">6</span>, <span class="number">7</span>&#125;</div><div class="line">rows, err := db.Query(<span class="string">"SELECT * FROM users WHERE level IN (?);"</span>, levels)</div></pre></td></tr></table></figure>
+<p>这样的情况在sqlx下可以这样做：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> levels = []<span class="keyword">int</span>&#123;<span class="number">4</span>, <span class="number">6</span>, <span class="number">7</span>&#125;</div><div class="line">query, args, err := sqlx.In(<span class="string">"SELECT * FROM users WHERE level IN (?);"</span>, levels)</div><div class="line"> </div><div class="line"><span class="comment">// sqlx.In returns queries with the `?` bindvar, we can rebind it for our backend</span></div><div class="line">query = db.Rebind(query)</div><div class="line">rows, err := db.Query(query, args...)</div></pre></td></tr></table></figure>
+<p><code>sqlx.In</code>根据传入的参数个数扩充对应的bindvars，然后把参数放到一个新的参数列表中,然后用返回的query语句和args执行query操作。<br>这个函数只针对<code>?</code>bindvar，可以使用<code>db.Rebind</code>来获取一个适合当前数据库的query. </p>
+<h3 id="s-1">Named Queries</h3>
+
+<p>Named query对于许多数据库包是非常常见的做法。允许开发者通过引用结构体字段名或map key的bindvar语法，绑定查询语句中的值。结构体域名的名字转换规则遵循StructScan，使用<code>NameMapper</code>和<code>db</code>结构体标签。除此之外还有两个相关的Named查询：</p>
+<ul>
+<li>NamedQuery(…) (*sqlx.Rows, error) - like Queryx, but with named bindvars</li>
+<li>NamedExec(…) (sql.Result, error) - like Exec, but with named bindvars</li>
+</ul>
+<p>还有一个额外的类型 :</p>
+<ul>
+<li>NamedStmt - an sqlx.Stmt which can be prepared with named bindvars</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// named query with a struct</span></div><div class="line">p := Place&#123;Country: <span class="string">"South Africa"</span>&#125;</div><div class="line">rows, err := db.NamedQuery(<span class="string">`SELECT * FROM place WHERE country=:country`</span>, p)</div><div class="line"> </div><div class="line"><span class="comment">// named query with a map</span></div><div class="line">m := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;<span class="string">"city"</span>: <span class="string">"Johannesburg"</span>&#125;</div><div class="line">result, err := db.NamedExec(<span class="string">`SELECT * FROM place WHERE city=:city`</span>, m)</div></pre></td></tr></table></figure>
+<p>Named query execution and preparation works off both structs and maps. If you desire the full set of query verbs, prepare a named statement and use that instead:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">p := Place&#123;TelephoneCode: <span class="number">50</span>&#125;</div><div class="line">pp := []Place&#123;&#125;</div><div class="line"> </div><div class="line"><span class="comment">// select all telcodes &gt; 50</span></div><div class="line">nstmt, err := db.PrepareNamed(<span class="string">`SELECT * FROM place WHERE telcode &gt; :telcode`</span>)</div><div class="line">err = nstmt.Select(&amp;pp, p)</div></pre></td></tr></table></figure>
+<p>Names query通过解析查询中的<code>:param</code>语法然后用当前数据库支持的bindvar替换，然后在执行数据库操作时按照结构体或map进行映射，所以适应于任何sqlx支持的数据库。<br>你还可以使用<code>sqlx.Names</code>（使用？bindvar）结合<code>sqlx.IN</code>执行：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">arg := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;</div><div class="line">    <span class="string">"published"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="string">"authors"</span>: []&#123;<span class="number">8</span>, <span class="number">19</span>, <span class="number">32</span>, <span class="number">44</span>&#125;,</div><div class="line">&#125;</div><div class="line">query, args, err := sqlx.Named(<span class="string">"SELECT * FROM articles WHERE published=:published AND author_id IN (:authors)"</span>, arg)</div><div class="line">query, args, err := sqlx.In(query, args...)</div><div class="line">query = db.Rebind(query)</div><div class="line">db.Query(query, args...)</div></pre></td></tr></table></figure>
+<p></p><h3 id="s-3">Advanced Scanning</h3><br>structScan很复杂，支持embedded struct，赋值时和Go语言为嵌入属性或方法使用的优先规则一样。常用在具有相同部分的多个表模型。<p></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> AutoIncr <span class="keyword">struct</span> &#123;</div><div class="line">    ID       <span class="keyword">uint64</span></div><div class="line">    Created  time.Time</div><div class="line">&#125;</div><div class="line"> </div><div class="line"><span class="keyword">type</span> Place <span class="keyword">struct</span> &#123;</div><div class="line">    Address <span class="keyword">string</span></div><div class="line">    AutoIncr</div><div class="line">&#125;</div><div class="line"> </div><div class="line"><span class="keyword">type</span> Person <span class="keyword">struct</span> &#123;</div><div class="line">    Name <span class="keyword">string</span></div><div class="line">    AutoIncr</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如上三个结构体中，Person和Place都能够通过StructScan获取<code>id</code>和<code>created</code>列，因为它们都内嵌了一个结构体<code>AutoIncr</code>，<code>AutoIncr</code>中定义了ID和Created对应列id和creatd。这种方法还支持递归，下面代码中Person的Name，以及AutoIncr的ID和Created都是可访问的，无论是Go的点操作符还是通过StructScan。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> Employee <span class="keyword">struct</span> &#123;</div><div class="line">    BossID <span class="keyword">uint64</span></div><div class="line">    EmployeeID <span class="keyword">uint64</span></div><div class="line">    Person</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>sqlx历史上曾经为non-embedded结构体支持过这个feature，但是发现用户使用它来定义外键（relationship）以及重复embed，这会引起困惑而不得不终止这个feature：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> Child <span class="keyword">struct</span> &#123;</div><div class="line">    Father Person</div><div class="line">    Mother Person</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在Go语言中，屏蔽子域是合法的，如果结构体Employee定义一个Name，那么就会屏蔽Person的Name，但是不确定的selectors是非法的，会引起一个runtime error。如果我们想创建一个Person和Place的组合结构体，因为它们内部都有AutoIncr，我们该将<code>id</code>字段的值放在哪里？会不会有错误？</p>
+<p>基于sqlx构建结构体域名到域地址映射的方法，当把列Scan到结构体时，它并不知道一个name在遍历结构体树的时候是否遇到了两次。所以不像Go语言，StructScan会选择第一个遇到的匹配name的结构体字段。由于Go结构体是从上往下排序，sqlx执行的是breadth-first traversal搜索算法，所以在下面的代码中：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> PersonPlace <span class="keyword">struct</span> &#123;</div><div class="line">    Person</div><div class="line">    Place</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>StrucScan会把id赋值给Person.AUtoIncr.ID。为了避免混淆，建议在SQL语句中使用AS来增加列别名。</p>
+<h3 id="Scan-Destination-Safety"><a href="#Scan-Destination-Safety" class="headerlink" title="Scan Destination Safety"></a>Scan Destination Safety</h3><p>By default, StructScan will return an error if a column does not map to a field in the destination. This mimics the treatment for things like unused variables in Go, but does not match the way that standard library marshallers like encoding/json behave. Because SQL is generally executed in a more controlled fashion than parsing JSON, and these errors are generally coding errors, a decision was made to return errors by default.</p>
+<p>Like unused variables, columns which you ignore are a waste of network and database resources, and detecting things like an incompatible mapping or a typo in a struct tag early can be difficult without the mapper letting you know something wasn’t found.</p>
+<p>Despite this, there are some cases where ignoring columns with no destination might be desired. For this, there is the Unsafe method on each Handle type which returns a new copy of that handle whith this safety turned off:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> p Person</div><div class="line"><span class="comment">// err here is not nil because there are no field destinations for columns in `place`</span></div><div class="line">err = db.Get(&amp;p, <span class="string">"SELECT * FROM person, place LIMIT 1;"</span>)</div><div class="line"> </div><div class="line"><span class="comment">// this will NOT return an error, even though place columns have no destination</span></div><div class="line">udb := db.Unsafe()</div><div class="line">err = udb.Get(&amp;p, <span class="string">"SELECT * FROM person, place LIMIT 1;"</span>)</div></pre></td></tr></table></figure>
+<h3 id="Controlling-Name-Mapping"><a href="#Controlling-Name-Mapping" class="headerlink" title="Controlling Name Mapping"></a>Controlling Name Mapping</h3><p>Struct fields used as targets for StructScans must be capitalized in order to be accessible by sqlx. Because of this, sqlx uses a NameMapper which applies strings.ToLower to field names to map them to columns in your rows result. This isn’t always desirable, depending on your schema, so sqlx allows the mapping to be customized a number of ways.</p>
+<p>The simplest of these ways is to set it for a db handle by using sqlx.DB.MapperFunc, which receives an argument of type func(string) string. If your library requires a particular mapper, and you don’t want to poison the sqlx.DB you receive, you can create a copy for use in the library to ensure a particular default mapping:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// if our db schema uses ALLCAPS columns, we can use normal fields</span></div><div class="line">db.MapperFunc(strings.ToUpper)</div><div class="line"> </div><div class="line"><span class="comment">// suppose a library uses lowercase columns, we can create a copy</span></div><div class="line"><span class="built_in">copy</span> := sqlx.NewDb(db.DB, db.DriverName())</div><div class="line"><span class="built_in">copy</span>.MapperFunc(strings.ToLower)</div></pre></td></tr></table></figure>
+<p>Each sqlx.DB uses the sqlx/reflectx package’s Mapper to achieve this mapping underneath, and exposes the active mapper as sqlx.DB.Mapper. You can further customize the mapping on a DB by setting it directly:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> <span class="string">"github.com/jmoiron/sqlx/reflectx"</span></div><div class="line"> </div><div class="line"><span class="comment">// Create a new mapper which will use the struct field tag "json" instead of "db"</span></div><div class="line">db.Mapper = reflectx.NewMapperFunc(<span class="string">"json"</span>, strings.ToLower)</div></pre></td></tr></table></figure>
+<h3 id="Alternate-Scan-Types"><a href="#Alternate-Scan-Types" class="headerlink" title="Alternate Scan Types"></a>Alternate Scan Types</h3><p>In addition to using Scan and StructScan, an sqlx Row or Rows can be used to automatically return a slice or a map of results:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">rows, err := db.Queryx(<span class="string">"SELECT * FROM place"</span>)</div><div class="line"><span class="keyword">for</span> rows.Next() &#123;</div><div class="line">    <span class="comment">// cols is an []interface&#123;&#125; of all of the column results</span></div><div class="line">    cols, err := rows.SliceScan()</div><div class="line">&#125;</div><div class="line"> </div><div class="line">rows, err := db.Queryx(<span class="string">"SELECT * FROM place"</span>)</div><div class="line"><span class="keyword">for</span> rows.Next() &#123;</div><div class="line">    results := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;)</div><div class="line">    err = rows.MapScan(results)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>SliceScan returns an []interface{} of all columns, which can be useful in situations where you are executing queries on behalf of a third party and have no way of knowing what columns may be returned. MapScan behaves the same way, but maps the column names to interface{} values. An important caveat here is that the results returned by rows.Columns() does not include fully qualified names, such that SELECT a.id, b.id FROM a NATURAL JOIN b will result in a Columns result of []string{“id”, “id”}, clobbering one of the results in your map.</p>
+<h3 id="Custom-Types"><a href="#Custom-Types" class="headerlink" title="Custom Types"></a>Custom Types</h3><p>The examples above all used the built-in types to both scan and query with, but database/sql provides interfaces to allow you to use any custom types:</p>
+<ul>
+<li>sql.Scanner allows you to use custom types in a Scan()</li>
+<li>driver.Valuer allows you to use custom types in a Query/QueryRow/Exec</li>
+</ul>
+<p>These are the standard interfaces, and using them will ensure portability to any library that might be providing services on top of database/sql. For a detailed look at how to use them, read this blog post or check out the sqlx/types package, which implements a few standard useful types.</p>
+<p></p><h3 id="s-2">连接池</h3><br>Statement preparation 和执行查询需要连接，DB对象管理了一个连接池让我们可以安全地执行并行查询。在Go 1.2版本中有两个方法来控制连接池的大小： <p></p>
+<ul>
+<li>DB.SetMaxIdleConns(n int)</li>
+<li>DB.SetMaxOpenConns(n int)</li>
+</ul>
+<p>默认情况下，连接池可以无限增长，当连接池中没有空闲连接时新的连接就会被创建。你可以用DB.SetMaxOpenConns来设置连接池的最大值。不在使用的连接会被标记为空闲，如果不再需要连接将会被关闭。为了防止创建和关闭大量连接，你可以通过DB.SetMaxIdleConns来设置连接的最大空闲数量（要考虑到数据库的负载情况）。</p>
+<blockquote>
+<p>注：MaxOpenConns设置的是能创建的连接数的最大值，MaxIdleConns则是可以被复用的连接的最大值。MaxOpenConns多余MaxIdleConns的连接在使用完之后就会被close掉。上面一段原文就写得比较绕，这里补充一下辅助理解。</p>
+</blockquote>
+<p>很容易碰到因为不释放连接而出现的麻烦。为了防止这种情况，我们需要：</p>
+<ul>
+<li>Ensure you Scan() every Row object</li>
+<li>Ensure you either Close() or fully-iterate via Next() every Rows object</li>
+<li>Ensure every transaction returns its connection via Commit() or Rollback()</li>
+</ul>
+<p>如果你没做到上面说的任一点，连接会被持有直到发生gc。db会立即创建大量连接来补偿刚刚丢掉的这一个。需要注意的是Rows.Close()可以被重复调用，所以即使在可能不需要的情况下调用也是可以的，不要害怕。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/10/路由查找之Radix-Tree/" rel="next" title="路由查找之Radix Tree">
+                <i class="fa fa-chevron-left"></i> 路由查找之Radix Tree
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/lufei.jpeg"
+               alt="You Wangqiu" />
+          <p class="site-author-name" itemprop="name">You Wangqiu</p>
+           
+              <p class="site-description motion-element" itemprop="description">世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">166</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/michaelyou" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhi-yu-65-2" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      知乎
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="michaelseu2011@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#资源"><span class="nav-number">1.</span> <span class="nav-text">资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始"><span class="nav-number">2.</span> <span class="nav-text">开始</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Handle-Types"><span class="nav-number">3.</span> <span class="nav-text">Handle Types</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接到数据库"><span class="nav-number">4.</span> <span class="nav-text">连接到数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Querying-101"><span class="nav-number">5.</span> <span class="nav-text">Querying 101</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Exec"><span class="nav-number">5.1.</span> <span class="nav-text">Exec</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bindvars"><span class="nav-number">5.2.</span> <span class="nav-text">bindvars</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#QueryRow"><span class="nav-number">6.</span> <span class="nav-text">QueryRow</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Get-and-Select"><span class="nav-number">7.</span> <span class="nav-text">Get and Select</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transactions"><span class="nav-number">8.</span> <span class="nav-text">Transactions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Prepared-Statements"><span class="nav-number">9.</span> <span class="nav-text">Prepared Statements</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Query-Helpers"><span class="nav-number">10.</span> <span class="nav-text">Query Helpers</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#“In”-Queries"><span class="nav-number">10.1.</span> <span class="nav-text">“In” Queries</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#s-1"><span class="nav-number">11.</span> <span class="nav-text">Named Queries</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#s-3"><span class="nav-number">12.</span> <span class="nav-text">Advanced Scanning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scan-Destination-Safety"><span class="nav-number">13.</span> <span class="nav-text">Scan Destination Safety</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Controlling-Name-Mapping"><span class="nav-number">14.</span> <span class="nav-text">Controlling Name Mapping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Alternate-Scan-Types"><span class="nav-number">15.</span> <span class="nav-text">Alternate Scan Types</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Custom-Types"><span class="nav-number">16.</span> <span class="nav-text">Custom Types</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#s-2"><span class="nav-number">17.</span> <span class="nav-text">连接池</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">You Wangqiu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

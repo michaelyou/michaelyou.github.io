@@ -286,6 +286,180 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/06/09/no-module-named-xxx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/06/09/no-module-named-xxx/" itemprop="url">no module named xxx</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-06-09T09:17:52+08:00">
+                2015-06-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>python的常见错误，意思非常明确，这个模块找不到了。导致的原因也很确定：</p>
+<ol>
+<li>确实没有安装这个模块</li>
+<li>路径不对</li>
+</ol>
+<p>第一个把模块安装上就完事了，第二个往往是导致这个错误最常见的原因。</p>
+<p>如果你能确定你已经安装了这个模块，那肯定是import的路径有问题。import导入时，搜索的路径是有顺序的，查看当前python导入模块的搜索路径，可以在交互命令行中执行下面的命令：</p>
+<pre><code>In [1]: import sys
+
+In [2]: sys.path
+Out[2]:
+[&apos;&apos;,
+ &apos;/System/Library/Frameworks/Python.framework/Versions/2.7/bin&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python27.zip&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-darwin&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-mac&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-mac/lib-scriptpackages&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-old&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-dynload&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/PIL&apos;,
+ &apos;/Library/Python/2.7/site-packages&apos;,
+ &apos;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/IPython/extensions&apos;,
+ &apos;/Users/youwangqiu/.ipython&apos;]
+</code></pre><p>可以看到，我使用的python是现在当前路径(<code>&#39; &#39;</code>)下搜索，然后去系统的各个路径下搜索。而这个机制将<strong>导致一个很大的问题</strong>。</p>
+<p>##不要乱给你的<code>.py</code>文件命名<br>你写了一个比较大的应用，多个<code>.py</code>文件，相互之间有<code>import</code>。给这些.py文件取名是件麻烦事，一般都是根据文件的功能来取名的嘛。所以你就将一个进行http请求的文件命名成了<code>requests.py</code>（同时，你的应用需要系统的<code>requests</code>模块）。调试整个应用的时候，你发现，这个<code>requests</code>模块怎么和教程上的不一样啊，怎么该有的函数都没有啊，要你有什么卵用！</p>
+<p><code>requests</code>模块说：怪我喽…</p>
+<p>大哥，你导入的不是系统的<code>requests</code>模块啊，你导入的是你的<code>requests.py</code>啊，当然什么都没有了。</p>
+<p>这里虽然没有报<code>no module named</code>的错误，但是这个错误更难调试，和<code>no module named xxx</code>师出同源，如果你导入的requests模块下的一个函数或类的话，<code>no module named xxx</code>就出现了。</p>
+<p>所以说给文件命名之前先考虑清楚，不要潇洒地随便写，不然你就是自己挖坑自己跳。</p>
+<p>如果你发现自己确实犯了这个错误，并且改了文件名，请千万记住，还要<strong>把当前目录下相应的<code>.pyc</code>删除掉</strong>，不然还是没用，至于为什么，请自行参考任何一本python教程。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/06/05/django-高效更新数据库/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2092,289 +2266,6 @@ InvalidUserToken: Token authorization failed
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/19/翻译-7个经典python面试题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/19/翻译-7个经典python面试题/" itemprop="url">[翻译]7个经典python面试题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-19T17:30:02+08:00">
-                2015-05-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文在<a href="http://www.toptal.com/python/interview-questions" target="_blank" rel="external">这里toptal</a></p>
-<p>##下面的代码输出什么？</p>
-<pre><code>list = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;]
-print list[10:]
-</code></pre><p>上面的代码输出<code>[]</code>，并且不会导致<code>IndexError</code>错误</p>
-<p>跟你想的一样，当取列表元素的时候，如果索引值超过了元素的个数(例如在上面的列表中，取list[10])将会导致<code>IndexError</code>错误。但是，取一个列表的切片的时候，如果起始索引超过了元素个数，将不会引起<code>IndexError</code>错误，仅返回一个空列表。</p>
-<p>这一特性将会导致一些非常难于追踪的bug，因为在运行时根本没有错误产生。</p>
-<p>##下面的代码在Python2中的输出是什么？解释你的答案</p>
-<pre><code>def div1(x,y):
-    print &quot;%s/%s = %s&quot; % (x, y, x/y)
-
-def div2(x,y):
-    print &quot;%s//%s = %s&quot; % (x, y, x//y)
-
-div1(5,2)
-div1(5.,2)
-div2(5,2)
-div2(5.,2.)
-</code></pre><p>另外，在Python3中上面的代码的输出有何不同(假设代码中的print语句都转化成了Python3中的语法结构)？</p>
-<p>在<strong>Python2</strong>中，代码的输出是：</p>
-<pre><code>5/2 = 2
-5.0/2 = 2.5
-5//2 = 2
-5.0//2.0 = 2.0
-</code></pre><p>默认情况下，如果两个操作数都是整数，Python2默认执行整数运算。所以，<code>5/2</code> 结果是<code>2</code>，而<code>5./2</code>结果是<code>2.5</code></p>
-<p>注意你可以通过下面的import语句来覆盖Python2中的这一行为</p>
-<pre><code>from __future__ import division 
-</code></pre><p>还要注意“双斜杠”(<code>//</code>)操作符将会一直执行整除，忽略操作数的类型。这就是为什么5.0//2.0即使在Python2中结果也是2.0</p>
-<p>但是在Python3并没有这一行为。两个操作数都是整数时，也不执行整数运算。在Python3中，输出如下：</p>
-<pre><code>5/2 = 2.5
-5.0/2 = 2.5
-5//2 = 2
-5.0//2.0 = 2.0
-</code></pre><p>##下面代码的输出是什么？请解释你的答案</p>
-<pre><code>def extendList(val, list=[]):
-    list.append(val)
-    return list
-
-list1 = extendList(10)
-list2 = extendList(123,[])
-list3 = extendList(&apos;a&apos;)
-
-print &quot;list1 = %s&quot; % list1
-print &quot;list2 = %s&quot; % list2
-print &quot;list3 = %s&quot; % list3
-</code></pre><p>如何修改函数<code>ExtendList</code>的定义才能产生我们希望的行为？</p>
-<p>输出为：</p>
-<pre><code>list1 = [10, &apos;a&apos;]
-list2 = [123]
-list3 = [10, &apos;a&apos;]
-</code></pre><p>很多人会错误地预计<code>list1</code>等于<code>［10］</code>，<code>list3</code>等于<code>[&#39;a&#39;]</code>，认为<code>extendList</code>函数的<code>list</code>参数在每一次函数被调用时都会被设置为默认值<code>[]</code></p>
-<p>但是，真实的情况是，默认的<code>list</code>只在函数定义的时候被创建一次。之后不指定<code>list</code>参数地调用<code>extendList</code>函数时，使用的都是同一个<code>list</code>。这是因为带默认参数的表达式是在函数定义的时候被计算的，而不是在函数调用时。</p>
-<p>所以，<code>list1</code>和<code>list3</code>都是在操作同一个默认<code>list</code>，而<code>list2</code>是在操作它自己创建的一个独立的<code>list</code>(将自己的空<code>list</code>作为参数传递过去)</p>
-<p><code>extendlist</code>的定义可以这样定义来达到我们预期的效果：</p>
-<pre><code>def extendList(val, list=None):
-    if list is None:
-        list = []
-    list.append(val)
-    return list
-</code></pre><p>调用修改后的函数，输出是：</p>
-<pre><code>list1 = [10]
-list2 = [123]
-list3 = [&apos;a&apos;]
-</code></pre><p>##下面代码的输出是什么？请解释你的答案</p>
-<pre><code>class Parent(object):
-    x = 1
-
-class Child1(Parent):
-    pass
-
-class Child2(Parent):
-    pass
-
-print Parent.x, Child1.x, Child2.x
-Child1.x = 2
-print Parent.x, Child1.x, Child2.x
-Parent.x = 3
-print Parent.x, Child1.x, Child2.x
-</code></pre><p>输出为：</p>
-<pre><code>1 1 1
-1 2 1
-3 2 3
-</code></pre><p>让很多人感到疑惑和惊讶的是，最后一行的输出竟然不是<code>3 2 1</code>而是<code>3 2 3</code>. 为什么修改了Parent.X的值会影响到<code>Child2.x</code>，但是同时又没有改变<code>Child1.x</code>的值呢？        </p>
-<p>这个问题的关键在于，在python中，类中的变量在内部被当作字典处理。如果一个变量名在当前类的字典中没有被发现，系统将会在这个类的祖先(例如，它的父类)中继续寻找，直到找到为止(如果一个变量名在这个类和这个类的祖先中都没有，那么将会引发一个<code>AttributeError</code>错误)</p>
-<p>因此，在父类中将变量x赋值为1，那么x变量将可以被当前类和所有这个类的子类引用。这就是为什么第一个print语句输出为<code>1 1 1</code>.</p>
-<p>接下来，如果它的子类覆盖了这个值(例如， 当我们执行<code>Child1.x = 2</code>)，那么这个变量的值仅仅在这个子类中发生了改变。这就是为什么第二个print语句输出<code>1 2 1</code></p>
-<p>最后，如果父类改变了这个变量的值(例如，我们执行<code>Parent.x = 3</code>)，所有没有覆盖这个参数值的子类(在这个例子中覆盖了参数的就是<code>Child2</code>)都会受到影响，这就是为什么第三个print语句的输出为<code>3 2 3</code></p>
-<p>##下面代码的输出是什么？请解释你的答案</p>
-<pre><code>def multipliers():
-    return [lambda x : i * x for i in range(4)]
-
-print [m(2) for m in multipliers()]
-</code></pre><p>怎么修改multipliers的定义才能达到期望的效果？</p>
-<p>上面代码的输出是<code>[6, 6, 6, 6]</code>(不是<code>[0, 2, 4, 6]</code>).</p>
-<p>原因是Python的闭包是延迟绑定(<code>late binding</code>)的。这表明在闭包中使用的变量直到内层函数被调用的时候才会被查找。结果是，当调用<code>multipliers()</code>返回的函数时，<code>i</code>参数的值会在这时被在调用环境中查找。所以，无论调用返回的哪个函数，<code>for</code>循环此时已经结束，<code>i</code>等于它最终的值<code>3</code>。因此，所有返回的函数都要乘以传递过来的<code>3</code>，因为上面的代码传递了<code>2</code>作为参数，所以他们都返回了<code>6</code>（即，<code>3 * 2</code>）</p>
-<p>(顺便提一句，正如在书<a href="http://docs.python-guide.org/en/latest/" target="_blank" rel="external">《The Hitchhiker’s Guide to Python》</a>中提出来的一样, 有一种广泛传播的误解认为这个问题和lambda表达式有关，事实并非如此。通过labda表达式产生的函数并没有什么特别之处，使用普通的<code>def</code>定义的函数的行为和lambda表达式产生的函数的行为是一样的.)</p>
-<p>下面是一些可以绕过这个问题的方法。</p>
-<p>方法一是像下面一样使用Python的生成器(generator)</p>
-<pre><code>def multipliers():
-     for i in range(4): yield lambda x : i * x 
-</code></pre><p>另一个方法是创造一个闭包，通过使用一个默认参数来立即绑定它的参数</p>
-<pre><code>def multipliers():
-    return [lambda x, i=i : i * x for i in range(4)]
-</code></pre><p>或者，你也可以使用functools.partial函数：</p>
-<pre><code>from functools import partial
-from operator import mul
-
-def multipliers():
-    return [partial(mul, i) for i in range(4)]
-</code></pre><p>##考虑下面的代码片段:</p>
-<pre><code>1. list = [ [ ] ] * 5
-2. list  # output?
-3. list[0].append(10)
-4. list  # output?
-5. list[1].append(20)
-6. list  # output?
-7. list.append(30)
-8. list  # output?
-</code></pre><p>第2，4，6，8行的输出是什么？解释你的答案.</p>
-<p>输出如下:</p>
-<pre><code>[[], [], [], [], []]
-[[10], [10], [10], [10], [10]]
-[[10, 20], [10, 20], [10, 20], [10, 20], [10, 20]]
-[[10, 20], [10, 20], [10, 20], [10, 20], [10, 20], 30]
-</code></pre><p>下面是解释:</p>
-<p>第一行的输出凭直觉就能知道，很容易理解。即：<code>list = [ [ ] ] * 5</code>创建了一个元素是5个列表的列表。</p>
-<p>但是，这里要理解的关键是，<code>list = [ [ ] ] * 5</code>并没有创建一个包含5个不同列表的列表。创建的这个列表里的5个列表，是对同一个列表的引用（a a list of 5 references to the same list）。理解了这些，你就能更好地理解余下的输出。</p>
-<p><code>list[0].append(10)</code>将数字10添加到第一个列表。但是由于5个列表是对同一个列表的引用，所以输出是<code>[[10], [10], [10], [10], [10]]</code>。</p>
-<p>同样的，<code>list[1].append(20)</code>将20追加到第二个列表。但是同样，由于这5个列表引用同一个列表，所以输出：<code>[[10, 20], [10, 20], [10, 20], [10, 20], [10, 20]]</code>.</p>
-<p>相比之下， <code>list.append(30)</code>是将一个全新的元素追加到“外层”的列表，所以产生了这样的输出：<code>[[10, 20], [10, 20], [10, 20], [10, 20], [10, 20], 30]</code>.</p>
-<p>##有一个拥有N个元素的列表，用一个列表解析式生成一个新的列表，元素的值同时满足以下条件:</p>
-<pre><code>(a) 偶数，以及
-(b) 在原列表中，索引为偶数
-</code></pre><p>例如，如果list[2]的值是偶数，那么这个元素应该也被包含在新列表中，因为它在原列表中的索引也是偶数(即 2). 但是， 如果list[3]是偶数，那这个值不应该被包含在新列表中，因为它在原列表中的索引是一个奇数。</p>
-<p>一个简单的解法如下：</p>
-<pre><code>[x for x in list[::2] if x%2 == 0]
-</code></pre><p>例如，给出下面的列表:</p>
-<pre><code>#        0   1   2   3    4    5    6    7    8
-list = [ 1 , 3 , 5 , 8 , 10 , 13 , 18 , 36 , 78 ]
-</code></pre><p>列表解析式<code>[x for x in list[::2] if x%2 == 0]</code> 会生成:</p>
-<pre><code>[10, 18, 78]
-</code></pre><p>这个表达式首先取列表中索引是偶数的数字，然后过滤掉所有的奇数.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2425,7 +2316,7 @@ list = [ 1 , 3 , 5 , 8 , 10 , 13 , 18 , 36 , 78 ]
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">165</span>
+                <span class="site-state-item-count">166</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
