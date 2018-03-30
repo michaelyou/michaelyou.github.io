@@ -286,6 +286,162 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/18/sizeof/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/18/sizeof/" itemprop="url">sizeof-面试题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-18T22:16:44+08:00">
+                2015-01-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="下面是一道笔试题："><a href="#下面是一道笔试题：" class="headerlink" title="下面是一道笔试题："></a>下面是一道笔试题：</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></div><div class="line">    <span class="keyword">short</span> a1;</div><div class="line">    <span class="keyword">short</span> a2;</div><div class="line">    <span class="keyword">short</span> a3;</div><div class="line">&#125;A;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></div><div class="line">    <span class="keyword">long</span> a1;</div><div class="line">    <span class="keyword">short</span> a2;</div><div class="line">&#125;B;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line">    <span class="keyword">char</span> *ss1 = <span class="string">"0123456789"</span>;</div><div class="line">    <span class="keyword">char</span> ss2[] = <span class="string">"0123456789"</span>;</div><div class="line">    <span class="keyword">char</span> ss3[<span class="number">100</span>] = <span class="string">"0123456789"</span>;</div><div class="line">    <span class="keyword">int</span> ss4[<span class="number">100</span>];</div><div class="line">    <span class="keyword">char</span> q1[] = <span class="string">"abc"</span>;</div><div class="line">    <span class="keyword">char</span> q2[] = <span class="string">"a\n"</span>;</div><div class="line">    <span class="keyword">char</span> *q3 = <span class="string">"a\n"</span>;</div><div class="line">    <span class="keyword">char</span> *str1 = (<span class="keyword">char</span> *)<span class="built_in">malloc</span>(<span class="number">100</span>);</div><div class="line">    <span class="keyword">void</span> *str2 = (<span class="keyword">void</span> *)<span class="built_in">malloc</span>(<span class="number">100</span>);</div><div class="line"></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%d "</span>, <span class="keyword">sizeof</span>(ss1)); <span class="comment">//ss1是指针</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%d "</span>, <span class="keyword">sizeof</span>(ss2)); <span class="comment">//ss2是数组，计算到"\0"的位置，因此是(10+1)</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%d "</span>, <span class="keyword">sizeof</span>(ss3)); <span class="comment">//在内存中预分配的空间大小，100*1</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%d "</span>, <span class="keyword">sizeof</span>(ss4));</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%d "</span>, <span class="keyword">sizeof</span>(q1));</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%d "</span>, <span class="keyword">sizeof</span>(q2));</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%d "</span>, <span class="keyword">sizeof</span>(q3));</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%d "</span>, <span class="keyword">sizeof</span>(A));</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%d "</span>, <span class="keyword">sizeof</span>(B));</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%d "</span>, <span class="keyword">sizeof</span>(str1));</div><div class="line"><span class="built_in">printf</span>(<span class="string">"%d "</span>, <span class="keyword">sizeof</span>(str2));</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在64位linux系统上此程序的输出为：</p>
+<pre><code>8 11 100 400 4 3 8 6 16 8 8
+</code></pre><p>在32位机上的输出为：</p>
+<pre><code>4 11 100 400 4 3 4 6 8 4 4 
+</code></pre><p>解释：32位机器上long和int都是4字节，64位机器上，long是8字节，int是4字节</p>
+<h3 id="sizeof和strlen之间的区别"><a href="#sizeof和strlen之间的区别" class="headerlink" title="sizeof和strlen之间的区别"></a>sizeof和strlen之间的区别</h3><p>接上面的例子分析：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">strlen</span>(ss3)</div><div class="line"><span class="comment">//结果为10，strlen内部实现是用一个循环计算字符串的长度，直到"\0"为止</span></div><div class="line"><span class="built_in">strlen</span>(ss4)</div><div class="line"><span class="comment">//错误，strlen的参数只能是char *,且必须是以"\0"结尾的</span></div></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>sizeof操作符的结果类型时size_t，它在头文件中的typedef为unsigned int类型。该类型保证能容纳实现所建立的最大对象的字节大小</li>
+</ul>
+<h3 id="再来一题"><a href="#再来一题" class="headerlink" title="再来一题"></a>再来一题</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetSize</span><span class="params">(<span class="keyword">int</span> data[])</span> </span></div><div class="line"><span class="function"></span>&#123;   </div><div class="line">    <span class="keyword">return</span> <span class="keyword">sizeof</span>(data); </div><div class="line">&#125;</div><div class="line">        </div><div class="line"><span class="keyword">int</span> _tmain(<span class="keyword">int</span> argc, _TCHAR* argv[])    </div><div class="line">&#123;   </div><div class="line">    <span class="keyword">int</span> data1[] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;   </div><div class="line">    <span class="keyword">int</span> size1 = <span class="keyword">sizeof</span>(data1);        </div><div class="line"></div><div class="line">    <span class="keyword">int</span>* data2 = data1;  </div><div class="line">    <span class="keyword">int</span> size2 = <span class="keyword">sizeof</span>(data2);           </div><div class="line">    <span class="keyword">int</span> size3 = GetSize(data1);          </div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%d, %d, %d"</span>, size1, size2, size3);   </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>输出:“20, 4, 4”。data1是一个数组，sizeof(data1)是求数组的大小。这个数组包含5个整数，每个整数占4字节，因此总共是20字节。data2声明为指针，尽管它指向了数组data1的第一个数字，但它的本质仍然是一个指针。在32位系统上，对任意指针求sizeof，得到的结果都是4。<strong><em>在C/C++中，当数组作为函数的参数进行传递时，数组就自动退化为同类型的指针。因此尽管函数GetSize的参数data被声明为数组，但它会退化为指针，size3的结果仍然是4</em></strong>。—《剑指offer》P37</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/15/Missing-scheme-in-request-url/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1120,7 +1276,7 @@ print response.read()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">165</span>
+                <span class="site-state-item-count">166</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

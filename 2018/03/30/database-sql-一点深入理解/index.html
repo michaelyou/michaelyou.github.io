@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="go," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/img/lufei.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="我们主要来分析一下查询的实现，涉及的是database/sql和go-sql-driver/mysql的部分源码。database/sql是go对于db抽象出的一个标准库，go-sql-driver/mysql是实现了database/sql驱动接口的mysql驱动。  什么是数据库驱动？ 简单来讲，数据库驱动实现了mysql协议，比如连接数据库，驱动会给数据库服务器发送握手初始化报文和登陆认证报">
+<meta name="keywords" content="go">
+<meta property="og:type" content="article">
+<meta property="og:title" content="database&#x2F;sql 一点深入理解">
+<meta property="og:url" content="http://yoursite.com/2018/03/30/database-sql-一点深入理解/index.html">
+<meta property="og:site_name" content="Youmai の Blog">
+<meta property="og:description" content="我们主要来分析一下查询的实现，涉及的是database/sql和go-sql-driver/mysql的部分源码。database/sql是go对于db抽象出的一个标准库，go-sql-driver/mysql是实现了database/sql驱动接口的mysql驱动。  什么是数据库驱动？ 简单来讲，数据库驱动实现了mysql协议，比如连接数据库，驱动会给数据库服务器发送握手初始化报文和登陆认证报">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-30T14:05:37.728Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="database&#x2F;sql 一点深入理解">
+<meta name="twitter:description" content="我们主要来分析一下查询的实现，涉及的是database/sql和go-sql-driver/mysql的部分源码。database/sql是go对于db抽象出的一个标准库，go-sql-driver/mysql是实现了database/sql驱动接口的mysql驱动。  什么是数据库驱动？ 简单来讲，数据库驱动实现了mysql协议，比如连接数据库，驱动会给数据库服务器发送握手初始化报文和登陆认证报">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/30/database-sql-一点深入理解/"/>
+
+
+
+
+
+  <title>database/sql 一点深入理解 | Youmai の Blog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-63551049-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youmai の Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/30/database-sql-一点深入理解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">database/sql 一点深入理解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-30T22:04:27+08:00">
+                2018-03-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/go/" itemprop="url" rel="index">
+                    <span itemprop="name">go</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>我们主要来分析一下查询的实现，涉及的是<code>database/sql</code>和<code>go-sql-driver/mysql</code>的部分源码。<code>database/sql</code>是go对于db抽象出的一个标准库，<code>go-sql-driver/mysql</code>是实现了<code>database/sql</code>驱动接口的mysql驱动。</p>
+<blockquote>
+<p>什么是数据库驱动？</p>
+<p>简单来讲，数据库驱动实现了mysql协议，比如连接数据库，驱动会给数据库服务器发送<code>握手初始化报文</code>和<code>登陆认证报文</code>，拼出报文头，将username，password放在报文的固定位置，将[]byte数据写入到socket，这就是驱动的主要功能，他给我们（这里指database/sql）完成了底层的操作</p>
+</blockquote>
+<p>查询的接口主要有两个：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line"><span class="comment">执行一个查询并返回多个数据行， 这个查询通常是一个 SELECT 。 方法的 arg 部分用于填写查询语句中包含的占位符的实际参数。</span></div><div class="line"><span class="comment">*/</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(db *DB)</span> <span class="title">Query</span><span class="params">(query <span class="keyword">string</span>, args ...<span class="keyword">interface</span>&#123;&#125;)</span> <span class="params">(*Rows, error)</span></span></div><div class="line"><span class="function"></span></div><div class="line"><span class="function">/*</span></div><div class="line"><span class="function">执行一个预期最多只会返回一个数据行的查询。</span></div><div class="line"><span class="function">这个方法总是会返回一个非空的值， 而它引起的错误则会被推延到数据行的 <span class="title">Scan</span> 方法被调用为止。</span></div><div class="line"><span class="function">*/</span></div><div class="line"><span class="function"><span class="title">func</span> <span class="params">(db *DB)</span> <span class="title">QueryRow</span><span class="params">(query <span class="keyword">string</span>, args ...<span class="keyword">interface</span>&#123;&#125;)</span> *<span class="title">Row</span></span></div></pre></td></tr></table></figure>
+<p>再来看看返回值的结构：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> Rows <span class="keyword">struct</span> &#123;</div><div class="line">    dc          *driverConn <span class="comment">// owned; must call releaseConn when closed to release</span></div><div class="line">    releaseConn <span class="function"><span class="keyword">func</span><span class="params">(error)</span></span></div><div class="line"><span class="function">    <span class="title">rowsi</span>       <span class="title">driver</span>.<span class="title">Rows</span></span></div><div class="line"><span class="function">    <span class="title">cancel</span>      <span class="title">func</span><span class="params">()</span>      // <span class="title">called</span> <span class="title">when</span> <span class="title">Rows</span> <span class="title">is</span> <span class="title">closed</span>, <span class="title">may</span> <span class="title">be</span> <span class="title">nil</span>.</span></div><div class="line"><span class="function">    <span class="title">closeStmt</span>   *<span class="title">driverStmt</span> // <span class="title">if</span> <span class="title">non</span>-<span class="title">nil</span>, <span class="title">statement</span> <span class="title">to</span> <span class="title">Close</span> <span class="title">on</span> <span class="title">close</span></span></div><div class="line"><span class="function">    <span class="title">closemu</span> <span class="title">sync</span>.<span class="title">RWMutex</span></span></div><div class="line"><span class="function">    <span class="title">closed</span>  <span class="title">bool</span></span></div><div class="line"><span class="function">    <span class="title">lasterr</span> <span class="title">error</span> // <span class="title">non</span>-<span class="title">nil</span> <span class="title">only</span> <span class="title">if</span> <span class="title">closed</span> <span class="title">is</span> <span class="title">true</span></span></div><div class="line"><span class="function"></span></div><div class="line"><span class="function">    // <span class="title">lastcols</span> <span class="title">is</span> <span class="title">only</span> <span class="title">used</span> <span class="title">in</span> <span class="title">Scan</span>, <span class="title">Next</span>, <span class="title">and</span> <span class="title">NextResultSet</span> <span class="title">which</span> <span class="title">are</span> <span class="title">expected</span></span></div><div class="line"><span class="function">    // <span class="title">not</span> <span class="title">to</span> <span class="title">be</span> <span class="title">called</span> <span class="title">concurrently</span>.</span></div><div class="line"><span class="function">    <span class="title">lastcols</span> []<span class="title">driver</span>.<span class="title">Value</span></span></div><div class="line"><span class="function">&#125;</span></div><div class="line"><span class="function"></span></div><div class="line"><span class="function">// <span class="title">Row</span> <span class="title">is</span> <span class="title">the</span> <span class="title">result</span> <span class="title">of</span> <span class="title">calling</span> <span class="title">QueryRow</span> <span class="title">to</span> <span class="title">select</span> <span class="title">a</span> <span class="title">single</span> <span class="title">row</span>.</span></div><div class="line"><span class="function"><span class="title">type</span> <span class="title">Row</span> <span class="title">struct</span></span> &#123;</div><div class="line">    <span class="comment">// One of these two will be non-nil:</span></div><div class="line">    err  error <span class="comment">// deferred error for easy chaining</span></div><div class="line">    rows *Rows</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以明显地看到Row将Rows包了一层，加了一个err字段，上面注释中说的<strong>而它引起的错误则会被推延到数据行的 Scan 方法被调用为止</strong>也就可以理解了，错误在error上而没有直接返回。</p>
+<p>个人认为看源码最好带着问题看，有目的往往更能坚持。我们先来看一段最基本的调用代码，看看能不能找出几个我们感兴趣的问题：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">rows, err := db.Query(<span class="string">"SELECT * FROM User WHERE id=?"</span>, id_param)</div><div class="line">...</div><div class="line"><span class="keyword">defer</span> rows.Close()</div><div class="line"><span class="keyword">for</span> rows.Next() &#123;</div><div class="line">    <span class="keyword">var</span> id <span class="keyword">int</span></div><div class="line">    <span class="keyword">var</span> name <span class="keyword">string</span></div><div class="line">    err = rows.Scan(&amp;id, &amp;name)</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我的问题来了:</p>
+<ol>
+<li><p>这里query用的sql格式<strong>看上去是</strong><code>prepared statement</code>，我们知道<code>prepared statement</code>是可以防注入的。我们也知道不能够直接拼接字符串，直接拼接定会引入注入问题。那么问题来了，<code>prepared statement</code>会增加与服务器的交互，影响性能，是否能不使用<code>prepared statement</code>，如果不使用，像上面这样的query能否防注入呢？另外上面我们也只是说了<code>看上去是</code>，底层是否真的在使用<code>prepared statement</code>？</p>
+<blockquote>
+<p>要想使用<code>prepared statement</code>在数据库提前编译，复用的特性需要在客户端做很多事，比如JDBC就实现了一整套方案。目前看来database/sql没有这样的实现，所以这里可以忽略编译的优势。</p>
+</blockquote>
+</li>
+<li><p>这个for的写法真是奇怪，简直看不懂到底在遍历什么，每次都是<code>rows.Scan</code>, <code>rows</code>里面到底存了些什么可以这么玩</p>
+</li>
+</ol>
+<p>下面我们从这些问题出发来研究一下实现，我们会忽略掉与问题无关的部分（比如连接池），只关注我们需要的链路。</p>
+<h3 id="Prepared-Statement-amp-防注入"><a href="#Prepared-Statement-amp-防注入" class="headerlink" title="Prepared Statement &amp; 防注入"></a>Prepared Statement &amp; 防注入</h3><p>Query之后还有几个函数调用才能到下面的函数，包括了取连接和错误处理的逻辑，这些对我们的问题没有影响，暂且忽略它们。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(db *DB)</span> <span class="title">queryDC</span><span class="params">(ctx, txctx context.Context, dc *driverConn, releaseConn <span class="keyword">func</span>(error)</span>, <span class="title">query</span> <span class="title">string</span>, <span class="title">args</span> []<span class="title">interface</span></span>&#123;&#125;) (*Rows, error) &#123;</div><div class="line">    <span class="comment">// 我们的driver实现了这个接口，这里可以走进去</span></div><div class="line">    <span class="keyword">if</span> queryer, ok := dc.ci.(driver.Queryer); ok &#123;</div><div class="line">        dargs, err := driverArgs(dc.ci, <span class="literal">nil</span>, args)</div><div class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">            releaseConn(err)</div><div class="line">            <span class="keyword">return</span> <span class="literal">nil</span>, err</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">var</span> rowsi driver.Rows</div><div class="line">        withLock(dc, <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">            rowsi, err = ctxDriverQuery(ctx, queryer, query, dargs)  <span class="comment">// 尝试不使用`Prepared Statement`来执行</span></div><div class="line">        &#125;)</div><div class="line">        <span class="comment">// 这个错误非常重要，不想使用`Prepared Statement`，上面就不能返回这个错误</span></div><div class="line">        <span class="keyword">if</span> err != driver.ErrSkip &#123;</div><div class="line">            <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">                releaseConn(err)</div><div class="line">                <span class="keyword">return</span> <span class="literal">nil</span>, err</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// Note: ownership of dc passes to the *Rows, to be freed</span></div><div class="line">            <span class="comment">// with releaseConn.</span></div><div class="line">            rows := &amp;Rows&#123;</div><div class="line">                dc:          dc,</div><div class="line">                releaseConn: releaseConn,</div><div class="line">                rowsi:       rowsi,</div><div class="line">            &#125;</div><div class="line">            rows.initContextClose(ctx, txctx)</div><div class="line">            <span class="keyword">return</span> rows, <span class="literal">nil</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 下面将会使用Prepared Statement，如果不想使用就要保证上面的代码能顺利return</span></div><div class="line">    <span class="keyword">var</span> si driver.Stmt</div><div class="line">    <span class="keyword">var</span> err error</div><div class="line">    withLock(dc, <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">        si, err = ctxDriverPrepare(ctx, dc.ci, query)</div><div class="line">    &#125;)</div><div class="line">    .....</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>从上面的注释可以看到，Query默认不使用<code>prepared statement</code>，但是要保证正常查询不返回<code>driver.ErrSkip</code>，一旦返回这个错误，则会使用<code>prepared statement</code>继续查询。再往下跟我们将会走到driver中，我们来看看真实的query，在<code>go-sql-driver/mysql</code>的<code>connection.go</code>。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(mc *mysqlConn)</span> <span class="title">query</span><span class="params">(query <span class="keyword">string</span>, args []driver.Value)</span> <span class="params">(*textRows, error)</span></span> &#123;</div><div class="line">    <span class="keyword">if</span> mc.closed.IsSet() &#123;</div><div class="line">        errLog.Print(ErrInvalidConn)</div><div class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, driver.ErrBadConn</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 考虑到注入问题所以一定有args，将会走进if</span></div><div class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(args) != <span class="number">0</span> &#123;</div><div class="line">        <span class="keyword">if</span> !mc.cfg.InterpolateParams &#123;</div><div class="line">            <span class="keyword">return</span> <span class="literal">nil</span>, driver.ErrSkip  <span class="comment">// 我们就是不想返回这个错误，所以要保证mc.cfg.InterpolateParams为true</span></div><div class="line">        &#125;</div><div class="line">        <span class="comment">// try client-side prepare to reduce roundtrip</span></div><div class="line">        prepared, err := mc.interpolateParams(query, args)  <span class="comment">// 这里将进行插值，能不能防注入就看这里了</span></div><div class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">            <span class="keyword">return</span> <span class="literal">nil</span>, err</div><div class="line">        &#125;</div><div class="line">        query = prepared</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// Send command</span></div><div class="line">    err := mc.writeCommandPacketStr(comQuery, query)</div><div class="line">    ......</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>InterpolateParams从字面上看意思是是否可以插值，它其实是dsn的一个参数，见<code>dsn.go</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Enable client side placeholder substitution</span></div><div class="line"><span class="keyword">case</span> <span class="string">"interpolateParams"</span>:</div><div class="line">    <span class="keyword">var</span> isBool <span class="keyword">bool</span></div><div class="line">    cfg.InterpolateParams, isBool = readBool(value)</div><div class="line">    <span class="keyword">if</span> !isBool &#123;</div><div class="line">        <span class="keyword">return</span> errors.New(<span class="string">"invalid bool value: "</span> + value)</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>这里我们就清楚了，如果不想使用<code>prepared statement</code>，就要在<code>dsn</code>中加入<code>interpolateParams=true</code>，允许驱动进行对sql进行插值。下一个问题，这里的插值能不能防注入？我们来看<code>interpolateParams</code>方法，我们只看参数为string的情况：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">case</span> <span class="keyword">string</span>:</div><div class="line">    buf = <span class="built_in">append</span>(buf, <span class="string">'\''</span>)</div><div class="line">    <span class="keyword">if</span> mc.status&amp;statusNoBackslashEscapes == <span class="number">0</span> &#123;</div><div class="line">        buf = escapeStringBackslash(buf, v)  <span class="comment">// 将会走到这里</span></div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        buf = escapeStringQuotes(buf, v)</div><div class="line">    &#125;</div><div class="line">    buf = <span class="built_in">append</span>(buf, <span class="string">'\''</span>)</div></pre></td></tr></table></figure>
+<p>从函数名我相信大家已经知道了，我们将会对字符串参数进行转义，而转义特殊字符是可以防止注入的，不妨再看看<code>escapeStringBackslash</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">func escapeBytesBackslash(buf, v []byte) []byte &#123;</div><div class="line">    pos := len(buf)</div><div class="line">    buf = reserveBuffer(buf, len(v)*2)</div><div class="line"></div><div class="line">    for _, c := range v &#123;</div><div class="line">        switch c &#123;</div><div class="line">        case &apos;\x00&apos;:</div><div class="line">            buf[pos] = &apos;\\&apos;</div><div class="line">            buf[pos+1] = &apos;0&apos;</div><div class="line">            pos += 2</div><div class="line">        case &apos;\n&apos;:</div><div class="line">            buf[pos] = &apos;\\&apos;</div><div class="line">            buf[pos+1] = &apos;n&apos;</div><div class="line">            pos += 2</div><div class="line">        case &apos;\r&apos;:</div><div class="line">            buf[pos] = &apos;\\&apos;</div><div class="line">            buf[pos+1] = &apos;r&apos;</div><div class="line">            pos += 2</div><div class="line">        case &apos;\x1a&apos;:</div><div class="line">            buf[pos] = &apos;\\&apos;</div><div class="line">            buf[pos+1] = &apos;Z&apos;</div><div class="line">            pos += 2</div><div class="line">        case &apos;\&apos;&apos;:</div><div class="line">            buf[pos] = &apos;\\&apos;</div><div class="line">            buf[pos+1] = &apos;\&apos;&apos;</div><div class="line">            pos += 2</div><div class="line">        case &apos;&quot;&apos;:</div><div class="line">            buf[pos] = &apos;\\&apos;</div><div class="line">            buf[pos+1] = &apos;&quot;&apos;</div><div class="line">            pos += 2</div><div class="line">        case &apos;\\&apos;:</div><div class="line">            buf[pos] = &apos;\\&apos;</div><div class="line">            buf[pos+1] = &apos;\\&apos;</div><div class="line">            pos += 2</div><div class="line">        default:</div><div class="line">            buf[pos] = c</div><div class="line">            pos++</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return buf[:pos]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>一目了然。上面的分析基本解决了我们的第一个问题：dsn中加入<code>interpolateParams=true</code>可以不使用<code>prepared statement</code>，将sql的参数传入Query方法可以防止注入，防注入是驱动通过转义特殊字符来实现的。</p>
+<p>第二个问题我们可以接着第一个问题的代码往下看，上面我们看了拼接好sql，下面就是真正的查询了，代码在<code>statement.go</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">func (stmt *mysqlStmt) query(args []driver.Value) (*binaryRows, error) &#123;</div><div class="line">    if stmt.mc.closed.IsSet() &#123;</div><div class="line">        errLog.Print(ErrInvalidConn)</div><div class="line">        return nil, driver.ErrBadConn</div><div class="line">    &#125;</div><div class="line">    // Send command</div><div class="line">    // 这个方法背后就是实现了`客户端命令请求报文`，非常值得一看，但是我们这里关心的是返回值，暂且跳过</div><div class="line">    err := stmt.writeExecutePacket(args)</div><div class="line">    if err != nil &#123;</div><div class="line">        return nil, stmt.mc.markBadConn(err)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    mc := stmt.mc</div><div class="line"></div><div class="line">    // Read Result</div><div class="line">    // 这里虽然说是read result，但是只是根据协议读出了列的数量，用于下面的readColumns</div><div class="line">    // 注意，即使数据库中没有找到对应的记录，数据库仍然会将字段的信息返回，只是在返回的报文中</div><div class="line">    // Row Data没有数据</div><div class="line">    resLen, err := mc.readResultSetHeaderPacket()</div><div class="line">    if err != nil &#123;</div><div class="line">        return nil, err</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    rows := new(binaryRows)</div><div class="line"></div><div class="line">    if resLen &gt; 0 &#123;</div><div class="line">        rows.mc = mc</div><div class="line">        rows.rs.columns, err = mc.readColumns(resLen)  // 这里会将字段名（列名）读出然后存起来</div><div class="line">    &#125; else &#123;</div><div class="line">        rows.rs.done = true</div><div class="line"></div><div class="line">        switch err := rows.NextResultSet(); err &#123;</div><div class="line">        case nil, io.EOF:</div><div class="line">            return rows, nil</div><div class="line">        default:</div><div class="line">            return nil, err</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 竟然就这么返回了</div><div class="line">    return rows, err</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>看到了吗，query最后返回的时候，只是把字段名读出来了而已，根本没有读到我们需要的数据库中的记录。不妨大胆猜测：for Next将会每次从buffer中读出一条记录，将其赋值给某个变量，Scan就是在解析这个变量。让我们回到<code>database/sql</code>，在sql.go中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">func (rs *Rows) nextLocked() (doClose, ok bool) &#123;</div><div class="line">    if rs.closed &#123;</div><div class="line">        return false, false</div><div class="line">    &#125;</div><div class="line">    if rs.lastcols == nil &#123;</div><div class="line">        rs.lastcols = make([]driver.Value, len(rs.rowsi.Columns()))  // 哇哈哈，我想就是存在这里了</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Lock the driver connection before calling the driver interface</div><div class="line">    // rowsi to prevent a Tx from rolling back the connection at the same time.</div><div class="line">    rs.dc.Lock()</div><div class="line">    defer rs.dc.Unlock()</div><div class="line"></div><div class="line">    rs.lasterr = rs.rowsi.Next(rs.lastcols)  // 这里应该就是在读数据然后存到rs.lastcols</div><div class="line">    if rs.lasterr != nil &#123;</div><div class="line">	     ......</div><div class="line">    &#125;</div><div class="line">    return false, true</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>再回到<code>go-sql-driver/mysql</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// rows.go</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rows *binaryRows)</span> <span class="title">Next</span><span class="params">(dest []driver.Value)</span> <span class="title">error</span></span> &#123;</div><div class="line">    <span class="keyword">if</span> mc := rows.mc; mc != <span class="literal">nil</span> &#123;</div><div class="line">        <span class="keyword">if</span> err := mc.error(); err != <span class="literal">nil</span> &#123;</div><div class="line">            <span class="keyword">return</span> err</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// Fetch next row from stream</span></div><div class="line">        <span class="comment">// 读数据并存到dest中，readRow中实现了针对Row Data 结构的解析</span></div><div class="line">        <span class="comment">// 复杂但真的值得一看</span></div><div class="line">        <span class="keyword">return</span> rows.readRow(dest)</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> io.EOF</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>来来回回啊，再看<code>database/sql</code>的sql.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rs *Rows)</span> <span class="title">Scan</span><span class="params">(dest ...<span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">error</span></span> &#123;</div><div class="line">    ......</div><div class="line">    <span class="comment">// 看到了吧，就是lastcols，遍历lastcols，将字段值放入到dest中</span></div><div class="line">    <span class="keyword">for</span> i, sv := <span class="keyword">range</span> rs.lastcols &#123;</div><div class="line">        err := convertAssign(dest[i], sv)</div><div class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">            <span class="keyword">return</span> fmt.Errorf(<span class="string">"sql: Scan error on column index %d: %v"</span>, i, err)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">nil</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>至此我们的第二个问题也解决了，Query返回的时候只是取出了字段信息，真实的数据库记录还留在buffer中，for循环Next，每次从buffer中读取一条记录，存在rows结构体的lastcols字段中，调用Scan的时候就是从lastcols取出值。</p>
+<p>上面只是对大致流程的分析，里面还有大量的细节没有涉及到，特别是对于协议的实现，非常值得一看。</p>
+<p>本文如有错误，欢迎联系O(∩_∩)O</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/go/" rel="tag"># go</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/10/路由查找之Radix-Tree/" rel="next" title="路由查找之Radix Tree">
+                <i class="fa fa-chevron-left"></i> 路由查找之Radix Tree
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/lufei.jpeg"
+               alt="You Wangqiu" />
+          <p class="site-author-name" itemprop="name">You Wangqiu</p>
+           
+              <p class="site-description motion-element" itemprop="description">世之奇伟、瑰怪，非常之观，常在于险远，而人之所罕至焉，故非有志者不能至也</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">166</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/michaelyou" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhi-yu-65-2" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      知乎
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="michaelseu2011@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Prepared-Statement-amp-防注入"><span class="nav-number">1.</span> <span class="nav-text">Prepared Statement & 防注入</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">You Wangqiu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

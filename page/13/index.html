@@ -286,6 +286,443 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/01/排序算法总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/01/排序算法总结/" itemprop="url">排序算法总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-01T20:11:03+08:00">
+                2015-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>参考书籍是:《数据结构与算法分析-c语言描述，weiss著》</p>
+<p>下图是排序算法时间复杂度等特性的一个总结：</p>
+<p><img src="/img/排序算法.png" alt=""></p>
+<p>下面详细总结一下各个算法，总结的方面包括：</p>
+<ol>
+<li>每个算法的思想是什么？</li>
+<li>每个算法的稳定性怎样？时间复杂度如何？</li>
+<li>在什么情况下，算法出现最好情况 or 最坏情况？</li>
+<li>每种算法的具体实现又是怎样的？</li>
+</ol>
+<p>##各个排序算法的空间复杂度<br>大家往往只关心时间复杂度，而忽略了空间复杂度，所以这里讲空间复杂度提到前面来讲</p>
+<p><code>冒泡排序</code>，<code>简单选择排序</code>，<code>堆排序</code>，<code>直接插入排序</code>，<code>希尔排序</code>的空间复杂度为O(1),因为需要一个临时变量来交换元素位置，(另外遍历序列时自然少不了用一个变量来做索引)</p>
+<p>快速排序空间复杂度为log2n(因为递归调用了)；归并排序空间复杂是O(n)，需要一个大小为n的临时数组.</p>
+<p>这里的一个问题是，归并排序也递归了，为什么时间复杂度不是log2n?</p>
+<p>答：<br>归并排序每次递归都要用到一个辅助表，长度与待排序的表长度相同，虽然递归次数是O(log2n)，但每次递归都会释放掉所占的辅助空间，所以下次递归的栈空间和辅助空间与这部分释放的空间就不相关了，因而空间复杂度还是O（n）。</p>
+<p>快速排序空间复杂度只是在通常情况下才为O(log2n)，如果是最坏情况的话，很显然就要O(n)的空间了。当然，可以通过随机化选择pivot来将空间复杂度降低到O(log2n)。</p>
+<p>##冒泡排序</p>
+<p>###基本思想<br>通过无序区中相邻记录关键字间的比较和位置的交换,使关键字最小的记录如气泡一般逐渐往上“漂浮”直至“水面”。</p>
+<p><img src="/img/冒泡排序.png" alt=""></p>
+<p>###时间复杂度</p>
+<p><strong>最好情况下</strong>：正序有序，则只需要比较n次。故，为O(n)</p>
+<p><strong>最坏情况下</strong>：逆序有序，则需要比较(n-1)+(n-2)+……+1，故为O(n*n)</p>
+<p>###稳定性<br>排序过程中只交换相邻两个元素的位置。因此，当两个数相等时，是没必要交换两个数的位置的。所以，它们的相对位置并没有改变，<strong>冒泡排序算法是稳定的</strong>！</p>
+<p>##代码</p>
+<pre><code>#define elementtype int
+void bubble_sort(elementtype *array, int n) {
+    elementtype tmp;
+    int i = 0, j = 0;
+    for(; i &lt; n - 1; i++) {
+        for(j = n -1; j &gt; i; j--) {
+            if(array[j] &lt; array[j - 1]) {
+                swap(array[j], array[j-1]);
+            }
+        }
+    }
+}
+</code></pre><p>##选择排序</p>
+<p>###思想<br>首先在未排序序列中找到最小元素，存放到排序序列的起始位置，然后，再从剩余未排序元素中继续寻找最小元素，然后放到排序序列末尾。以此类推，直到所有元素均排序完毕。具体做法是：选择最小的元素与未排序部分的首部交换，使得序列的前面为有序。</p>
+<p>选择排序是和冒泡排序差不多的一种排序。和冒泡排序交换相连数据不一样<br>的是，选择排序只有在确定了最小的数据之后，才会发生交换</p>
+<p>###时间复杂度<br><strong>最好情况</strong>：交换0次，但是每次都要找到最小的元素，因此大约必须遍历<code>N*N</code>次，因此为O(N*N)。减少了交换次数！ </p>
+<p><strong>最坏情况</strong>：平均情况下：O(N*N)</p>
+<p>###稳定性<br>由于每次都是选取未排序序列A中的最小元素x与A中的第一个元素交换，因此跨距离了，很可能破坏了元素间的相对位置，因此<strong>选择排序是不稳定的</strong>！</p>
+<p>例如数组为5,5,3，第一次就会将第一个5和3交换</p>
+<p>###代码</p>
+<pre><code>void select_sort(elementtype *array, int n) {
+    elementtype tmp;
+    int i, j, index;
+    if(array == NULL &amp;&amp; n &lt; 0)
+        exit(-1);
+
+    for(i = 0; i &lt; n - 1; i++) {
+        index = i;
+        for(j = i + 1; j &lt; n; j ++) {
+            if(array[j] &lt; array[index])
+                index = j;
+        }
+
+        if(index != i) {
+            swap(array[i], array[index]);
+        }
+    }
+}
+</code></pre><p>##插入排序</p>
+<p>###思想<br>有一个已经有序的数据序列，要求在这个已经排好的数据序列中插入一个数，但要求插入后此数据序列仍然有序，这个时候就要用到一种新的排序方法—-插入排序法,插入排序的基本操作就是将一个数据插入到已经排好序的有序数据中，从而得到一个新的、个数加一的有序数据，算法适用于少量数据的排序，时间复杂度为O(n^2)。是稳定的排序方法。插入算法把要排序的数组分成两部分：第一部分包含了这个数组的所有元素，但将最后一个元素除外（让数组多一个空间才有插入的位置），而第二部分就只包含这一个元素（即待插入元素）。在第一部分排序完成后，再将这个最后元素插入到已排好序的第一部分中。</p>
+<p>###时间复杂度<br><strong>最好的情况</strong>：正序有序(从小到大)，这样只需要比较n次，不需要移动。因此时间复杂度为O(n)<br><strong>最坏的情况</strong>：逆序有序,这样每一个元素就需要比较n次，共有n个元素，因此实际复杂度为O(n­2)<br><strong>平均情况</strong>：O(n­2)</p>
+<p>###稳定性<br>理解性记忆比死记硬背要好。因此，我们来分析下。稳定性，就是有两个相同的元素，排序先后的相对位置是否变化，主要用在排序时有多个排序规则的情况下。在插入排序中，K1是已排序部分中的元素，当K2和K1比较时，直接插到K1的后面(没有必要插到K1的前面，这样做还需要移动！！)，因此，插入排序是稳定的。</p>
+<p>###代码</p>
+<pre><code>void insert_sort(elementtype *array, int n) {
+    elementtype tmp;
+    int p, j;
+    for(p = 1; p &lt; n; p++) {
+        tmp = array[p];
+        for(j = p; j &gt; 0 &amp;&amp; array[j - 1] &gt; tmp; j--) {
+            array[j]= array[j - 1];
+        }
+        array[j] = tmp;
+    }
+}
+</code></pre><p>##shell排序</p>
+<p>###思想<br>Shell排序是DL. Shell于1959年针对直接插入排序算法改进提出的，属于插入排序的范畴，是对直接插入排序算法的改进。直接插入排序在基本有序时效率较高，并且在序列规模不是很大时效率也很高，Shell排序就是针对这两点进行改进。核心思想是：待排序列有n个元素，先取一个小于n的整数h1作为第一个增量，把待排序列以间隔h1分成若干子序列，子序列内使用插入排序；然后取第二个增量h2(&lt; h1)，重复上述的划分和排序，<br>直至所取的增量hl = 1 (h1 &gt; h2 &gt; … &gt; hl)。</p>
+<p>这样不管序列多么庞大，在先前较大步长分组下每个子序列规模都不是很大，用直接插入效率很高；后面步长变小，子序列变大，但由于整体有序性越来越明显，排序效率依然很高，大大提高了时间效率。</p>
+<p>###时间复杂度</p>
+<p><strong>最好情况</strong>：由于希尔排序的好坏和步长d的选择有很多关系，因此，目前还没有得出最好的步长如何选择(现在有些比较好的选择了，但不确定是否是最好的)。所以，不知道最好的情况下的算法时间复杂度。  </p>
+<p><strong>最坏情况</strong>：O(N*logN)，最坏的情况下和平均情况下差不多。  </p>
+<p><strong>平均情况</strong>：O(N*logN)</p>
+<p>###稳定性<br>由于多次插入排序，我们知道一次插入排序是稳定的，不会改变相同元素的相对顺序，但在不同的插入排序过程中，相同的元素可能在各自的插入排序中移动，最后其稳定性就会被打乱，所以<strong>shell排序是不稳定的</strong>。</p>
+<blockquote>
+<p>有个猜测，方便记忆：一般来说，若存在不相邻元素间交换，则很可能是不稳定的排序。</p>
+</blockquote>
+<p>###代码</p>
+<pre><code>void shell_sort(elementtype *array, int n) {
+    elementtype tmp;
+    int increment, i, j;
+    for(increment = n/2; increment &gt; 0; increment /= 2) {
+        for(i = increment; i &lt; n; i++) {
+            tmp = array[i];
+            for(j = i; j &gt;= increment &amp;&amp; array[j - increment] &gt; tmp; j -= increment)
+                    array[j] = array[j - increment];
+
+            array[j] = tmp;
+        }
+    }
+}
+</code></pre><p>##堆排序</p>
+<p>###思想<br>利用完全二叉树中双亲节点和孩子节点之间的内在关系，在当前无序区中选择关键字最大(或者最小)的记录。也就是说，以最小堆为例，根节点为最小元素，较大的节点偏向于分布在堆底附近。</p>
+<p>###时间复杂度<br>最坏情况下，接近于最差情况下：O(N*logN)，因此它是一种效果不错的排序算法</p>
+<p>###稳定性<br>堆排序需要不断地调整堆，因此<strong>堆排序是一种不稳定的排序</strong>！</p>
+<p>###代码</p>
+<pre><code>#define LeftChild(i) (2 * (i) + 1)
+void perc_down(int *a, int i, int size)
+{
+    int child;
+
+    int tmp = a[i];
+
+    for(; LeftChild(i) &lt; size ; i = child)
+    {
+        child = LeftChild(i);
+        if(child != size - 1 &amp;&amp; a[child] &lt; a[child + 1])
+                child ++;
+
+        /***************************
+         * 提升儿子到父结点，
+         * 儿子结点的位置上存在空穴，
+         * 需要继续比较
+         **************************/
+        if(a[child] &gt; tmp)
+                a[i] = a[child];
+        else/*不需要提升*/
+                break;
+    }
+    /*保存结点的位置找到*/
+    a[i] = tmp;
+}
+
+void build_maxheap(int *a, int size)
+{
+    int step = 0;
+
+    /***************************************
+     * (size-1)/2实质是找到a[size-1]的父结点，
+     * 也就是倒数第二层，堆的创建过程是一个
+     * 由低层到高层逐渐创建的过程
+     **************************************/
+    for(step = (size - 1) / 2 ; step &gt;= 0; -- step)
+        perc_down(a, step, size);
+}
+
+void heap_sort(int *a, int size)
+{
+    int i = 0;
+    /*创建堆*/
+    build_maxheap(a,size);
+
+    for(; i &lt; size; i++)
+        printf(&quot;%d &quot;, a[i]);
+    printf(&quot;\n&quot;);
+
+    for(i = size - 1; i &gt; 0; --i)
+    {
+        swap(a[i],a[0])；
+
+        /*更新堆的结构*/
+        perc_down(a,0,i);
+
+    }
+
+}
+</code></pre><p>##归并排序</p>
+<p>###思想<br>多次将两个或两个以上的有序表合并成一个新的有序表。</p>
+<p><img src="/img/归并排序.png" alt=""></p>
+<p>###时间复杂度</p>
+<p><strong>最好的情况</strong>：一趟归并需要n次，总共需要logN次，因此为O(N*logN) </p>
+<p><strong>最坏的情况</strong>： 接近于平均情况，为O(N*logN) </p>
+<p>说明：对长度为n的文件，需进行logN 趟二路归并，每趟归并的时间为O(n)，故其时间复杂度无论是在最好情况下还是在最坏情况下均是O(nlgn)。</p>
+<p>###稳定性<br><strong>归并排序最大的特色就是它是一种稳定的排序算法</strong>。归并过程中是不会改变元素的相对位置的。 </p>
+<p>缺点是，它需要O(n)的额外空间。但是很<strong>适合于多链表排序</strong>。</p>
+<p>###代码</p>
+<pre><code>/*left_start is the start of the left half, right_start is the start of the
+  right half*/
+void merge(int *array, int *tmp_array, int left_start, int right_start, int right_end)
+{
+    int left_end = right_start-1;
+    int length = right_end-left_start+1;
+
+    int tmp_pos = left_start;
+
+    while(left_start &lt;= left_end &amp;&amp; right_start &lt;= right_end) {
+        if(array[left_start] &lt;= array[right_start])
+            tmp_array[tmp_pos++] = array[left_start++];
+        else
+            tmp_array[tmp_pos++] = array[right_start++];
+    }
+
+    /*main loop*/
+    while(left_start &lt;= left_end)
+        tmp_array[tmp_pos++] = array[left_start++];
+    while(right_start &lt;= right_end)
+        tmp_array[tmp_pos++] = array[right_start++];
+
+    /*copy tmp_array back
+      注意这里必须使用right_end作为数组下标，不能用tmp_pos，因为此时的
+      tmp_pos已经越界了，上面多了一次++*/
+    int i;
+    for(i = 0; i &lt; length; i++, right_end--)  
+        array[right_end] = tmp_array[right_end];
+}
+
+void m_sort(int *array, int *tmp_array, int left, int right)
+{
+    int mid;
+
+    if(left &lt; right) {
+        mid = (left + right)/2;
+        m_sort(array, tmp_array, left, mid);
+        m_sort(array, tmp_array, mid+1, right);
+        merge(array, tmp_array, left, mid+1, right);
+    }
+}
+
+void merge_sort(int *array, int n)
+{
+    if(array == NULL || n &lt;= 0)
+        exit(-1);
+
+    int *tmp_array = (int *)malloc(n * sizeof(int));
+
+    if(tmp_array != NULL) {
+        m_sort(array, tmp_array, 0, n-1);
+        free(tmp_array);
+    }
+    else
+        exit(-1);
+}
+</code></pre><blockquote>
+<p>merge例程是精妙的。如果对merge的每个递归调用均局部声明一个临时数组，那么在任一时刻就可能有logN个临时数组处在活动期，这对于小内存的机器则是致命的。另一方面，如果merge例程动态分配并释放最小量临时内存，那么由malloc占用的时间会很多。严格测试指出，由于merge位于m_sort的最后一行，因此在任一时刻只需要一个临时数组活动，而且可以使用该临时数组的任意部分；我们将使用与输入数组array相同的部分。</p>
+</blockquote>
+<p>#快速排序</p>
+<p>###思想<br>它是由冒泡排序改进而来的。在待排序的n个记录中任取一个记录(通常取第一个记录),把该记录放入适当位置后,数据序列被此记录划分成两部分。所有关键字比该记录关键字小的记录放置在前一部分,所有比它大的记录放置在后一部分,并把该记录排在这两部分的中间(称为该记录归位),这个过程称作一趟快速排序。</p>
+<p><img src="/img/http://img2.imgtn.bdimg.com/it/u=2694285242,78285384&amp;fm=21&amp;gp=0.jpg" alt=""></p>
+<p>###时间复杂度<br><strong>最好的情况</strong>：因为每次都将序列分为两个部分(一般二分都复杂度都和logN相关)，故为 O(N*logN)  </p>
+<p><strong>最坏的情况</strong>：序列基本有序，选取的枢轴元素为最大值或最小值时，退化为冒泡排序，几乎要比较<code>N*N/2</code>次，故为O(N*N)</p>
+<blockquote>
+<p>如何避免最坏情况：为改进快速排序算法，随机选取界点或最左、最右、中间三个元素中的值处于中间的作为界点，通常可以避免原始序列有序的最坏情况。</p>
+</blockquote>
+<p>###稳定性<br>由于每次都需要和中轴元素交换，因此原来的顺序就可能被打乱。如序列为 5 3 3 4 3 8 9 10 11会将3的顺序打乱。所以说，<strong>快速排序是不稳定的</strong>！</p>
+<p>###代码</p>
+<pre><code>/*数据交换*/
+void swap(int *x,int *y)
+{
+   int temp;
+   temp = *x;
+   *x = *y;
+   *y = temp;
+}
+
+int choose_pivot(int i,int j )
+{
+   return((i+j) /2);
+}
+
+/*递归和分治*/
+void quick_sort(int list[],int left,int right)
+{
+   int key,i,j,k;
+   if(left &lt; right)
+   {
+      k = (left + right) / 2;
+      swap(&amp;list[left],&amp;list[k]);
+      key = list[left];
+      i = left+1;
+      j = right;
+      while(1)
+      {
+         while((i &lt; right) &amp;&amp; (list[i] &lt; key))
+                i++;
+         while((j &gt; left) &amp;&amp; (list[j] &gt; key))
+                j--;
+         if( i &lt; j) {
+                swap(&amp;list[i],&amp;list[j]);
+                //仅仅是为了防止死循环，见P183
+                if(list[i] == list[j] &amp;&amp; list[i] == key) {  
+                    i++;  //j--;
+                }
+         }
+         else
+            break;
+      }
+     // 交换两个元素的位置
+      swap(&amp;list[left],&amp;list[j]);
+     // 递归地对较小的数据序列进行排序
+      quick_sort(list,left,j-1);
+      quick_sort(list,j+1,right);
+   }
+} 
+</code></pre><p>快排在数据少的时候是不占优势的，所以一般是在数据少的时候用插入排序，数据多的时候用快排。上面的快排程序对书上的程序作了修改，防止了死循环，但并不是一个好程序。比较好的快排实现可以看<a href="https://github.com/michaelyou/data_structure/blob/master/sort.c" target="_blank" rel="external">这里</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/27/linux磁盘空间命令-df和du/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2147,186 +2584,6 @@ SCHEDULER_MEMORY_QUEUE = &apos;scrapy.squeue.FifoMemoryQueue&apos;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/03/每天一个python小程序-7/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/03/每天一个python小程序-7/" itemprop="url">每天一个python小程序(7)--敏感词</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-03T14:34:54+08:00">
-                2015-02-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>敏感词文本文件 filtered_words.txt，里面的内容为以下内容，当用户输入敏感词语时，则打印出 Freedom，否则打印出 Human Rights。</p>
-<p>love</p>
-<p>sex</p>
-<p>jiangge</p>
-<p>bitch</p>
-</blockquote>
-<p>代码中有两种从txt文件中获取敏感词的方法，有一种被注释掉了，因为用这种方法获得的list最后会有一个空的字符串，导致下面find的时候一直会匹配成功，感兴趣的同学可以去掉注释试一下（同时需要注释掉注释下面的4行）</p>
-<pre><code>#!/usr/bin/python
-#encoding=utf-8
-
-def get_sensitive_word(filepath):
-    f = open(filepath, &apos;r&apos;)
-    #data = f.read()
-    #filt = data.split(&apos;\n&apos;) 这个方法得到的序列中最后有一个空的字符串，导致匹配一直成功
-    words = []
-    for word in f:
-        #strip删除字符序列，这里是删除word中的&apos;\n&apos;
-        words.append(word.strip(&apos;\n&apos;))
-    f.close()
-    return words
-
-def filter_word(words):
-    flag = False
-    text = raw_input(&apos;please input: &apos;)
-    for word in words:
-        if text.find(word) != -1:
-            flag = True
-
-    if flag:
-        print &apos;freedom&apos;
-    else:
-        print &apos;human rights&apos;
-
-if __name__ == &apos;__main__&apos;:
-    filepath = &apos;filtered_words.txt&apos;
-    words = get_sensitive_word(filepath)
-    filter_word(words)
-</code></pre><p>完整项目见<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.11" target="_blank" rel="external">这里</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2377,7 +2634,7 @@ if __name__ == &apos;__main__&apos;:
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">165</span>
+                <span class="site-state-item-count">166</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
