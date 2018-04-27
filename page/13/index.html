@@ -286,6 +286,159 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/01/线程安全/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/01/线程安全/" itemprop="url">线程安全</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-01T22:01:15+08:00">
+                2015-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>如果你的代码所在的进程中有多个线程在同时运行，而这些线程可能会同时运行这段代码。如果每次运行结果和单线程运行的结果是一样的，而且其他的变量的值也和预期的是一样的，就是线程安全的。</p>
+<p>或者说:一个类或者程序所提供的接口对于线程来说是原子操作或者多个线程之间的切换不会导致该接口的执行结果存在二义性,也就是说我们不用考虑同步的问题。</p>
+<p>线程安全问题都是由全局变量及静态变量引起的。</p>
+<p>若每个线程中对全局变量、静态变量只有读操作，而无写操作，一般来说，这个全局变量是线程安全的；若有多个线程同时执行写操作，一般都需要考虑线程同步，否则的话就可能影响线程安全。</p>
+<p>##举例<br>比如一个 ArrayList 类，在添加一个元素的时候，它可能会有两步来完成：</p>
+<ol>
+<li>在 Items[Size] 的位置存放此元素</li>
+<li>增大 Size 的值。</li>
+</ol>
+<p>在单线程运行的情况下，如果 Size = 0，添加一个元素后，此元素在位置 0，而且 Size=1；</p>
+<p>而如果是在多线程情况下，比如有两个线程，线程 A 先将元素存放在位置 0。但是此时 CPU 调度线程A暂停，线程 B 得到运行的机会。线程B也向此 ArrayList 添加元素，因为此时 Size 仍然等于 0 （注意哦，我们假设的是添加一个元素是要两个步骤哦，而线程A仅仅完成了步骤1），所以线程B也将元素存放在位置0。然后线程A和线程B都继续运行，都增加 Size 的值。</p>
+<p>那好，我们来看看 ArrayList 的情况，元素实际上只有一个，存放在位置 0，而 Size 却等于 2。这就是“线程不安全”了。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/01/排序算法总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2355,235 +2508,6 @@ We are no longer the knights who say Ni! We are now the knights who say ekki-ekk
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/04/scrapy的一些知识点/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/04/scrapy的一些知识点/" itemprop="url">scrapy的一些知识点</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-04T11:23:27+08:00">
-                2015-02-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/scrapy/" itemprop="url" rel="index">
-                    <span itemprop="name">scrapy</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li><p>###运行spider，将爬取到的信息用JSON形式存到scraped_data.json文件中</p>
-<pre><code>scrapy crawl my_spider -o scraped_data.json
-</code></pre></li>
-<li><p>###在scrapy shell里面打印返回的html</p>
-<pre><code>response.body
-</code></pre></li>
-<li><p>###创建一个Spider，我们必须继承<code>scrapy.Spider</code>类(或者别的爬虫类)，并且定义以下3个属性</p>
-<ul>
-<li>name：用于区别Spider。 该名字必须是唯一的，您不可以为不同的Spider设定相同的名字。</li>
-<li>start_urls：包含了Spider在启动时进行爬取的url列表。 因此，第一个被获取到的页面将是其中之一(每个url都会被爬取)。 <code>后续的URL则从初始的URL获取到的数据中提取</code>。</li>
-<li>parse() 是spider的一个方法。 被调用时，<code>每个初始URL完成下载后生成的 Response 对象将会作为唯一的参数传递给该函数</code>。 该方法负责解析返回的数据(response data)，提取数据(生成item)以及生成需要进一步处理的URL的 Request 对象。parse只是初始url的回调函数，可以定义别的回调函数来处理后序的链接。</li>
-</ul>
-</li>
-<li><p>###scrapy shell</p>
-<pre><code>scrapy shell &quot;http://www.dmoz.org/Computers/Programming/Languages/Python/Books/&quot;
-</code></pre><blockquote>
-<p>当您在终端运行Scrapy时，请一定记得给url地址加上<code>引号</code>，否则包含参数的url(例如 &amp; 字符)会导致Scrapy运行失败。</p>
-</blockquote>
-</li>
-<li><p>###Item 对象是自定义的python字典。 您可以使用标准的字典语法来获取到其每个字段的值。(字段即是我们之前用Field赋值的属性):</p>
-<pre><code>&gt;&gt;&gt; item = DmozItem()
-&gt;&gt;&gt; item[&apos;title&apos;] = &apos;Example title&apos;
-&gt;&gt;&gt; item[&apos;title&apos;]
-&apos;Example title&apos;
-</code></pre></li>
-<li><p>###<code>scrapy.cfg</code> 存放的目录被认为是 项目的根目录 。该文件中包含python模块名的字段定义了项目的设置</p>
-</li>
-<li><h3 id="Link-Extractors-是用于从网页-scrapy-http-Response-中抽取会被follow的链接的对象。"><a href="#Link-Extractors-是用于从网页-scrapy-http-Response-中抽取会被follow的链接的对象。" class="headerlink" title="Link Extractors 是用于从网页(scrapy.http.Response )中抽取会被follow的链接的对象。"></a>Link Extractors 是用于从网页(scrapy.http.Response )中抽取会被follow的链接的对象。</h3><pre><code>scrapy.contrib.linkextractors import LinkExtractor
-</code></pre></li>
-<li><p>###log服务<br>Scrapy提供了log功能。您可以通过 scrapy.log 模块使用。当前底层实现使用了 Twisted logging ，不过可能在之后会有所变化。</p>
-</li>
-<li><p>###使用FormRequest.from_response()方法模拟用户登录<br>通常网站通过 <input type="hidden"> 实现对某些表单字段（如数据或是登录界面中的认证令牌等）的预填充。 使用Scrapy抓取网页时，如果想要预填充或重写像用户名、用户密码这些表单字段， 可以使用 FormRequest.from_response() 方法实现。下面是使用这种方法的爬虫例子:</p>
-<pre><code>import scrapy
-
-class LoginSpider(scrapy.Spider):
-    name = &apos;example.com&apos;
-    start_urls = [&apos;http://www.example.com/users/login.php&apos;]
-
-    def start_requests(self):
-        return scrapy.FormRequest.from_response(
-            &quot;url&quot;,
-            formdata={&apos;username&apos;: &apos;john&apos;, &apos;password&apos;: &apos;secret&apos;},
-            callback=self.after_login
-        )
-
-    def after_login(self, response):
-        # check login succeed before going on
-        if &quot;authentication failed&quot; in response.body:
-            self.log(&quot;Login failed&quot;, level=log.ERROR)
-            return
-
-        # continue scraping with authenticated session...
-</code></pre></li>
-<li><p>###Scrapy是以广度优先还是深度优先进行爬取的呢<br>默认情况下，Scrapy使用 LIFO 队列来存储等待的请求。简单的说，就是 深度优先顺序 。深度优先对大多数情况下是更方便的。如果您想以 广度优先顺序 进行爬取，你可以设置以下的设定:</p>
-<pre><code>DEPTH_PRIORITY = 1
-SCHEDULER_DISK_QUEUE = &apos;scrapy.squeue.PickleFifoDiskQueue&apos;
-SCHEDULER_MEMORY_QUEUE = &apos;scrapy.squeue.FifoMemoryQueue&apos;
-</code></pre></li>
-<li><p>###避免被禁止(ban)<br>有些网站实现了特定的机制，以一定规则来避免被爬虫爬取。 与这些规则打交道并不容易，需要技巧，有时候也需要些特别的基础。 如果有疑问请考虑联系 商业支持 。</p>
-<p>  下面是些处理这些站点的建议(tips):</p>
-<ul>
-<li>使用user agent池，轮流选择之一来作为user agent。池中包含常见的浏览器的user agent(google一下一大堆)</li>
-<li>禁止cookies(参考 COOKIES_ENABLED)，有些站点会使用cookies来发现爬虫的轨迹。</li>
-<li>设置下载延迟(2或更高)。参考 DOWNLOAD_DELAY 设置。</li>
-<li>如果可行，使用 <a href="http://www.googleguide.com/cached_pages.html" target="_blank" rel="external">Google cache</a> 来爬取数据，而不是直接访问站点。</li>
-<li>使用IP池。例如免费的 <a href="https://www.torproject.org/" target="_blank" rel="external">Tor</a>项目 或付费服务(<a href="http://proxymesh.com/" target="_blank" rel="external">ProxyMesh</a>)。</li>
-<li>使用高度分布式的下载器(downloader)来绕过禁止(ban)，您就只需要专注分析处理页面。这样的例子有: <a href="http://crawlera.com/" target="_blank" rel="external">Crawlera</a></li>
-</ul>
-</li>
-<li><p>###禁止重试<br>对失败的HTTP请求进行重试会减慢爬取的效率，尤其是当站点响应很慢(甚至失败)时， 访问这样的站点会造成超时并重试多次。这是不必要的，同时也占用了爬虫爬取其他站点的能力。</p>
-<p>  禁止重试:</p>
-<pre><code>RETRY_ENABLED = False
-</code></pre></li>
-<li>###使用相对Xpaths</li>
-</ul>
-<p>如果你使用嵌套的选择器，并使用起始为 <code>/</code> 的XPath，那么该XPath将对文档使用绝对路径，而且对于你调用的 Selector 不是相对路径。</p>
-<p>比如，假设你想提取在 <code>&lt;div&gt;</code>元素中的所有 <code>&lt;p&gt;</code>元素。首先，你将先得到所有的 <code>&lt;div&gt;</code> 元素:</p>
-<pre><code>&gt;&gt;&gt; divs = response.xpath(&apos;//div&apos;)
-</code></pre><p>开始时，你可能会尝试使用下面的错误的方法，<strong>因为它其实是从整篇文档中，而不仅仅是从那些 <code>&lt;div&gt;</code> 元素内部提取所有的 <code>&lt;p&gt;</code>元素</strong>:</p>
-<pre><code>&gt;&gt;&gt; for p in divs.xpath(&apos;//p&apos;):  # this is wrong - gets all &lt;p&gt; from the whole document
-...     print p.extract()
-</code></pre><p>下面是比较合适的处理方法(注意 .//p XPath的点前缀):</p>
-<pre><code>&gt;&gt;&gt; for p in divs.xpath(&apos;.//p&apos;):  # extracts all &lt;p&gt; inside
-...     print p.extract()
-</code></pre><p>另一种常见的情况将是提取所有直系 <code>&lt;p&gt;</code>的结果:</p>
-<pre><code>&gt;&gt;&gt; for p in divs.xpath(&apos;p&apos;):
-...     print p.extract()
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2634,7 +2558,7 @@ SCHEDULER_MEMORY_QUEUE = &apos;scrapy.squeue.FifoMemoryQueue&apos;
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">166</span>
+                <span class="site-state-item-count">167</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

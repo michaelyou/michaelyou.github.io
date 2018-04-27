@@ -286,6 +286,189 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/30/如何重命名scrapy下载的图片/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/30/如何重命名scrapy下载的图片/" itemprop="url">如何重命名scrapy下载的图片</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-30T17:07:32+08:00">
+                2015-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>默认情况下，使用ImagePipeline组件下载图片的时候，图片名称是以图片URL的SHA1值进行保存的。</p>
+<p>如：<br>图片URL:<a href="http://www.example.com/image.jpg" target="_blank" rel="external">http://www.example.com/image.jpg</a></p>
+<p>SHA1结果：3afec3b4765f8f0a07b78f98c07b83f013567a0a</p>
+<p>则图片名称：3afec3b4765f8f0a07b78f98c07b83f013567a0a.jpg</p>
+<p>但是，我想要以原来的图片名称进行保存，比如上面例子中的图片保存到本地的话，图片名称就应该是：image.jpg</p>
+<p>stackoverflow上说是可以重写<code>image_key</code>函数，不过我试了下，结果发现不行，重写的image_key函数没被调用。其实不是stackoverflow上的回答是错误的，在<code>scrapy 0.12</code>之前，确实应该这样来解决此问题，现在scrapy的版本已经更新了很多，这个方法不适用了，下面是ImagePipeline的源码中的提醒：</p>
+<blockquote>
+<p>ImagesPipeline.image_key(url) and file_key(url) methods are deprecated, please use file_path(request, response=None, info=None) instead</p>
+</blockquote>
+<p>也就是说，在最新版本的Scrapy中（0.24.4），使用<code>file_path</code>代替<code>image_key</code>函数。</p>
+<p>下面是新版本的解决方法，在<code>scrapy 0.24.4</code>中测试通过</p>
+<ul>
+<li><p>在pipelines.py中自定义ImagePipeline类，并重写file_path函数</p>
+<pre><code>from scrapy.contrib.pipeline.images import ImagesPipeline
+from scrapy.http import Request
+from scrapy.exceptions import DropItem
+
+class MyImagesPipeline(ImagesPipeline):
+    def file_path(self, request, response=None, info=None):
+        image_guid = request.url.split(&apos;/&apos;)[-1]
+        return &apos;full/%s&apos; % (image_guid)
+
+    #item[&apos;image_urls&apos;]是我们在item.py中定义的存放图片url的变量，如果定义了别的变量名，注意更换
+    def get_media_requests(self, item, info):
+        for image_url in item[&apos;image_urls&apos;]:
+            yield Request(image_url)
+
+    def item_completed(self, results, item, info):
+        image_paths = [x[&apos;path&apos;] for ok, x in results if ok]
+        if not image_paths:
+            raise DropItem(&quot;Item contains no images&quot;)
+        return item
+</code></pre></li>
+<li><p>修改setting.py</p>
+<pre><code>ITEM_PIPELINES = {
+    # &apos;scrapy.contrib.pipeline.images.ImagesPipeline&apos;: 1
+    &apos;sis.pipelines.MyImagesPipeline&apos;
+    }
+</code></pre></li>
+</ul>
+<p>可以参考stackoverflow上<a href="http://stackoverflow.com/questions/6194041/scrapy-image-download-how-to-use-custom-filename/22263951#22263951" target="_blank" rel="external">此问题的讨论</a></p>
+<p>原文地址在<a href="http://www.it165.net/pro/html/201402/9615.html" target="_blank" rel="external">这里</a>，本文做了一些删除和修改</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/29/scrapy如何获取完整的url/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2181,161 +2364,6 @@ int main(int argc, char **argv)
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/24/重建二叉树/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/24/重建二叉树/" itemprop="url">重建二叉树</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-24T21:31:11+08:00">
-                2015-01-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##题目</p>
-<blockquote>
-<p>输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字，例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，应该重构出如下二叉树：</p>
-<p><img src="/img/tree.png" alt="tree"></p>
-</blockquote>
-<p>##答案</p>
-<ul>
-<li>前序遍历的第一个节点是树的根结点，所以<code>1</code>是树的根结点</li>
-<li>中序遍历的规则是：1.遍历左子树；2.根结点；3.遍历右子树。既然1是根结点，那么从中序遍历的输出可知：<code>4,7,2</code>在左子树中，<code>5,3,8,6</code>在右子树中</li>
-<li>前序遍历输出的第二个值是根结点的左子树的根结点，即<code>2</code>是左子树序列<code>4,7,2</code>的根结点，而在<code>2</code>左侧的<code>4,7</code>就是根结点<code>2</code>的左子树中的值了。同理<code>3</code>是根结点的右子树的根结点，<code>5</code>是以<code>3</code>为根结点的树的左子树中的值，<code>8,6</code>是右子树中的值</li>
-<li>下面只需要判断左子树中<code>4,7</code>和右子树中<code>8,6</code>的位置就可以了，易知，<code>4</code>是<code>2</code>的左儿子，<code>7</code>是<code>4</code>的右儿子。<code>6</code>是<code>3</code>的右儿子，<code>8</code>是<code>6</code>的左儿子。</li>
-<li>这是一个递归的过程，没分析一段，就将这一段当做一个完整的树来分析就很容易了</li>
-</ul>
-<p>实现的代码在<a href="https://github.com/michaelyou/data_structure/blob/master/tree.c" target="_blank" rel="external">这里Construct</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2386,7 +2414,7 @@ int main(int argc, char **argv)
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">166</span>
+                <span class="site-state-item-count">167</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
