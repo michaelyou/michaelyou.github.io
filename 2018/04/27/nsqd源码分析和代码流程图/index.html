@@ -102,12 +102,12 @@
 <meta property="og:site_name" content="Youmai の Blog">
 <meta property="og:description" content="nsqd的代码量在1w行左右，包含了项目下的nsqd，internal目录，以及go-diskqueue项目，代码量虽然不大，但是开启了各种goroutine，有各种channel用于通信，应该算得上有点复杂了。 看源码的时候建议分模块来看，topic的功能，channel的功能，延迟消息，超时重传，写入磁盘，与nsqlookdup的通信等。可以从入口函数先了解个大概，不建议一开始就一行行细看，g">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/04/27/nsqd源码分析和代码流程图/img/nsq.png">
-<meta property="og:updated_time" content="2018-04-27T13:38:58.751Z">
+<meta property="og:image" content="http://yoursite.com/img/nsq.png">
+<meta property="og:updated_time" content="2018-04-27T13:41:52.588Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nsqd源码分析和代码流程图">
 <meta name="twitter:description" content="nsqd的代码量在1w行左右，包含了项目下的nsqd，internal目录，以及go-diskqueue项目，代码量虽然不大，但是开启了各种goroutine，有各种channel用于通信，应该算得上有点复杂了。 看源码的时候建议分模块来看，topic的功能，channel的功能，延迟消息，超时重传，写入磁盘，与nsqlookdup的通信等。可以从入口函数先了解个大概，不建议一开始就一行行细看，g">
-<meta name="twitter:image" content="http://yoursite.com/2018/04/27/nsqd源码分析和代码流程图/img/nsq.png">
+<meta name="twitter:image" content="http://yoursite.com/img/nsq.png">
 
 
 
@@ -382,7 +382,7 @@
 <p>我画了一张代码的流程图（图在最下面），供大家参考，图中的节点是我觉得比较重要的地方。这张图本身就有点乱（一方面我水平有限，另一方面代码确实略复杂），看上去各种线飞来飞去，但是我私认为还是反映了nsqd的代码流程的，图中的线确实代表了节点之间的一些关系，如果去掉，反而可能会有误导。</p>
 <p>流程图只是一个辅助工具，觉得不好的同学大可以不看，这并不会妨碍你对代码的理解。详细的对于代码的注释参考<a href="https://github.com/michaelyou/nsq/tree/feature-comment/nsqd" target="_blank" rel="external">这里</a>，网上有不少对于源码的分析，但大多只是某一个模块的，这应该算是一个比较全面的注释了。</p>
 <p>有问题欢迎提出:-D</p>
-<p><img src="img/nsq.png" alt="nsqd流程图"></p>
+<p><img src="/img/nsq.png" alt="nsqd流程图"></p>
 
       
     </div>
