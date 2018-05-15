@@ -286,6 +286,172 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/MTV-开发模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/15/MTV-开发模式/" itemprop="url">MTV 开发模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-15T20:15:05+08:00">
+                2015-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>我们来花点时间考虑下 Django 数据驱动 Web 应用的总体设计。</p>
+<p>我们在前面章节提到过，Django 的设计鼓励松耦合及对应用程序中不同部分的严格分割。 遵循这个理念的话，要想修改应用的某部分而不影响其它部分就比较容易了。 在视图函数中，我们已经讨论了通过模板系统把业务逻辑和表现逻辑分隔开的重要性。 在数据库层中，我们对数据访问逻辑也应用了同样的理念。</p>
+<p>把<code>数据存取逻辑</code>、<code>业务逻辑</code>和<code>表现逻辑</code>组合在一起的概念有时被称为软件架构的<code>Model-View-Controller (MVC)</code>模式。 在这个模式中， <code>Model</code> 代表数据存取层，<code>View</code>代表的是系统中选择显示什么和怎么显示的部分，<code>Controller</code> 指的是系统中根据用户输入并视需要访问模型，以决定使用哪个视图的那部分。</p>
+<p>为什么用缩写？</p>
+<p>像 MVC 这样的明确定义模式的主要用于改善开发人员之间的沟通。 比起告诉同事，“让我们采用抽象的数据存取方式，然后单独划分一层来显示数据，并且在中间加上一个控制它的层”，一个通用的说法会让你收益，你只需要说：“我们在这里使用MVC模式吧。”。</p>
+<p>Django 紧紧地遵循这种 MVC 模式，可以称得上是一种 MVC 框架。 以下是 Django 中 M、V 和 C 各自的含义：</p>
+<ul>
+<li><p>M ，数据存取部分，由django数据库层处理，本章(第5章)要讲述的内容。</p>
+</li>
+<li><p>V ，选择显示哪些数据要显示以及怎样显示的部分，由视图和模板处理。</p>
+</li>
+<li><p>C ，根据用户输入委派视图的部分，由 Django 框架根据 URLconf 设置，对给定 URL 调用适当的 Python 函数。</p>
+</li>
+</ul>
+<p>由于 C 由框架自行处理，而 Django 里更关注的是<strong>模型（Model）、模板(Template)和视图（Views）</strong>，Django 也被称为 <strong>MTV 框架</strong> 。在 MTV 开发模式中：</p>
+<ul>
+<li><p>M 代表模型（Model），即数据存取层。 该层处理与数据相关的所有事务： 如何存取、如何验证有效性、包含哪些行为以及数据之间的关系等。</p>
+</li>
+<li><p>T 代表模板(Template)，即表现层。 该层处理与表现相关的决定： 如何在页面或其他类型文档中进行显示。</p>
+</li>
+<li><p>V 代表视图（View），即业务逻辑层。 该层包含存取模型及调取恰当模板的相关逻辑。 你可以把它看作模型与模板之间的桥梁。</p>
+</li>
+</ul>
+<p>如果你熟悉其它的 MVC Web开发框架，比方说 Ruby on Rails，你可能会认为 Django 视图是控制器，而 Django 模板是视图。 很不幸，这是对 MVC 不同诠释所引起的错误认识。 在 Django 对 MVC 的诠释中，视图用来描述要展现给用户的数据；不是数据 如何展现 ,而且展现 哪些 数据。 相比之下，Ruby on Rails 及一些同类框架提倡控制器负责决定向用户展现哪些数据，而视图则仅决定 如何 展现数据，而不是展现 哪些 数据。</p>
+<p>两种诠释中没有哪个更加正确一些。 重要的是要理解底层概念。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/15/django-locals-技巧/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1771,204 +1937,6 @@ int readvrec( SOCKET s, char *buf, size_t len );
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/24/理解面向连接和无连接协议之间的区别/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/24/理解面向连接和无连接协议之间的区别/" itemprop="url">理解面向连接和无连接协议之间的区别</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-24T09:55:32+08:00">
-                2015-03-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
-                    <span itemprop="name">TCP/IP</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>转载自《TCP/IP高效编程 改善网络程序的44个技巧》–技巧1</p>
-<hr>
-<p>网络编程中最基本的概念就是面向连接（<code>connection-oriented</code>）和无连接（<code>connectionless</code>）协议。尽管本质上来说，两者之间的区别并不难理解，但对那些刚刚开始进行网络编程的人来说，却是个很容易混淆的问题。这个问题与上下文有些关联：很显然，如果两台计算机要进行通信，就必须以某种形式”连接”起来，那”无连接通信”又是什么意思呢？</p>
-<p>答案是：面向连接和无连接指的都是<code>协议</code>。也就是说，<strong>这些术语指的并不是物理介质本身，而是用来说明如何在物理介质上传输数据的</strong>。面向连接和无连接协议可以，而且通常也确实会共享同一条物理介质。</p>
-<p>如果两者的区别与承载数据的物理介质无关，又和什么有关呢？<strong>它们的本质区别在于，对无连接协议来说，每个分组的处理都独立于所有其他分组，而对面向连接的协议来说，协议实现则维护了与后继分组有关的状态信息</strong>。</p>
-<p>无连接协议中的分组被称为数据报（datagram），每个分组都是独立寻址，并由应用程序发送的（但还请参考技巧30）。从协议的角度来看，每个数据报都是一个独立的实体，与在两个相同的对等实体之间传送的任何其他数据报都没有关系。</p>
-<blockquote>
-<p>这并不是说从应用程序的角度来看，数据报也是独立的。简单的请求/应答协议，就是客户端向服务器发送一条请求，并收到一条应答，如果应用程序实现的功能比简单的请求/应答协议稍微复杂一点儿，就很可能需要维护数据报之间的状态。但问题的重点在于状态是由应用程序，而不是协议来维护的。图3-9显示了一个无连接服务器实例，在这个例子中，服务器维护了客户端发来的数据报之间的状态。</p>
-</blockquote>
-<p>通常这就意味着客户端和服务器不会进行长期的对话–客户端发起一条请求，服务器回送一个应答。如果稍后客户端发起了另一条请求，协议会认为这是与第一个事务无关的独立事务。</p>
-<p>这还意味着协议很可能是不可靠的。也就是说，网络会尽最大努力传送每一个数据报，但并不保证数据报不丢失、不延迟或者不错序传输。</p>
-<p>另一方面，面向连接的协议则维护了分组之间的状态，使用这种协议的应用程序通常都会进行长期的对话。记住这些状态，协议就可以提供可靠的传输。比如，发送端可以记住哪些数据已经发送出去了但还未被确认，以及数据是什么时候发送的。如果在某段时间间隔内没有收到确认，发送端可以重传数据。接收端可以记住已经收到了哪些数据，并将重复的数据丢弃。如果分组不是按序到达的，接收端可以将其保存下来，直到逻辑上先于它的分组到达为止。</p>
-<p>典型的面向连接协议有三个阶段。第一阶段，在对等实体间建立连接。接下来是数据传输阶段，在这个阶段中，数据在对等实体间传输。最后，当对等实体完成数据传输时，连接被拆除。</p>
-<p>一种标准的类比是：使用面向连接的协议就像打电话，而使用无连接协议就像寄信。给朋友寄信时，每封信都是一个独立寻址且自包含的实体。邮局在处理这些信件时不会考虑到两个通信者之间的任何其他信件。邮局不会维护以往通信者的历史记录–也就是说，它不会维护信件之间的状态。邮局也不保证信件不丢失、不延迟、不错序。这种方式就对应于无连接协议发送数据报的方式。</p>
-<blockquote>
-<p>[Haverlock, 2000]指出用明信片进行类比会更合适一些，因为写错地址的信件会被退回发信人，而（和典型的无连接协议数据报一样）明信片则不会。</p>
-</blockquote>
-<p>现在来看看不是给朋友寄信，而是打电话时会发生些什么事情。首先，拨朋友的号码来发起呼叫。朋友应答，会说”嗨”之类的话，然后我们回应：”嗨，萨丽。我是亨利。”我们和朋友聊一会儿，然后互说再见并挂机。这是面向连接协议中发生的典型状况。在连接建立阶段，一端与其对等实体联系，交换初始问候信息，对会话中要用到的一些参数和选项进行沟通，然后连接进入数据传输阶段。</p>
-<p>在电话交谈的过程中，两端用户都知道他们在和谁说话，因此没必要不停地说”这是亨利在跟萨丽说话”。也没必要在每次说话之前都拨一次朋友的电话号码–我们的电话已经连接起来了。同理，在面向连接协议的数据传输阶段，也没必要说明我们自己或对等实体的地址。连接为我们维护的状态中包含了这些地址。我们只要发送数据就行了，不需要考虑寻址或其他与协议相关的问题。</p>
-<p>就像用电话交谈一样，连接的任一端完成数据的传输时，都要通知其对等实体。两端都完成传输时，要依次将连接拆除。</p>
-<blockquote>
-<p>这种类比虽然很形象，但并不是非常贴切的。电话系统有实际的物理连接。而我们的”连接”则完全是想象的–它只是由两端记录的状态构成的。为了说明这一点，我们来看看当一个空闲连接一端的主机崩溃并重启时会发生什么情况。还有连接存在吗？从重启主机的角度来看，肯定是没有了。它对先前的连接一无所知。但它原来的对等实体仍然认为自己是连接着的，因为它仍然维护着与连接有关的状态，没有发生什么使那个状态失效的事件。</p>
-</blockquote>
-<p>既然无连接协议有这么多的缺点，大家可能会奇怪，为什么还要使用这种协议呢？我们会看到，在很多情况下，使用无连接协议构建应用程序都是有意义的。比如，使用无连接协议可以很方便地支持一对多和多对一通信，而面向连接协议通常都需要多个独立的连接才能做到。但更重要的是，无连接协议是构建面向连接协议的基础。为了更具体地说明这个问题，也为了把讨论转回到本书的话题中来，我们来看看TCP/IP协议族。在技巧14中我们会看到，TCP/IP基于一个４层的协议栈，如图2-1所示。</p>
-<p><img src="/img/简化的TCPIP协议栈.png" alt="图2-1　简化的TCP/IP协议栈"></p>
-<p>栈的底部是接口层，直接与硬件相连。栈的顶部是应用程序，比如Telnet、ftp和其他标准的以及用户编写的应用程序。如图所示，TCP和UDP都是构建在IP之上的。因此，IP是构建整个TCP/IP协议族的基础。但IP提供的是一种尽力而为的、不可靠的无连接服务。它接收来自其上层的分组，将它们封装在一个IP分组中，根据路由为分组选择正确的硬件接口，从这个接口将分组发送出去。一旦将分组发送出去了，IP就不再关心这个分组了。和所有无连接协议一样，它将分组发送出去之后就不再记得这个分组了。</p>
-<p>这种简单性也是IP的主要优点。因为它对底层的物理介质没有作任何假设，所以在任何能够承载分组的物理链路上都可以运行IP。例如，IP可以运行在简单的串行链路、以太网和令牌环LAN、X.25和使用ATM（<code>Asychronous Transfer Mode，异步转移模式</code>）的WAN、CDPD（<code>Cellular Digital Packet Data，无线蜂窝数字分组数据</code>）网，以及很多其他网络上。尽管这些网络技术之间有很大的差异，但IP对它们一视同仁，除了认为它们可以转发分组之外没有对其作任何假设。这种机制隐含了很深的意义。IP可以运行在任何能够承载分组的网络上，所以整个TCP/IP协议族也可以。</p>
-<p>现在我们来看看TCP是怎样利用这种简单的无连接服务来提供可靠的面向连接服务的。TCP的分组被称为段（segment），是放在IP数据报中发送的，因此，根本无法假定这些分组会抵达目的地，更不用说保证分组无损坏且以原来的顺序到达了。为了提供这种可靠性，TCP向基本的IP服务中添加了三项功能。首先，它为TCP段中的数据提供了校验和。这样有助于确保抵达目的地的数据在传输过程中不会被网络损坏。第二，<strong>它为每字节分配了一个序列号</strong>，这样，如果数据抵达目的地时真的错序了，接收端也能够按照恰当的顺序将其重装起来。</p>
-<blockquote>
-<p>当然，TCP并没有为每字节都附加一个序列号。实际上，每个TCP段的首部都包含了段中第一字节的序列号。这样，就隐含地知道了段中其他字节的序列号。</p>
-</blockquote>
-<p>第三，TCP提供了一种确认-重传机制，以确保最终每个段都会被传送出去。</p>
-<p>确认/重试机制是到目前为止我们讨论的三种附加机制中最复杂的一种，我们来研究一下它是怎样工作的。</p>
-<blockquote>
-<p>这里我们忽略了几个细节，基本没有涉及TCP协议的众多细微之处，以及如何用它们来提供健壮可靠的传输机制。RFC 793[Postel, 1981b]和RFC 1122[Braden, 1989]中有完整的细节描述。[Stevens, 1994]中的阐述则更容易为人接受。RFC 813[Clark, 1982]对 TCP窗口和确认机制进行了概略的讨论。</p>
-</blockquote>
-<p>TCP连接的每一端都维护了一个接收窗口（<code>receive window</code>），接收窗口就是可以从对等实体接收的数据序列号范围。最小值表示窗口的左边界，是所期望的下一字节的序列号。最大值表示窗口的右边界，是TCP缓冲区空间所能容纳字节的最大编号。使用接收窗口而不只是所期望的下一字节计数器，就可以通过流量控制来提高可靠性。流量控制机制可以防止TCP传输的数据使其对等实体的缓冲区空间溢出。</p>
-<p>TCP段到达时，序列号在接收窗口范围之外的所有数据都会被丢弃。其中包括先前已经收到的数据（序列号在接收窗口左边的数据），以及没有缓冲区空间存储的数据（序列号在接收窗口右边的数据）。如果段中第一个可接受字节不是所期望的下一字节，就说明这个段是错序的，大部分TCP应用程序都会将其放入队列，直到缺少的数据到达为止。如果段中第一个可接受字节是所期望的下一字节，就通知应用程序有数据可读，并在所期望的下一字节序列号上加上段中本次接受的字节数，对其进行更新。此时窗口向右滑动本次接受字节数的长度。最后，TCP向对等实体发送一条ACK，其中携带了它所期望的下一字节序列号。</p>
-<p>比如，在图2-2A中，虚线框表示的接收窗口显示，所期望的下一字节序列号为4，而TCP希望接收9字节（4～12）。图2-2B显示的是收到字节4、5、6和7之后的接收窗口。窗口向右滑动了4个序列号，TCP的ACK会说明它接下来所期望的是序列号8。</p>
-<p><img src="/img/TCP接收窗口.png" alt="图2-2 TCP接收窗口"></p>
-<p>同样是这种情况，现在从TCP发送端的角度来看。除了接收窗口之外，每个TCP还维护了一个发送窗口（<code>send window</code>）。发送窗口被划分成两部分：已发送但还未被确认的字节，以及可以发送但还未发送的字节。假设字节1～3已经被确认了，图2-3A显示的是与图2-2A中接收窗口相对应的发送窗口。字节4～7发送之后，确认之前，发送窗口如图2-3B所示。TCP还可以发送字节8～12而无须等待来自对等实体的ACK。发送了字节4～7之后，TCP会启动一个RTO（<code>Retransmission Timeout，重传超时</code>）定时器。如果在定时器超时之前这四个字节没有被确认，TCP就认为它们丢失了，并重新传送这四个字节。</p>
-<blockquote>
-<p>很多实现并不记录一个特定的段中发送了哪些字节，因此重传段中包含的字节数可能会比原来的多。例如，如果字节8和9在RTO定时器超时之前发送出去了，这些应用程序就会重传字节4～9。</p>
-</blockquote>
-<p>我们要注意这样一个事实：RTO定时器超时并不意味着原来的数据没有到达目的地。有可能是ACK丢失了，或者原来的段在网络中延迟的时间太长，以至于在其ACK到达之前RTO定时器就超时了。但这并不会造成什么问题，因为如果原来的数据确实到达了，那么重传的数据就会处于接收端TCP接收窗口范围之外，会被丢弃。</p>
-<p>字节4～7确认后，发送端TCP会将其丢弃，并将发送窗口向右移动，如图2-3C所示。</p>
-<p><img src="TCP发送窗口.png" alt="图2-3　TCP发送窗口"></p>
-<p>对于编写应用程序的程序员来说，TCP提供了一种可靠的面向连接协议。更多关于可靠的具体含义的讨论请参见技巧9。</p>
-<p>另一方面，UDP为编写应用程序的程序员提供了一种不可靠的无连接服务。事实上，UDP只向底层的IP协议中添加了两项功能。首先，它提供了一个可选的校验和来检测数据的损坏情况。尽管IP也有校验和，但它只对IP分组首部进行计算，所以，TCP和UDP也都提供了校验和来保护它们自己的首部和数据。UDP向IP添加的第二项特性就是端口的概念。</p>
-<p>IP地址（这些地址通常都是以因特网标准的点分十进制表示法给出的，请参见技巧2）用来将一个IP数据报传送给一台特定的主机。数据报到达目的主机时，还需要将其数据传送给恰当的应用程序。例如，一个UDP分组的目标可能是回声服务，而另一个的目标则可能是时间查询服务。端口提供了一种将数据多路分解到正确目的应用程序的方式。每个TCP和UDP套接字都有一个与之相关的端口。应用程序可以通过显式的bind调用来设置这个端口，也可以由操作系统为其选择。分组到达时，内核会搜索其套接字列表，查找一个与分组中的协议、地址和端口号相匹配的套接字。如果找到了匹配的套接字，就由指定的协议（在我们所讨论的情形中，就是TCP或UDP）来处理数据，并将这些数据提供给所有打开了匹配套接字的应用程序。</p>
-<blockquote>
-<p>如果有多个进程或线程打开了这个套接字，那么其中任何一个都可以读取数据，但读过一次之后，数据对其他进程或线程来说就不可用了。</p>
-</blockquote>
-<p>回到与电话/寄信的类比中来，我们可以把TCP连接中的网络地址当作一个办公室总机的电话号码，把端口号当作办公室中某台正被呼叫的特定电话的分机号。同理，可以将UDP地址当作一座公寓楼的地址，并把端口号当作公寓楼大厅中的个人邮箱。</p>
-<p>##小结</p>
-<p>在这个技巧中，我们研究了无连接和面向连接协议的区别。我们看到，不可靠的无连接数据报协议是构建可靠的面向连接协议的基础，我们还简单介绍了可靠的TCP协议是如何构建在不可靠的IP协议上的。</p>
-<p>我们还注意到，<strong>对TCP来说，连接完全是想象的。它是由端点所记忆的状态组成的，并不存在”物理”连接</strong>，而打电话的时候是有物理连接的。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2019,7 +1987,7 @@ int readvrec( SOCKET s, char *buf, size_t len );
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">167</span>
+                <span class="site-state-item-count">168</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

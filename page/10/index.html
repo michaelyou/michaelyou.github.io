@@ -286,6 +286,180 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/07/epoll为什么高效/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/07/epoll为什么高效/" itemprop="url">epoll为什么高效</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-07T22:22:39+08:00">
+                2015-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##无需遍历整个fd集合<br>首先回忆一下select 模型，当有I/O 事件到来时，select 通知应用程序有事件到了快去处理，而应用程序必须轮询所有的fd集合，测试每个fd是否有事件发生，并处理事件；代码像下面这样：</p>
+<pre><code>int res = select(maxfd+1, &amp;readfds,NULL, NULL, 120);
+if (res &gt; 0)
+{
+    for (int i = 0; i &lt;MAX_CONNECTION; i++)
+    {
+       if (FD_ISSET(allConnection[i], &amp;readfds))
+       {
+           handleEvent(allConnection[i]);
+       }
+    }
+}
+// if(res == 0) handle timeout, res &lt; 0handle error
+</code></pre><p>Epoll 不仅会告诉应用程序有I/0事件到来，还会告诉应用程序相关的信息，这些信息是应用程序填充的，因此根据这些信息应用程序就能直接定位到事件，而不必遍历整个fd集合。</p>
+<pre><code>int res = epoll_wait(epfd, events, 20,120);
+for (int i = 0; i &lt; res;i++)
+{
+    handleEvent(events[n]);
+}
+</code></pre><p>##Epoll 关键数据结构<br>Epoll 速度快和其数据结构密不可分，其关键数据结构就是：</p>
+<pre><code>struct epoll_event {
+    __uint32_tevents;      // Epoll events
+    epoll_data_tdata;      // User data variable
+};
+typedef union epoll_data {
+    void *ptr;
+    int fd;
+    __uint32_t u32;
+    __uint64_t u64;
+} epoll_data_t;
+</code></pre><p>可见epoll_data 是一个 union 结构体 , 借助于它应用程序可以保存很多类型的信息 :fd 、指针等等。有了它，应用程序就可以直接定位目标了。</p>
+<p>别小看了这些效率的提高,在一个大规模并发的服务器中,轮询IO是最耗时间的操作之一。</p>
+<p>对比最早给出的阻塞IO的处理模型, 可以看到采用了多路复用IO之后, 程序可以自由的进行自己除了IO操作之外的工作, 只有到IO状态发生变化的时候由多路复用IO进行通知, 然后再采取相应的操作, 而不用一直阻塞等待IO状态发生变化了.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/07/epoll的事件触发方式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1807,165 +1981,6 @@ main()
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/06/从socket读数据时，socket缓存里的数据，可能超过用户缓存的长度，如何处理？/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/06/从socket读数据时，socket缓存里的数据，可能超过用户缓存的长度，如何处理？/" itemprop="url">从socket读数据时，socket缓存里的数据，可能超过用户缓存的长度，如何处理？</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-06T14:22:34+08:00">
-                2015-03-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
-                    <span itemprop="name">unix网络编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>从socket读数据时，socket缓存里的数据，可能超过用户缓存的长度，如何处理？ 例如，socket缓存有8kB的数据，而你的缓存只有2kB空间。</p>
-</blockquote>
-<p>可以调用realloc()，扩大原有的缓存块尺寸。 </p>
-<p>但是临时申请内存的有一定性能损失。</p>
-<p>这种情况要看接收缓存的方式。</p>
-<ul>
-<li>第一种方式：  使用100k的大接收缓存为例。 </li>
-</ul>
-<p>如果要等待数据，并进行解析。可能发生缓存不够的情况。此时只能扩充缓存，或先处理100k的数据，再接收新的数据。</p>
-<ul>
-<li>第二种方式： 使用缓存队列，分成8K大小的队列。</li>
-</ul>
-<p>不存在接收缓存不够的情况。 除非用户解析已出错，使用数据接收、使用脱勾。 这种方式的代价是，可能需要将缓存队列再次拷贝、拼接成一块大的缓存，再进行解析。 而在本人的系统中，只需要将socket接收的数据再次原样分发给客户， <code>所以这种方案是最佳方案</code>。</p>
-<blockquote>
-<p>向socket发送数据时， 可能只发送了用户缓存里的一半，如何处理？例如，需要向socket发送8kB数据，返回值只有2kB发送成功。</p>
-</blockquote>
-<p>记录缓存的偏移量。 下一次socket写事件时， 再从偏移的位置接着发送。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2016,7 +2031,7 @@ main()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">167</span>
+                <span class="site-state-item-count">168</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

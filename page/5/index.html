@@ -286,6 +286,170 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/20/为什么搬家之后手机地图定位仍是在原来的地方-Google-WiFi-定位的原理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/20/为什么搬家之后手机地图定位仍是在原来的地方-Google-WiFi-定位的原理/" itemprop="url">搬家后手机地图定位仍在原来的地方--Google WiFi定位的原理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-20T23:27:32+08:00">
+                2015-05-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/长知识/" itemprop="url" rel="index">
+                    <span itemprop="name">长知识</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>前几天刚搬家，到了新家拿出手机，却发现手机地图的定位还是在原来的地方，怎么重新定位都不准确。过了两天却又好了，我以为是正常的延迟或者误差，就没把这事放在心上。今天看到了这篇文章终于恍然大悟，不禁感叹，生活处处是学问啊！</p>
+<p>原文是一位台湾同行写的，是繁体字，我改成了简体贴在这里与大家共享，原文在<a href="http://www.dearhoney.idv.tw/?p=1293" target="_blank" rel="external">这里</a></p>
+<hr>
+<p>以前我不了解Google WiFi 定位时，一直对这技术嗤之以鼻，我想说从IP Address 哪里能定位到很精准，最多就是从一些公开的IP to GEO 资料库可以查询到这个IP 是在那个城市，是没办法精准定位的。</p>
+<p>可是随着我发现没有GPS 卫星定位功能的iPod Touch 在打开WiFi 的情况下竟然可以在Google 地图上精准到我所在地的附近，这就引起了我很大的好奇心，到底这是怎么做到的？显然不可能是靠IP Address 去查询啊？</p>
+<p>看了一些简体与繁体的文件，实在是觉得扯太远扯太多，还是没看到精髓处，所以直接从英文去查吧！果然查到了不少资料，也就了解Google WiFi 定位的原理了。在这之前先把几个名词给解释一下。</p>
+<p><strong>GPS卫星定位</strong>：靠的是环绕在地球四周的数颗卫星发送讯号到地面，交叉连集出所在地的方法。从十几年前开始出现汽车导航产品，就是使用这种技术。初次定位时常要花上一分钟以上的时间，这也是目前汽车导航和智慧型手机都有提供的定位方式。当有遮蔽物阻挡来自天空的讯号时就会发生定位的困难。</p>
+<p><strong>A-GPS定位</strong>：靠着事先下载星历资料，能够加速上述GPS定位的初次定位速度。由于一般车用导航机都不具备网路连线能力因此无法事先下载星历资料，所以也都不具备A-GPS定位。</p>
+<p><strong>手机基地台定位</strong>：靠的是侦测到的手机基地台(Cell Tower)，比对资料库以及信号强度，交叉连集出所在地的方法。也因为要能够侦测手机基地台，所以一般车用导航机因不具备手机电话能力而无法 提供，几乎可以说手机基地台定位是智慧型手机或者能够插手机SIM卡的平板电脑才可以提供的功能。此法尚须有网路连线做资料库查询才能完成定位。</p>
+<p><img src="http://7xj6cl.com1.z0.glb.clouddn.com/GoogleWiFi_CellTower.png" alt="附近手机基地台真多啊"></p>
+<p><strong>WIFI定位</strong>：靠的是侦测附近周围所有的无线网路基地台（无线接入点）的MAC地址（类似10-78-D2-93-58-C2这样的格式），去比对资料库中该MAC地址的座標，交叉連集出所在地。此法尚須有網路連線做資料庫查詢才能完成定位。</p>
+<p>所以问题来了：这份无线网路基地台MAC地址对应到经纬度的资料库，是怎么建立起来的呢？</p>
+<p>基础建设靠的是谷歌街景车。谷歌街景车除了拍下街景以外，另外还做了两件事情(信息来源：<a href="http://googlepolicyeurope.blogspot.com/2010/04/data-collected-by-google-cars.html" target="_blank" rel="external">google blog</a>)：</p>
+<p>沿路搜集所有公开的无线网路MAC地址，与当时的经纬度一并记录。<br>根据拍下的街景来建立建筑物的3D模型资料。</p>
+<p><img src="http://7xj6cl.com1.z0.glb.clouddn.com/GoogleWiFi_3Dbuilding.png" alt="此效果截至本文刊出时仅能在谷歌Android手机上看到"></p>
+<p>但資料庫一定會面臨過期與需要更新的問題，這時候全世界有在使用行動裝置谷歌+定位程式的人，等于是在不知不觉中帮忙做这件事情。更新的方法是当无线网络与手机基地台定位或GPS定位同时开启时，手持装置藉由手机基地台定位或GPS定位这两种方式可以获得目前的座标，再透过无线网络搜寻到附近所有的MAC地址，背后向谷歌的资料库做更新。（信息来源：<a href="http://www.google.com/support/forum/p/Google%20Mobile/thread?tid=6bef39e72c3abbb5&amp;hl=en" target="_blank" rel="external">谷歌员工克里斯托弗的公开说法</a>）</p>
+<p>說穿了技術其實不難，但這麼龐大的資料庫，又能夠不痛不癢的號召每個行動裝置幫忙更新維護這份資料庫，大概也只有谷歌做得来了。</p>
+<p>知道了原理之后，衍生出来的就是一些隐私权的问题。</p>
+<p>首先就是谷歌搜集无线网络的MAC地址资讯合法吗？德国政府去年对此提出疑虑，而谷歌认为合法，两造后来怎么样了我懒得去追，反正从技术上来看，MAC地址在網路上要能夠被查詢到，那麼你與對方之間不能有路由器存在，一旦過了路由器那麼原始MAC地址就會被替換(詳細的原理這邊就不多說了)，所以一般人雖然可以用很多方法去找出對方的IP地址，但对方的MAC地址就没办法了，中间经过的路由器太多啦！也就无法利用MAC地址去查對方身處何處。除非將木馬植入對方電腦來回報，且對方有在使用無線網路而且他附近的無線網路基地台有被登記到谷歌資料庫中，那才有機會找到對方所在地附近，但這難度又高條件又多，對警察來說還是用IP地址行文法院与电信业者来找精确的地址最快。</p>
+<p>所以回头来说隐私权，我个人觉得应该是不会，且无线网络的MAC地址是屬於公開資訊，並非刻意用什麼非法手段才能取得。一般人就算探測到你的MAC地址，也不晓得你是谁或什么人在使用。</p>
+<p>再来就是定位错误的问题。</p>
+<p>搬家后其无线网路基地台也跟着移动，那么以无线网络定位來看自己身在何處，可能會呈現仍然在上一個住所的問題。針對這種因為資料庫尚未被更新而產生的定位錯誤問題，Google提供了一个<a href="https://services.google.com/fb/forms/wifibugs/" target="_blank" rel="external">无线网路定位错误的表格</a>来申请回报，但一如一般谷歌的服務一樣，這表格並不能保證立即得到回應。想要加速更新資料庫，除了填寫這份表格以外，另外就是自己時常拿行動裝置開著无线+ GPS定位吧，这是刚才提过的资料库更新法，总有一天谷歌会因为你与行动装置的努力而修正过来的。😛</p>
+<p>回头看我一开始以为谷歌的WiFi定位是靠着IP地址来定位，真是大错特错了啊！谷歌要的只是侦测到无线基地台的MAC地址就可以，也没有强调一定要与无线基地台连线，只要打开行动装置的无线网络功能，让谷歌定位可以藉由无线去搜集附近可侦测的MAC地址，接着透过3G行动上网或此时你真的有无线网络连线，就可以去向谷歌资料库查询这些MAC地址连集起来的可能位置，就这样完成定位了。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/19/翻译-python招聘指南/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2603,165 +2767,6 @@ class Bar(object):
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/06/Django-csrf机制/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/06/Django-csrf机制/" itemprop="url">Django csrf机制</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-06T20:44:17+08:00">
-                2015-05-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>官方文档参考<a href="https://docs.Djangoproject.com/en/1.7/ref/contrib/csrf/" target="_blank" rel="external">这里</a></p>
-<p>##什么是CSRF</p>
-<p>CSRF（Cross-site request forgery）跨站请求伪造，也被称成为“one click attack”或者session riding，通常缩写为CSRF或者XSRF，是一种对网站的恶意利用。尽管听起来像跨站脚本（XSS），但它与XSS非常不同，并且攻击方式几乎相左。XSS利用站点内的信任用户，而CSRF则通过伪装来自受信任用户的请求来利用受信任的网站。与XSS攻击相比，CSRF攻击往往不大流行（因此对其进行防范的资源也相当稀少）和难以防范，所以被认为比XSS更具危险性。</p>
-<p>比如可以这样进行攻击:</p>
-<p>一个网站用户Bob可能正在浏览聊天论坛，而同时另一个用户Alice也在此论坛中，并且后者刚刚发布了一个具有Bob银行链接的图片消息。设想一下，Alice编写了一个在Bob的银行站点上进行取款的form提交的链接，并将此链接作为图片tag。如果Bob的银行在cookie中保存他的授权信息，并且此cookie没有过期，那么当Bob的浏览器尝试装载图片时将提交这个取款form和他的cookie，这样在没经Bob同意的情况下便授权了这次事务。</p>
-<p>##防范措施<br>对于web站点，将持久化的授权方法（例如cookie或者HTTP授权）切换为瞬时的授权方法（在每个form中提供隐藏field），这将帮助网站防止这些攻击。一种类似的方式是在form中包含秘密信息、用户指定的代号作为cookie之外的验证。</p>
-<p>另一个可选的方法是“双提交”cookie。此方法只工作于Ajax请求，但它能够作为无需改变大量form的全局修正方法。如果某个授权的cookie在form post之前正被JavaScript代码读取，那么限制跨域规则将被应用。如果服务器需要在Post请求体或者URL中包含授权cookie的请求，那么这个请求必须来自于受信任的域，因为其它域是不能从信任域读取cookie的。</p>
-<p>与通常的信任想法相反，使用Post代替Get方法并不能提供卓有成效的保护。因为JavaScript能使用伪造的POST请求。尽管如此，那些导致对安全产生“副作用”的请求应该总使用Post方式发送。Post方式不会在web服务器和代理服务器日志中留下数据尾巴，然而Get方式却会留下数据尾巴。</p>
-<p>尽管CSRF是web应用的基本问题，而不是用户的问题，但用户能够在缺乏安全设计的网站上保护他们的帐户：通过在浏览其它站点前登出站点或者在浏览器会话结束后清理浏览器的cookie。</p>
-<p>##如何用 Django 进行防范 </p>
-<p>Django的csrf机制,它实际就是后台生成一个随机字符串,在你显示表单的时候在表单中加入一个hidden input,比如:</p>
-<pre><code>&lt;input type=&apos;hidden&apos; name=&apos;csrfmiddlewaretoken&apos; value=&apos;QtF7jsxQddj5Dj9uKuIs3J7jgm0Bf6sg&apos; /&gt;
-</code></pre><p>这个hidden input就是csrftoken在模板中根据后台传过来的随机字符串生成的。</p>
-<ol>
-<li>form提交时，会通过隐藏表单的方式提交cookie中的csrftoken记录</li>
-<li>服务器端接到POST请求时，会验证提交的Token和用户cookie的Token值是否一致，如不一致就返回403错误</li>
-</ol>
-<p><strong>注意</strong>：如果使用的是Django.middleware.csrf.CsrfViewMiddle这个中间件，Django会默认验证每一个post请求，因此所有的表单内都需要加上csrf_token的tag，否则站内提交也会被阻止，除非通过@csrf_exempt装饰器来显式申明不验证token值。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2812,7 +2817,7 @@ class Bar(object):
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">167</span>
+                <span class="site-state-item-count">168</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

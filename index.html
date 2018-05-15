@@ -286,6 +286,167 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/15/翻译-不使用第三方库/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/15/翻译-不使用第三方库/" itemprop="url">[翻译]不使用第三方库</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-15T22:04:24+08:00">
+                2018-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/go/" itemprop="url" rel="index">
+                    <span itemprop="name">go</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>[翻译]不使用第三方库</p>
+<p><a href="https://blog.gopheracademy.com/advent-2014/case-against-3pl/" target="_blank" rel="external">原文</a></p>
+<p>译者：不少golang开源项目的Contrib Guidelines里会表示在提交PR时尽量不要引入第三方的包，这篇文章正是阐述了这样一个观点。原文标题下还有一行是：”我如何不再担心包管理并开始喜欢上无版本的包管理”，可以作为本文的另一个标题。也许很多人并不认同本文的观点，甚至认为是胡说八道，但是确实有很多项目在使用这样一个规则：<code>influxdb</code>的<a href="https://github.com/influxdata/influxdb/blob/master/CODING_GUIDELINES.md#try-not-to-use-third-party-libraries" target="_blank" rel="external">coding guidlines</a>明确表示<em>Try not to use third-party libraries</em>，web框架<a href="https://github.com/gin-gonic/gin" target="_blank" rel="external">gin</a>的router实现copy了<a href="https://github.com/julienschmidt/httprouter" target="_blank" rel="external">github.com/julienschmidt/httprouter</a>的代码实现并做了少量更改，几乎所有的大型golang程序都会自己实现一些通用的函数，例如slice的union、unique等操作，自己扩展log的程序也有很多，比如nsq。</p>
+<hr>
+<p>如果你看过<a href="https://groups.google.com/forum/#!forum/golang-nuts" target="_blank" rel="external">golang-nuts</a>邮件列表，会发现包管理比任何其他话题都容易引起争论。在我刚开始写Go的时候同样认为缺少一个<code>真正的</code>包管理是一个明显的失误，但是，当我写的Go代码越多我越是开始欣赏<code>go get</code>的简单易用。</p>
+<p>版本化软件包的好处很明显。它使团队中的每个人都有一份一致的代码，并且大多数时候包的版本号采用固定的模式(<a href="https://semver.org/" target="_blank" rel="external">语义化版本</a>)，可以传达API的变更信息。但是包版本控制并非没有缺点。</p>
+<p>在这篇文章中，我们将来探讨应用程序开发人员可用的选项，库开发人员的职责以及无版本包管理的副作用。</p>
+<h3 id="只使用标准库"><a href="#只使用标准库" class="headerlink" title="只使用标准库"></a>只使用标准库</h3><p>许多第三方Go库试图提供较现有的标准库Package更丰富的实现。然而，很多时候，他们的功能集变得太大而无法正确测试，并且需要新的开发人员了解额外的框架，从而增加了项目的认知开销。</p>
+<p>在GitHub上有<a href="https://github.com/search?l=Go&amp;p=3&amp;q=web+framework&amp;type=Repositories" target="_blank" rel="external">200多个Go Web框架</a>，我一个都没用过。基于HTTP的项目有这样一系列的要求和权衡，我很欣赏<code>net/http</code>提供的功能和实用性的平衡。如果我的应用程序需要中间件，那么写一个适合我的项目的<code>http.Handler</code>是很简单的。没有万能的Web框架。</p>
+<p>日志记录(Logging)是另一个<code>少即是多(less is more)</code>的领域。 GitHub上有<a href="https://github.com/search?l=Go&amp;p=3&amp;q=logging&amp;type=Repositories" target="_blank" rel="external">超过500多个Go日志库</a>，但我更喜欢标准日志包(<strong>log</strong>)的简单。它提供了一个小型的、固定范围的库，将时间戳信息打印到标准错误。这就是我需要的。添加其他功能，如日志等级，让开发人员选择何时使用DEBUG而不是INFO级别，会增加剩余代码的复杂性。如果足够重要，那就应该记录日志。</p>
+<h3 id="Ctrl-C-Ctrl-V"><a href="#Ctrl-C-Ctrl-V" class="headerlink" title="Ctrl-C, Ctrl-V"></a>Ctrl-C, Ctrl-V</h3><p><a href="http://en.wikipedia.org/wiki/Don%27t_repeat_yourself" target="_blank" rel="external">DRY</a>的坚定支持者可能会对此建议感到畏缩，但多次将小部分代码复制到项目中可能是导入整个库的更好选择。 如果需要，将小功能复制过来使你可以根据自己的特定需求对其进行调整，并随时扩展它们。 它们还限制了项目中其他开发人员所需的知识，因为他们不需要读取另一个库的完整文档来了解依赖关系。</p>
+<p>几个月前，我发布了一个没有<code>.go</code>文件的Go<a href="https://github.com/benbjohnson/testing" target="_blank" rel="external">测试库</a>，因为它足够小，我希望用户只需复制他们需要的功能。 另一个很好的例子是使用一些简单的算法，如<a href="https://github.com/benbjohnson/jmphash" target="_blank" rel="external">一致的哈希</a>。 很多时候他们少于50行代码。 在复制任何代码之前，请查看包的证书。</p>
+<h3 id="固定范围的库"><a href="#固定范围的库" class="headerlink" title="固定范围的库"></a>固定范围的库</h3><p>尽管我试图坚持使用标准库，但有时候我还是需要使用第三方库。因为<code>go get</code>不提供版本控制，所以与使用像<a href="http://rubygems.org/" target="_blank" rel="external">rubygems</a>等工具时相比，我对第三方库的看法非常不同。</p>
+<p>在Ruby中，在引用程序中肆意添加第三方库很常见。一个三年的Rails项目很容易在其<code>Gemfile</code>中拥有50个依赖项。随着时间的推移，我需要升级库，毫无疑问，它们的功能或API会改变，并与我使用的其他库冲突。所以我将不得不升级那些可能导致更多冲突的其他库。</p>
+<p>那时我意识到一个有30个版本的库实际上是30个独立的库。</p>
+<p>在Go中，我尝试编写和使用具有固定范围的库，因此他们只需要一个版本。例如，<a href="https://github.com/benbjohnson/css" target="_blank" rel="external">css</a>库实现了<a href="http://www.w3.org/TR/css3-syntax/" target="_blank" rel="external">W3C的CSS语法模块级别3</a>规范，因此其范围是固定的。一旦实施和测试，变更和bug修复都会很小。</p>
+<p>另一个例子是<a href="https://github.com/boltdb/bolt" target="_blank" rel="external">Bolt</a>库。它的目标是提供一个简单，快速的事务密钥/值存储。通过限制它的问题空间，Bolt能够保持最小的API并经过良好测试。经过近六个月的各种生产系统运行没有问题，Bolt升级到了1.0版并停止了开发。该项目不会被放弃 - 它只是已经完成了。添加功能会影响项目的稳定性。 Bolt的下一个版本不会是2.0，它会被简单地称为别的东西。</p>
+<h3 id="高质量建立信任-amp-信任建立社区"><a href="#高质量建立信任-amp-信任建立社区" class="headerlink" title="高质量建立信任&amp;信任建立社区"></a>高质量建立信任&amp;信任建立社区</h3><p>无版本软件包管理的一个意想不到的副作用是，我现在需要知道并信任编写我使用的库的开发人员。 正因为如此，我在Go社区的参与度比我在任何其他语言社区的参与度都要高。</p>
+<p>我定期阅读我使用的项目源代码，看看Package维护人员的风格和项目质量是否与我期望的一致。它让我对社区中的开发者更加赞赏。了解某人的代码是非常个人化的事，我相信这是Go社区蓬勃发展的一个小原因。</p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>Go语言提供了惊人的高质量和深思熟虑的通用库的实现。很多时候，这是项目所需的一切。 很多时候你也会需要超出标准库范围的功能。在这些情况下，我希望你能花时间了解一下你使用的库的代码和开发人员。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/27/nsqd源码分析和代码流程图/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1803,184 +1964,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/16/docker-swarm部署应用/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/16/docker-swarm部署应用/" itemprop="url">docker swarm部署应用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-16T21:42:58+08:00">
-                2017-09-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Docker/" itemprop="url" rel="index">
-                    <span itemprop="name">Docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h2><h3 id="什么是swarm"><a href="#什么是swarm" class="headerlink" title="什么是swarm"></a>什么是swarm</h3><p>一个<code>swarm</code>就是一组运行<code>Docker</code>并组成集群的机器。之后，你继续运行以前使用的<code>Docker命令</code>，但现在它们是由<code>swarm manager</code>(也是一台机器，执行<code>docker swarm init</code>的就是<code>manager</code>)在集群上执行。集群中的机器可以是物理机或虚拟机。加入集群后，它们被称为<code>节点</code>（node）。</p>
-<p><code>swarm manager</code>可以使用几种策略来运行容器，例如“最空的节点”（<code>empties node</code>） - 将容器放到利用率最低的机器上。或者“全局”（<code>global</code>）模式，它确保每台机器只能获得指定容器的一个实例。你通过在<code>compose文件</code>来指示<code>swarm manager</code>使用这些策略。</p>
-<p><code>swarm manager</code>是集群中唯一可以执行命令的机器，也是唯一可以授权其他机器作为<code>worker</code>加入集群的机器。<code>worker</code>只提供<code>capacity</code>，它无法告诉任何其他机器它可以做什么和不能做什么。</p>
-<h3 id="什么是slack"><a href="#什么是slack" class="headerlink" title="什么是slack"></a>什么是slack</h3><p><code>stack</code>是一组相互关联的服务，可以被一起编排。<code>单个stack</code>能够定义整个应用程序的功能（尽管非常复杂的应用程序可能希望使用多个stack）。</p>
-<h2 id="Set-up-your-swarm"><a href="#Set-up-your-swarm" class="headerlink" title="Set up your swarm"></a>Set up your swarm</h2><p>一个<code>swarm</code>由很多<code>node</code>组成，<code>node</code>可以是物理机或虚拟机。基本概念很简单：运行<code>docker swarm init</code>启用集群模式，使当前的机器成为<code>manager</code>，然后在其他机器上运行<code>docker swarm join</code>，使他们以<code>worker</code>身份加入集群。</p>
-<h3 id="创建集群"><a href="#创建集群" class="headerlink" title="创建集群"></a>创建集群</h3><p>我们可以在本机创建几台虚拟机来创建我们的集群（需要安装<a href="https://www.virtualbox.org/wiki/Downloads" target="_blank" rel="external">VirtualBox</a>）</p>
-<p>首先，使用<code>docker-machine</code>命令，通过<code>VirtualBox</code>驱动创建两台虚拟机，<code>myvm1</code>和<code>myvm2</code>：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span> docker-machine create --driver virtualbox myvm1</div><div class="line"><span class="meta">$</span> docker-machine create --driver virtualbox myvm2</div></pre></td></tr></table></figure>
-<p>我们将<code>myvm1</code>用作manager，它可以执行docker命令和授权别的worker加入swarm，<code>myvm2</code>将作为worker。</p>
-<p>登录<code>docker-machine</code>创建的虚拟机可以使用<code>docker-machine ssh命令</code>,下面我们设置<code>myvm1</code>为manager：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">➜  docker-machine ls</div><div class="line">NAME    ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER        ERRORS</div><div class="line">myvm1   -        virtualbox   Running   tcp://192.168.99.101:2376           v17.06.2-ce</div><div class="line">myvm2   -        virtualbox   Running   tcp://192.168.99.102:2376           v17.06.2-ce</div><div class="line">➜  docker-machine ssh myvm1 "docker swarm init --advertise-addr 192.168.99.101:2377"</div><div class="line"></div><div class="line">Swarm initialized: current node (u5e02o4thu4uurxm9w71kxtu5) is now a manager.</div><div class="line"></div><div class="line">To add a worker to this swarm, run the following command:</div><div class="line"></div><div class="line">    docker swarm join --token SWMTKN-1-02sp63h6alkj7sd57dkv6omkyvkb60y05delt5zvkspe0293ao-dtmm6kqjzbbe33jmo03yrml8t 192.168.99.101:2377</div><div class="line"></div><div class="line">To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.</div></pre></td></tr></table></figure>
-<p>可以看到，返回值中已经有了一个配置好的<code>docker swarm join</code>命令，复制这个命令，在myvm2上执行，使myvm2加入你的swarm作为worker：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">➜  docker-machine ssh myvm2 "docker swarm join --token SWMTKN-1-02sp63h6alkj7sd57dkv6omkyvkb60y05delt5zvkspe0293ao-dtmm6kqjzbbe33jmo03yrml8t 192.168.99.101:2377"</div><div class="line">This node joined a swarm as a worker.</div></pre></td></tr></table></figure>
-<p>🎉，我们的第一个<code>swarm</code>创建成功了。</p>
-<p>我们可以登上<code>myvm1</code>去看看现在的节点情况：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">➜  docker-machine ssh myvm1</div><div class="line">                        ##         .</div><div class="line">                  ## ## ##        ==</div><div class="line">               ## ## ## ## ##    ===</div><div class="line">           /"""""""""""""""""\___/ ===</div><div class="line">      ~~~ &#123;~~ ~~~~ ~~~ ~~~~ ~~~ ~ /  ===- ~~~</div><div class="line">           \______ o           __/</div><div class="line">             \    \         __/</div><div class="line">              \____\_______/</div><div class="line"> _                 _   ____     _            _</div><div class="line">| |__   ___   ___ | |_|___ \ __| | ___   ___| | _____ _ __</div><div class="line">| '_ \ / _ \ / _ \| __| __) / _` |/ _ \ / __| |/ / _ \ '__|</div><div class="line">| |_) | (_) | (_) | |_ / __/ (_| | (_) | (__|   &lt;  __/ |</div><div class="line">|_.__/ \___/ \___/ \__|_____\__,_|\___/ \___|_|\_\___|_|</div><div class="line">Boot2Docker version 17.06.2-ce, build HEAD : ff16afa - Wed Sep  6 00:17:25 UTC 2017</div><div class="line">Docker version 17.06.2-ce, build cec0b72</div><div class="line"></div><div class="line">docker@myvm1:~$ docker node ls</div><div class="line">ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS</div><div class="line">ggr9eji9z868qrorwerufrr45     myvm2               Ready               Active</div><div class="line">u5e02o4thu4uurxm9w71kxtu5 *   myvm1               Ready               Active              Leader</div></pre></td></tr></table></figure>
-<p>一目了然，现在有两个node，myvm1是作为leader存在</p>
-<h2 id="部署应用"><a href="#部署应用" class="headerlink" title="部署应用"></a>部署应用</h2><p>我们使用<a href="https://github.com/michaelyou/docker_swarm_deploy" target="_blank" rel="external">这个</a>简单的python应用来作为部署对象，你完全可以使用自己的应用程序(但还是建议用我使用的这个程序，这个应用打印了container的hostname，这是下面负载均衡的一个测试)。</p>
-<p>首先将<code>docker-compose.yml</code>拷贝到<code>myvm1</code>：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker-machine scp docker-compose.yml myvm1:~</div></pre></td></tr></table></figure>
-<p>然后就是部署了：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">docker-machine ssh myvm1 "docker stack deploy -c docker-compose.yml firstswarmapp"</div><div class="line"></div><div class="line">Creating service firstswarmapp_visualizer</div><div class="line">Creating service firstswarmapp_redis</div><div class="line">Creating service firstswarmapp_web</div></pre></td></tr></table></figure>
-<p>这时候部署已经完成了，我们来看看成果：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">➜  docker-machine ssh myvm1 "docker stack ls"</div><div class="line">NAME                SERVICES</div><div class="line">firstswarmapp       1</div><div class="line">➜  docker-machine ssh myvm1 "docker stack ps firstswarmapp"</div><div class="line">ID                  NAME                  IMAGE                         NODE                DESIRED STATE       CURRENT STATE                  ERROR               PORTS</div><div class="line">ID                  NAME                         IMAGE                             NODE                DESIRED STATE       CURRENT STATE                 ERROR                              PORTS</div><div class="line">6lfkdnzq27yf        firstswarmapp_redis.1        redis:latest                      myvm1               Running             Running 43 seconds ago</div><div class="line">ui2tdail0fxv        firstswarmapp_visualizer.1   dockersamples/visualizer:stable   myvm1               Running             Running 2 minutes ago</div><div class="line">901cprboy06k        firstswarmapp_web.1          michaelyou/friendlyhello:v1       myvm2               Running             Running 33 minutes ago</div><div class="line">uvju8t48sc2s        firstswarmapp_web.2          michaelyou/friendlyhello:v1       myvm2               Running             Running 33 minutes ago</div><div class="line">sk2z91e4yn9x        firstswarmapp_web.3          michaelyou/friendlyhello:v1       myvm1               Running             Running 34 minutes ago</div><div class="line">tuzdxnfyofyc        firstswarmapp_web.4          michaelyou/friendlyhello:v1       myvm2               Running             Running 33 minutes ago</div><div class="line">715at7211p8k        firstswarmapp_web.5          michaelyou/friendlyhello:v1       myvm1               Running             Running 34 minutes ago</div></pre></td></tr></table></figure>
-<p>可以看到，我们一共有7个<code>container</code>。<code>web</code>5个，分布在两台机器上，<code>redis</code>和<code>visualizer</code>各一个，在<code>manager节点</code>上。这和我们在<code>docker-compose.yml</code>中定义的一样。</p>
-<p><code>myvm1</code>和<code>myvm2</code>的地址都可以访问我们的应用。你创建的网络在它们之间是共享，并且负载平衡的。运行<code>docker-machine ls</code>来获取你的虚拟机的IP地址，并在浏览器上访问它们，并刷新。你会看到五个可能的容器ID，它们随机循环，显示了负载平衡的存在。</p>
-<p>两个IP地址都能工作的原因是群集中的节点加入了一个入口路由网格（routing mesh）。这样可以确保在集群中某个端口部署的服务始终将该端口保留给其自己，无论实际运行容器的是哪个节点。以下是在一个三节点集群的8080端口上部署的名为my-web的服务的路由网格示意图：</p>
-<p><img src="/img/ingress-routing-mesh.png" alt="ingress-routing-mesh"></p>
-<p>如果想要增加容器个数，只要修改<code>docker-compose.yml</code>文件中的replicas的数量，然后重新执行deploy就可以了。</p>
-<p>如果要加入新的node，只要在新的机器上执行我们在<code>myvm2</code>上执行的<code>docker swarm join</code>命令就可以了，加入新的节点后，重新执行deploy，我们就能用上新的机器了（注意要重新执行deploy，不会自动deploy，这一点和elasticsearch等软件不一样）。</p>
-<p>因为我们部署了visualizer，可以通过网页来看看我们集群现在的情况：</p>
-<p><img src="/img/my_swarm.png" alt="my swarm"></p>
-<p>跟<code>docker stack ps</code>输出是一致的。</p>
-<h2 id="清理"><a href="#清理" class="headerlink" title="清理"></a>清理</h2><p>清理stack</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker-machine ssh myvm1 "docker stack rm firstswarmapp"</div></pre></td></tr></table></figure>
-<p>这时候swarm还是在的，清理swarm：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker-machine ssh myvm1 "docker swarm leave --force"</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2031,7 +2014,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">167</span>
+                <span class="site-state-item-count">168</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
