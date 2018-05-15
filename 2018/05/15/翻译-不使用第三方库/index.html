@@ -94,18 +94,18 @@
 
 
 
-<meta name="description" content="[翻译]不使用第三方库 原文 译者：不少golang开源项目的Contrib Guidelines里会表示在提交PR时尽量不要引入第三方的包，这篇文章正是阐述了这样一个观点。原文标题下还有一行是：”我如何不再担心包管理并开始喜欢上无版本的包管理”，可以作为本文的另一个标题。也许很多人并不认同本文的观点，甚至认为是胡说八道，但是确实有很多项目在使用这样一个规则：influxdb的coding gui">
+<meta name="description" content="原文 译者：不少golang开源项目的Contrib Guidelines里会表示在提交PR时尽量不要引入第三方的包，这篇文章正是阐述了这样一个观点。原文标题下还有一行是：”我如何不再担心包管理并开始喜欢上无版本的包管理”，可以作为本文的另一个标题。也许很多人并不认同本文的观点，甚至认为是胡说八道，但是确实有很多项目在使用这样一个规则：influxdb的coding guidlines明确表示Tr">
 <meta name="keywords" content="go">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[翻译]不使用第三方库">
 <meta property="og:url" content="http://yoursite.com/2018/05/15/翻译-不使用第三方库/index.html">
 <meta property="og:site_name" content="Youmai の Blog">
-<meta property="og:description" content="[翻译]不使用第三方库 原文 译者：不少golang开源项目的Contrib Guidelines里会表示在提交PR时尽量不要引入第三方的包，这篇文章正是阐述了这样一个观点。原文标题下还有一行是：”我如何不再担心包管理并开始喜欢上无版本的包管理”，可以作为本文的另一个标题。也许很多人并不认同本文的观点，甚至认为是胡说八道，但是确实有很多项目在使用这样一个规则：influxdb的coding gui">
+<meta property="og:description" content="原文 译者：不少golang开源项目的Contrib Guidelines里会表示在提交PR时尽量不要引入第三方的包，这篇文章正是阐述了这样一个观点。原文标题下还有一行是：”我如何不再担心包管理并开始喜欢上无版本的包管理”，可以作为本文的另一个标题。也许很多人并不认同本文的观点，甚至认为是胡说八道，但是确实有很多项目在使用这样一个规则：influxdb的coding guidlines明确表示Tr">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-05-15T14:06:45.654Z">
+<meta property="og:updated_time" content="2018-05-15T14:08:29.055Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[翻译]不使用第三方库">
-<meta name="twitter:description" content="[翻译]不使用第三方库 原文 译者：不少golang开源项目的Contrib Guidelines里会表示在提交PR时尽量不要引入第三方的包，这篇文章正是阐述了这样一个观点。原文标题下还有一行是：”我如何不再担心包管理并开始喜欢上无版本的包管理”，可以作为本文的另一个标题。也许很多人并不认同本文的观点，甚至认为是胡说八道，但是确实有很多项目在使用这样一个规则：influxdb的coding gui">
+<meta name="twitter:description" content="原文 译者：不少golang开源项目的Contrib Guidelines里会表示在提交PR时尽量不要引入第三方的包，这篇文章正是阐述了这样一个观点。原文标题下还有一行是：”我如何不再担心包管理并开始喜欢上无版本的包管理”，可以作为本文的另一个标题。也许很多人并不认同本文的观点，甚至认为是胡说八道，但是确实有很多项目在使用这样一个规则：influxdb的coding guidlines明确表示Tr">
 
 
 
@@ -375,8 +375,7 @@
       
 
       
-        <p>[翻译]不使用第三方库</p>
-<p><a href="https://blog.gopheracademy.com/advent-2014/case-against-3pl/" target="_blank" rel="external">原文</a></p>
+        <p><a href="https://blog.gopheracademy.com/advent-2014/case-against-3pl/" target="_blank" rel="external">原文</a></p>
 <p>译者：不少golang开源项目的Contrib Guidelines里会表示在提交PR时尽量不要引入第三方的包，这篇文章正是阐述了这样一个观点。原文标题下还有一行是：”我如何不再担心包管理并开始喜欢上无版本的包管理”，可以作为本文的另一个标题。也许很多人并不认同本文的观点，甚至认为是胡说八道，但是确实有很多项目在使用这样一个规则：<code>influxdb</code>的<a href="https://github.com/influxdata/influxdb/blob/master/CODING_GUIDELINES.md#try-not-to-use-third-party-libraries" target="_blank" rel="external">coding guidlines</a>明确表示<em>Try not to use third-party libraries</em>，web框架<a href="https://github.com/gin-gonic/gin" target="_blank" rel="external">gin</a>的router实现copy了<a href="https://github.com/julienschmidt/httprouter" target="_blank" rel="external">github.com/julienschmidt/httprouter</a>的代码实现并做了少量更改，几乎所有的大型golang程序都会自己实现一些通用的函数，例如slice的union、unique等操作，自己扩展log的程序也有很多，比如nsq。</p>
 <hr>
 <p>如果你看过<a href="https://groups.google.com/forum/#!forum/golang-nuts" target="_blank" rel="external">golang-nuts</a>邮件列表，会发现包管理比任何其他话题都容易引起争论。在我刚开始写Go的时候同样认为缺少一个<code>真正的</code>包管理是一个明显的失误，但是，当我写的Go代码越多我越是开始欣赏<code>go get</code>的简单易用。</p>
