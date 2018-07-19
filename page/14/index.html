@@ -286,6 +286,203 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/05/TCP和UDP的工作过程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/05/TCP和UDP的工作过程/" itemprop="url">TCP和UDP的工作过程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-05T16:41:11+08:00">
+                2015-02-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/TCP-IP/" itemprop="url" rel="index">
+                    <span itemprop="name">TCP/IP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##TCP和UDP的工作过程<br>UDP的工作过程是简单的，仅仅将用户数据封装到一个IP数据报中发送到目的地而已，而不关注其他方面。</p>
+<p>TCP却是一个极其复杂的协议，以下只是冰山一角</p>
+<p>###建立连接的三次握手</p>
+<ul>
+<li>主动方发送（SYN J），进入SYN_SENT状态</li>
+<li>被动方收到（SYN J），并往回发送（SYN K, ACK J+1），进入SYN_RCVD状态</li>
+<li>主动方收到（SYN K, ACK J+1），并往回发送（ACK K+1），进入ESTABLISHED状态</li>
+<li>被动方收到（ACK K+1），也进入ESTABLISHED状态<br>以上过程如下图所示：</li>
+</ul>
+<p><img src="/img/establish.png" alt="establish"></p>
+<p>注意到在TCP三次握手的过程中，服务器有这么一条：</p>
+<blockquote>
+<p>被动方收到（SYN J），并往回发送（SYN K, ACK J+1），进入SYN_RCVD状态</p>
+</blockquote>
+<p>服务器进入<code>SYN_RCVD</code>状态（此时连接称为半开连接）后，应当期待再收到一个ACK。 如果超时未收到客户端的<code>ACK</code>，服务器将重发<code>（SYN K, ACK J+1）</code>。 于是，就有一种叫做<code>SYN Flooding</code>的攻击方式。 攻击者向服务器高速发送<code>（SYN J）</code>（而且可以将SYN分节中的IP地址设为随机数）， 并且在随后收到服务器回复的<code>（SYN K, ACK J+1）</code>之后不再继续回复， 这使得服务器上存在很多的半开连接，这些半开连接一般情况下会持续63秒 （在Linux下，默认重试次数为5次，重试的间隔时间从1s开始每次都翻倍，5次的重试时间间隔为1s, 2s, 4s, 8s, 16s，第5次发出后还要等32s才知道第5次也超时了，所以，总共需要 1s + 2s + 4s+ 8s+ 16s + 32s = 63s，TCP才会把断开这个连接）。 它的危害有两方面，一方面自然是占用了服务器的资源；另一方面是填充了半开连接的队列，使得合法的SYN分节无法排队。</p>
+<p>根据SYN Flooding的攻击原理，它的防范主要有以下措施：</p>
+<ol>
+<li>过滤掉最大嫌疑攻击的IP或IP段</li>
+<li>将tcp_synack_retries设为0，表示回应第二个握手包（SYN K, ACK J+1）给客户端后，如果收不到ACK，不进行重试，加快回收“半开连接”。</li>
+<li>将tcp_max_syn_backlog参数根据内存情况适当调大，该参数一般指的是维护的半开连接的队列的长度（不同OS不一样）。</li>
+<li>设置tcp_abort_on_overflow选项，处理不过来就直接拒绝掉。</li>
+</ol>
+<p>###断开连接的四次握手</p>
+<ol>
+<li>主动方发送<code>（FIN M）</code>，进入<code>FIN_WAIT_1</code>状态</li>
+<li>被动方收到<code>（FIN M）</code>，并往回发送<code>（ACK M+1）</code>，进入<code>CLOSE_WAIT</code>状态</li>
+<li>主动方收到<code>（ACK M+1）</code>，进入<code>FIN_WAIT_2</code>状态</li>
+<li>被动方发送<code>（FIN N）</code>，进入<code>LAST_ACK</code>状态</li>
+<li>主动方收到<code>（FIN N）</code>，并往回发送<code>（ACK N+1）</code>，进入<code>TIME_WAIT</code>状态</li>
+<li>被动方收到<code>（ACK N+1）</code>，进入<code>CLOSED</code>状态</li>
+<li>主动方在<code>TIME_WAIT</code>状态中超时后，进入<code>CLOSED</code>状态</li>
+</ol>
+<p>以上过程如下图所示：</p>
+<p><img src="/img/close.png" alt="close"></p>
+<p>其实就是2次，只不过TCP是全双工的，所以，发送方和接收方都需要FIN和ACK。 只不过，有一方是被动的，所以看上去就成了所谓的4次挥握手。</p>
+<p>注意到最后有这么一条涉及到TIME_WAIT的状态</p>
+<blockquote>
+<p>主动方在TIME_WAIT状态中超时后，进入CLOSED状态</p>
+</blockquote>
+<p>需要经过一个<code>TIME_WAIT</code>超时的状态而不是直接进入<code>CLOSED</code>的原因有两个，一是确保有足够的时间让对端收到<code>ACK</code>，二是允许老的分节在网络中慢慢的消逝。</p>
+<p>然而，如果系统中存在着大量的短链接，那么大量的<code>TIME_WAIT</code>状态就会成为系统的累赘。网上一些资料提到的<code>tcp_tw_reuse</code>和<code>tcp_tw_recycle</code>选项来解决这个问题，但是最好还是别乱用，好像<code>coolshell</code>中有提到过，可能会出很多诡异的问题。还可以调整<code>tcp_max_tw_buckets</code>，当并发的<code>TIME_WAIT</code>过多时，会直接把多的给destory掉，然后在日志里打一个警告。引用一句“其实，<code>TIME_WAIT</code>表示的是你主动断连接，所以，这就是所谓的<code>&quot;no zuo， no die&quot;</code>。</p>
+<p>##TCP连接在“非正常”情况下的工作状况</p>
+<p>###服务器进程终止</p>
+<p>首先，服务器进程终止（收到<code>SIGKILL</code>信号）。作为进程中止处理的工作之一，该进程所有打开着的描述符将被关闭，这会导致向对端（客户端）发送（<code>FIN N</code>），而客户端则回复（<code>ACK N+1</code>），这就是TCP断开连接的前半部分。</p>
+<p>然后，此时客户端收到（<code>FIN N</code>）并不意味着连接断开（虽然在这个例子中，确实断开了），只是意味着服务器不再向客户端发送数据了，客户端还可以继续向服务器发送数据。如果此时客户端还继续向服务器发送数据，服务器TCP将发现之前的打开该套接字的进程已终止，于是回应一个<code>RST</code>。客户端在收到这个<code>RST</code>之前的read操作将会返回EOF，在收到这个<code>RST</code>后的read操作会返回<code>ECONNRESET</code>错误，在收到这个<code>RST</code>后的write操作会使当前进程收到<code>SIGPIPE</code>信号。</p>
+<p>以上过程如下图所示：</p>
+<p><img src="/img/server_kill.png" alt="server_kill"></p>
+<p>###服务器主机崩溃</p>
+<p>服务器主机崩溃的意思是，没有任何预兆，来不及在网络上发送任何消息，主机就无法工作了。这种情况等价于直接切断网络，或者通俗的说，可以直接拔掉网线来模拟这一情况。</p>
+<p>这时，如果客户端向服务器发送数据，后调用read操作，TCP会一直等待服务器的ACK确认消息，并且不断的超时重传（按照Berkeley的实现，重传12次，共需9分钟），直到到达重传次数，返回<code>ETIMEOUT</code>错误。如果是由中间的路由器判定服务器主机不可达，响应“destination unreasonable”的ICMP消息，将返回<code>EHOSTUNREACH</code>和<code>ENETUNREACH</code>错误。</p>
+<p>###服务器主机崩溃后重启</p>
+<p>重启之后的服务器已经丢失了之前的TCP信息，所以即使收到了客户端发来的TCP数据，也会回复<code>RST</code>，往后的情况和“服务器主机崩溃”中提到的类似。</p>
+<p>###服务器主机关机</p>
+<p>Unix系统关机时，init进程通常会给其他进程发送<code>SIGTERM</code>信号，然后等待10s左右给仍在运行的进程发送<code>SIGKILL</code>信号。所以如果进程不捕获<code>SIGTERM</code>信号，则将由<code>SIGKILL</code>信号终止，和“服务器进程终止”中提到的类似。</p>
+<p>##参考链接<br><a href="http://coolshell.cn/articles/11564.html" target="_blank" rel="external">TCP 的那些事儿（上）</a></p>
+<p><a href="http://coolshell.cn/articles/11609.html" target="_blank" rel="external">TCP 的那些事儿（下）</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/05/十个我希望早点知道的python方法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2062,252 +2259,6 @@ if __name__ == &apos;__main__&apos;:
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/01/python试题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/01/python试题/" itemprop="url">python试题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-01T14:19:48+08:00">
-                2015-02-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##list与tuple的区别 ？dictionary与set的区别？<br>对于list与tupel的区别，在《Python核心编程2》中讲解的很清楚，可以总体概括为，可变与不可变、他们本质相同，但是就因为可变性就延伸了很多不同点。如list类型可以进行相应更改和方法操作，但tupel就没有这个功能。</p>
-<p>对于dict和set，一个是Python唯一的映射类型，一个是Python集合。python中集合对象（set）是一组无序排列的可哈希的值，包含两种类型：可变集合（set）和不可变集合（frozenset），所以set不是可哈希的，frozenset是可哈希的，能当作字典的键。字典和集合的详细区别可以点<a href="http://codingnow.cn/language/353.html" target="_blank" rel="external">这里</a></p>
-<p>##python中String类型和unicode什么关系?<br>string是字节串，而unicode是一个统一的字符集，utf-8是它的一种存储实现形式，string可为utf-8编码，也可编码为GBK等各种编码格式</p>
-<p>##输出从1加到100的和<br>    sum = 0<br>    for i in range(1, 101):<br>        sum += i<br>    print sum </p>
-<pre><code>#注意点：range的右范围是取不到的
-</code></pre><p>##如何在一个函数内修改一个全局变量？<br>在函数中使用global关键字声明全局变量，然后修改。如： </p>
-<pre><code>a = 10
-
-def add1():
-    global a
-    print a + 1
-
-add1()
-</code></pre><p>##except的用法和作用<br>Python的except用来捕获所有异常， 因为Python里面的每次错误都会抛出 一个异常，所以每个程序的错误都被当作一个运行时错误。</p>
-<p>以下是使用except的一个例子：</p>
-<pre><code>try:    
-    foo = opne(“file”) #open被错写为opne    
-except: 
-    sys.exit(“could not open file!”)
-</code></pre><p>因为这个错误是由于open被拼写成opne而造成的，然后被except捕获，所以debug程序的时候很容易不知道出了什么问题</p>
-<p>下面这个例子更好点：</p>
-<pre><code>try:
-    foo = opne(“file”) # 这时候except只捕获IOError
-except IOError:
-    sys.exit(“could not open file”)
-</code></pre><p>##如何反序的迭代一个序列?how do I iterate over a sequence in reverse order</p>
-<p>如果是一个list, 最快的解决方案是：</p>
-<pre><code>list.reverse()
-try:
-    for x in list:
-        “do something with x”
-finally:
-list.reverse()
-</code></pre><p>如果不是list, 最通用但是稍慢的解决方案是：</p>
-<pre><code>#range函数的参数
-#第一个：从这个数开始迭代
-#第二个：迭代到这个数
-#第三个：步长，为负表示倒序
-for i in range(len(sequence)-1, -1, -1):
-    x = sequence[i]
-</code></pre><p>##判断当前用户是否是root<br>    import os<br>    if os.geteuid() != 0:<br>        print “This program must be run as root. Aborting.”<br>    sys.exit(1)</p>
-<p>##什么是lambda函数?<br>Python允许你定义一种单行的小函数。定义lambda函数的形式如下：labmda 参数：表达式lambda函数默认返回表达式的值。你也可以将其赋值给一个变量。lambda函数可以接受任意个参数，包括可选参数，但是表达式只有一个：</p>
-<pre><code>&gt;&gt;&gt; g = lambda x, y: x*y
-&gt;&gt;&gt; g(3,4)
-12
-&gt;&gt;&gt; g = lambda x, y=0, z=0: x+y+z
-&gt;&gt;&gt; g(1)
-1
-&gt;&gt;&gt; g(3, 4, 7)
-14
-</code></pre><p>也能够直接使用lambda函数，不把它赋值给变量：</p>
-<pre><code>&gt;&gt;&gt; (lambda x,y=0,z=0:x+y+z)(3,5,6)
-14
-</code></pre><p>如果你的函数非常简单，只有一个表达式，不包含命令，可以考虑lambda函数。否则，你还是定义函数才对，毕竟函数没有这么多限制。</p>
-<p>##Python是如何进行内存管理的?<br>Python的内存管理是由Python得解释器负责的，开发人员可以从内存管理事务中解放出来，致力于应用程序的开发，这样就使得开发的程序错误更少，程序更健壮，开发周期更短</p>
-<p>##如何用Python来发送邮件?<br>以下代码可以在支持SMTP监听器的服务器上执行。</p>
-<pre><code>import sys, smtplib
-
-fromaddr = raw_input(“From: “)
-toaddrs = raw_input(“To: “).split(‘,’)
-print “Enter message, end with ^D:”
-msg = &quot;&quot;
-while 1:
-    line = sys.stdin.readline()
-    if not line:
-        break
-    msg = msg + line
-
-# 发送邮件部分
-server = smtplib.SMTP(‘localhost’)
-server.sendmail(fromaddr, toaddrs, msg)
-server.quit()
-</code></pre><p>##Python输出一个Fibonacci数列?</p>
-<p>方法一：</p>
-<pre><code>a,b = 0, 1
-while b&lt;100:
-    print (b),
-    a, b = b, a+b
-</code></pre><p>方法二：递归</p>
-<pre><code>def fibonacci2(n):  
-    if n == 1 or n == 2:  
-        return 1  
-    else:  
-        return fibonacci2(n-1) + fibonacci2(n-2)
-</code></pre><p>方法三：迭代</p>
-<pre><code>def fibonacci(n):  
-    if n == 1 or n == 2:  
-        return 1  
-
-    nPre = 1  
-    nLast = 1  
-    nResult = 0  
-    i = 2  
-    while i &lt; n:  
-        nResult = nPre + nLast  
-        nPre = nLast  
-        nLast = nResult  
-        i += 1  
-
-    return nResult  
-</code></pre><p>##Python里面如何生成随机数?<br>标准库random实现了一个随机数生成器，实例代码如下：</p>
-<pre><code>import random
-
-random.random()
-</code></pre><p>它会返回一个随机的0和1之间的浮点数</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2358,7 +2309,7 @@ random.random()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">168</span>
+                <span class="site-state-item-count">169</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

@@ -286,6 +286,189 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/17/Docker数据管理-Volume，-bind-mount和tmpfs-mount/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/17/Docker数据管理-Volume，-bind-mount和tmpfs-mount/" itemprop="url">Docker数据管理-Volume， bind mount和tmpfs mount</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-17T20:52:02+08:00">
+                2017-09-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>我们可以将数据写到容器的可写入层，但是这种写入是有缺点的：</p>
+<ul>
+<li>当容器停止运行时，写入的数据会丢失。你也很难将这些数据从容器中取出来给另外的应用程序使用。</li>
+<li>容器的可写入层与宿主机是紧密耦合的。这些写入的数据在可以轻易地被删掉。</li>
+<li>写入容器的可写入层需要一个<a href="https://docs.docker.com/engine/userguide/storagedriver/" target="_blank" rel="external">存储驱动</a>（<code>storage driver</code>）来管理文件系统。这个存储驱动通过linux内核提供了一个<code>union filesystem</code>。相比于数据卷（<code>data volume</code>），这种额外的抽象会降低性能。</li>
+</ul>
+<p>Docker提供了3种方法将数据从Docker宿主机挂载（mount）到容器：<code>volumes</code>，<code>bind mounts</code>和<code>tmpfs mounts</code>。一般来说，<code>volumes</code>总是最好的选择。</p>
+<p>##选择合适的挂载方式</p>
+<p>不管你选择哪种挂载方式，从容器中看都是一样的。数据在容器的文件系统中被展示为一个目录或者一个单独的文件。</p>
+<p>一个简单区分<code>volumes</code>，<code>bind mounts</code>和<code>tmpfs mounts</code>不同点的方法是：思考数据在宿主机上是如何存在的。</p>
+<p><img src="/img/types-of-mounts.png" alt="different mount"></p>
+<ul>
+<li><strong>Volumes</strong>由Docker管理，存储在宿主机的某个地方（在linux上是<code>/var/lib/docker/volumes/</code>）。非Docker应用程序不能改动这一位置的数据。Volumes是Docker最好的数据持久化方法。</li>
+<li><strong>Bind mounts</strong>的数据可以存放在宿主机的任何地方。数据甚至可以是重要的系统文件或目录。非Docker应用程序可以改变这些数据。</li>
+<li><strong>tmpfs mounts</strong>的数据只存储在宿主机的内存中，不会写入到宿主机的文件系统。</li>
+</ul>
+<h2 id="更详细的Diff"><a href="#更详细的Diff" class="headerlink" title="更详细的Diff"></a>更详细的Diff</h2><ul>
+<li><p><strong>Volumes</strong>：由Docker创建和管理。你可以通过<code>docker volume create</code>命令显式地创建<code>volume</code>，Docker也可以在创建容器或服务是自己创建volume。</p>
+<p>当你创建了一个volume，它会被存放在宿主机的一个目录下。当你将这个volume挂载到某个容器时，这个目录就是挂载到容器的东西。这一点和<code>bind mounts</code>类似，除了volumes是由Docker创建的，和宿主机的核心（<code>core functionality</code>）隔离。</p>
+<p>一个volume可以同时被挂载到几个容器中。即使没有正在运行的容器使用这个volume，volume依然存在，不会被自动清除。可以通过<code>docker volume prune</code>清除不再使用的volumes。</p>
+<p>volumes也支持<code>volume driver</code>，可以将数据存放在另外的机器或者云上。</p>
+</li>
+<li><p><strong>Bind mounts</strong>：Docker早期就支持这个特性。与volumes相比，<code>Bind mounts</code>支持的功能有限。使用<code>bind mounts</code>时，宿主机上的一个文件或目录被挂载到容器上。</p>
+<blockquote>
+<p>警告：使用<code>Bind mounts</code>的一个副作用是，容器中运行的程序可以修改宿主机的文件系统，包括创建，修改，删除重要的系统文件或目录。这个功能可能会有安全问题。</p>
+</blockquote>
+</li>
+<li><p><strong>tmpfs mounts</strong>：<code>tmpfs mounts</code>的数据不会落盘。在容器的生命周期内，它可以被用来存储一些不需要持久化的状态或敏感数据。例如，<code>swarm</code>服务通过<code>tmpfs mounts</code>来将<a href="https://docs.docker.com/engine/swarm/secrets/" target="_blank" rel="external">secrets</a>挂载到一个服务的容器中去。</p>
+</li>
+</ul>
+<h2 id="适合Volumes的场景"><a href="#适合Volumes的场景" class="headerlink" title="适合Volumes的场景"></a>适合Volumes的场景</h2><ul>
+<li>在不同的容器中共享数据。If you don’t explicitly create it, a volume is created the first time it is mounted into a container. When that container stops or is removed, the volume still exists. Multiple containers can mount the same volume simultaneously, either read-write or read-only. <strong>Volumes are only removed when you explicitly remove them</strong>.</li>
+<li>When the Docker host is not guaranteed to have a given directory or file structure. Volumes help you decouple the configuration of the Docker host from the container runtime.</li>
+<li>When you want to store your container’s data on a remote host or a cloud provider, rather than locally.</li>
+<li>当你需要备份或迁移数据的时候，When you need to be able to back up, restore, or migrate data from one Docker host to another, volumes are a better choice. You can stop containers using the volume, then back up the volume’s directory (such as /var/lib/docker/volumes/<volume-name>).</volume-name></li>
+</ul>
+<h2 id="适合bind-mounts的场景"><a href="#适合bind-mounts的场景" class="headerlink" title="适合bind mounts的场景"></a>适合bind mounts的场景</h2><ul>
+<li>宿主机和容器共享配置文件。Docker提供的DNS解决方案就是如此，将宿主机的<code>/etc/resolv.conf</code>挂载到每个容器中。</li>
+<li>开发环境需要在宿主机和容器中共享代码。docker的开发就是如此，毕竟容器中一般是没有编辑器的</li>
+<li>When the file or directory structure of the Docker host is guaranteed to be consistent with the bind mounts the containers require.</li>
+</ul>
+<h2 id="适合tmpfs-mounts的场景"><a href="#适合tmpfs-mounts的场景" class="headerlink" title="适合tmpfs mounts的场景"></a>适合tmpfs mounts的场景</h2><p><code>tmpfs mounts</code>主要用在你既不想在容器内，又不想在宿主机文件系统保存数据的时候。这可能是出于安全原因，也可能是你的应用需要写非常多的非持久化数据，<code>tmpfs mounts</code>这时候可以保证容器性能。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/16/docker-swarm部署应用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2005,191 +2188,6 @@ except (ValueError, TypeError):
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/17/Django-model去掉unique_together报错/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/10/17/Django-model去掉unique_together报错/" itemprop="url">Django model去掉unique_together报错</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-17T08:46:48+08:00">
-                2016-10-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>事情是这样的，我有一个存储考试的表</p>
-<pre><code>class Exam(models.Model):
-    category = models.ForiegnKey(Category)
-    name = models.CharField(max_length=128)
-    date = models.DateField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        unique_together = (&apos;category&apos;, &apos;date&apos;)
-</code></pre><p>category表示考试的类型，date表示考试的日期。建表的时候考虑到一个类型的考试在同一个应该只有一个考试，所以就加了一个<code>unique_together</code>。但是由于业务需要，这个unique_together不需要了。</p>
-<p>用过django的人都知道，这不是个大问题，删掉<code>unique_together</code>的代码，然后makemigrations呗，确实，我就这么做了。但是当我migrate的时候却报错了，错误如下：</p>
-<pre><code>django.db.utils.OperationalError: (1553, &quot;Cannot drop index &apos;insurance_exam_category_id_a430e581_uniq&apos;: needed in a foreign key constraint&quot;)
-</code></pre><p>数据库不让我删除这个index，并且告诉我有一个外键约束用到了这个它。我就奇怪了，category是外键没错，但是我这个是<code>unique_together</code>啊，怎么可能有哪个外键用到了它呢？</p>
-<p>没办法，我只能到数据库里寻找答案，<code>show create table exam</code>，输出如下：</p>
-<pre><code>| insurance_exam | CREATE TABLE `insurance_exam` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(128) NOT NULL,
-  `date` date NOT NULL,
-  `created_at` datetime(6) NOT NULL,
-  `updated_at` datetime(6) NOT NULL,
-  `category_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `insurance_exam_category_id_a430e581_uniq` (`category_id`,`date`),
-  CONSTRAINT `insurance_exam_category_id_a2238260_fk_insurance_category_id` FOREIGN KEY (`category_id`) REFERENCES `insurance_category` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1062 DEFAULT CHARSET=utf8mb4 |
-</code></pre><p>可以看到UNIQUE KEY那一行就是<code>unique_together</code>，下面一行是category外键。没有其他东西了啊，到底哪个外键用到了我们的<code>unique_together</code>？</p>
-<p>外键只能是category了，也没有别的外键啊。到底是怎么回事呢？</p>
-<p>原因是这样的：在Mysql中外键会自动在表上添加一个index，也就说如果没有unique_together，我们的表应该是这样的：</p>
-<pre><code>| insurance_exam | CREATE TABLE `insurance_exam` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(128) NOT NULL,
-  `date` date NOT NULL,
-  `created_at` datetime(6) NOT NULL,
-  `updated_at` datetime(6) NOT NULL,
-  `category_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `category_id` (`category_id`),
-  CONSTRAINT `insurance_exam_category_id_a2238260_fk_insurance_category_id` FOREIGN KEY (`category_id`) REFERENCES `insurance_category` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1062 DEFAULT CHARSET=utf8mb4 |
-</code></pre><p>但是因为有了<code>unique_together</code>的<code>unique_key</code>，并且category在联合索引的左边，根据最左前缀原则，category的索引就有了，所以就不会另外建索引，这个时候category的外键约束就依赖了这个<code>unique_key</code>，所以删除的时候会出现那样的报错。</p>
-<p>机智的小伙伴应该想到了，如果我们要去掉<code>unique_together</code>，我们可以将category的KEY加回去，这样就可以将<code>unique_together</code>删掉了。sql如下：</p>
-<pre><code>alter table exam add index(category_id);
-</code></pre><p>这样，migrate就能成功了。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2240,7 +2238,7 @@ except (ValueError, TypeError):
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">168</span>
+                <span class="site-state-item-count">169</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

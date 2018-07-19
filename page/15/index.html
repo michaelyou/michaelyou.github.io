@@ -286,6 +286,252 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/01/python试题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/01/python试题/" itemprop="url">python试题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-01T14:19:48+08:00">
+                2015-02-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##list与tuple的区别 ？dictionary与set的区别？<br>对于list与tupel的区别，在《Python核心编程2》中讲解的很清楚，可以总体概括为，可变与不可变、他们本质相同，但是就因为可变性就延伸了很多不同点。如list类型可以进行相应更改和方法操作，但tupel就没有这个功能。</p>
+<p>对于dict和set，一个是Python唯一的映射类型，一个是Python集合。python中集合对象（set）是一组无序排列的可哈希的值，包含两种类型：可变集合（set）和不可变集合（frozenset），所以set不是可哈希的，frozenset是可哈希的，能当作字典的键。字典和集合的详细区别可以点<a href="http://codingnow.cn/language/353.html" target="_blank" rel="external">这里</a></p>
+<p>##python中String类型和unicode什么关系?<br>string是字节串，而unicode是一个统一的字符集，utf-8是它的一种存储实现形式，string可为utf-8编码，也可编码为GBK等各种编码格式</p>
+<p>##输出从1加到100的和<br>    sum = 0<br>    for i in range(1, 101):<br>        sum += i<br>    print sum </p>
+<pre><code>#注意点：range的右范围是取不到的
+</code></pre><p>##如何在一个函数内修改一个全局变量？<br>在函数中使用global关键字声明全局变量，然后修改。如： </p>
+<pre><code>a = 10
+
+def add1():
+    global a
+    print a + 1
+
+add1()
+</code></pre><p>##except的用法和作用<br>Python的except用来捕获所有异常， 因为Python里面的每次错误都会抛出 一个异常，所以每个程序的错误都被当作一个运行时错误。</p>
+<p>以下是使用except的一个例子：</p>
+<pre><code>try:    
+    foo = opne(“file”) #open被错写为opne    
+except: 
+    sys.exit(“could not open file!”)
+</code></pre><p>因为这个错误是由于open被拼写成opne而造成的，然后被except捕获，所以debug程序的时候很容易不知道出了什么问题</p>
+<p>下面这个例子更好点：</p>
+<pre><code>try:
+    foo = opne(“file”) # 这时候except只捕获IOError
+except IOError:
+    sys.exit(“could not open file”)
+</code></pre><p>##如何反序的迭代一个序列?how do I iterate over a sequence in reverse order</p>
+<p>如果是一个list, 最快的解决方案是：</p>
+<pre><code>list.reverse()
+try:
+    for x in list:
+        “do something with x”
+finally:
+list.reverse()
+</code></pre><p>如果不是list, 最通用但是稍慢的解决方案是：</p>
+<pre><code>#range函数的参数
+#第一个：从这个数开始迭代
+#第二个：迭代到这个数
+#第三个：步长，为负表示倒序
+for i in range(len(sequence)-1, -1, -1):
+    x = sequence[i]
+</code></pre><p>##判断当前用户是否是root<br>    import os<br>    if os.geteuid() != 0:<br>        print “This program must be run as root. Aborting.”<br>    sys.exit(1)</p>
+<p>##什么是lambda函数?<br>Python允许你定义一种单行的小函数。定义lambda函数的形式如下：labmda 参数：表达式lambda函数默认返回表达式的值。你也可以将其赋值给一个变量。lambda函数可以接受任意个参数，包括可选参数，但是表达式只有一个：</p>
+<pre><code>&gt;&gt;&gt; g = lambda x, y: x*y
+&gt;&gt;&gt; g(3,4)
+12
+&gt;&gt;&gt; g = lambda x, y=0, z=0: x+y+z
+&gt;&gt;&gt; g(1)
+1
+&gt;&gt;&gt; g(3, 4, 7)
+14
+</code></pre><p>也能够直接使用lambda函数，不把它赋值给变量：</p>
+<pre><code>&gt;&gt;&gt; (lambda x,y=0,z=0:x+y+z)(3,5,6)
+14
+</code></pre><p>如果你的函数非常简单，只有一个表达式，不包含命令，可以考虑lambda函数。否则，你还是定义函数才对，毕竟函数没有这么多限制。</p>
+<p>##Python是如何进行内存管理的?<br>Python的内存管理是由Python得解释器负责的，开发人员可以从内存管理事务中解放出来，致力于应用程序的开发，这样就使得开发的程序错误更少，程序更健壮，开发周期更短</p>
+<p>##如何用Python来发送邮件?<br>以下代码可以在支持SMTP监听器的服务器上执行。</p>
+<pre><code>import sys, smtplib
+
+fromaddr = raw_input(“From: “)
+toaddrs = raw_input(“To: “).split(‘,’)
+print “Enter message, end with ^D:”
+msg = &quot;&quot;
+while 1:
+    line = sys.stdin.readline()
+    if not line:
+        break
+    msg = msg + line
+
+# 发送邮件部分
+server = smtplib.SMTP(‘localhost’)
+server.sendmail(fromaddr, toaddrs, msg)
+server.quit()
+</code></pre><p>##Python输出一个Fibonacci数列?</p>
+<p>方法一：</p>
+<pre><code>a,b = 0, 1
+while b&lt;100:
+    print (b),
+    a, b = b, a+b
+</code></pre><p>方法二：递归</p>
+<pre><code>def fibonacci2(n):  
+    if n == 1 or n == 2:  
+        return 1  
+    else:  
+        return fibonacci2(n-1) + fibonacci2(n-2)
+</code></pre><p>方法三：迭代</p>
+<pre><code>def fibonacci(n):  
+    if n == 1 or n == 2:  
+        return 1  
+
+    nPre = 1  
+    nLast = 1  
+    nResult = 0  
+    i = 2  
+    while i &lt; n:  
+        nResult = nPre + nLast  
+        nPre = nLast  
+        nLast = nResult  
+        i += 1  
+
+    return nResult  
+</code></pre><p>##Python里面如何生成随机数?<br>标准库random实现了一个随机数生成器，实例代码如下：</p>
+<pre><code>import random
+
+random.random()
+</code></pre><p>它会返回一个随机的0和1之间的浮点数</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/31/python的socket编程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2444,204 +2690,6 @@ void DeleteNode(node &amp;pListHead, node pToBeDeleted)
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/25/二进制中1的个数/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/25/二进制中1的个数/" itemprop="url">二进制中1的个数</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-25T16:03:18+08:00">
-                2015-01-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>题目：输入一个整数，求该整数的二进制表达中有多少个1。例如输入10，由于其二进制表示为1010，有两个1，因此输出2。</p>
-<p>##可能引起死循环的解法<br>一个很基本的想法是，我们先判断整数的最右边一位是不是1。接着把整数右移一位，原来处于右边第二位的数字现在被移到第一位了，再判断是不是1。这样每次 移动一位，直到这个整数变成0为止。现在的问题变成怎样判断一个整数的最右边一位是不是1了。很简单，如果它和整数1作与运算。由于1除了最右边一位以 外，其他所有位都为0。因此如果与运算的结果为1，表示整数的最右边一位是1，否则是0。</p>
-<p>代码如下：</p>
-<pre><code>///////////////////////////////////////////////////////////////////////
-// Get how many 1s in an integer&apos;s binary expression
-///////////////////////////////////////////////////////////////////////
-int NumberOf1_Solution1(int i)
-{
-      int count = 0;
-      while(i)
-      {
-            if(i &amp; 1)
-                  count ++;
-            i = i &gt;&gt; 1;
-      }
-      return count;
-}
-</code></pre><p>面试官会问，整数右移一位在数学上是和除以2是等价的。那可不可以把上面的代码中的右移运算符换成除以2呢？答案是否定的。因为除法的效率比移位运算要低的多，在实际编程中如果可以，应尽可能地用移位运算符代替乘除法。</p>
-<p>这个思路当输入i是正数时没有问题，但当输入的i是一个负数时，不但不能得到正确的1的个数，还将导致死循环。以负数0x80000000为例，右移一位 的时候，并不是简单地把最高位的1移到第二位变成0x40000000，而是0xC0000000。这是因为移位前是个负数，仍然要保证移位后是个负数， 因此移位后的最高位会设为1。如果一直做右移运算，最终这个数字就会变成0xFFFFFFFF而陷入死循环。</p>
-<p>##改进算法避免死循环<br>为了避免死循环，我们可以不右移输入的数字i。首先i和1做与运算，判断i的最低位是不是为1。接着把1左移一位得到2，再和i做与运算，就能判断i的次高位是不是1……这样反复左移，每次都能判断i的其中一位是不是1。基于此，我们得到如下代码：</p>
-<pre><code>///////////////////////////////////////////////////////////////////////
-// Get how many 1s in an integer&apos;s binary expression
-///////////////////////////////////////////////////////////////////////
-int NumberOf1_Solution2(int i)
-{
-      int count = 0;
-      unsigned int flag = 1;
-      while(flag)
-      {
-            if(i &amp; flag)
-                  count ++;
-            flag = flag &lt;&lt; 1;
-      }
-      return count;
-}
-</code></pre><p>##给面试官带来惊喜的解法<br>另外一种思路是如果一个整数不为0，那么这个整数至少有一位是1。如果我们把这个整数减去1，那么原来处在整数最右边的1就会变成0，原来在1后面的所有 的0都会变成1。其余的所有位将不受到影响。举个例子：一个二进制数1100，从右边数起的第三位是处于最右边的一个1。减去1后，第三位变成0，它后面 的两位0变成1，而前面的1保持不变，因此得到结果是1011。</p>
-<p>我们发现减1的结果是把从最右边一个1开始的所有位都取反了。这个时候如果我们再把原来的整数和减去1之后的结果做与运算，从原来整数最右边一个1那一位 开始所有位都会变成0。如1100&amp;1011=1000。也就是说，把一个整数减去1，再和原整数做与运算，会把该整数最右边一个1变成0。那么 一个整数的二进制有多少个1，就可以进行多少次这样的操作。</p>
-<p>这种思路对应的代码如下：</p>
-<pre><code>///////////////////////////////////////////////////////////////////////
-// Get how many 1s in an integer&apos;s binary expression
-///////////////////////////////////////////////////////////////////////
-int NumberOf1_Solution3(int i)
-{
-      int count = 0;
-      while (i)
-      {
-            ++ count;
-            i = (i - 1) &amp; i;
-      }
-      return count;
-}
-</code></pre><p>##扩展<br>扩展1：如何用一个语句判断一个整数是不是二的整数次幂？</p>
-<p>思路：一个整数如果是2的整数次方，那么它的二进制表示中有且只有一位是1，而其他所有位都是0.根据前面的分析，把这个整数减去1之后再和它自己做与运算，这个整数中唯一的1就会变成0.</p>
-<pre><code>n&amp;(n-1)==0;//二进制数只有一位位1，则该数是2的整数次幂.
-</code></pre><p>扩展2：输入两个整数m和n，计算需要改变m的二进制表示中的多少位才能得到n。比如10的二进制表示为1010,13的二进制表示为1101，需要改变1010中的3位才能得到1101.</p>
-<p>思路：我们可以分两步解决这个问题：第一步求这两个数的异或，第二步统计异或结果中1的位数。</p>
-<p>##总结<br>把一个整数减去1之后再和原来的整数做位与运算，得到的结果相当于是把整数的二进制表示中的最后一个1变成0.很多二进制的问题都可以用这个思路解决</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2692,7 +2740,7 @@ int NumberOf1_Solution3(int i)
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">168</span>
+                <span class="site-state-item-count">169</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

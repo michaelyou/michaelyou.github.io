@@ -286,6 +286,152 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/21/找出N个整数中最大的K个数/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/21/找出N个整数中最大的K个数/" itemprop="url">找出N个整数中最大的K个数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-21T21:02:50+08:00">
+                2015-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>顺序读取数组中的前K个元素，构建小根堆。</p>
+<p>小根堆的特点是根元素最小，并且一次调整（deleteMin）操作的时间复杂度为log(2,K)。</p>
+<p>接下来从数组中取下一个元素，如果该元素不比堆顶元素大，则丢弃；否则用它替换堆顶元素，然后调整小根堆。<br>当把数组中的元素全部读出来后，小根堆中保留的就是前K大的元素。</p>
+<p>初始建堆操作需要<code>K * log(2, k)</code>–这是最多的操作次数，从数组中读取后<code>N-K</code>个元素和堆顶元素一一比较，最坏的情况是每次都要替换堆顶元素，都要调整小根堆，复杂度为<code>(N-K) * log(2,K)</code>。总的复杂度为<code>O(N*log(2,K))</code>。</p>
+<p>###找出最小的k个数呢？<br>和最大的k个数的思想是相同的，只是这里建立的是是大根堆   </p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/19/fork/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1625,7 +1771,7 @@ print response.read()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">168</span>
+                <span class="site-state-item-count">169</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

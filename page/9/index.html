@@ -286,6 +286,157 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/17/能够关闭（close）一个套接字，为何还使用shutdown/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/17/能够关闭（close）一个套接字，为何还使用shutdown/" itemprop="url">能够关闭（close）一个套接字，为何还使用shutdown</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-17T23:22:17+08:00">
+                2015-03-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li><p>只有一个最后一个活动关闭时，close才释放网络断点。这意味着如果复制一个套接字（如采用dup），要直到关闭了最后一个引用它的文件描述符才会释放这个套接字。而shutdown允许使一个套接字处于不活动状态，和引用它的文件描述符无关</p>
+</li>
+<li><p>有时可以很方便地关闭套接字双向传输中的一个方向。例如，如果想让所通信的进程能够确定数据传输何时结束，可以关闭该套接字的写段，然而通过该套接字读端仍可以继续接受数据</p>
+</li>
+</ol>
+<p><strong>注意</strong>：</p>
+<p>在unix中调用了shutdown后，以shutdown（s, 0）为例，此函数为关闭s的接收端，unix会刷新输入队列，以丢弃应用程序还未读取的所有数据。如果有新数据到达，TCP会进行ACK，然后悄悄地将其丢弃。因为应用程序再也无法接收数据了</p>
+<p>shutdown（s，1）关闭连接的发送端。将套接字标识为无法发送任何额外的数据，后继所有试图对套接字进行的写操作都会出错。将发送缓冲区中所有的数据都发送出去之后，TCP会向其对等实体发送一个FIN，通知它没有其他数据了。这被称为半关闭（half close）</p>
+<p>只有关闭连接的发送端被称为半关闭，它虽然也发送FIN，但此FIN与close的FIN有差别，这个FIN表示的是“我已经完成了数据的传送，因此发送一个FIN到另一端，但我还想接收另一端发来的消息，直到他给我发来文件结束（FIN）</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/16/海量数据处理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1849,163 +2000,6 @@ netstat -i：可以获得计算机基本的网络接口信息
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/09/百度的一些面试题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/09/百度的一些面试题/" itemprop="url">百度的一些面试题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-09T22:00:33+08:00">
-                2015-03-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/面试/" itemprop="url" rel="index">
-                    <span itemprop="name">面试</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>#ping是工作在哪一层的，用的什么协议<br>ping工作在IP层，用的是ICMP协议。traceroute也是基于ICMP协议</p>
-<p>#常用的即时通讯软件用的是什么协议</p>
-<ol>
-<li>QQ主要采用UDP，某些情况下采用TCP。</li>
-<li>其他IM大多数时候采用TCP，涉及到音频、视频传输会用到UDP</li>
-</ol>
-<p>#http状态码</p>
-<ul>
-<li>首位为1：这一类型的状态码，代表请求已被接受，需要继续处理。这类响应是临时响应，只包含状态行和某些可选的响应头信息，并以空行结束。由于 HTTP/1.0 协议中没有定义任何 1xx 状态码，所以除非在某些试验条件下，服务器禁止向此类客户端发送 1xx 响应。</li>
-<li>首位为2：成功</li>
-<li>首位为3：重定向</li>
-<li>首位为4：客户方错误</li>
-<li>首位为5：服务器错误</li>
-</ul>
-<p>#设有1000个元素,用二分法查找时,最大比较次数是</p>
-<p>10次 = [log2(1000)] + 1，方括号是取整等于9</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2056,7 +2050,7 @@ netstat -i：可以获得计算机基本的网络接口信息
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">168</span>
+                <span class="site-state-item-count">169</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
