@@ -102,13 +102,13 @@
 <meta property="og:site_name" content="Youmai の Blog">
 <meta property="og:description" content="原文: Improving load balancing with a new consistent-hashing algorithm 我们在云上运行Vimeo的动态视频打包器Skyfire，每天服务近10亿个DASH和HLS请求。 这个请求量是非常大的！ 我们对它的表现非常满意，但将其扩展到适应今天的流量以及更高的流量是一个有趣的挑战。 今天我想谈谈一个新的算法，有限负载一致性哈希（bound">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/img/cache_hit.jpg">
+<meta property="og:image" content="http://yoursite.com/img/cache_hit.png">
 <meta property="og:image" content="http://yoursite.com/img/bandwidth.png">
-<meta property="og:updated_time" content="2018-07-19T13:41:17.976Z">
+<meta property="og:updated_time" content="2018-07-20T13:05:53.842Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[翻译]使用一个新的hash一致性算法提升负载均衡">
 <meta name="twitter:description" content="原文: Improving load balancing with a new consistent-hashing algorithm 我们在云上运行Vimeo的动态视频打包器Skyfire，每天服务近10亿个DASH和HLS请求。 这个请求量是非常大的！ 我们对它的表现非常满意，但将其扩展到适应今天的流量以及更高的流量是一个有趣的挑战。 今天我想谈谈一个新的算法，有限负载一致性哈希（bound">
-<meta name="twitter:image" content="http://yoursite.com/img/cache_hit.jpg">
+<meta name="twitter:image" content="http://yoursite.com/img/cache_hit.png">
 
 
 
@@ -407,7 +407,7 @@
 <p>有了这个成功，我在9月份向HAProxy发送了一个概念验证补丁。 HAProxy维护者Willy Tarreau（非常高兴能与之合作），认识到算法的价值。他并没有告诉我我的补丁有多糟糕。他做了彻底的代码审查，并提供了一些非常有价值的反馈。我花了一点时间来处理这些建议并把事情搞定了，几周之后我就有了一个精美的版本准备发送到列表中。还有一些小的调整，它在10月26日发布的HAProxy 1.7.0-dev5及时被接受。11月25日，HAProxy 1.7.0被指定为稳定版本，因此现在普遍可以使用有限负载一致性哈希。</p>
 <p>但我确定你想知道的是，我们从这一切中获得了什么？</p>
 <p>这是更改HAProxy配置之前和之后的缓存行为图。</p>
-<p><img src="/img/cache_hit.jpg" alt="haproxy conf"></p>
+<p><img src="/img/cache_hit.png" alt="haproxy conf"></p>
 <p>每日变化是由弹性伸缩引起的：在白天，流量会增加，因此我们启动更多服务器来处理它，本地缓存只能解决更少的请求。在晚上，流量较少，因此关闭服务器，本地缓存性能有所提升。切换到有界负载算法后，无论运行多少台服务器，都会有更大比例的请求到达本地缓存。</p>
 <p>下面是共享缓存带宽在同一时间的图表：在更改之前，每个memcache服务器在高峰时段的出站带宽达到400到500 Mbit / s（总共大约8Gbit / s）。改进算法之后，变化较小，服务器带宽保持在100 Mbit / s以下。</p>
 <p><img src="/img/bandwidth.png" alt="bandwidth"></p>
