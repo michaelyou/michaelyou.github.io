@@ -104,7 +104,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/cache_hit.png">
 <meta property="og:image" content="http://yoursite.com/img/bandwidth.png">
-<meta property="og:updated_time" content="2018-07-20T13:05:53.842Z">
+<meta property="og:updated_time" content="2018-07-20T13:07:17.239Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[翻译]使用一个新的hash一致性算法提升负载均衡">
 <meta name="twitter:description" content="原文: Improving load balancing with a new consistent-hashing algorithm 我们在云上运行Vimeo的动态视频打包器Skyfire，每天服务近10亿个DASH和HLS请求。 这个请求量是非常大的！ 我们对它的表现非常满意，但将其扩展到适应今天的流量以及更高的流量是一个有趣的挑战。 今天我想谈谈一个新的算法，有限负载一致性哈希（bound">
@@ -412,7 +412,7 @@
 <p>下面是共享缓存带宽在同一时间的图表：在更改之前，每个memcache服务器在高峰时段的出站带宽达到400到500 Mbit / s（总共大约8Gbit / s）。改进算法之后，变化较小，服务器带宽保持在100 Mbit / s以下。</p>
 <p><img src="/img/bandwidth.png" alt="bandwidth"></p>
 <p>从响应时间的角度来看，我们没有画出性能提升的图。为什么？因为他们保持几乎完全相同。最少连接策略在保持服务器不会过载方面做得很好，从memcache中获取内容的速度足够快，以至于它对响应时间没有可测量的影响。但是现在更少部分的请求会依赖于共享缓存，并且由于该部分不依赖于我们运行的服务器数量，因此我们可以期待在不使memcached服务器饱和的情况下处理更多流量。此外，如果memcache服务器出现故障，它对Skyfire的整体影响将会大大降低。</p>
-<p>总而言之，我很高兴看到一点算法工作如何将单点故障变得更好。</p>
+<p>总而言之，很高兴看到一点算法工作将单点问题变得更好。</p>
 
       
     </div>
