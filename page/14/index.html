@@ -286,6 +286,156 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/10/为什么http协议是无连接的/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/10/为什么http协议是无连接的/" itemprop="url">为什么http协议是无连接的</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-10T14:13:31+08:00">
+                2015-02-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/http/" itemprop="url" rel="index">
+                    <span itemprop="name">http</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>HTTP 协议本身是无连接的，虽然它使用了面向连接的 TCP 向上提供的服务。</p>
+<p> TCP的面向连接是传输层的，而HTTP的无连接则是应用层的 。HTTP协议产生于互联网，因此服务器需要处理同时面向全世界数十万、上百万客户端的网页访问，但每个客户端（即浏览器）与服务器之间交换数据的间歇性较大（即传输具有突发性、瞬时性），并且网页浏览的联想性、发散性导致两次传送的数据关联性很低，如果按照上面的方式，则需要在服务器端开的进程和句柄数目都是不可接受的，大部分通道实际上会很空闲、无端占用资源。因此HTTP的设计者有意利用这种特点将协议设计为请求时建连接、请求完释放连接，以尽快将资源释放出来服务其他客户端。HTTP1.1现在设计为长连接，就是在一个连接内可以发生多个请求，避免了多次建立断开连接造成的消耗。</p>
+<p>UDP尽管不象TCP那样占用资源，但它不保证数据的完整性、有序性，想像如果服务器返回的HTML错序了或者丢失一部分你将看到什么效果；并且UDP没有流量控制，而互联网的传输质量又不是很好，服务器随便仍出一大堆UDP包可能导致网络风暴，这是相当危险的。</p>
+<p>归根结底，TCP的面向连接是传输层的，而HTTP的无连接则是应用层的。</p>
+<hr>
+<p><strong>无状态</strong>是指协议对于事务处理没有记忆能力，服务器不知道客户端是什么状态。从另一方面讲，打开一个服务器上的网页和你之前打开这个服务器上的网页之间没有任何联系</p>
+<p>HTTP是一个无状态的面向连接的协议，无状态不代表HTTP不能保持TCP连接，更不能代表HTTP使用的是UDP协议（无连接）</p>
+<p>从HTTP/1.1起，默认都开启了Keep-Alive，保持连接特性，简单地说，当一个网页打开完成后，客户端和服务器之间用于传输HTTP数据的TCP连接不会关闭，如果客户端再次访问这个服务器上的网页，会继续使用这一条已经建立的连接</p>
+<p> Keep-Alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/05/TCP和UDP的工作过程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2091,174 +2241,6 @@ if __name__ == &apos;__main__&apos;:
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/02/02/每天一个python小程序-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/02/02/每天一个python小程序-1/" itemprop="url">每天一个python小程序(1)-修改QQ头像</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-02-02T22:38:43+08:00">
-                2015-02-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>将你的 QQ 头像（或者微博头像）右上角加上红色的数字，类似于微信未读信息数量那种提示效果。 类似于图中效果</p>
-</blockquote>
-<p><img src="/img/question1.png" alt="头像"></p>
-<p>本题用到的知识点主要是python的PIL模块，PIL是python中最常用的图像处理库</p>
-<pre><code>#!/usr/bin/python
-#encoding=utf-8
-
-from PIL import Image, ImageDraw, ImageFont
-
-def write_num_on_img(filePath, num):
-    img = Image.open(filePath)
-    #img.size返回一个元组(width, height)
-    size = img.size
-    draw = ImageDraw.Draw(img)
-    #colour设置数字的颜色，这里是红色
-    colour = (255, 0, 0)
-    ttfont = ImageFont.truetype(&apos;ahronbd.ttf&apos;, 50)
-    #关键函数，参数包括，文字的位置，内容，颜色，字体
-    draw.text((size[0]-30, 0), str(num), fill=colour, font=ttfont)
-    #显示一幅已载入的图像
-    img.show()
-    img.save(&apos;changed.jpg&apos;)
-
-if __name__ == &apos;__main__&apos;:
-    write_num_on_img(&quot;test.jpg&quot;, 4)
-</code></pre><p>代码可以在<a href="https://github.com/michaelyou/a-python-a-day/tree/master/no.0" target="_blank" rel="external">这里</a>下载</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2309,7 +2291,7 @@ if __name__ == &apos;__main__&apos;:
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">169</span>
+                <span class="site-state-item-count">170</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2320,7 +2302,7 @@ if __name__ == &apos;__main__&apos;:
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

@@ -286,6 +286,233 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/03/Django-redis如何支持存取整型和布尔值/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/03/Django-redis如何支持存取整型和布尔值/" itemprop="url">Django-redis如何支持存取整型和布尔值</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-03T05:16:48+08:00">
+                2016-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>redis支持5种数据类型，分别是string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set：有序集合)。整型值和布尔值并不在其中。存储整型和布尔值时，redis会将其转换为字符串</p>
+<pre><code>127.0.0.1:6379&gt; SET test_key 1
+OK
+127.0.0.1:6379&gt; GET test_key
+&quot;1&quot;
+127.0.0.1:6379&gt; SET test_key True
+OK
+127.0.0.1:6379&gt; GET test_key
+&quot;True&quot;
+127.0.0.1:6379&gt; SET test_key TRUE
+OK
+127.0.0.1:6379&gt; GET test_key
+&quot;TRUE&quot;
+127.0.0.1:6379&gt; SET test_key true
+OK
+127.0.0.1:6379&gt; GET test_key
+&quot;true&quot;
+</code></pre><p>但是当我们使用了<code>django-redis</code>之后发现，我们可以正常存取整型和布尔值，这是怎么做的呢？答案自然是在源码中，直觉告诉我们，<code>set函数</code>里一定做了什么事情。</p>
+<pre><code># django_redis.client.default.py
+def set(self, key, value, timeout=DEFAULT_TIMEOUT, version=None, client=None, nx=False, xx=False):
+    &quot;&quot;&quot;
+    Persist a value to the cache, and set an optional expiration time.
+    Also supports optional nx parameter. If set to True - will use redis setnx instead of set.
+    &quot;&quot;&quot;
+
+    if not client:
+        client = self.get_client(write=True)
+
+    nkey = self.make_key(key, version=version)
+    nvalue = self.encode(value)
+
+    ......
+</code></pre><p><code>set</code>方法中调用了类的<code>encode</code>的方法对<code>value</code>进行了处理，我们再看<code>encode</code>：</p>
+<pre><code>django_redis.client.default.py
+def encode(self, value): &quot;&quot;&quot; Encode the given value. &quot;&quot;&quot;
+
+if isinstance(value, bool) or not isinstance(value, integer_types):
+    value = self._serializer.dumps(value)
+    value = self._compressor.compress(value)
+    return value
+
+return value
+</code></pre><p>看到了吧，如果是<code>布尔值</code>，那么要调用一个<code>dumps</code>方法，我们找到这个<code>dumps</code>方法：</p>
+<pre><code>django_redis.serializers.pickle.py
+class PickleSerializer(BaseSerializer): ......
+
+def dumps(self, value):
+    return pickle.dumps(value, self._pickle_version)
+
+def loads(self, value):
+    return pickle.loads(force_bytes(value))
+</code></pre><p>原来是用了<a href="https://docs.python.org/3/library/pickle.html" target="_blank" rel="external">pickle</a>来做了序列化，这样拿出来的时候调用<code>pickle.loads</code>方法，就可以还原为原来的对象了。这也是<code>django-redis</code>支持存储任意<code>python</code>对象的原因，<a href="https://docs.python.org/3/library/pickle.html" target="_blank" rel="external">pickle</a>帮了大忙。</p>
+<p>至于<code>int</code>的存取就简单了，我们从<code>get</code>方法看过去：</p>
+<pre><code>django_redis.client.default.py
+def get(self, key, default=None, version=None, client=None): &quot;&quot;&quot; Retrieve a value from the cache. Returns decoded value if key is found, the default if not. &quot;&quot;&quot; if client is None: client = self.get_client(write=False)
+
+key = self.make_key(key, version=version)
+
+try:
+    value = client.get(key)
+except _main_exceptions as e:
+    raise ConnectionInterrupted(connection=client, parent=e)
+
+if value is None:
+    return default
+
+return self.decode(value)
+</code></pre><p>可以看到对从<code>redis</code>中取出来的值调用了<code>decode</code>方法：</p>
+<pre><code>django_redis.client.default.py
+def decode(self, value): 
+&quot;&quot;&quot; 
+Decode the given value. 
+&quot;&quot;&quot; 
+try: 
+    value = int(value)
+except (ValueError, TypeError):
+    try:
+        value = self._compressor.decompress(value)
+    except CompressorError:
+        # Handle little values, chosen to be not compressed pass
+        value = self._serializer.loads(value) return value
+</code></pre><p>一目了然了吧，总结的话就是：<code>redis</code>存的时候还是存的字符串，但是取出来的时候会尝试去<code>int</code>一下。</p>
+<p>大家可能会有这样的疑问，如果值是<code>&#39;123&#39;</code>这样的字符串怎么办呢？这样并不会有问题啦，因为字符串存到数据库之前会先做<code>pickle.dumps</code>，这样就可以区分开<strong>数字转换成的字符串</strong>和<strong>真实的字符串</strong>了。</p>
+<p>另外，将<code>整型</code>进行<code>pickle</code>也是可以的，但是我觉得因为数字的存储是很平常的需求，而<code>pickle</code>之后会带上对象的各种附加信息，会增加空间消耗，所以作者才有了这样的设计。</p>
+<p>如果大家需要写自己的<code>redis client</code>的话，可以参考一下这些设计，会给使用带来很大的方便。</p>
+<p><strong>Note</strong>: <code>Python3</code> 中<code>pickle</code>和<code>cPickle</code>已经合并为<code>pickle</code></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/17/Django-model去掉unique_together报错/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2698,200 +2925,6 @@ contracts = Contracts.objects.filter(contract_stop_time__lt=F(&apos;end_time&apo
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/03/python-double-star-and-star/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/08/03/python-double-star-and-star/" itemprop="url">python (double star) and (star)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-03T19:43:55+08:00">
-                2015-08-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>这个东西我开始根本不知道该怎么搜，找了很久才在stackoverflow上得到了指点，如果你需要搜一些别的答案，可以尝试搜索(double star in python)， 下面是一个非常棒的回答。</p>
-<p>原文<a href="http://stackoverflow.com/questions/2921847/what-does-the-star-operator-mean-in-python" target="_blank" rel="external">在此</a></p>
-<p>The single star <code>*</code> unpacks the sequence/collection into positional arguments, so you can do this:</p>
-<pre><code>def sum(a, b):
-    return a + b
-
-values = (1, 2)
-
-s = sum(*values)
-</code></pre><p>This will unpack the tuple so that it actually executes as:</p>
-<pre><code>s = sum(1, 2)
-</code></pre><p>The double star <code>**</code> does the same, only using a dictionary and thus named arguments:</p>
-<pre><code>values = { &apos;a&apos;: 1, &apos;b&apos;: 2 }
-s = sum(**values)
-</code></pre><p>You can also combine:</p>
-<pre><code>def sum(a, b, c, d):
-    return a + b + c + d
-
-values1 = (1, 2)
-values2 = { &apos;c&apos;: 10, &apos;d&apos;: 15 }
-s = sum(*values1, **values2)
-</code></pre><p>will execute as:</p>
-<pre><code>s = sum(1, 2, c=10, d=15)
-</code></pre><p>Also see section <a href="http://docs.python.org/tutorial/controlflow.html#unpacking-argument-lists" target="_blank" rel="external">4.7.4 - Unpacking Argument Lists</a> of the Python documentation.</p>
-<hr>
-<p>Additionally you can define functions to take <code>*x</code> and <code>**y</code> arguments, this allows a function to accept any number of positional and/or named arguments that aren’t specifically named in the declaration.</p>
-<p>Example:</p>
-<pre><code>def sum(*values):
-    s = 0
-    for v in values:
-        s = s + v
-    return s
-
-s = sum(1, 2, 3, 4, 5)
-</code></pre><p>or with <code>**</code>:</p>
-<pre><code>def get_a(**values):
-    return values[&apos;a&apos;]
-
-s = get_a(a=1, b=2)      # returns 1
-</code></pre><p>this can allow you to specify a large number of optional parameters without having to declare them.</p>
-<p>And again, you can combine:</p>
-<pre><code>def sum(*values, **options):
-    s = 0
-    for i in values:
-        s = s + i
-    if &quot;neg&quot; in options:
-        if options[&quot;neg&quot;]:
-            s = -s
-    return s
-
-s = sum(1, 2, 3, 4, 5)            # returns 15
-s = sum(1, 2, 3, 4, 5, neg=True)  # returns -15
-s = sum(1, 2, 3, 4, 5, neg=False) # returns 15
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2942,7 +2975,7 @@ s = sum(1, 2, 3, 4, 5, neg=False) # returns 15
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">169</span>
+                <span class="site-state-item-count">170</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2953,7 +2986,7 @@ s = sum(1, 2, 3, 4, 5, neg=False) # returns 15
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

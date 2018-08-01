@@ -286,6 +286,200 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/03/python-double-star-and-star/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/08/03/python-double-star-and-star/" itemprop="url">python (double star) and (star)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-03T19:43:55+08:00">
+                2015-08-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这个东西我开始根本不知道该怎么搜，找了很久才在stackoverflow上得到了指点，如果你需要搜一些别的答案，可以尝试搜索(double star in python)， 下面是一个非常棒的回答。</p>
+<p>原文<a href="http://stackoverflow.com/questions/2921847/what-does-the-star-operator-mean-in-python" target="_blank" rel="external">在此</a></p>
+<p>The single star <code>*</code> unpacks the sequence/collection into positional arguments, so you can do this:</p>
+<pre><code>def sum(a, b):
+    return a + b
+
+values = (1, 2)
+
+s = sum(*values)
+</code></pre><p>This will unpack the tuple so that it actually executes as:</p>
+<pre><code>s = sum(1, 2)
+</code></pre><p>The double star <code>**</code> does the same, only using a dictionary and thus named arguments:</p>
+<pre><code>values = { &apos;a&apos;: 1, &apos;b&apos;: 2 }
+s = sum(**values)
+</code></pre><p>You can also combine:</p>
+<pre><code>def sum(a, b, c, d):
+    return a + b + c + d
+
+values1 = (1, 2)
+values2 = { &apos;c&apos;: 10, &apos;d&apos;: 15 }
+s = sum(*values1, **values2)
+</code></pre><p>will execute as:</p>
+<pre><code>s = sum(1, 2, c=10, d=15)
+</code></pre><p>Also see section <a href="http://docs.python.org/tutorial/controlflow.html#unpacking-argument-lists" target="_blank" rel="external">4.7.4 - Unpacking Argument Lists</a> of the Python documentation.</p>
+<hr>
+<p>Additionally you can define functions to take <code>*x</code> and <code>**y</code> arguments, this allows a function to accept any number of positional and/or named arguments that aren’t specifically named in the declaration.</p>
+<p>Example:</p>
+<pre><code>def sum(*values):
+    s = 0
+    for v in values:
+        s = s + v
+    return s
+
+s = sum(1, 2, 3, 4, 5)
+</code></pre><p>or with <code>**</code>:</p>
+<pre><code>def get_a(**values):
+    return values[&apos;a&apos;]
+
+s = get_a(a=1, b=2)      # returns 1
+</code></pre><p>this can allow you to specify a large number of optional parameters without having to declare them.</p>
+<p>And again, you can combine:</p>
+<pre><code>def sum(*values, **options):
+    s = 0
+    for i in values:
+        s = s + i
+    if &quot;neg&quot; in options:
+        if options[&quot;neg&quot;]:
+            s = -s
+    return s
+
+s = sum(1, 2, 3, 4, 5)            # returns 15
+s = sum(1, 2, 3, 4, 5, neg=True)  # returns -15
+s = sum(1, 2, 3, 4, 5, neg=False) # returns 15
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/07/22/Django-统计查询/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2075,167 +2269,6 @@ $100
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/25/使用traceback追踪异常/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/25/使用traceback追踪异常/" itemprop="url">使用traceback追踪异常</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-25T21:34:20+08:00">
-                2015-05-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>调试代码的时候，简单的try—except语句只能告诉我们哪里出了错，但是错误的根源可能在多个函数之前，所以我们有必要知道出现错误时的堆栈情况。python提供了traceback模块来帮助我们打印堆栈。</p>
-<p>一般来说程序都是将信息写入log，所以这里以写入log为例</p>
-<pre><code>import class
-import logging
-
-if __name__==&quot;__main__&quot;:
-    logging.basicConfig(filename=&apos;trace.log&apos;)
-    try:
-        excep_class.except_fun(excep_args)
-    except:
-        s=traceback.format_exc()
-        logging.error(s)
-</code></pre><p>这样就可以打印出程序发生异常时，堆栈的信息。</p>
-<pre><code>---Traceback (most recent call last):
-  File &quot;/usr/lib/python2.7/dist-packages/keystoneclient/middleware/auth_token.py&quot;, line 578, in __call__
-    token_info = self._validate_user_token(user_token, env)
-  File &quot;/usr/lib/python2.7/dist-packages/keystoneclient/middleware/auth_token.py&quot;, line 838, in _validate_user_token
-    raise InvalidUserToken(&apos;Token authorization failed&apos;)
-InvalidUserToken: Token authorization failed
-</code></pre><p>这里是一段出错信息，可以明显地看出，最上面的是最早调用的函数，上面的函数调用下面的函数，最后一个是最终出错的地方。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2286,7 +2319,7 @@ InvalidUserToken: Token authorization failed
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">169</span>
+                <span class="site-state-item-count">170</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2297,7 +2330,7 @@ InvalidUserToken: Token authorization failed
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

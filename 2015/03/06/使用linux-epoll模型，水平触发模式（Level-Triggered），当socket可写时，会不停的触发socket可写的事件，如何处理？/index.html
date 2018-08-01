@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="Youmai の Blog">
 <meta property="og:description" content="##第一种方法  当需要向socket写数据时，将该socket加入到epoll模型（epoll_ctl）；等待可写事件。  接收到socket可写事件后，调用write()或send()发送数据。  当数据全部写完后， 将socket描述符移出epoll模型。   这种方式的缺点是：  即使发送很少的数据，也要将socket加入、移出epoll模型，有一定的操作代价。 ##第二种方法  向soc">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta property="og:updated_time" content="2018-07-28T07:31:17.007Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用linux epoll模型，水平触发模式（Level-Triggered），当socket可写时，会不停的触发socket可写的事件，如何处理？">
 <meta name="twitter:description" content="##第一种方法  当需要向socket写数据时，将该socket加入到epoll模型（epoll_ctl）；等待可写事件。  接收到socket可写事件后，调用write()或send()发送数据。  当数据全部写完后， 将socket描述符移出epoll模型。   这种方式的缺点是：  即使发送很少的数据，也要将socket加入、移出epoll模型，有一定的操作代价。 ##第二种方法  向soc">
@@ -505,7 +505,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">169</span>
+                <span class="site-state-item-count">170</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -516,7 +516,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

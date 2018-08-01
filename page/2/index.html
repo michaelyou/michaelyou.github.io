@@ -286,6 +286,163 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/03/go-scope/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/11/03/go-scope/" itemprop="url">go语言作用域踩坑</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-03T20:15:38+08:00">
+                2017-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/go/" itemprop="url" rel="index">
+                    <span itemprop="name">go</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>今天饭饭给我出了个题目，下面这段代码为什么报错，怎么改？</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"fmt"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="keyword">type</span> A <span class="keyword">struct</span> &#123;</div><div class="line">    s <span class="keyword">string</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">var</span> a *A</div><div class="line"></div><div class="line">    <span class="keyword">if</span> check(a) &#123;</div><div class="line">        a, err := generate()</div><div class="line">        fmt.Println(a.s, err)</div><div class="line">    &#125;</div><div class="line">    fmt.Println(a.s)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">generate</span><span class="params">()</span> <span class="params">(*A, error)</span></span> &#123;</div><div class="line">    <span class="keyword">return</span> &amp;A&#123;s: <span class="string">"b"</span>&#125;, <span class="literal">nil</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">check</span><span class="params">(a *A)</span> <span class="title">bool</span></span> &#123;</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>运行一下，发现报错如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">panic: runtime error: invalid memory address or nil pointer dereference</div><div class="line">[signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x1095520]</div><div class="line"></div><div class="line">goroutine 1 [running]:</div><div class="line">main.main()</div><div class="line">        /go_code/src/go_examples/go_scope.go:18 +0x280</div><div class="line">exit status 2</div></pre></td></tr></table></figure>
+<p>18行，也就是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">fmt.Println(a.s)</div></pre></td></tr></table></figure>
+<p>报错了，报错没法提供更多信息（go新手，老鸟可能能看出端倪），我们加一些打印</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">var</span> a *A</div><div class="line">    fmt.Printf(<span class="string">"%p\n"</span>, &amp;a)      <span class="comment">// 1</span></div><div class="line"></div><div class="line">    <span class="keyword">if</span> check(a) &#123;</div><div class="line">        a, err := generate()</div><div class="line">        fmt.Printf(<span class="string">"%p\n"</span>, &amp;a)  <span class="comment">// 2</span></div><div class="line">        fmt.Println(a.s, err)   <span class="comment">// 3</span></div><div class="line">    &#125;</div><div class="line">    fmt.Printf(<span class="string">"%p\n"</span>, &amp;a)      <span class="comment">// 4</span></div><div class="line">    fmt.Println(a.s)            </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">0xc42000c028   // 1</div><div class="line">0xc42000c038   // 2</div><div class="line">b &lt;nil&gt;        // 3</div><div class="line">0xc42000c028   // 4</div></pre></td></tr></table></figure>
+<p>我们发现，2处的<code>a</code>竟然不是我们定义的（1处）<code>a</code>，发生了什么！</p>
+<p>其实看到这里很多人可能都明白了，其实是<code>a, err := generate()</code>里面<code>:=</code>的问题，我们最初的设想是golang会定义新变量<code>err</code>，而<code>a</code>为初始定义的那个变量（1处）。但实际情况是，对于使用<code>:=</code>定义的变量，如果新变量与那个同名已定义变量 (这里就是1处的变量<code>a</code>)不在一个作用域中时，那么golang会重新定义这个变量，这就是导致这个问题的真凶。</p>
+<p>怎么改呢，我们重写一下<code>main</code>函数：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">var</span> a *A</div><div class="line">    <span class="keyword">var</span> err error</div><div class="line"></div><div class="line">    <span class="keyword">if</span> check(a) &#123;</div><div class="line">        a, err = generate()</div><div class="line">        fmt.Println(a.s, err)</div><div class="line">    &#125;</div><div class="line">    fmt.Println(a.s)            </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如此即可~</p>
+<p>这个坑真的非常容易踩，而且不太好发现，感谢饭饭🙏</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/17/Docker数据管理-Volume，-bind-mount和tmpfs-mount/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1961,233 +2118,6 @@ Out[49]: 14266
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/03/Django-redis如何支持存取整型和布尔值/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/03/Django-redis如何支持存取整型和布尔值/" itemprop="url">Django-redis如何支持存取整型和布尔值</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-03T05:16:48+08:00">
-                2016-11-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>redis支持5种数据类型，分别是string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set：有序集合)。整型值和布尔值并不在其中。存储整型和布尔值时，redis会将其转换为字符串</p>
-<pre><code>127.0.0.1:6379&gt; SET test_key 1
-OK
-127.0.0.1:6379&gt; GET test_key
-&quot;1&quot;
-127.0.0.1:6379&gt; SET test_key True
-OK
-127.0.0.1:6379&gt; GET test_key
-&quot;True&quot;
-127.0.0.1:6379&gt; SET test_key TRUE
-OK
-127.0.0.1:6379&gt; GET test_key
-&quot;TRUE&quot;
-127.0.0.1:6379&gt; SET test_key true
-OK
-127.0.0.1:6379&gt; GET test_key
-&quot;true&quot;
-</code></pre><p>但是当我们使用了<code>django-redis</code>之后发现，我们可以正常存取整型和布尔值，这是怎么做的呢？答案自然是在源码中，直觉告诉我们，<code>set函数</code>里一定做了什么事情。</p>
-<pre><code># django_redis.client.default.py
-def set(self, key, value, timeout=DEFAULT_TIMEOUT, version=None, client=None, nx=False, xx=False):
-    &quot;&quot;&quot;
-    Persist a value to the cache, and set an optional expiration time.
-    Also supports optional nx parameter. If set to True - will use redis setnx instead of set.
-    &quot;&quot;&quot;
-
-    if not client:
-        client = self.get_client(write=True)
-
-    nkey = self.make_key(key, version=version)
-    nvalue = self.encode(value)
-
-    ......
-</code></pre><p><code>set</code>方法中调用了类的<code>encode</code>的方法对<code>value</code>进行了处理，我们再看<code>encode</code>：</p>
-<pre><code>django_redis.client.default.py
-def encode(self, value): &quot;&quot;&quot; Encode the given value. &quot;&quot;&quot;
-
-if isinstance(value, bool) or not isinstance(value, integer_types):
-    value = self._serializer.dumps(value)
-    value = self._compressor.compress(value)
-    return value
-
-return value
-</code></pre><p>看到了吧，如果是<code>布尔值</code>，那么要调用一个<code>dumps</code>方法，我们找到这个<code>dumps</code>方法：</p>
-<pre><code>django_redis.serializers.pickle.py
-class PickleSerializer(BaseSerializer): ......
-
-def dumps(self, value):
-    return pickle.dumps(value, self._pickle_version)
-
-def loads(self, value):
-    return pickle.loads(force_bytes(value))
-</code></pre><p>原来是用了<a href="https://docs.python.org/3/library/pickle.html" target="_blank" rel="external">pickle</a>来做了序列化，这样拿出来的时候调用<code>pickle.loads</code>方法，就可以还原为原来的对象了。这也是<code>django-redis</code>支持存储任意<code>python</code>对象的原因，<a href="https://docs.python.org/3/library/pickle.html" target="_blank" rel="external">pickle</a>帮了大忙。</p>
-<p>至于<code>int</code>的存取就简单了，我们从<code>get</code>方法看过去：</p>
-<pre><code>django_redis.client.default.py
-def get(self, key, default=None, version=None, client=None): &quot;&quot;&quot; Retrieve a value from the cache. Returns decoded value if key is found, the default if not. &quot;&quot;&quot; if client is None: client = self.get_client(write=False)
-
-key = self.make_key(key, version=version)
-
-try:
-    value = client.get(key)
-except _main_exceptions as e:
-    raise ConnectionInterrupted(connection=client, parent=e)
-
-if value is None:
-    return default
-
-return self.decode(value)
-</code></pre><p>可以看到对从<code>redis</code>中取出来的值调用了<code>decode</code>方法：</p>
-<pre><code>django_redis.client.default.py
-def decode(self, value): 
-&quot;&quot;&quot; 
-Decode the given value. 
-&quot;&quot;&quot; 
-try: 
-    value = int(value)
-except (ValueError, TypeError):
-    try:
-        value = self._compressor.decompress(value)
-    except CompressorError:
-        # Handle little values, chosen to be not compressed pass
-        value = self._serializer.loads(value) return value
-</code></pre><p>一目了然了吧，总结的话就是：<code>redis</code>存的时候还是存的字符串，但是取出来的时候会尝试去<code>int</code>一下。</p>
-<p>大家可能会有这样的疑问，如果值是<code>&#39;123&#39;</code>这样的字符串怎么办呢？这样并不会有问题啦，因为字符串存到数据库之前会先做<code>pickle.dumps</code>，这样就可以区分开<strong>数字转换成的字符串</strong>和<strong>真实的字符串</strong>了。</p>
-<p>另外，将<code>整型</code>进行<code>pickle</code>也是可以的，但是我觉得因为数字的存储是很平常的需求，而<code>pickle</code>之后会带上对象的各种附加信息，会增加空间消耗，所以作者才有了这样的设计。</p>
-<p>如果大家需要写自己的<code>redis client</code>的话，可以参考一下这些设计，会给使用带来很大的方便。</p>
-<p><strong>Note</strong>: <code>Python3</code> 中<code>pickle</code>和<code>cPickle</code>已经合并为<code>pickle</code></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2238,7 +2168,7 @@ except (ValueError, TypeError):
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">169</span>
+                <span class="site-state-item-count">170</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2249,7 +2179,7 @@ except (ValueError, TypeError):
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

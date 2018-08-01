@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="Youmai の Blog">
 <meta property="og:description" content="当调用malloc(size)时，实际分配的内存大小大于size字节，这是因为在分配的内存区域头部有类似于 struct control_block {     unsigned size;     int used; }; 这样的一个结构，如果malloc函数内部得到的内存区域的首地址为void *p,那么它返回给你的就是p + sizeof(control_block)，而调用free(q)的">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-08-09T10:03:42.000Z">
+<meta property="og:updated_time" content="2018-07-28T07:31:16.556Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="为什么malloc时需要指定size，对应的free时不需要指定size">
 <meta name="twitter:description" content="当调用malloc(size)时，实际分配的内存大小大于size字节，这是因为在分配的内存区域头部有类似于 struct control_block {     unsigned size;     int used; }; 这样的一个结构，如果malloc函数内部得到的内存区域的首地址为void *p,那么它返回给你的就是p + sizeof(control_block)，而调用free(q)的">
@@ -484,7 +484,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">169</span>
+                <span class="site-state-item-count">170</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -495,7 +495,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

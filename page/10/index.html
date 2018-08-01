@@ -286,6 +286,166 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/10/网络编程调试/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/03/10/网络编程调试/" itemprop="url">网络编程调试</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-10T17:05:52+08:00">
+                2015-03-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">unix网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##记录网络服务名和它们对应使用的端口号及协议</p>
+<pre><code>cat /etc/services
+</code></pre><p>##查看某个端口号的使用状态</p>
+<pre><code>lsof -i :6000 （查看哪个进程正在监听6000这个端口）
+lsof -i TCP:6000 （只显示监听此端口的TCP连接，上面不加选项的就是指TCP&amp;UDP）
+</code></pre><p>lsof命令还可以用来显示谁在使用某个文件或文件夹，例如：</p>
+<pre><code>lsof  /root/michael/unp（会显示谁当前在用/root/michael/unp文件夹）
+</code></pre><p>##netstat<br>netstat 默认情况下，绑定在INADDR_ANY的服务器的套接字是不列出来的，不过可以用 -a 选项改变默认设置（解释：不加-a选项，netstat命令不显示LISTEN状态的条目，所以如果需要显示LISTEN，就需要加上-a）。</p>
+<pre><code>netstat -apt（-p选项表示输出PID，-t选项表示监听tcp端口），这个命令可以很方便地显示套接字上程序的PID和名字
+
+netstat -apu：显示监听在udp端口的信息
+
+netstat -napt（加上-n选项表示以数字形式表示地址和端口号，而不是别名）
+
+netstat -nr：可以显示路由表
+
+netstat -i：可以获得计算机基本的网络接口信息
+</code></pre><p><strong>这些命令输出中的<code>*</code>是表示通配地址（INADDR_ANY）</strong></p>
+<p>Netstat 命令用于显示各种网络相关信息，如网络连接，路由表，接口状态 (Interface Statistics)，masquerade 连接，多播成员 (Multicast Memberships) 等等。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/09/百度的一些面试题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1756,156 +1916,6 @@ main()
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/03/06/listen函数的backlog参数/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/06/listen函数的backlog参数/" itemprop="url">listen函数的backlog参数</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-06T17:32:46+08:00">
-                2015-03-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/unix网络编程/" itemprop="url" rel="index">
-                    <span itemprop="name">unix网络编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>listen函数将主动套接字转换为被动监控套接字，其第二个参数backlog决定了内核的连接缓存队列长度。对于一个给定的监听套接字，内核维护两个队列：</p>
-<ol>
-<li><p>未就绪队列，存放没有完成三路握手的连接，监听套接字收到SYN并返回ACK+SYN，连接处于SYN_RECV状态，等待对端发送ACK。如果已完成队列非满，则接收ACK，连接握手完成，进入已完成队列；如果已完成队列满则丢弃ACK，对端重发ACK（对端看到的连接是ESTABLISED状态），若未就绪队列中的SYN_RECV等待直到超时还没进入已完成队列则丢弃连接（对端不知道，只有在读写套接字时才知道）。</p>
-</li>
-<li><p>已完成队列，存放已经完成三路握手的连接（ESTABLISHED），等待accept取走连接。</p>
-</li>
-</ol>
-<p><img src="/img/tcp为监听套接字维护的两个队列.png" alt="tcp为监听套接字维护的两个队列"></p>
-<p>backlog决定了两个队列的长度之和（并不是说两个队列之和等于backlog，而是存在个转换，依赖于具体实现）</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1956,7 +1966,7 @@ main()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">169</span>
+                <span class="site-state-item-count">170</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1967,7 +1977,7 @@ main()
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

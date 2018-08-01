@@ -286,6 +286,335 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/01/真实世界中的WebRTC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/01/真实世界中的WebRTC/" itemprop="url">真实世界中的WebRTC</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-01T10:16:13+08:00">
+                2018-08-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WebRTC/" itemprop="url" rel="index">
+                    <span itemprop="name">WebRTC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="真实世界中的WebRTC：STUN-TURN-and-signaling"><a href="#真实世界中的WebRTC：STUN-TURN-and-signaling" class="headerlink" title="真实世界中的WebRTC：STUN, TURN and signaling"></a>真实世界中的WebRTC：STUN, TURN and signaling</h3><p>WebRTC使端到端能够通信。</p>
+<p>但是…</p>
+<p>WebRTC仍然需要服务器：</p>
+<ul>
+<li>让客户端交换元数据来协调通信：这被称为信令（signaling）</li>
+<li>处理网络地址转换（NATs）和防火墙</li>
+</ul>
+<p>这篇文章将会展示如何搭建一个信令服务</p>
+<p>在本文中，我们将向您展示如何构建信令服务，以及如何使用STUN和TURN服务器处理真实连接的难题。 我们还解释了WebRTC应用程序如何处理多方通话以及与VoIP和PSTN（又称电话）等服务进行交互。</p>
+<h3 id="什么是信令"><a href="#什么是信令" class="headerlink" title="什么是信令"></a>什么是信令</h3><p>信令是协调通信的过程。 为了使WebRTC应用程序能够建立一个“通话”，其客户端需要交换以下信息：</p>
+<ul>
+<li>会话控制消息用于打开或关闭通信</li>
+<li>错误消息</li>
+<li>媒体元数据，如编解码器和编解码器设置，带宽和媒体类型</li>
+<li>密钥数据，用于建立安全的连接</li>
+<li>网络数据，如：外界看到的主机IP地址和端口</li>
+</ul>
+<p>此信令过程需要一种方法让客户端来回传递消息。 WebRTC API不实现该机制：你需要自己构建它。 我们在下面描述了构建信令服务的一些方法。 首先，需要一点背景…</p>
+<h3 id="为什么信令不是由WebRTC定义的？"><a href="#为什么信令不是由WebRTC定义的？" class="headerlink" title="为什么信令不是由WebRTC定义的？"></a>为什么信令不是由WebRTC定义的？</h3><p>为了避免出现冗余，并最大限度地提高与已有技术的兼容性，WebRTC标准并没有规定信令方法和协议。<a href="http://tools.ietf.org/html/draft-ietf-rtcweb-jsep-03#section-1.1" target="_blank" rel="external">JavaScript会话建立协议</a>JSEP概述了这种方法：</p>
+<blockquote>
+<p>WebRTC通话建立的思想是完全指定和控制媒体平面，但是尽可能将信令平面留给应用程序。其原理是，不同的应用程序可能更喜欢使用不同的协议，例如现有的SIP或Jingle呼叫信令协议，或者对于特定应用程序定制的东西，可能是针对新颖的用例。在这种方法中，需要交换的关键信息是多媒体会话描述，其指定了建立媒体平面所必需的传输和媒体配置信息。</p>
+</blockquote>
+<p>JSEP的架构也避免了浏览器不得不保存状态，即作为一个信令状态机。如果信令数据在每次刷新页面的时候都会发生丢失，就会出现问题。相反，信令状态机可以保存在服务器上。</p>
+<p><img src="/img/jsep.png" alt="jsep arch"></p>
+<p>JSEP要求端之间交换offer和answer：上面提到的媒体元数据。offer和answer以会话描述协议（SDP）的格式传递，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">v=0</div><div class="line">o=- 7614219274584779017 2 IN IP4 127.0.0.1</div><div class="line">s=-</div><div class="line">t=0 0</div><div class="line">a=group:BUNDLE audio video</div><div class="line">a=msid-semantic: WMS</div><div class="line">m=audio 1 RTP/SAVPF 111 103 104 0 8 107 106 105 13 126</div><div class="line">c=IN IP4 0.0.0.0</div><div class="line">a=rtcp:1 IN IP4 0.0.0.0</div><div class="line">a=ice-ufrag:W2TGCZw2NZHuwlnf</div><div class="line">a=ice-pwd:xdQEccP40E+P0L5qTyzDgfmW</div><div class="line">a=extmap:1 urn:ietf:params:rtp-hdrext:ssrc-audio-level</div><div class="line">a=mid:audio</div><div class="line">a=rtcp-mux</div><div class="line">a=crypto:1 AES_CM_128_HMAC_SHA1_80 inline:9c1AHz27dZ9xPI91YNfSlI67/EMkjHHIHORiClQe</div><div class="line">a=rtpmap:111 opus/48000/2</div><div class="line">…</div></pre></td></tr></table></figure>
+<p>想知道所有这些SDP gobbledygook实际意味着什么？ 看看<a href="http://datatracker.ietf.org/doc/draft-nandakumar-rtcweb-sdp/?include_text=1" target="_blank" rel="external">IETF的例子</a>。</p>
+<p>需要记住的是，WebRTC被设计为在被设置为本地或者远端描述之前，通过编辑SDP文本中的值，可以扭转offer或者answer。例如，<a href="https://appr.tc/" target="_blank" rel="external">apprtc.tc</a>中的preferAudioCodec()函数可用于设置默认编解码器和比特率。使用 JavaScript处理SDP有些困难，有一些关于WebRTC的未来版本中是否应该使用JSON的讨论，但是坚持使用SDP还是有一些<a href="http://tools.ietf.org/html/draft-ietf-rtcweb-jsep-03#section-3.3" target="_blank" rel="external">优势</a>的。</p>
+<h3 id="RTCPeerConnection-signaling-offer-answer-and-candidate"><a href="#RTCPeerConnection-signaling-offer-answer-and-candidate" class="headerlink" title="RTCPeerConnection + signaling: offer, answer and candidate"></a>RTCPeerConnection + signaling: offer, answer and candidate</h3><p>RTCPeerConnection是WebRTC应用程序用来创建端对端连接并传输音视频的API。</p>
+<p>为初始化这个过程，RTCPeerConnection有两个工作要做：</p>
+<ul>
+<li>确定本地媒体条件，如分辨率和编解码器功能。这是用于offer和answer机制的元数据。</li>
+<li>获取应用程序主机的潜在网络地址，成为候选人（candidates）</li>
+</ul>
+<p>一旦确定了本地数据，就必须通过信令机制与远端进行交换。</p>
+<p>让我们假设一个场景：<a href="https://xkcd.com/177/" target="_blank" rel="external">Alice正在尝试呼叫Eve</a>。下面是完整的offer/answer机制：</p>
+<ol>
+<li>Alice创建一个RTCPeerConnection对象。</li>
+<li>Alice使用RTCPeerConnection createOffer()方法产生一个offer（一个SDP会话描述）。</li>
+<li>Alice用他的offer调用setLocalDescription()。</li>
+<li>Alice将offer字符串化，并使用信令机制将其发送给Eve。</li>
+<li>Eve用Alice的offer调用setRemoteDescription()，以便她的RTCPeerConnection知道Alice的设置。</li>
+<li>Eve调用createAnswer()，成功的回调是传入一个本地的会话描述：Eve的answer。</li>
+<li>Eve通过调用setLocalDescription()将其answer设置为本地描述。</li>
+<li>Eve然后使用信令机制将她的字符串化的answer发回给Alice。</li>
+<li>Alice使用setRemoteDescription()将Eve的应答设置为远程会话描述。</li>
+</ol>
+<p>Alice和Eve也需要交换网络信息。“查找候选人（find candidate）”这个表达是指使用<a href="http://en.wikipedia.org/wiki/Interactive_Connectivity_Establishment" target="_blank" rel="external">ICE框架</a>查找网络接口和端口的过程。</p>
+<ol>
+<li>Alice使用onicecandidate handler创建一个RTCPeerConnection对象。</li>
+<li>handler在网络候选人变得可用时被调用。</li>
+<li>在handler中，Alice通过他们的信令通道将字符串化的候选数据发送给Eve。</li>
+<li>当Eve从Alice那里获得候选消息时，她调用addIceCandidate()，将候选项添加到远端描述中。</li>
+</ol>
+<p>JSEP支持<a href="http://tools.ietf.org/html/draft-ietf-rtcweb-jsep-03#section-3.4.1" target="_blank" rel="external">ICE Candidate Trickling</a>，它允许主叫方(caller)在最初的offer之后递增地向被叫方提供候选项（candidates），并使被叫方开始在通话中进行操作并建立连接而不用等所有候选项到达。</p>
+<h3 id="WebRTC信令代码"><a href="#WebRTC信令代码" class="headerlink" title="WebRTC信令代码"></a>WebRTC信令代码</h3><p>下面的<a href="https://w3c.github.io/webrtc-pc/#simple-peer-to-peer-example" target="_blank" rel="external">W3C代码示例</a>总结了一个完整的信令过程。该代码假定存在一些信令机制，SignalingChannel。我们会在下文中更详细地讨论信令。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// handles JSON.stringify/parse</span></div><div class="line"><span class="keyword">const</span> signaling = <span class="keyword">new</span> SignalingChannel();</div><div class="line"><span class="keyword">const</span> constraints = &#123;<span class="attr">audio</span>: <span class="literal">true</span>, <span class="attr">video</span>: <span class="literal">true</span>&#125;;</div><div class="line"><span class="keyword">const</span> configuration = &#123;<span class="attr">iceServers</span>: [&#123;<span class="attr">urls</span>: <span class="string">'stuns:stun.example.org'</span>&#125;]&#125;;</div><div class="line"><span class="keyword">const</span> pc = <span class="keyword">new</span> RTCPeerConnection(configuration);</div><div class="line"></div><div class="line"><span class="comment">// send any ice candidates to the other peer</span></div><div class="line">pc.onicecandidate = <span class="function">(<span class="params">&#123;candidate&#125;</span>) =&gt;</span> signaling.send(&#123;candidate&#125;);</div><div class="line"></div><div class="line"><span class="comment">// let the "negotiationneeded" event trigger offer generation</span></div><div class="line">pc.onnegotiationneeded = <span class="keyword">async</span> () =&gt; &#123;</div><div class="line">  <span class="keyword">try</span> &#123;</div><div class="line">    <span class="keyword">await</span> pc.setLocalDescription(<span class="keyword">await</span> pc.createOffer());</div><div class="line">    <span class="comment">// send the offer to the other peer</span></div><div class="line">    signaling.send(&#123;<span class="attr">desc</span>: pc.localDescription&#125;);</div><div class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</div><div class="line">    <span class="built_in">console</span>.error(err);</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">// once remote track media arrives, show it in remote video element</span></div><div class="line">pc.ontrack = <span class="function">(<span class="params">event</span>) =&gt;</span> &#123;</div><div class="line">  <span class="comment">// don't set srcObject again if it is already set.</span></div><div class="line">  <span class="keyword">if</span> (remoteView.srcObject) <span class="keyword">return</span>;</div><div class="line">  remoteView.srcObject = event.streams[<span class="number">0</span>];</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">// call start() to initiate</span></div><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">start</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">try</span> &#123;</div><div class="line">    <span class="comment">// get local stream, show it in self-view and add it to be sent</span></div><div class="line">    <span class="keyword">const</span> stream =</div><div class="line">      <span class="keyword">await</span> navigator.mediaDevices.getUserMedia(constraints);</div><div class="line">    stream.getTracks().forEach(<span class="function">(<span class="params">track</span>) =&gt;</span></div><div class="line">      pc.addTrack(track, stream));</div><div class="line">    selfView.srcObject = stream;</div><div class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</div><div class="line">    <span class="built_in">console</span>.error(err);</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">signaling.onmessage = <span class="keyword">async</span> (&#123;desc, candidate&#125;) =&gt; &#123;</div><div class="line">  <span class="keyword">try</span> &#123;</div><div class="line">    <span class="keyword">if</span> (desc) &#123;</div><div class="line">      <span class="comment">// if we get an offer, we need to reply with an answer</span></div><div class="line">      <span class="keyword">if</span> (desc.type === <span class="string">'offer'</span>) &#123;</div><div class="line">        <span class="keyword">await</span> pc.setRemoteDescription(desc);</div><div class="line">        <span class="keyword">const</span> stream =</div><div class="line">          <span class="keyword">await</span> navigator.mediaDevices.getUserMedia(constraints);</div><div class="line">        stream.getTracks().forEach(<span class="function">(<span class="params">track</span>) =&gt;</span></div><div class="line">          pc.addTrack(track, stream));</div><div class="line">        <span class="keyword">await</span> pc.setLocalDescription(<span class="keyword">await</span> pc.createAnswer());</div><div class="line">        signaling.send(&#123;<span class="attr">desc</span>: pc.localDescription&#125;);</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (desc.type === <span class="string">'answer'</span>) &#123;</div><div class="line">        <span class="keyword">await</span> pc.setRemoteDescription(desc);</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="built_in">console</span>.log(<span class="string">'Unsupported SDP type.'</span>);</div><div class="line">      &#125;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (candidate) &#123;</div><div class="line">      <span class="keyword">await</span> pc.addIceCandidate(candidate);</div><div class="line">    &#125;</div><div class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</div><div class="line">    <span class="built_in">console</span>.error(err);</div><div class="line">  &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>要查看实际offer/answer和候选项的交流过程，请参阅<a href="https://simpl.info/rtcpeerconnection/" target="_blank" rel="external">simpl.info/pc</a>上的“单页”视频聊天示例的控制台日志。如果你想知道更多，请从Chrome的chrome://webrtc-internals页面或者Opera中的opera://webrtc-internals页面下载WebRTC 信令和统计数据的完整转储。</p>
+<h3 id="对端发现"><a href="#对端发现" class="headerlink" title="对端发现"></a>对端发现</h3><p>这是“我该如何找到我要交谈的人”的一种高端说法。</p>
+<p>对于电话来说，我们有电话号码和目录。对于在线视频聊天和消息发送，我们需要身份和状态管理系统，以及用户启动会话的方式。WebRTC应用程序需要一种方式让客户互相通知他们想要开始或加入一个通话。</p>
+<p>端发现机制不是由WebRTC定义的。这个过程可以像发送电子邮件或发送一个URL一样简单：对于视频聊天应用程序，比如talky.io，tawk.com和browsermeeting.com，您可以通过共享自定义链接来邀请人们进行通话。开发人员Chris Ball已经搭建了一个有趣的<a href="https://blog.printf.net/articles/2013/05/17/webrtc-without-a-signaling-server/" target="_blank" rel="external">无服务器的webrtc实验</a>，使WebRTC呼叫参与者能够通过他们喜欢的任何消息服务来交换元数据。</p>
+<h3 id="我怎么才能建立一个信令服务？"><a href="#我怎么才能建立一个信令服务？" class="headerlink" title="我怎么才能建立一个信令服务？"></a>我怎么才能建立一个信令服务？</h3><p>重申：信令协议和机制不是由WebRTC标准定义的。无论你选择什么，你都需要一个中间服务器来在客户端之间交换信令消息和应用程序数据。不走运的是，一个网络应用程序不能简单地向互联网喊“连接到我朋友那！”</p>
+<p>幸亏信令消息很小，而且大多在通话开始的时候进行交换。在使用<a href="http://appr.tc/" target="_blank" rel="external">appr.tc</a>进行测试时，我们发现对于视频聊天会话，信令服务总共处理了30-45条消息，总共消息的大小大约为10KB。</p>
+<p>WebRTC 信令业务在带宽方面的要求相对较低，因为它们只需要中继消息并保留少量的会话状态数据（如连接的客户端），同样不会消耗太多的处理或存储空间。</p>
+<blockquote>
+<p>小贴士：用于交换会话元数据的信令机制也可用于传送应用程序数据。这只是一个消息服务而已！。</p>
+</blockquote>
+<h3 id="将消息从服务器推送到客户端"><a href="#将消息从服务器推送到客户端" class="headerlink" title="将消息从服务器推送到客户端"></a>将消息从服务器推送到客户端</h3><p>信令的消息服务需要是双向的：客户端到服务器和服务器到客户端。双向通信违背了HTTP客户端/服务器的请求/响应模型，但是为了将数据从运行在Web服务器上的服务推送到运行在浏览器中的Web应用程序，多年来已经开发了诸如<a href="https://en.wikipedia.org/wiki/Comet_(programming" target="_blank" rel="external">长轮询</a>)之类的各种hac<br>k方法。</p>
+<p>最近，<a href="http://www.html5rocks.com/en/tutorials/eventsource/basics/" target="_blank" rel="external">EventSource API</a>已经得到了广泛的实现。这开启了 “服务器发送的事件”：通过HTTP从Web服务器发送到浏览器客户端的数据。在<a href="http://simpl.info/es" target="_blank" rel="external">simpl.info/es</a>上有一个简单的演示。EventSource是为单向消息传递而设计的，但是它可以和XHR结合使用来搭建交换信令消息的服务：信令服务器通过XHR请求传递来自呼叫者的消息，通过EventSource推送给被叫者。</p>
+<p><a href="http://www.html5rocks.com/en/tutorials/websockets/basics/" target="_blank" rel="external">WebSocket</a>是一个更自然的解决方案，专为全双工客户端-服务器通信而设计（消息可以同时在两个方向上传输）。使用纯WebSocket或Server-Sent Events（EventSource）构建的信令服务的一个优点是这些API的后端可以在大多数Web托管软件包通用的各种Web框架上实现，比如PHP，Python和Ruby。</p>
+<p>大约四分之三的浏览器都<a href="http://caniuse.com/#search=websocket" target="_blank" rel="external">支持WebSocket</a>，更重要的是，所有支持WebRTC的浏览器都支持WebSocket，无论是在台式机还是手机上。应该为所有连接都使用<a href="https://en.wikipedia.org/wiki/Transport_Layer_Security" target="_blank" rel="external">TLS</a>，以确保消息不会因为没有加密而被截取，并且<a href="http://www.infoq.com/articles/Web-Sockets-Proxy-Servers" target="_blank" rel="external">减少代理遍历</a>的问题。（有关WebSocket和代理遍历的更多信息，请参阅Ilya Grigorik的高性能浏览器网络中的<a href="http://hpbn.co/webrtc" target="_blank" rel="external">WebRTC章节</a>。Peter Lubber的<a href="http://refcardz.dzone.com/refcardz/html5-websocket" target="_blank" rel="external">WebSocket备忘单</a>提供了有关WebSocket客户端和服务器的更多信息）</p>
+<p>用于标准的<a href="http://appr.tc/" target="_blank" rel="external">appr.tc</a> WebRTC视频聊天应用程序的信令通过<a href="https://developers.google.com/appengine/docs/java/channel/" target="_blank" rel="external">Google App Engine Channel API</a>完成，该API使用<a href="http://en.wikipedia.org/wiki/Comet_(programming" target="_blank" rel="external">Comet</a>)技术（长轮询）来启用App Engine后端与Web客户端之间推送通信的信令传输。<a href="http://www.html5rocks.com/en/tutorials/webrtc/basics/" target="_blank" rel="external">HTML5 Rocks WebRTC文章</a>中<a href="http://www.html5rocks.com/en/tutorials/webrtc/basics/#toc-simple" target="_blank" rel="external">详细介绍</a>了该应用程序的代码演示。</p>
+<p><img src="/img/apprtc_in_action.jpg" alt="apprtc_in_action"></p>
+<p>也可以通过让WebRTC客户端通过Ajax轮询消息服务器来处理信令，但这回导致大量的冗余网络请求，尤其对于移动设备是有问题的。即使在会话建立之后，对端也需要轮询信令消息，以防其他端发生改变或终止会话。<a href="http://webrtcbook.com/" target="_blank" rel="external">WebRTC Book</a> app示例使用此选项，并对轮询频率进行了一些优化。</p>
+<h3 id="扩展信令"><a href="#扩展信令" class="headerlink" title="扩展信令"></a>扩展信令</h3><p>尽管信令服务消耗客户端带宽和CPU相对较少，但是一个很受欢迎的应用程序的信令服务器可能需要处理来自不同位置的大量消息，而且并发性较高。有大量流量的WebRTC应用程序需要能够处理相当大负载的信令服务器。</p>
+<p>在这里我们不会对其进行详细讨论，但是对于大容量、高性能的消息传递有很多选择，包括：</p>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Xmpp" target="_blank" rel="external">eXtensible Messaging and Presence Protocol</a>（XMPP），最初是叫Jabber：一个为即时消息而开发的可用于信令的协议。服务器实现包括<a href="http://en.wikipedia.org/wiki/Ejabberd" target="_blank" rel="external">ejabberd</a>和<a href="http://en.wikipedia.org/wiki/Openfire" target="_blank" rel="external">Openfire</a>。Strophe.js等 JavaScript等客户端使用BOSH模拟双向流，但由于各种原因，BOSH可能不如WebSocket高效，同样的原因可能导致无法很好地扩展缩放。（跳离正题：Jingle是一个支持语音和视频的XMPP扩展；WebRTC项目使用来自libjingle库，一个Jingle的C++实现，的网络和传输组件。）</li>
+<li>开源的库，如<a href="http://zeromq.org/" target="_blank" rel="external">ZeroMQ</a>（TokBox在他们的<a href="http://www.tokbox.com/blog/tokbox-builds-it%E2%80%99s-own-internal-messaging-infrastructure/" target="_blank" rel="external">Rumor</a>服务中使用它）和OpenMQ。NullMQ通过WebSocket使用<a href="http://stomp.github.io/" target="_blank" rel="external">STOMP协议</a>将ZeroMQ概念应用于Web平台。</li>
+<li>使用WebSocket的商业云消息平台（尽管可能会回退到长轮询），例如Pusher，Kaazing和PubNub。（PubNub也有WebRTC的API）</li>
+<li>像<a href="https://vline.com/" target="_blank" rel="external">vLine</a>这样的商业WebRTC平台。</li>
+</ul>
+<h3 id="在Node上使用Socket-io构建信令服务"><a href="#在Node上使用Socket-io构建信令服务" class="headerlink" title="在Node上使用Socket.io构建信令服务"></a>在Node上使用Socket.io构建信令服务</h3><p>下面是一个简单的Web应用程序的代码，它使用Node上的Socket.io构建的信令服务。Socket.io的设计使构建服务、交换信息变得简单，而且因为它内置了“房间”的概念，Socket.io特别适用于WebRTC 信令。<em>这个例子不是为了扩大产品级别的信令服务而设计的，但是对于相对较少的用户来说效果很好</em>。</p>
+<p>Socket.io使用带有回退的WebSocket：AJAX长轮询，AJAX多部分流，Forever Iframe和JSONP轮询。它已被移植到各种后端，但也许最有名的是它的Node版本，我们将在下面的例子中使用它。</p>
+<p>在这个例子中没有WebRTC：它的设计目的只是为了展示如何在一个Web应用程序中构建信令。查看控制台日志以查看客户端加入房间并且交换消息时发生的情况。我们的<a href="https://codelabs.developers.google.com/codelabs/webrtc-web/#0" target="_blank" rel="external">WebRTC codelab</a>提供了分步说明，解释了如何将这个例子集成到一个完整的WebRTC视频聊天应用程序。</p>
+<p>下面是客户端, index.html:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>WebRTC client<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">'/socket.io/socket.io.js'</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">'js/main.js'</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>以及客户端中引用的JavaScript文件main.js：:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> isInitiator;</div><div class="line"></div><div class="line">room = prompt(<span class="string">'Enter room name:'</span>);</div><div class="line"></div><div class="line"><span class="keyword">const</span> socket = io.connect();</div><div class="line"></div><div class="line"><span class="keyword">if</span> (room !== <span class="string">''</span>) &#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'Joining room '</span> + room);</div><div class="line">  socket.emit(<span class="string">'create or join'</span>, room);</div><div class="line">&#125;</div><div class="line"></div><div class="line">socket.on(<span class="string">'full'</span>, (room) =&gt; &#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'Room '</span> + room + <span class="string">' is full'</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">socket.on(<span class="string">'empty'</span>, (room) =&gt; &#123;</div><div class="line">  isInitiator = <span class="literal">true</span>;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'Room '</span> + room + <span class="string">' is empty'</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">socket.on(<span class="string">'join'</span>, (room) =&gt; &#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'Making request to join room '</span> + room);</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'You are the initiator!'</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">socket.on(<span class="string">'log'</span>, (array) =&gt; &#123;</div><div class="line">  <span class="built_in">console</span>.log.apply(<span class="built_in">console</span>, array);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>完整的服务端app:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">static</span> = <span class="built_in">require</span>(<span class="string">'node-static'</span>);</div><div class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>);</div><div class="line"><span class="keyword">const</span> file = <span class="keyword">new</span>(<span class="keyword">static</span>.Server)();</div><div class="line"><span class="keyword">const</span> app = http.createServer(<span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</div><div class="line">  file.serve(req, res);</div><div class="line">&#125;).listen(<span class="number">2013</span>);</div><div class="line"></div><div class="line"><span class="keyword">const</span> io = <span class="built_in">require</span>(<span class="string">'socket.io'</span>).listen(app);</div><div class="line"></div><div class="line">io.sockets.on(<span class="string">'connection'</span>, (socket) =&gt; &#123;</div><div class="line"></div><div class="line">  <span class="comment">// convenience function to log server messages to the client</span></div><div class="line">  <span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">const</span> array = [<span class="string">'&gt;&gt;&gt; Message from server: '</span>];</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> i = <span class="number">0</span>; i &lt; <span class="built_in">arguments</span>.length; i++) &#123;</div><div class="line">      array.push(<span class="built_in">arguments</span>[i]);</div><div class="line">    &#125;</div><div class="line">      socket.emit(<span class="string">'log'</span>, array);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  socket.on(<span class="string">'message'</span>, (message) =&gt; &#123;</div><div class="line">    log(<span class="string">'Got message:'</span>, message);</div><div class="line">    <span class="comment">// for a real app, would be room only (not broadcast)</span></div><div class="line">    socket.broadcast.emit(<span class="string">'message'</span>, message);</div><div class="line">  &#125;);</div><div class="line"></div><div class="line">  socket.on(<span class="string">'create or join'</span>, (room) =&gt; &#123;</div><div class="line">    <span class="keyword">const</span> numClients = io.sockets.clients(room).length;</div><div class="line"></div><div class="line">    log(<span class="string">'Room '</span> + room + <span class="string">' has '</span> + numClients + <span class="string">' client(s)'</span>);</div><div class="line">    log(<span class="string">'Request to create or join room '</span> + room);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (numClients === <span class="number">0</span>)&#123;</div><div class="line">      socket.join(room);</div><div class="line">      socket.emit(<span class="string">'created'</span>, room);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (numClients === <span class="number">1</span>) &#123;</div><div class="line">      io.sockets.in(room).emit(<span class="string">'join'</span>, room);</div><div class="line">      socket.join(room);</div><div class="line">      socket.emit(<span class="string">'joined'</span>, room);</div><div class="line">    &#125; <span class="keyword">else</span> &#123; <span class="comment">// max two clients</span></div><div class="line">      socket.emit(<span class="string">'full'</span>, room);</div><div class="line">    &#125;</div><div class="line">    socket.emit(<span class="string">'emit(): client '</span> + socket.id +</div><div class="line">      <span class="string">' joined room '</span> + room);</div><div class="line">    socket.broadcast.emit(<span class="string">'broadcast(): client '</span> + socket.id +</div><div class="line">      <span class="string">' joined room '</span> + room);</div><div class="line"></div><div class="line">  &#125;);</div><div class="line"></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>（你不需要去学习node-static；它只是碰巧在这个例子里用到）</p>
+<p>在localhost上运行这个程序，你需要安装Node，socket.io和node-static。Node可以从nodejs.org下载。要安装socket.io和node-static，请从你的应用程序目录中的终端运行Node Package Manager：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">npm install socket.io</div><div class="line">npm install node-static</div></pre></td></tr></table></figure>
+<p>启动服务器，在应用目录下运行下面的命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">node server.js</div></pre></td></tr></table></figure>
+<p>在浏览器中打开localhost:2013。在任何浏览器中打开新的标签页或窗口，然后再次打开localhost:2013。如果想要查看发生了什么，请查看控制台：在Chrome和Opera中，可以通过Command-Option-J或Ctrl-Shift-J通过DevTools访问。</p>
+<p>不管你选择使用什么方式进行信号传输，后端和客户端app都至少需要提供类似于此示例的服务。</p>
+<h3 id="信令陷阱"><a href="#信令陷阱" class="headerlink" title="信令陷阱"></a>信令陷阱</h3><ul>
+<li><p>在setLocalDescription()被调用之前，RTCPeerConnection并不会开始收集候选：这是在<a href="http://tools.ietf.org/html/draft-ietf-rtcweb-jsep-03#section-4.2.4" target="_blank" rel="external">JSEP IETF草案</a>中规定的。</p>
+</li>
+<li><p>利用Trickle ICE（见上文）：候选到达后立即调用addIceCandidate()。</p>
+</li>
+</ul>
+<h3 id="现成的信令服务器"><a href="#现成的信令服务器" class="headerlink" title="现成的信令服务器"></a>现成的信令服务器</h3><p>如果你不想自己做WebRTC 信令服务器，有一些现成的服务器可用，它们可以使用上面例子中使用Socket.io，并与WebRTC客户端 JavaScript库集成：</p>
+<ul>
+<li>webRTC.io：WebRTC最先出现的几个抽象库之一。</li>
+<li>easyRTC：完整的WebRTC包。</li>
+<li>Signalmaster：一个与SimpleWebRTC JavaScript客户端库一起使用的信号服务器。</li>
+</ul>
+<p>如果你一点代码都不想写的话，还可以从像vLine，OpenTok和Asterisk等公司获得完整的商业WebRTC平台。</p>
+<p>爱立信在WebRTC早期的时候建立了一个在Apache上使用PHP的信令服务器。虽说这现在已经过时了，但是如果你正在考虑类似的东西，那么还是值得看一下代码的。</p>
+<h3 id="信令安全"><a href="#信令安全" class="headerlink" title="信令安全"></a>信令安全</h3><blockquote>
+<p>安全是无所作为的艺术。</p>
+<p>— Salman Rushdie</p>
+</blockquote>
+<p>加密对于所有WebRTC组件来说都是强制性的。</p>
+<p>但是信令机制并不是由WebRTC标准定义的，所以保护信令安全的责任就全在你的身上了。如果攻击者设法劫持了信令，他们就可以停止会话，重新定向连接和记录，更改或注入其他内容。</p>
+<p>确保信令安全的最重要因素是使用安全协议，即HTTPS和WSS（即TLS），确保消息不会因未加密而截获。另外要小心，不要以可以被其他呼叫方能够获取的方式用同一个信令服务器广播信令消息。</p>
+<h3 id="在信令之后：使用-ICE来对付NAT和防火墙"><a href="#在信令之后：使用-ICE来对付NAT和防火墙" class="headerlink" title="在信令之后：使用 ICE来对付NAT和防火墙"></a>在信令之后：使用 ICE来对付NAT和防火墙</h3><p>对于元数据信令，WebRTC应用程序使用中介服务器，但对于实际的媒体和数据流，一旦建立对话的话，RTCPeerConnection就会尝试点对点地直接连接客户端。</p>
+<p>在简单的情况中，每个WebRTC端点都有一个唯一的地址，可以与其他端进行交换以便直接通信。</p>
+<p><img src="/img/without_nat.png" alt="world without nat"></p>
+<p>实际上大多数设备都是处在一层或者多层NAT之后的，其中有一些包含可以阻挡某些端口和协议的防病毒软件，还有很多设备是在代理和公司防火墙之后的。防火墙和NAT实际上可以由相同的设备实现，比如说家庭WiFi路由器。</p>
+<p><img src="/img/nat_real_world.png" alt="nat_real_world"></p>
+<p>WebRTC应用程序可以使用ICE框架来消除实际网络的复杂性。为了实现这一点，你的应用程序必须将 ICE服务器的URL传递给RTCPeerConnection，就像下面所描述的那样。</p>
+<p>ICE试图找到连接对方的最佳途径。它会并行地尝试所有可能性，并选择最有效的选项。 ICE首先尝试使用从设备操作系统和网卡获取的主机地址进行连接；如果不成功的话（对于NAT后面的设备就会失败）， ICE会使用 STUN服务器获取外部地址，如果还是失败的话，则通过 TURN中继服务器路由数据。</p>
+<p>换句话说：</p>
+<ul>
+<li><p>STUN服务器是用来获取外部地址的。</p>
+</li>
+<li><p>TURN服务器是用来在直接连接（点到点）失败的情况下进行中继数据流量的</p>
+</li>
+</ul>
+<p>每个 TURN服务器都支持 STUN： TURN服务器也是一个增加了内置中继功能的 STUN服务器。 ICE还可以应付NAT设置的复杂性：实际上，NAT“打孔”可能不仅仅需要一个公共IP:端口地址。</p>
+<p>STUN 和/或 TURN服务器的URL（可选择地）由iceServers配置对象中的WebRTC应用程序指定，该配置对象是RTCPeerConnection构造函数的第一个参数。对于<a href="http://appr.tc/" target="_blank" rel="external">appr.tc</a>来说，值看起来是这样的：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  'iceServers': [</div><div class="line">    &#123;</div><div class="line">      'urls': 'stun:stun.l.google.com:19302'</div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">      'urls': 'turn:192.158.29.39:3478?transport=udp',</div><div class="line">      'credential': 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',</div><div class="line">      'username': '28224511:1379330808'</div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">      'urls': 'turn:192.158.29.39:3478?transport=tcp',</div><div class="line">      'credential': 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',</div><div class="line">      'username': '28224511:1379330808'</div><div class="line">    &#125;</div><div class="line">  ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注意：上面显示的 TURN 证书是有时间限制的，在2013年9月到期。 TURN服务器运行起来很昂贵，你需要为自己的服务器付费或者找一个服务提供商。要测试证书，你可以使用候选收集样本，并检查是否获得了类型为中继的候选。</p>
+<p>一旦RTCPeerConnection具有该信息， ICE的作用就会自动发生：RTCPeerConnection使用 ICE框架 来计算到对端之间的最佳路径，并根据需要使用 STUN和 TURN服务器。</p>
+<h3 id="STUN"><a href="#STUN" class="headerlink" title="STUN"></a>STUN</h3><p>NAT给设备提供了一个IP地址以使用专用局域网，但是这个地址不能在外部使用。由于没有公用地址，WebRTC端对端就无法进行通信。而WebRTC使用STUN来解决这个问题。</p>
+<p>STUN服务器位于公共网络上，并且有一个简单的任务：检查传入请求的IP地址（来自运行在NAT后面的应用程序），并将该地址作为响应发送回去。换句话说，应用程序使用 STUN服务器从公共角度发现其IP:端口。这个过程使得WebRTC一端为自己获得一个可公开访问的地址，然后通过信令机制将其传递给另一端以建立直接连接。（实际上不同NAT工作方式都有所不同，可能有多个NAT层，但是原理是一样的）。</p>
+<p>因为 STUN服务器不需要做太多的工作或者记特别多的东西，所以相对低规格的 STUN服务器就可以处理大量的请求。</p>
+<p>根据<a href="http://webrtcstats.com/" target="_blank" rel="external">webrtcstats.com</a>的统计（2013年），大多数WebRTC通话都成功地使用 STUN进行连接，有86%。尽管对于防火墙之后的两端之间的呼叫以及复杂的NAT配置，成功通话量会更少一些。</p>
+<p><img src="/img/stun.png" alt="stun"></p>
+<h3 id="TURN"><a href="#TURN" class="headerlink" title="TURN"></a>TURN</h3><p>RTCPeerConnection尝试通过UDP建立对等端之间的直接通信。如果失败的话，RTCPeerConnection就会使用TCP进行连接。如果使用TCP还失败的话，可以用 TURN服务器作为后备，在终端之间转发数据。</p>
+<p>重申： TURN用于中继对等端之间的音频/视频/数据流，而不是信令数据。</p>
+<p>TURN服务器具有公共地址，因此即使对等端位于防火墙或代理之后也可以与其他人联系。 TURN服务器有一个概念上来讲简单的任务—中继数据流—但是与 STUN服务器不同的是，他们会消耗大量的带宽。换句话说， TURN服务器需要更加的强大。</p>
+<p><img src="/img/turn.png" alt="turn"></p>
+<p>上图显示了 TURN的作用：单纯的 STUN没有成功建立连接，所以每个对等端还需要使用 TURN服务器。</p>
+<h3 id="部署-STUN和-TURN服务器"><a href="#部署-STUN和-TURN服务器" class="headerlink" title="部署 STUN和 TURN服务器"></a>部署 STUN和 TURN服务器</h3><p>为了进行测试，Google运行了一个公共 STUN服务器 stun.l.google.com:19302，就是<a href="http://appr.tc/" target="_blank" rel="external">appr.tc</a>所使用的那样。对于产品的 STUN/ TURN服务，我们推荐使用rfc5766-turn-server； STUN和 TURN服务器的源代码可从<a href="https://code.google.com/p/rfc5766-turn-server/" target="_blank" rel="external">code.google.com/p/rfc5766-turn-server</a>获得，该代码还提供了有关服务器安装的多个信息源的链接。<a href="https://groups.google.com/forum/#!msg/discuss-webrtc/X-OeIUC0efs/XW5Wf7Tt1vMJ" target="_blank" rel="external">Amazon Web Services的VM映像</a>也可用。</p>
+<p>另一个 TURN服务器是restund，提供<a href="http://www.creytiv.com/restund.html" target="_blank" rel="external">源代码</a>，也有AWS服务。以下是如何在Google Compute Engine上设置restund的说明。</p>
+<ol>
+<li>根据需要打开防火墙，对于tcp = 443，udp/tcp = 3478</li>
+<li>创建四个实例，每个公共IP标准一个，Standard Ubuntu 12.06映像</li>
+<li>设置本地防火墙配置</li>
+<li><p>安装工具</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install make</div><div class="line">sudo apt-get install gcc</div></pre></td></tr></table></figure>
+</li>
+<li><p>从creytiv.com/re.html安装libre</p>
+</li>
+<li>从creytiv.com/restund.html获取并解压缩restund</li>
+<li>wget hancke.name/restund-auth.patch并且使用patch – p1</li>
+<li>对libre和restund运行make, sudo make install</li>
+<li>根据你的需要（替换IP地址并确保它包含相同的共享密钥）对restund.conf进行调整，并复制到/etc</li>
+<li>复制restund/etc/restund到/etc/init.d/</li>
+<li>配置restund：<ul>
+<li>设置LD_LIBRARY_PATH</li>
+<li>复制restund.conf到/etc/restund.conf</li>
+<li>设置restund.conf以使用正确的 10. IP地址</li>
+</ul>
+</li>
+<li>运行restund</li>
+<li>从远端机上使用社团的客户端进行测试：./client IP:port</li>
+</ol>
+<h3 id="多方WebRTC"><a href="#多方WebRTC" class="headerlink" title="多方WebRTC"></a>多方WebRTC</h3><p>你可能还想查看一下Justin Uberti提出的用于访问TURN服务的<a href="http://tools.ietf.org/html/draft-uberti-rtcweb-turn-rest-00" target="_blank" rel="external">REST API的IETF标准</a>。</p>
+<p>很容易想象媒体流的使用情况超出了简单的一对一呼叫：例如，一组同事之间的视频会议，或一个发言者和数百（数百万）个观众的公共事件。</p>
+<p>WebRTC应用程序可以使用多个RTCPeerConnection，以便每个端点都可以连接到网格配置中的每个其他端点。这是<a href="http://talky.io/" target="_blank" rel="external">talky.io</a>等应用程序所采取的方法，对于只有少数几个对等端的情况来说可以很好的工作。除此之外，处理和带宽会过度消耗，对于移动客户端来说尤其是这样。</p>
+<p><img src="/img/mesh_topo.png" alt="mesh_topo"></p>
+<p>或者，WebRTC应用程序可以选择一个端点以星形配置将流分配给所有其他端点。也可以在服务器上运行WebRTC端点并构建自己的重新分配机制。（<a href="https://code.google.com/p/webrtc/source/browse/#svn%2Ftrunk%2Ftalk" target="_blank" rel="external">webrtc.org</a>提供了一个客户端应用示例）</p>
+<p>从Chrome 31和Opera 18开始，来自一个RTCPeerConnection的MediaStream可以用作另一个的输入：在<a href="http://simpl.info/rtcpeerconnection/multi" target="_blank" rel="external">simpl.info/multi</a>上有一个演示。这可以启用更灵活的体系结构，因为它使Web应用程序能够通过选择要连接的其他对等端来处理呼叫路由。</p>
+<h3 id="多点控制单元"><a href="#多点控制单元" class="headerlink" title="多点控制单元"></a>多点控制单元</h3><p>大量endpoint情况的更好选择是使用多点控制单元（Multipoint Control Unit，MCU）。它是一个服务器，可以作为在大量参与者之间分发媒体的桥。MCU可以处理视频会议中的不同分辨率，编解码器和帧速率，处理转码，选择性流转发，混音或录制音频和视频。对于多方通话，需要考虑许多问题：特别是如何显示多个视频输入并混合来自多个来源的音频。</p>
+<p>你可以购买一个完整的MCU硬件包，或者建立自己的MCU。</p>
+<p><img src="/img/mcu.jpg" alt="mcu"></p>
+<p>有几个开源的MCU软件可供选择。比如说，<a href="http://lynckia.com/" target="_blank" rel="external">Licode</a>为WebRTC做了一个开源MCU；OpenTok也有Mantis。<br>Several open source MCU software options are available. For example, Licode (previously know as Lynckia) produces an open source MCU for WebRTC; OpenTok has <a href="http://www.tokbox.com/blog/mantis-next-generation-cloud-technology-for-webrtc/" target="_blank" rel="external">Mantis</a>.</p>
+<h3 id="除了浏览器以外还有：VoIP，电话和消息"><a href="#除了浏览器以外还有：VoIP，电话和消息" class="headerlink" title="除了浏览器以外还有：VoIP，电话和消息"></a>除了浏览器以外还有：VoIP，电话和消息</h3><p>WebRTC的标准化特性使得在浏览器中运行的WebRTC应用程序与另一个通信平台运行的设备或停牌（例如电话或视频会议系统）之间建立通信成为可能。</p>
+<p>SIP是VoIP和视频会议系统使用的信令协议。为了实现WebRTC应用程序与视频会议系统等SIP客户端之间的通信，WebRTC需要代理服务器来调解信令。信令必须通过网关流动，但一旦通信建立，SRTP流量（视频和音频）就可以直接流向对等端。</p>
+<p>公共交换电话网（PSTN）是所有“普通老式”模拟电话的电路交换网络。对于WebRTC应用程序和电话之间的通话，通信必须通过PSTN网关。同样，WebRTC应用程序需要中间的XMPP服务器来与Jingle端点（如IM客户端）进行通信。Jingle由Google开发，作为XMPP的扩展，为语音和视频提供消息传递服务：当前的WebRTC实现是基于C++ libjingle库的，这是一个最初为Google Talk开发的Jingle实现。</p>
+<p>许多应用程序，库，和平台利用WebRTC与外部世界的沟通能力：sipML5，jsSIP，Phono，Zingaya，Twilio和Uberconference等等。</p>
+<p>sipML5开发者也构建了webrtc2sip网关。Tethr和Tropo展示了一个在灾难通信框架，使用OpenBTS单元通过WebRTC实现手机和计算机之间的通信。这是一个没有运营商在中间的电话通信！</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/19/使用一个新的hash一致性算法提升负载均衡/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1799,163 +2128,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/03/go-scope/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/11/03/go-scope/" itemprop="url">go语言作用域踩坑</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-03T20:15:38+08:00">
-                2017-11-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/go/" itemprop="url" rel="index">
-                    <span itemprop="name">go</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>今天饭饭给我出了个题目，下面这段代码为什么报错，怎么改？</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"fmt"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="keyword">type</span> A <span class="keyword">struct</span> &#123;</div><div class="line">    s <span class="keyword">string</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">var</span> a *A</div><div class="line"></div><div class="line">    <span class="keyword">if</span> check(a) &#123;</div><div class="line">        a, err := generate()</div><div class="line">        fmt.Println(a.s, err)</div><div class="line">    &#125;</div><div class="line">    fmt.Println(a.s)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">generate</span><span class="params">()</span> <span class="params">(*A, error)</span></span> &#123;</div><div class="line">    <span class="keyword">return</span> &amp;A&#123;s: <span class="string">"b"</span>&#125;, <span class="literal">nil</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">check</span><span class="params">(a *A)</span> <span class="title">bool</span></span> &#123;</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>运行一下，发现报错如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">panic: runtime error: invalid memory address or nil pointer dereference</div><div class="line">[signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x1095520]</div><div class="line"></div><div class="line">goroutine 1 [running]:</div><div class="line">main.main()</div><div class="line">        /go_code/src/go_examples/go_scope.go:18 +0x280</div><div class="line">exit status 2</div></pre></td></tr></table></figure>
-<p>18行，也就是</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">fmt.Println(a.s)</div></pre></td></tr></table></figure>
-<p>报错了，报错没法提供更多信息（go新手，老鸟可能能看出端倪），我们加一些打印</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">var</span> a *A</div><div class="line">    fmt.Printf(<span class="string">"%p\n"</span>, &amp;a)      <span class="comment">// 1</span></div><div class="line"></div><div class="line">    <span class="keyword">if</span> check(a) &#123;</div><div class="line">        a, err := generate()</div><div class="line">        fmt.Printf(<span class="string">"%p\n"</span>, &amp;a)  <span class="comment">// 2</span></div><div class="line">        fmt.Println(a.s, err)   <span class="comment">// 3</span></div><div class="line">    &#125;</div><div class="line">    fmt.Printf(<span class="string">"%p\n"</span>, &amp;a)      <span class="comment">// 4</span></div><div class="line">    fmt.Println(a.s)            </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>结果如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">0xc42000c028   // 1</div><div class="line">0xc42000c038   // 2</div><div class="line">b &lt;nil&gt;        // 3</div><div class="line">0xc42000c028   // 4</div></pre></td></tr></table></figure>
-<p>我们发现，2处的<code>a</code>竟然不是我们定义的（1处）<code>a</code>，发生了什么！</p>
-<p>其实看到这里很多人可能都明白了，其实是<code>a, err := generate()</code>里面<code>:=</code>的问题，我们最初的设想是golang会定义新变量<code>err</code>，而<code>a</code>为初始定义的那个变量（1处）。但实际情况是，对于使用<code>:=</code>定义的变量，如果新变量与那个同名已定义变量 (这里就是1处的变量<code>a</code>)不在一个作用域中时，那么golang会重新定义这个变量，这就是导致这个问题的真凶。</p>
-<p>怎么改呢，我们重写一下<code>main</code>函数：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">var</span> a *A</div><div class="line">    <span class="keyword">var</span> err error</div><div class="line"></div><div class="line">    <span class="keyword">if</span> check(a) &#123;</div><div class="line">        a, err = generate()</div><div class="line">        fmt.Println(a.s, err)</div><div class="line">    &#125;</div><div class="line">    fmt.Println(a.s)            </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>如此即可~</p>
-<p>这个坑真的非常容易踩，而且不太好发现，感谢饭饭🙏</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2006,7 +2178,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">169</span>
+                <span class="site-state-item-count">170</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2017,7 +2189,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
