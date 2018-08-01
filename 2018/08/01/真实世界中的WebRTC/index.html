@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="真实世界中的WebRTC：STUN, TURN and signalingWebRTC使端到端能够通信。 但是… WebRTC仍然需要服务器：  让客户端交换元数据来协调通信：这被称为信令（signaling） 处理网络地址转换（NATs）和防火墙  这篇文章将会展示如何搭建一个信令服务 在本文中，我们将向您展示如何构建信令服务，以及如何使用STUN和TURN服务器处理真实连接的难题。 我们还解释">
+<meta name="description" content="WebRTC使端到端能够通信。 但是… WebRTC仍然需要服务器：  让客户端交换元数据来协调通信：这被称为信令（signaling） 处理网络地址转换（NATs）和防火墙  这篇文章将会展示如何搭建一个信令服务 在本文中，我们将向您展示如何构建信令服务，以及如何使用STUN和TURN服务器处理真实连接的难题。 我们还解释了WebRTC应用程序如何处理多方通话以及与VoIP和PSTN（又称电话）">
 <meta property="og:type" content="article">
-<meta property="og:title" content="真实世界中的WebRTC">
+<meta property="og:title" content="真实世界中的WebRTC：STUN, TURN and signaling">
 <meta property="og:url" content="http://yoursite.com/2018/08/01/真实世界中的WebRTC/index.html">
 <meta property="og:site_name" content="Youmai の Blog">
-<meta property="og:description" content="真实世界中的WebRTC：STUN, TURN and signalingWebRTC使端到端能够通信。 但是… WebRTC仍然需要服务器：  让客户端交换元数据来协调通信：这被称为信令（signaling） 处理网络地址转换（NATs）和防火墙  这篇文章将会展示如何搭建一个信令服务 在本文中，我们将向您展示如何构建信令服务，以及如何使用STUN和TURN服务器处理真实连接的难题。 我们还解释">
+<meta property="og:description" content="WebRTC使端到端能够通信。 但是… WebRTC仍然需要服务器：  让客户端交换元数据来协调通信：这被称为信令（signaling） 处理网络地址转换（NATs）和防火墙  这篇文章将会展示如何搭建一个信令服务 在本文中，我们将向您展示如何构建信令服务，以及如何使用STUN和TURN服务器处理真实连接的难题。 我们还解释了WebRTC应用程序如何处理多方通话以及与VoIP和PSTN（又称电话）">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/jsep.png">
 <meta property="og:image" content="http://yoursite.com/img/apprtc_in_action.jpg">
@@ -109,10 +109,10 @@
 <meta property="og:image" content="http://yoursite.com/img/turn.png">
 <meta property="og:image" content="http://yoursite.com/img/mesh_topo.png">
 <meta property="og:image" content="http://yoursite.com/img/mcu.jpg">
-<meta property="og:updated_time" content="2018-08-01T02:17:43.203Z">
+<meta property="og:updated_time" content="2018-08-01T02:22:49.141Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="真实世界中的WebRTC">
-<meta name="twitter:description" content="真实世界中的WebRTC：STUN, TURN and signalingWebRTC使端到端能够通信。 但是… WebRTC仍然需要服务器：  让客户端交换元数据来协调通信：这被称为信令（signaling） 处理网络地址转换（NATs）和防火墙  这篇文章将会展示如何搭建一个信令服务 在本文中，我们将向您展示如何构建信令服务，以及如何使用STUN和TURN服务器处理真实连接的难题。 我们还解释">
+<meta name="twitter:title" content="真实世界中的WebRTC：STUN, TURN and signaling">
+<meta name="twitter:description" content="WebRTC使端到端能够通信。 但是… WebRTC仍然需要服务器：  让客户端交换元数据来协调通信：这被称为信令（signaling） 处理网络地址转换（NATs）和防火墙  这篇文章将会展示如何搭建一个信令服务 在本文中，我们将向您展示如何构建信令服务，以及如何使用STUN和TURN服务器处理真实连接的难题。 我们还解释了WebRTC应用程序如何处理多方通话以及与VoIP和PSTN（又称电话）">
 <meta name="twitter:image" content="http://yoursite.com/img/jsep.png">
 
 
@@ -148,7 +148,7 @@
 
 
 
-  <title>真实世界中的WebRTC | Youmai の Blog</title>
+  <title>真实世界中的WebRTC：STUN, TURN and signaling | Youmai の Blog</title>
   
 
 
@@ -311,7 +311,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">真实世界中的WebRTC</h1>
+          <h1 class="post-title" itemprop="name headline">真实世界中的WebRTC：STUN, TURN and signaling</h1>
         
 
         <div class="post-meta">
@@ -383,7 +383,7 @@
       
 
       
-        <h3 id="真实世界中的WebRTC：STUN-TURN-and-signaling"><a href="#真实世界中的WebRTC：STUN-TURN-and-signaling" class="headerlink" title="真实世界中的WebRTC：STUN, TURN and signaling"></a>真实世界中的WebRTC：STUN, TURN and signaling</h3><p>WebRTC使端到端能够通信。</p>
+        <p>WebRTC使端到端能够通信。</p>
 <p>但是…</p>
 <p>WebRTC仍然需要服务器：</p>
 <ul>
@@ -772,7 +772,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#真实世界中的WebRTC：STUN-TURN-and-signaling"><span class="nav-number">1.</span> <span class="nav-text">真实世界中的WebRTC：STUN, TURN and signaling</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是信令"><span class="nav-number">2.</span> <span class="nav-text">什么是信令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么信令不是由WebRTC定义的？"><span class="nav-number">3.</span> <span class="nav-text">为什么信令不是由WebRTC定义的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RTCPeerConnection-signaling-offer-answer-and-candidate"><span class="nav-number">4.</span> <span class="nav-text">RTCPeerConnection + signaling: offer, answer and candidate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WebRTC信令代码"><span class="nav-number">5.</span> <span class="nav-text">WebRTC信令代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对端发现"><span class="nav-number">6.</span> <span class="nav-text">对端发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我怎么才能建立一个信令服务？"><span class="nav-number">7.</span> <span class="nav-text">我怎么才能建立一个信令服务？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将消息从服务器推送到客户端"><span class="nav-number">8.</span> <span class="nav-text">将消息从服务器推送到客户端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展信令"><span class="nav-number">9.</span> <span class="nav-text">扩展信令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在Node上使用Socket-io构建信令服务"><span class="nav-number">10.</span> <span class="nav-text">在Node上使用Socket.io构建信令服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信令陷阱"><span class="nav-number">11.</span> <span class="nav-text">信令陷阱</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#现成的信令服务器"><span class="nav-number">12.</span> <span class="nav-text">现成的信令服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信令安全"><span class="nav-number">13.</span> <span class="nav-text">信令安全</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在信令之后：使用-ICE来对付NAT和防火墙"><span class="nav-number">14.</span> <span class="nav-text">在信令之后：使用 ICE来对付NAT和防火墙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#STUN"><span class="nav-number">15.</span> <span class="nav-text">STUN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TURN"><span class="nav-number">16.</span> <span class="nav-text">TURN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署-STUN和-TURN服务器"><span class="nav-number">17.</span> <span class="nav-text">部署 STUN和 TURN服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多方WebRTC"><span class="nav-number">18.</span> <span class="nav-text">多方WebRTC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多点控制单元"><span class="nav-number">19.</span> <span class="nav-text">多点控制单元</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#除了浏览器以外还有：VoIP，电话和消息"><span class="nav-number">20.</span> <span class="nav-text">除了浏览器以外还有：VoIP，电话和消息</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是信令"><span class="nav-number">1.</span> <span class="nav-text">什么是信令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么信令不是由WebRTC定义的？"><span class="nav-number">2.</span> <span class="nav-text">为什么信令不是由WebRTC定义的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RTCPeerConnection-signaling-offer-answer-and-candidate"><span class="nav-number">3.</span> <span class="nav-text">RTCPeerConnection + signaling: offer, answer and candidate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WebRTC信令代码"><span class="nav-number">4.</span> <span class="nav-text">WebRTC信令代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对端发现"><span class="nav-number">5.</span> <span class="nav-text">对端发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我怎么才能建立一个信令服务？"><span class="nav-number">6.</span> <span class="nav-text">我怎么才能建立一个信令服务？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将消息从服务器推送到客户端"><span class="nav-number">7.</span> <span class="nav-text">将消息从服务器推送到客户端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展信令"><span class="nav-number">8.</span> <span class="nav-text">扩展信令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在Node上使用Socket-io构建信令服务"><span class="nav-number">9.</span> <span class="nav-text">在Node上使用Socket.io构建信令服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信令陷阱"><span class="nav-number">10.</span> <span class="nav-text">信令陷阱</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#现成的信令服务器"><span class="nav-number">11.</span> <span class="nav-text">现成的信令服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信令安全"><span class="nav-number">12.</span> <span class="nav-text">信令安全</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在信令之后：使用-ICE来对付NAT和防火墙"><span class="nav-number">13.</span> <span class="nav-text">在信令之后：使用 ICE来对付NAT和防火墙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#STUN"><span class="nav-number">14.</span> <span class="nav-text">STUN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TURN"><span class="nav-number">15.</span> <span class="nav-text">TURN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署-STUN和-TURN服务器"><span class="nav-number">16.</span> <span class="nav-text">部署 STUN和 TURN服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多方WebRTC"><span class="nav-number">17.</span> <span class="nav-text">多方WebRTC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多点控制单元"><span class="nav-number">18.</span> <span class="nav-text">多点控制单元</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#除了浏览器以外还有：VoIP，电话和消息"><span class="nav-number">19.</span> <span class="nav-text">除了浏览器以外还有：VoIP，电话和消息</span></a></li></ol></div>
             
 
           </div>
