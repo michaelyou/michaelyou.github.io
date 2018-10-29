@@ -286,6 +286,173 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/10/Django的F-表达式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/08/10/Django的F-表达式/" itemprop="url">Django的F()表达式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-10T23:00:20+08:00">
+                2015-08-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>算是一些基本的高级用法吧，在Django文档的<a href="https://docs.djangoproject.com/en/1.7/ref/models/queries/" target="_blank" rel="external">Query-related classes</a>这一章中。主要讲了三个类，<code>F()</code>,<code>Q()</code>和<code>prefetch()</code>。我们下面讲一讲<code>F()</code>。</p>
+<blockquote>
+<p>class F()<br>F()是代表模型字段的值，也就是说对于一些特殊的字段的操作，我们不需要用python把数据先取到内存中，然后操作，在存储到db中了。</p>
+</blockquote>
+<p>##常见的使用场景</p>
+<p>###字段加1(加减乘除运算)</p>
+<p>例如我们有个统计点击量的字段，每次更新的操作其实就是把字段的值加1.</p>
+<p>一般我们的做法是把这条记录取出来，把相应字段加+1，然后在save，类似下面的代码</p>
+<pre><code># Tintin filed a news story!
+reporter = Reporters.objects.get(name=&apos;Tintin&apos;)
+reporter.stories_filed += 1
+reporter.save()
+</code></pre><p>当我们使用了<code>F()</code>之后呢？ 只需要一行代码</p>
+<pre><code>Reporters.objects.filter(name=&apos;Tintin&apos;).update(stories_filed=F(&apos;stories_filed&apos;) + 1)
+</code></pre><p>不仅代码量少了，而且这是直接在数据中操作，效率也变高了，特别是并发的情况，减少了多线程同时操作带来的隐患。 但是<strong>不支持字符串相加的操作</strong></p>
+<p>###字段比较<br>例如一个合同有两个日期，一个叫做终止日期，一个叫做结束日期，现在要筛选出终止日期小于结束日期的合同。</p>
+<pre><code>from django.db.models import F
+from contracts.models import Contracts
+contracts = Contracts.objects.filter(contract_stop_time__lt=F(&apos;end_time&apos;))
+</code></pre><p>如果没有F对象，就没法直接使用rom来查询。</p>
+<p>###补充–通过F()避免竞态条件</p>
+<blockquote>
+<p>Another useful benefit of <code>F()</code> is that having the database - rather than Python - update a field’s value avoids a race condition.</p>
+<p>If two Python threads execute the code in the first example above, one thread could retrieve, increment, and save a field’s value after the other has retrieved it from the database. The value that the second thread saves will be based on the original value; the work of the first thread will simply be lost.</p>
+<p>If the database is responsible for updating the field, the process is more robust: it will only ever update the field based on the value of the field in the database when the <code>save()</code> or <code>update()</code> is executed, rather than based on its value when the instance was retrieved.</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/03/python-double-star-and-star/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2116,164 +2283,11 @@ $100
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/26/解决-mac删除系统自带python后一些软件崩溃/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/26/解决-mac删除系统自带python后一些软件崩溃/" itemprop="url">[解决]mac删除系统自带python后一些软件崩溃</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-26T13:14:56+08:00">
-                2015-05-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mac/" itemprop="url" rel="index">
-                    <span itemprop="name">mac</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><code>mac 10.10.3</code>自带的python版本是<code>2.6</code>，而<code>2.0</code>版本现在已经不再更新，最终版是<code>2.7.9</code>。很多同学都会给mac装上最新版本来代替系统自带版本。有一些教程还好，会让你保存<code>2.6</code>。有一些就糟糕了，它会让你直接用<code>2.7</code>(或者<code>3.4</code>)来覆盖<code>2.6</code>。这样在终端中是没有问题的，但是有一些应用程序，比如<code>iPhoto</code>和<code>sublime</code>，它们依赖于系统的<code>2.6</code>，一旦找不到<code>2.6</code>的版本，打开软件就会崩溃。其实问题是很简单的，网上有一些答案，这里讲一下我的解决方法。</p>
-<p>首先，你需要找到你的新版的python的安装路径<br>系统默认的是在</p>
-<pre><code>/System/Library/Frameworks/Python.framework/Versions/2.7
-</code></pre><p>如果你是用homebrew安装的python，那么应该在</p>
-<pre><code>/usr/local/Cellar/python/2.7.9/Frameworks/Python.framework/Versions/2.7/
-</code></pre><p>我们不需要再安装2.6的版本，只需要创建一个软链接即可：</p>
-<pre><code>sudo ln -s /usr/local/Cellar/python/2.7.9/Frameworks/Python.framework/Versions/2.7/ /System/Library/Frameworks/Python.framework/Versions/2.6
-</code></pre><p>第一个路径即是你的python的安装路径</p>
-<p>PS1：<br>如果你打开软件显示<code>*** import error</code>，那是说明你的这个版本没有安装这个模块，<code>pip</code>安装即可。</p>
-<p>PS2：<br>如果需要使用新版的python，还是建议大家使用<a href="https://github.com/yyuu/pyenv" target="_blank" rel="external">pyenv</a>，既能安装多个版本又不会搞乱系统，非常NB。</p>
-<p>##参考资料</p>
-<p><a href="https://apple.stackexchange.com/questions/114195/iphoto-and-python-2-6/140941#140941?newreg=cb8af983a6f248868b5043d1ec14d418" target="_blank" rel="external">Ask Different –Iphoto and Python2.6</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2319,7 +2333,7 @@ $100
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">170</span>
+                <span class="site-state-item-count">171</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2330,7 +2344,7 @@ $100
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

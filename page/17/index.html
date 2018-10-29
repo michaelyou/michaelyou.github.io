@@ -286,6 +286,182 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/21/网络基础-一些小面试题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="You Wangqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/lufei.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youmai の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/01/21/网络基础-一些小面试题/" itemprop="url">网络基础-一些小面试题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-21T21:05:12+08:00">
+                2015-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>get和post的区别<ul>
+<li>GET用于信息获取，而且应该是安全的和幂等的，POST表示可能修改变服务器上的资源的请求</li>
+<li>GET方式提交的数据最多只能是1024字节，理论上POST没有限制，可传较大量的数据</li>
+<li>POST提交，把提交的数据放置在是HTTP包的包体中，GET提交的数据会在地址栏中显示出来</li>
+</ul>
+</li>
+<li>一个广域网和一个局域网相连，需要的设备是<code>路由器</code>，<code>网关</code></li>
+<li>在Web开发中，如何实现会话的跟踪<ul>
+<li>隐藏表单域</li>
+<li>保存cookie</li>
+<li>URL复写</li>
+<li>session 机制</li>
+</ul>
+</li>
+<li>cookie和session<ul>
+<li>cookie数据存放在客户的浏览器上，session数据放在服务器上。</li>
+<li>session是针对每一个用户的，变量的值保存在服务器上，用一个sessionID来区分是哪个用户session变量</li>
+<li>保存这个session id的方式可以采用cookie</li>
+</ul>
+</li>
+<li>cookie 属性的一些描述：<ul>
+<li>expires: cookie的过期时间</li>
+<li>domain属性可以使多个web服务器共享cookie</li>
+<li>path属性指定与cookie关联在一起的网页</li>
+<li>secure: 如果secure 这个词被作为Set-Cookie 头的一部分，那么cookie 只能通过安全通道传输</li>
+</ul>
+</li>
+<li>dns域名劫持<ul>
+<li>如果dns把你想要解析的地方，解析为错误的另一个地方，这种现象叫做dns劫持</li>
+<li>如果知道该域名的真实IP地址，则可以直接用此IP代替域名后进行访问</li>
+<li>可以通过更换其它DNS解决域名劫持问题</li>
+</ul>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/21/linux-一些小面试题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1706,188 +1882,11 @@ find . -name &quot;*.pyc&quot; -type f -print0 | xargs -0 rm -f
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/13/urllib2和scrapy的302redirect错误/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="You Wangqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/img/lufei.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Youmai の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/01/13/urllib2和scrapy的302redirect错误/" itemprop="url">urllib2和scrapy的302redirect错误</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-13T15:24:18+08:00">
-                2015-01-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/scrapy/" itemprop="url" rel="index">
-                    <span itemprop="name">scrapy</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>今天用爬虫爬csdn的blog的时候，发现会产生302重定向的问题，并且，重定向的url仍然是原来的url，这样就会产生一个infinite loop，让爬虫无法工作。下面说一下解决的方法：</p>
-<p>##urllib2的错误</p>
-<pre><code>代码：
-#encoding=utf-8
-
-import urllib
-import urllib2
-
-response = urllib2.urlopen(url)
-print response.read()
-</code></pre><p>运行上面的代码会产生下面的错误，爬虫会退出</p>
-<p>######urllib2.HTTPError: HTTP Error 302: The HTTP server returned a redirect error that would lead to an infinite loop.#The last 30x error message was:Moved Temporarily####<br>避免这个问题的方法就是在代码中加入对cookie的处理，下面是改正后的代码：</p>
-<pre><code>代码：
-#encoding=utf-8
-
-import urllib
-import cookielib, urllib2
-
-cj = cookielib.CookieJar()
-opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-headers = {
-    &apos;User-Agent&apos;:&apos;Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6&apos;
-    }
-request = urllib2.Request(
-    url = &apos;************&apos;,
-    headers = headers
-    )
-response = opener.open(request)
-print response.read()
-</code></pre><p>代码中同时修改了headers来模仿浏览器登陆，如果只cookie处理部分的代码会出现403forbidden的错误。</p>
-<p>##使用scrapy的修改方法<br>其实使用scrapy本不应该出现这个问题的，因为scrapy自带对cookie的处理，那这个问题是如何产生的呢？<br>scrapy中文文档中的<a href="http://scrapy-chs.readthedocs.org/zh_CN/latest/topics/practices.html?highlight=ban#ban" target="_blank" rel="external">避免被禁止(ban)</a>这一节讲过</p>
-<blockquote>
-<p>禁止cookies(参考 COOKIES_ENABLED)，有些站点会使用cookies来发现爬虫的轨迹</p>
-</blockquote>
-<p>所以在一些代码中会采取这个策略，在setting.py中将COOKIES_ENABLED设置为False，也就是禁止scrapy来处理cookie，这在大部分网站下可能都是可用的，但很难说会遇到今天这样的问题，必须要处理cookie，说到这里大家应该都明白了，正确的处理方法就是在setting.py中将COOKIES_ENABLED的值改为True，即：</p>
-<pre><code>COOKIES_ENABLED = True
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/16/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span>
+    <a class="extend prev" rel="prev" href="/page/16/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/18/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1933,7 +1932,7 @@ print response.read()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">170</span>
+                <span class="site-state-item-count">171</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1944,7 +1943,7 @@ print response.read()
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
